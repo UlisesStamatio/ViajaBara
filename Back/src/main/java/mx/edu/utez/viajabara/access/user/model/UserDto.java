@@ -9,11 +9,11 @@ import java.util.Date;
 import java.util.List;
 
 public class UserDto {
-    @NotNull(groups = {Modify.class, Restore.class, ChangeStatus.class})
+    @NotNull(groups = {Modify.class, Restore.class, ChangeStatus.class, ChangeProfile.class})
     private Long id;
     @NotBlank(groups = {Modify.class, Register.class})
     private String username;
-    @NotBlank(groups = {Modify.class, Register.class})
+    @NotBlank(groups = {Modify.class, Register.class,ChangeProfile.class})
     private String profile;
     @NotBlank(groups = {Modify.class, Register.class, Recover.class, ChangePassword.class, VerifyCode.class, UpdatePassword.class})
     private String email;
@@ -155,6 +155,10 @@ public class UserDto {
     }
 
     public interface ChangeRole {
+    }
+
+    public interface ChangeProfile{
+
     }
 
 }

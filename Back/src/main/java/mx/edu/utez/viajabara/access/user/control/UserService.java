@@ -209,7 +209,8 @@ public class UserService {
         String roles = setRoles(dto.getRoles());
         user.setRoles(roles);
         user.setPerson((Person) message.getResult());
-
+        user.setProfile(dto.getProfile());
+        user.setUsername(dto.getUsername());
         user = repository.saveAndFlush(user);
         if (user == null) {
             return new ResponseEntity<>(new Message("Usuario no registrado", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
@@ -241,6 +242,8 @@ public class UserService {
             user.setPassword(passwordEncoder.encode(dto.getPassword()));
         }
         user.setRoles(roles);
+        user.setProfile(dto.getProfile());
+        user.setUsername(dto.getUsername());
         user = repository.saveAndFlush(user);
         if (user == null) {
             return new ResponseEntity<>(new Message("Usuario no modificado", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);

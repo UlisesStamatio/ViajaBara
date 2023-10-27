@@ -12,8 +12,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.sql.SQLException;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -46,6 +49,30 @@ public class AccessController {
     public ResponseEntity<JwtDto> login(@RequestBody LoginDto loginDto) throws Exception {
         return accessService.login(loginDto);
     }
+
+    @PostMapping("/register")
+    @ApiOperation(
+            value = "Registra un usuario",
+            notes = "\n" +
+                    "{\n" +
+                    "\"profile\":\"aa\",\n" +
+                    "\"username\": \"juanperez\",\n" +
+                    "\"email\": \"admin@gmail.com\",\n" +
+                    "\"person\": {\n" +
+                    "\"name\": \"Juan\",\n" +
+                    "\"surname\": \"Pérez Herrera\",\n" +
+                    "\"cellphone\": \"7773792873\",\n" +
+                    "\"birthDate\": \"2000-02-02\",\n" +
+                    "\"sex\": \"h\",\n" +
+                    "\"state\": { \"id\": 1 }\n" +
+                    "},\n" +
+                    "\"roles\": [ { \"id\": 2 } ]\n" +
+                    "}\n"
+    )
+    public ResponseEntity<Object> save(@Validated({UserDto.Register.class}) @RequestBody UserDto dto) throws SQLException {
+        return userService.save(dto);
+    }
+
 
     @ApiOperation(
             value = "Envía correo para recuperación de contraseña",

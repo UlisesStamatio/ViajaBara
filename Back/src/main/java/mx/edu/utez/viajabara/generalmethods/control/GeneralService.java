@@ -80,4 +80,13 @@ public class GeneralService {
         return new ResponseEntity<>(new Message(user, "Contraseña modificada", TypesResponse.SUCCESS), HttpStatus.OK);
     }
 
+    /* todo cambiar foto de perfil
+    @Transactional(rollbackFor = {SQLException.class})
+    public ResponseEntity<Object> changeProfile(UserDto dto) {
+        Optional<User> optionalUser = repository.findById(dto.getId());
+        if (!optionalUser.isPresent()) {
+            return new ResponseEntity<>(new Message("No se encontró el usuario", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
+        }
+    }
+     */
 }

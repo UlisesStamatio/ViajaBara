@@ -36,9 +36,6 @@ public class Person {
     @JsonIgnore
     private User user;
 
-    @Email
-    @Column(name = "contact_email", columnDefinition = "VARCHAR(50)")
-    private String contactEmail;
 
     public Person() {
     }
@@ -52,15 +49,6 @@ public class Person {
         this.status = status;
     }
 
-    public Person(String name, String surname, String cellphone, String sex, Date birthDate, boolean status, String contactEmail) {
-        this.name = name;
-        this.surname = surname;
-        this.cellphone = cellphone;
-        this.sex = sex;
-        this.birthDate = birthDate;
-        this.status = status;
-        this.contactEmail = contactEmail;
-    }
 
     public Long getId() {
         return id;
@@ -141,14 +129,6 @@ public class Person {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public String getContactEmail() {
-        return contactEmail;
-    }
-
-    public void setContactEmail(String contactEmail) {
-        this.contactEmail = contactEmail;
     }
 
     public void asignValues(PersonDto dto) {
