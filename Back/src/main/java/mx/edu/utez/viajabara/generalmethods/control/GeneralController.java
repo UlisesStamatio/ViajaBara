@@ -42,7 +42,7 @@ public class GeneralController {
 
 
     @ApiOperation(
-            value = "Cambio de contraseña del usuario",
+            value = "Cambio de foto de perfil",
             notes = "{\n" +
                     "    \"id\": \1,\"\n" +
                     "    \"profile\": \"imagen base 64\"\n" +
