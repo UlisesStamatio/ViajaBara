@@ -13,8 +13,8 @@ class Menu extends StatefulWidget {
 
 class _MenuState extends State<Menu> {
   int _selectIndex = 0;
-  final homeNavigatorKey = GlobalKey<NavigatorState>();
-  final accountNavigatorKey = GlobalKey<NavigatorState>();
+  // final homeNavigatorKey = GlobalKey<NavigatorState>();
+  // final accountNavigatorKey = GlobalKey<NavigatorState>();
   void _onItemTapped(int index) {
     setState(() {
       _selectIndex = index;

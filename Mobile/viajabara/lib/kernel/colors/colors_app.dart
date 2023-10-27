@@ -14,5 +14,6 @@ class ColorsApp {
   static const Color bgColorScreen = Color.fromRGBO(248, 249, 254, 1.0);
   static const Color border = Color.fromRGBO(202, 209, 215, 1.0);
   static const Color muted = Color.fromRGBO(136, 152, 170, 1.0);
+  static const Color muted2 = Color.fromRGBO(204, 208, 212, 1);
   static const Color text = Color.fromRGBO(93, 50, 86, 1);
 }

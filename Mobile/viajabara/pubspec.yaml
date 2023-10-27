@@ -1,21 +1,24 @@
 name: viajabara
 description: A new Flutter project.
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
-  sdk: '>=3.1.3 <4.0.0'
+  sdk: ">=3.1.3 <4.0.0"
 
 dependencies:
+  bloc: ^8.1.2
+  cupertino_icons: ^1.0.6
+  equatable: ^2.0.5
   flutter:
     sdk: flutter
+  flutter_bloc: ^8.1.3
   font_awesome_flutter: ^10.6.0
-  cupertino_icons: ^1.0.6
 
 dev_dependencies:
+  flutter_lints: ^2.0.0
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
 
 flutter:
   uses-material-design: true

@@ -1,9 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:viajabara/config/navigation/general_mechanisms_navigation.dart';
 import 'package:viajabara/kernel/colors/colors_app.dart';
 
-import 'package:flutter/material.dart';
-import 'package:viajabara/kernel/colors/colors_app.dart';
-import 'package:viajabara/kernel/validations/validations.dart';
+import 'package:viajabara/modules/generalMechanisms/adapters/screens/login.dart';
+import 'package:viajabara/modules/trips/adapters/screens/traveling.dart';
 
 class Trips extends StatefulWidget {
   const Trips({super.key});
@@ -16,6 +17,39 @@ class _TripsState extends State<Trips> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Container(
+            alignment: Alignment.centerLeft,
+            child: const Text(
+              'Viajes',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            )),
+        foregroundColor: ColorsApp.muted2,
+        actions: <Widget>[
+          Container(
+            alignment: Alignment.centerRight,
+            child: Image.asset(
+              'assets/images/viajabara_logo_purple.png',
+              width: 100,
+              height: 50,
+              color: ColorsApp.muted2,
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.logout, color: ColorsApp.primayColor),
+            onPressed: () {
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                    builder: (context) => const GeneralMechanismsNavigation()),
+                (route) => false,
+              );
+            },
+          ),
+        ],
+        backgroundColor: ColorsApp.whiteColor,
+        shadowColor: ColorsApp.blackColor,
+        elevation: 2,
+      ),
       body: SafeArea(
         child: Stack(
           fit: StackFit.expand,
@@ -32,18 +66,6 @@ class _TripsState extends State<Trips> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Container(
-                    color: ColorsApp.bgColorScreen,
-                    alignment: Alignment.centerRight,
-                    width:
-                        double.infinity, // Ocupa todo el ancho de la pantalla
-                    child: Image.asset(
-                      'assets/images/viajabara_logo_purple.png',
-                      width: 200,
-                      height: 50,
-                    ),
-                  ),
-
                   // *************************************
                   Card(
                     elevation: 5,
@@ -55,7 +77,7 @@ class _TripsState extends State<Trips> {
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           child: const Column(
                             children: <Widget>[
-                              Icon(Icons.bus_alert, size: 28.0),
+                              Icon(CupertinoIcons.bus, size: 28.0),
                               Text('Horario'),
                             ],
                           ),
@@ -102,13 +124,20 @@ class _TripsState extends State<Trips> {
                                 style: ButtonStyle(
                                     backgroundColor: MaterialStateProperty.all(
                                         ColorsApp.primayColor)),
-                                child: const Row(children: [
-                                  Icon(Icons.play_arrow),
-                                  SizedBox(
-                                    width: 10,
+                                child: InkWell(
+                                  onTap: () => Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const Traveling()),
                                   ),
-                                  Text('En curso')
-                                ]),
+                                  child: const Row(children: [
+                                    Icon(Icons.play_arrow),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text('En curso')
+                                  ]),
+                                ),
                               ),
                             ],
                           ),

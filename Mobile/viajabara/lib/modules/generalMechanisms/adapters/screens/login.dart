@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:viajabara/kernel/colors/colors_app.dart';
 import 'package:viajabara/kernel/validations/validations.dart';
+import 'package:viajabara/kernel/widgets/menu.dart';
+import 'package:viajabara/modules/trips/adapters/screens/trips.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -212,7 +214,7 @@ class _LoginState extends State<Login> {
                               alignment: Alignment.centerRight,
                               child: InkWell(
                                 onTap: () => Navigator.pushReplacementNamed(
-                                    context, '/forgot_password'),
+                                    context, '/register'),
                                 child: const Text(
                                   '¿Olvidaste tu contraseña?',
                                   style:
@@ -244,7 +246,7 @@ class _LoginState extends State<Login> {
                                 onPressed: _isButtonDisabled
                                     ? null
                                     : () => Navigator.pushReplacementNamed(
-                                        context, '/menu'),
+                                        context, "/menu"),
                                 style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all(
                                     _isButtonDisabled
@@ -264,6 +266,7 @@ class _LoginState extends State<Login> {
           ),
         ),
       ),
+      bottomNavigationBar: null,
     );
   }
 }
