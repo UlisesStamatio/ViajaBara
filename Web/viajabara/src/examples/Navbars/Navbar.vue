@@ -56,7 +56,7 @@
                     alt="Image placeholder"
                     class="avatar avatar-sm rounded-circle me-2"
                     src="../../assets/img/team-1.jpg">
-              <span  class="d-sm-inline d-none">Cerrar sesión </span>
+              <a  class="d-sm-inline d-none" @click="logout">Cerrar sesión </a>
             </router-link>
           </li>
 
@@ -68,6 +68,8 @@
 <script>
 import Breadcrumbs from "../Breadcrumbs.vue";
 import { mapMutations, mapActions, mapState } from "vuex";
+import router from '../../router/index';
+import storeSession from '../../kernel/store/store.session';
 
 export default {
   name: "Navbar",
@@ -110,6 +112,10 @@ export default {
       this.toggleSidebarColor("bg-white");
       this.navbarMinimize();
     },
+    logout(){
+      storeSession.deleteToken()
+      router.push({name: "Signin Illustration"})
+    }
   },
 };
 </script>
