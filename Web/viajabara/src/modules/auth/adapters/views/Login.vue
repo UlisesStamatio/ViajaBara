@@ -10,7 +10,7 @@
       </div>
     </div>
   </div>
-  <main class="mt-4 main-content">
+  <main class="mt-5 main-content">
     <section>
       <div class="page-header min-vh-100">
         <div class="container">
@@ -26,26 +26,35 @@
                 <div class="card-body">
 
 
-                  <form class="row g-3 needs-validation" novalidate>
+                  <form class="row g-3 needs-validation" novalidate @submit.prevent="prelogin">
                     <div class="col-12 mb-2">
-                      <label>Usuario</label>
+                      <label>Email</label>
                       <div class="input-group has-validation">
-                        <input type="text" class="form-control" placeholder="Ingresa tu usuario" required/> 
+                        <input type="email" v-model="form.email" class="form-control" :class="{ 'is-invalid': errors.email, 'is-valid': errors.email === null }" placeholder="Ingresa tu correo" required/> 
+                        <div class="invalid-feedback" v-if="errors.email">
+                          {{ errors.email }}
+                        </div>
                       </div>
                     </div>
 
                     <div class=" col-12 mb-2">
                       <label>Contraseña</label>
-                      <input type="password" class="form-control" placeholder="Ingresa tu contraseña" required/> 
+                      <input type="password" v-model="form.password" class="form-control" placeholder="Ingresa tu contraseña" :class="{ 'is-invalid': errors.password, 'is-valid': errors.password === null }" required/> 
+                      <div class="invalid-feedback" v-if="errors.password">
+                          {{ errors.password }}
+                      </div>
                     </div>
 
                     <div class="col-12 mb-2">
                       <label for="submit" class="form-label mb-2" >Captcha</label>
-                      <input class="form-control" type="text" placeholder="Ingresa el captcha" required>
+                      <input class="form-control" type="text" v-model="form.captcha" :class="{ 'is-invalid': errors.captcha, 'is-valid': errors.captcha === null }" placeholder="Ingresa el captcha" required>
+                      <div class="invalid-feedback" v-if="errors.captcha">
+                          {{ errors.captcha }}
+                      </div>
                        <div class="align-center selectable mt-3" @click="generateCapcha" >
                           <i class="fa fa-refresh"></i>
                        </div>
-                      <div class="img-fluid image" v-html="inputCapcha" ></div>
+                      <div class="img-fluid image"  v-html="inputCapcha" ></div>
                     </div>
 
                     <div class="text-center">
@@ -111,10 +120,12 @@
 
 <script>
 import Navbar from "@/examples/PageLayout/Navbar.vue";
-
+import Validations from "../../../../kernel/validators/login.validator"
+import Login from '../../use-cases/login'
+import router from '../../../../router/index'
+import { mapMutations } from "vuex";
 const body = document.getElementsByTagName("body")[0];
 
-import { mapMutations } from "vuex";
 export default {
   name: "Login",
   components: {
@@ -123,6 +134,16 @@ export default {
   data(){
     return {
       inputCapcha: "",
+      form:{
+        email: "",
+        password: "",
+        captcha: ""
+      },
+      errors:{
+        email: "",
+        password: "",
+        captcha: ""
+      }
     }
   },
   mounted(){
@@ -138,6 +159,45 @@ export default {
                 Math.random() * randomchar.length)
         }
        this.inputCapcha  = uniquechar;
+    },
+    async prelogin () {
+      let form  = { ...this.form} 
+      
+      this.errors.email = Validations.validateEmail(form.email)
+      this.errors.captcha = Validations.validateCapcha(this.inputCapcha, form.captcha)
+      this.errors.password = Validations.validatePassword(form.password)
+
+      form = {
+        email: form.email, 
+        password: form.password
+      }
+
+      if(!this.errors.email && !this.errors.captcha && !this.errors.password){
+          const response = await Login(form)
+          const {data, error} = response;
+          if(!error){
+            const {roles} = data;
+            if(roles.some((rol) => rol.keyRole === 'ADMIN')){
+              router.push({name: 'Consultar Usuarios'})
+            }else{
+              this.$swal({
+                icon: "warning", 
+                title: "¡No eres administrador, no estas autorizado!",
+                type: "basic",
+              });
+            }
+          }else{
+            const {text} = data
+            this.$swal({
+                icon: "error", 
+                title: text,
+                type: "basic",
+              });
+          }
+      }
+
+
+      //router.push({ name: 'Modificar Viaje' });
     }
   },
   created() {
