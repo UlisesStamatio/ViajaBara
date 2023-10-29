@@ -12,7 +12,4 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 
     Optional<Person> findByName(String name);
 
-    Optional<Person> findFirstByContactEmail(String mail);
-
-
 }

@@ -73,23 +73,21 @@ public class UserController {
     @Secured(USER)
     @ApiOperation(
             value = "Registra un usuario",
-            notes = "{\n" +
-                    "    \"email\": \"noelia@gmail.com\",\n" +
-                    "    \"complement\": \"s\",\n" +
-                    "    \"emergency\": \"7773792873\",\n" +
-                    "    \"person\": {\n" +
-                    "        \"name\": \"Noelia\",\n" +
-                    "        \"surname\": \"Noelia\",\n" +
-                    "        \"curp\": \"BAAA000626MMSHPLa9\",\n" +
-                    "        \"rfc\": \"BAAA0006269w9\",\n" +
-                    "        \"phone\": \"7773792873\",\n" +
-                    "        \"cellphone\": \"+527773792873\",\n" +
-                    "        \"birthDate\": \"2000/02/02\",\n" +
-                    "        \"sex\": \"m\",\n" +
-                    "        \"state\": {  \"id\": 1  }\n" +
-                    "    },\n" +
-                    "    \"roles\": [ { \"id\": 2 } ]\n" +
-                    "}"
+            notes = "\n" +
+                    "{\n" +
+                    "\"profile\":\"aa\",\n" +
+                    "\"username\": \"juanperez\",\n" +
+                    "\"email\": \"admin@gmail.com\",\n" +
+                    "\"person\": {\n" +
+                    "\"name\": \"Juan\",\n" +
+                    "\"surname\": \"Pérez Herrera\",\n" +
+                    "\"cellphone\": \"7773792873\",\n" +
+                    "\"birthDate\": \"2000-02-02\",\n" +
+                    "\"sex\": \"h\",\n" +
+                    "\"state\": { \"id\": 1 }\n" +
+                    "},\n" +
+                    "\"roles\": [ { \"id\": 2 } ]\n" +
+                    "}\n"
     )
     public ResponseEntity<Object> save(@Validated({UserDto.Register.class}) @RequestBody UserDto dto) throws SQLException {
         return service.save(dto);

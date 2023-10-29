@@ -81,9 +81,6 @@ public class PersonService {
             return new ResponseEntity<>(new Message("Estado de residencia inactivo", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
         Person person = new Person();
-        if(dto.getContactEmail()!=null){
-            person.setContactEmail(dto.getContactEmail());
-        }
         person.asignValuesRegister(dto);
         person.setStatus(true);
         person.setState(optionalState.get());

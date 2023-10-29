@@ -41,4 +41,16 @@ public class GeneralController {
     }
 
 
+    @ApiOperation(
+            value = "Cambio de foto de perfil",
+            notes = "{\n" +
+                    "    \"id\": \1,\"\n" +
+                    "    \"profile\": \"imagen base 64\"\n" +
+                    "}"
+    )
+    @PutMapping("/change-profile")
+    public ResponseEntity<Object> changeProfile(@Validated(UserDto.ChangeProfile.class) @RequestBody UserDto dto) throws SQLException {
+        return service.changeProfile(dto);
+    }
+
 }

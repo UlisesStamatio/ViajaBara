@@ -51,7 +51,7 @@ public class EmailService {
         try {
             MimeMessage mimeMessage = emailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
-            String htlmMsg = "<h3 style='color:rgb(0,46,93);'>ViajaBara/h3><br>" +
+            String htlmMsg = "<h3 style='color:rgb(0,46,93);'>ViajaBara</h3><br>" +
                     text + "<br><hr style='border-color:rgb(0,171,132);'/><p style='text-align:justify;'>Si no solicitaste este cambio, ignora el correo.</p>" +
                     "<p style='text-align:justify;'>Esta cuenta de correo no es supervisada, no responder este mensaje.</p>";
             helper.setFrom("noreply@baeldung.com");
