@@ -48,7 +48,7 @@ public class GeneralController {
                     "    \"profile\": \"imagen base 64\"\n" +
                     "}"
     )
-    @PutMapping("/change-password")
+    @PutMapping("/change-profile")
     public ResponseEntity<Object> changeProfile(@Validated(UserDto.ChangeProfile.class) @RequestBody UserDto dto) throws SQLException {
         return service.changeProfile(dto);
     }
