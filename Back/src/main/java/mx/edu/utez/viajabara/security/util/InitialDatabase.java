@@ -92,43 +92,10 @@ public class InitialDatabase implements CommandLineRunner {
         }
         privilegesCA += privilege.toString() + ",";
 
-        optionalPrivilege = privilegeService.findByName(PrivilegeName.UNIVERSIDADES);
-        if (!optionalPrivilege.isPresent()) {
-            privilege = new Privilege(PrivilegeName.UNIVERSIDADES,
-                    "Catálogo que permite tener el control de todas aquellas " +
-                            "universidades donde estudian los usuarios");
-            privilege = privilegeService.saveInitial(privilege);
-        } else {
-            privilege = optionalPrivilege.get();
-        }
-        privilegesCA += privilege.toString() + ",";
-
-
-        optionalPrivilege = privilegeService.findByName(PrivilegeName.TALLERES);
-        if (!optionalPrivilege.isPresent()) {
-            privilege = new Privilege(PrivilegeName.TALLERES,
-                    "Catálogo que permite tener el control de todos aquellos " +
-                            "talleres donde pueden inscribirse los usuarios");
-            privilege = privilegeService.saveInitial(privilege);
-        } else {
-            privilege = optionalPrivilege.get();
-        }
-        privilegesCA += privilege.toString() + ",";
-
         optionalPrivilege = privilegeService.findByName(PrivilegeName.PRIVILEGIOS);
         if (!optionalPrivilege.isPresent()) {
             privilege = new Privilege(PrivilegeName.PRIVILEGIOS,
                     "Módulos a los que pueden acceder los usuarios");
-            privilege = privilegeService.saveInitial(privilege);
-        } else {
-            privilege = optionalPrivilege.get();
-        }
-        privilegesCA += privilege.toString() + ",";
-
-        optionalPrivilege = privilegeService.findByName(PrivilegeName.INSCRIPCIONES);
-        if (!optionalPrivilege.isPresent()) {
-            privilege = new Privilege(PrivilegeName.INSCRIPCIONES,
-                    "Módulo de supervisión de inscripciones");
             privilege = privilegeService.saveInitial(privilege);
         } else {
             privilege = optionalPrivilege.get();
@@ -147,34 +114,55 @@ public class InitialDatabase implements CommandLineRunner {
         privilegesCA += privilege.toString() + "]";
 
         String privilegesCK = "[";
-        optionalPrivilege = privilegeService.findByName(PrivilegeName.CHECKIN);
+        optionalPrivilege = privilegeService.findByName(PrivilegeName.CONDUCTOR);
         if (!optionalPrivilege.isPresent()) {
-            privilege = new Privilege(PrivilegeName.CHECKIN,
-                    "Módulo dedicado en realizar el registrar la asistencia de los usuarios al foro");
+            privilege = new Privilege(PrivilegeName.CONDUCTOR,
+                    "Módulo dedicado para la gestión de las necesidades de un conductor");
             privilege = privilegeService.saveInitial(privilege);
         } else {
             privilege = optionalPrivilege.get();
         }
         privilegesCK += privilege.toString() + "]";
 
-        String rolesCK = "[";
-        Optional<Role> roleChecker = roleService.findByKeyRole("CHECK");
-        Role role = (!roleChecker.isPresent()) ?
-                roleService.saveInitial(new Role("CHECADOR", "CHECK", privilegesCK, true))
-                :
-                roleChecker.get();
-        rolesCK += role.toString() + "]";
+
+        String privilegesClient = "[";
+        optionalPrivilege = privilegeService.findByName(PrivilegeName.CLIENTE);
+        if (!optionalPrivilege.isPresent()) {
+            privilege = new Privilege(PrivilegeName.CLIENTE,
+                    "Módulo dedicado para la gestión de las necesidades de un cliente");
+            privilege = privilegeService.saveInitial(privilege);
+        } else {
+            privilege = optionalPrivilege.get();
+        }
+        privilegesClient += privilege.toString() + "]";
 
         /*CATÁLOGO BASE*/
 
         /* ROLES */
         String rolesCA = "[";
         Optional<Role> roleAdmin = roleService.findByKeyRole("ADMIN");
-         role = (!roleAdmin.isPresent()) ?
+        Role role = (!roleAdmin.isPresent()) ?
                 roleService.saveInitial(new Role("ADMINISTRACIÓN", "ADMIN", privilegesCA, true))
                 :
                 roleAdmin.get();
         rolesCA += role.toString() + "]";
+
+        String rolesCK = "[";
+        Optional<Role> roleChecker = roleService.findByKeyRole("COND");
+         role = (!roleChecker.isPresent()) ?
+                roleService.saveInitial(new Role("CONDUCTOR", "COND", privilegesCK, true))
+                :
+                roleChecker.get();
+        rolesCK += role.toString() + "]";
+
+        String rolesClient = "[";
+        Optional<Role> roleClient = roleService.findByKeyRole("CLIEN");
+        role = (!roleClient.isPresent()) ?
+                roleService.saveInitial(new Role("CLIENTE", "CLIEN", privilegesClient, true))
+                :
+                roleClient.get();
+        rolesClient += role.toString() + "]";
+
         /* USUARIO ROOT */
         if (!userService.existsByMail("20203tn159@utez.edu.mx")) {
             Person person;

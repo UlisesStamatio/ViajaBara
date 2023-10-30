@@ -15,7 +15,7 @@ public class UserDto {
     private String username;
     @NotBlank(groups = {Modify.class, Register.class,ChangeProfile.class})
     private String profile;
-    @NotBlank(groups = {Modify.class, Register.class, Recover.class, ChangePassword.class, VerifyCode.class, UpdatePassword.class})
+    @NotBlank(groups = {Modify.class, Register.class, Recover.class, ChangePassword.class, VerifyCode.class, UpdatePassword.class,GetUser.class})
     private String email;
     @NotBlank(groups = {ChangePassword.class, UpdatePassword.class})
     private String password;
@@ -161,4 +161,6 @@ public class UserDto {
 
     }
 
+    public interface GetUser{
+    }
 }

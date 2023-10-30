@@ -1,4 +1,4 @@
-package mx.edu.utez.viajabara.generalmethods.control;
+package mx.edu.utez.viajabara.generalmethods.control.general;
 
 
 import io.swagger.annotations.Api;
@@ -25,9 +25,6 @@ public class GeneralController {
         this.service = service;
     }
 
-    private final static Logger logger = LoggerFactory.getLogger(GeneralController.class);
-
-
 
     @ApiOperation(
             value = "Cambio de contraseña del usuario",
@@ -40,17 +37,5 @@ public class GeneralController {
         return service.changePassword(dto);
     }
 
-
-    @ApiOperation(
-            value = "Cambio de foto de perfil",
-            notes = "{\n" +
-                    "    \"id\": \1,\"\n" +
-                    "    \"profile\": \"imagen base 64\"\n" +
-                    "}"
-    )
-    @PutMapping("/change-profile")
-    public ResponseEntity<Object> changeProfile(@Validated(UserDto.ChangeProfile.class) @RequestBody UserDto dto) throws SQLException {
-        return service.changeProfile(dto);
-    }
 
 }
