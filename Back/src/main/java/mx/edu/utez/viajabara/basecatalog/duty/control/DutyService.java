@@ -3,6 +3,7 @@ package mx.edu.utez.viajabara.basecatalog.duty.control;
 import mx.edu.utez.viajabara.basecatalog.duty.model.Duty;
 import mx.edu.utez.viajabara.basecatalog.duty.model.DutyDto;
 import mx.edu.utez.viajabara.basecatalog.duty.model.DutyRepository;
+import mx.edu.utez.viajabara.basecatalog.state.model.State;
 import mx.edu.utez.viajabara.utils.entity.Message;
 import mx.edu.utez.viajabara.utils.entity.TypesResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +88,11 @@ public class DutyService {
             return new ResponseEntity<>(new Message("No se modificó el servicio", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(new Message(duty, "Se modificó el servicio", TypesResponse.SUCCESS), HttpStatus.OK);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Duty> findByName(String name) {
+        return repository.findFirstByName(name);
     }
 
     @Transactional(rollbackFor = {SQLException.class})

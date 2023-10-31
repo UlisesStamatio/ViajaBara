@@ -12,4 +12,5 @@ public interface DutyRepository extends JpaRepository<Duty,Long> {
 
     @Query(value = "SELECT * " + "FROM duties " + "WHERE name LIKE ?1 " + "AND id != ?2 " + "LIMIT 1", nativeQuery = true)
     Optional<Duty> searchByNameAndId(String name, Long id);
+    Optional<Duty> findFirstByName(String name);
 }

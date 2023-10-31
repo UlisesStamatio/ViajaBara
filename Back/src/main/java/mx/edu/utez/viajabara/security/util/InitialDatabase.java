@@ -9,6 +9,8 @@ import mx.edu.utez.viajabara.access.user.control.UserService;
 import mx.edu.utez.viajabara.access.user.model.User;
 import mx.edu.utez.viajabara.access.visualconfig.control.VisualConfigService;
 import mx.edu.utez.viajabara.access.visualconfig.model.VisualConfig;
+import mx.edu.utez.viajabara.basecatalog.duty.control.DutyService;
+import mx.edu.utez.viajabara.basecatalog.duty.model.Duty;
 import mx.edu.utez.viajabara.basecatalog.person.control.PersonService;
 import mx.edu.utez.viajabara.basecatalog.person.model.Person;
 import mx.edu.utez.viajabara.basecatalog.state.control.StateService;
@@ -20,9 +22,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -41,8 +41,10 @@ public class InitialDatabase implements CommandLineRunner {
     private final VisualConfigService visualConfigService;
 
     private final PersonService personService;
+
+    private final DutyService dutyService;
     @Autowired
-    public InitialDatabase(PrivilegeService privilegeService, RoleService roleService, UserService userService, StateService stateService, PasswordEncoder passwordEncoder, VisualConfigService visualConfigService, PersonService personService) {
+    public InitialDatabase(PrivilegeService privilegeService, RoleService roleService, UserService userService, StateService stateService, PasswordEncoder passwordEncoder, VisualConfigService visualConfigService, PersonService personService, DutyService dutyService) {
         this.privilegeService = privilegeService;
         this.roleService = roleService;
         this.userService = userService;
@@ -50,6 +52,7 @@ public class InitialDatabase implements CommandLineRunner {
         this.passwordEncoder = passwordEncoder;
         this.visualConfigService = visualConfigService;
         this.personService = personService;
+        this.dutyService = dutyService;
     }
 
     @Override
@@ -69,6 +72,32 @@ public class InitialDatabase implements CommandLineRunner {
             privilege = optionalPrivilege.get();
         }
         privilegesCA += privilege.toString() + ",";
+
+
+        optionalPrivilege = privilegeService.findByName(PrivilegeName.SERVICIOS);
+        if (!optionalPrivilege.isPresent()) {
+            privilege = new Privilege(PrivilegeName.SERVICIOS,
+                    "Catálogo que permite tener el control de todos aquellos " +
+                            "servicios que están en el sistema");
+            privilege = privilegeService.saveInitial(privilege);
+        } else {
+            privilege = optionalPrivilege.get();
+        }
+        privilegesCA += privilege.toString() + ",";
+
+
+        optionalPrivilege = privilegeService.findByName(PrivilegeName.METODOS_DE_PAGO);
+        if (!optionalPrivilege.isPresent()) {
+            privilege = new Privilege(PrivilegeName.METODOS_DE_PAGO,
+                    "Catálogo que permite tener el control de todos aquellos " +
+                            "metodos de pago que están en el sistema");
+            privilege = privilegeService.saveInitial(privilege);
+        } else {
+            privilege = optionalPrivilege.get();
+        }
+        privilegesCA += privilege.toString() + ",";
+
+
 
         optionalPrivilege = privilegeService.findByName(PrivilegeName.ROLES);
         if (!optionalPrivilege.isPresent()) {
@@ -182,7 +211,28 @@ public class InitialDatabase implements CommandLineRunner {
         /* CA */
         /* ESTADOS */
         State state = null;
+        Duty duty = null;
         VisualConfig visualConfig;
+
+
+        Optional<Duty> optional = dutyService.findByName("ida y vuelta");
+        if (!optional.isPresent()) {
+            duty = new Duty("ida y vuelta", true);
+            dutyService.saveInitialDuty(duty);
+        }
+
+
+        optional = dutyService.findByName("ida");
+        if (!optional.isPresent()) {
+            duty = new Duty("ida", true);
+            dutyService.saveInitialDuty(duty);
+        }
+
+        optional = dutyService.findByName("vuelta");
+        if (!optional.isPresent()) {
+            duty = new Duty("vuelta", true);
+            dutyService.saveInitialDuty(duty);
+        }
 
         Optional<State> optionalState = stateService.findByName("AGUASCALIENTES".toLowerCase());
         if (!optionalState.isPresent()) {

@@ -13,12 +13,10 @@ import java.sql.SQLException;
 
 @RestController
 @RequestMapping("/api/duties")
-@Api(tags = "Estados de residencia")
+@Api(tags = "Servicios")
 @CrossOrigin(origins = {"*"}, methods = {RequestMethod.POST, RequestMethod.GET, RequestMethod.PUT, RequestMethod.DELETE})
 public class DutyController {
     public static final String DUTIES = "SERVICIOS";
-
-    //todo agregar en el initial database los servicios principales y el privilegio de servicios para el admin
 
     private final DutyService service;
 
