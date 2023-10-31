@@ -9,6 +9,8 @@ import mx.edu.utez.viajabara.access.user.control.UserService;
 import mx.edu.utez.viajabara.access.user.model.User;
 import mx.edu.utez.viajabara.access.visualconfig.control.VisualConfigService;
 import mx.edu.utez.viajabara.access.visualconfig.model.VisualConfig;
+import mx.edu.utez.viajabara.basecatalog.duty.control.DutyService;
+import mx.edu.utez.viajabara.basecatalog.duty.model.Duty;
 import mx.edu.utez.viajabara.basecatalog.person.control.PersonService;
 import mx.edu.utez.viajabara.basecatalog.person.model.Person;
 import mx.edu.utez.viajabara.basecatalog.state.control.StateService;
@@ -20,9 +22,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -41,8 +41,10 @@ public class InitialDatabase implements CommandLineRunner {
     private final VisualConfigService visualConfigService;
 
     private final PersonService personService;
+
+    private final DutyService dutyService;
     @Autowired
-    public InitialDatabase(PrivilegeService privilegeService, RoleService roleService, UserService userService, StateService stateService, PasswordEncoder passwordEncoder, VisualConfigService visualConfigService, PersonService personService) {
+    public InitialDatabase(PrivilegeService privilegeService, RoleService roleService, UserService userService, StateService stateService, PasswordEncoder passwordEncoder, VisualConfigService visualConfigService, PersonService personService, DutyService dutyService) {
         this.privilegeService = privilegeService;
         this.roleService = roleService;
         this.userService = userService;
@@ -50,6 +52,7 @@ public class InitialDatabase implements CommandLineRunner {
         this.passwordEncoder = passwordEncoder;
         this.visualConfigService = visualConfigService;
         this.personService = personService;
+        this.dutyService = dutyService;
     }
 
     @Override
@@ -69,6 +72,32 @@ public class InitialDatabase implements CommandLineRunner {
             privilege = optionalPrivilege.get();
         }
         privilegesCA += privilege.toString() + ",";
+
+
+        optionalPrivilege = privilegeService.findByName(PrivilegeName.SERVICIOS);
+        if (!optionalPrivilege.isPresent()) {
+            privilege = new Privilege(PrivilegeName.SERVICIOS,
+                    "Catálogo que permite tener el control de todos aquellos " +
+                            "servicios que están en el sistema");
+            privilege = privilegeService.saveInitial(privilege);
+        } else {
+            privilege = optionalPrivilege.get();
+        }
+        privilegesCA += privilege.toString() + ",";
+
+
+        optionalPrivilege = privilegeService.findByName(PrivilegeName.METODOS_DE_PAGO);
+        if (!optionalPrivilege.isPresent()) {
+            privilege = new Privilege(PrivilegeName.METODOS_DE_PAGO,
+                    "Catálogo que permite tener el control de todos aquellos " +
+                            "metodos de pago que están en el sistema");
+            privilege = privilegeService.saveInitial(privilege);
+        } else {
+            privilege = optionalPrivilege.get();
+        }
+        privilegesCA += privilege.toString() + ",";
+
+
 
         optionalPrivilege = privilegeService.findByName(PrivilegeName.ROLES);
         if (!optionalPrivilege.isPresent()) {
@@ -92,43 +121,10 @@ public class InitialDatabase implements CommandLineRunner {
         }
         privilegesCA += privilege.toString() + ",";
 
-        optionalPrivilege = privilegeService.findByName(PrivilegeName.UNIVERSIDADES);
-        if (!optionalPrivilege.isPresent()) {
-            privilege = new Privilege(PrivilegeName.UNIVERSIDADES,
-                    "Catálogo que permite tener el control de todas aquellas " +
-                            "universidades donde estudian los usuarios");
-            privilege = privilegeService.saveInitial(privilege);
-        } else {
-            privilege = optionalPrivilege.get();
-        }
-        privilegesCA += privilege.toString() + ",";
-
-
-        optionalPrivilege = privilegeService.findByName(PrivilegeName.TALLERES);
-        if (!optionalPrivilege.isPresent()) {
-            privilege = new Privilege(PrivilegeName.TALLERES,
-                    "Catálogo que permite tener el control de todos aquellos " +
-                            "talleres donde pueden inscribirse los usuarios");
-            privilege = privilegeService.saveInitial(privilege);
-        } else {
-            privilege = optionalPrivilege.get();
-        }
-        privilegesCA += privilege.toString() + ",";
-
         optionalPrivilege = privilegeService.findByName(PrivilegeName.PRIVILEGIOS);
         if (!optionalPrivilege.isPresent()) {
             privilege = new Privilege(PrivilegeName.PRIVILEGIOS,
                     "Módulos a los que pueden acceder los usuarios");
-            privilege = privilegeService.saveInitial(privilege);
-        } else {
-            privilege = optionalPrivilege.get();
-        }
-        privilegesCA += privilege.toString() + ",";
-
-        optionalPrivilege = privilegeService.findByName(PrivilegeName.INSCRIPCIONES);
-        if (!optionalPrivilege.isPresent()) {
-            privilege = new Privilege(PrivilegeName.INSCRIPCIONES,
-                    "Módulo de supervisión de inscripciones");
             privilege = privilegeService.saveInitial(privilege);
         } else {
             privilege = optionalPrivilege.get();
@@ -147,34 +143,55 @@ public class InitialDatabase implements CommandLineRunner {
         privilegesCA += privilege.toString() + "]";
 
         String privilegesCK = "[";
-        optionalPrivilege = privilegeService.findByName(PrivilegeName.CHECKIN);
+        optionalPrivilege = privilegeService.findByName(PrivilegeName.CONDUCTOR);
         if (!optionalPrivilege.isPresent()) {
-            privilege = new Privilege(PrivilegeName.CHECKIN,
-                    "Módulo dedicado en realizar el registrar la asistencia de los usuarios al foro");
+            privilege = new Privilege(PrivilegeName.CONDUCTOR,
+                    "Módulo dedicado para la gestión de las necesidades de un conductor");
             privilege = privilegeService.saveInitial(privilege);
         } else {
             privilege = optionalPrivilege.get();
         }
         privilegesCK += privilege.toString() + "]";
 
-        String rolesCK = "[";
-        Optional<Role> roleChecker = roleService.findByKeyRole("CHECK");
-        Role role = (!roleChecker.isPresent()) ?
-                roleService.saveInitial(new Role("CHECADOR", "CHECK", privilegesCK, true))
-                :
-                roleChecker.get();
-        rolesCK += role.toString() + "]";
+
+        String privilegesClient = "[";
+        optionalPrivilege = privilegeService.findByName(PrivilegeName.CLIENTE);
+        if (!optionalPrivilege.isPresent()) {
+            privilege = new Privilege(PrivilegeName.CLIENTE,
+                    "Módulo dedicado para la gestión de las necesidades de un cliente");
+            privilege = privilegeService.saveInitial(privilege);
+        } else {
+            privilege = optionalPrivilege.get();
+        }
+        privilegesClient += privilege.toString() + "]";
 
         /*CATÁLOGO BASE*/
 
         /* ROLES */
         String rolesCA = "[";
         Optional<Role> roleAdmin = roleService.findByKeyRole("ADMIN");
-         role = (!roleAdmin.isPresent()) ?
+        Role role = (!roleAdmin.isPresent()) ?
                 roleService.saveInitial(new Role("ADMINISTRACIÓN", "ADMIN", privilegesCA, true))
                 :
                 roleAdmin.get();
         rolesCA += role.toString() + "]";
+
+        String rolesCK = "[";
+        Optional<Role> roleChecker = roleService.findByKeyRole("COND");
+         role = (!roleChecker.isPresent()) ?
+                roleService.saveInitial(new Role("CONDUCTOR", "COND", privilegesCK, true))
+                :
+                roleChecker.get();
+        rolesCK += role.toString() + "]";
+
+        String rolesClient = "[";
+        Optional<Role> roleClient = roleService.findByKeyRole("CLIEN");
+        role = (!roleClient.isPresent()) ?
+                roleService.saveInitial(new Role("CLIENTE", "CLIEN", privilegesClient, true))
+                :
+                roleClient.get();
+        rolesClient += role.toString() + "]";
+
         /* USUARIO ROOT */
         if (!userService.existsByMail("20203tn159@utez.edu.mx")) {
             Person person;
@@ -194,7 +211,28 @@ public class InitialDatabase implements CommandLineRunner {
         /* CA */
         /* ESTADOS */
         State state = null;
+        Duty duty = null;
         VisualConfig visualConfig;
+
+
+        Optional<Duty> optional = dutyService.findByName("ida y vuelta");
+        if (!optional.isPresent()) {
+            duty = new Duty("ida y vuelta", true);
+            dutyService.saveInitialDuty(duty);
+        }
+
+
+        optional = dutyService.findByName("ida");
+        if (!optional.isPresent()) {
+            duty = new Duty("ida", true);
+            dutyService.saveInitialDuty(duty);
+        }
+
+        optional = dutyService.findByName("vuelta");
+        if (!optional.isPresent()) {
+            duty = new Duty("vuelta", true);
+            dutyService.saveInitialDuty(duty);
+        }
 
         Optional<State> optionalState = stateService.findByName("AGUASCALIENTES".toLowerCase());
         if (!optionalState.isPresent()) {

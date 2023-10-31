@@ -1,14 +1,10 @@
-package mx.edu.utez.viajabara.generalmethods.control;
+package mx.edu.utez.viajabara.generalmethods.control.general;
 
-import com.google.zxing.WriterException;
 import mx.edu.utez.viajabara.access.user.model.User;
 import mx.edu.utez.viajabara.access.user.model.UserDto;
 import mx.edu.utez.viajabara.access.user.model.UserRepository;
-import mx.edu.utez.viajabara.access.visualconfig.model.VisualConfig;
 import mx.edu.utez.viajabara.access.visualconfig.model.VisualConfigRepository;
 import mx.edu.utez.viajabara.basecatalog.person.control.PersonService;
-import mx.edu.utez.viajabara.basecatalog.person.model.Person;
-import mx.edu.utez.viajabara.basecatalog.person.model.PersonDto;
 import mx.edu.utez.viajabara.basecatalog.person.model.PersonRepository;
 import mx.edu.utez.viajabara.utils.entity.Message;
 import mx.edu.utez.viajabara.utils.entity.TypesResponse;
@@ -23,8 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.mail.MessagingException;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -33,22 +27,14 @@ import java.util.*;
 public class GeneralService {
     private final static Logger logger = LoggerFactory.getLogger(GeneralService.class);
     private final UserRepository repository;
-    private final PersonRepository personRepository;
     private final PasswordEncoder passwordEncoder;
     private final PasswordValidator passwordValidator;
-    private final PersonService personService;
-    private final VisualConfigRepository visualConfigRepository;
-    private final EmailService emailService;
 
     @Autowired
-    public GeneralService(UserRepository repository, PasswordEncoder passwordEncoder, PasswordValidator passwordValidator, PersonService personService, PersonRepository personRepository, VisualConfigRepository visualConfigRepository, EmailService emailService) {
+    public GeneralService(UserRepository repository, PasswordEncoder passwordEncoder, PasswordValidator passwordValidator) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
         this.passwordValidator = passwordValidator;
-        this.personService = personService;
-        this.personRepository = personRepository;
-        this.visualConfigRepository = visualConfigRepository;
-        this.emailService = emailService;
     }
 
     @Transactional(rollbackFor = {SQLException.class})
@@ -78,22 +64,6 @@ public class GeneralService {
             return new ResponseEntity<>(new Message("No se modificó la contraseña", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(new Message(user, "Contraseña modificada", TypesResponse.SUCCESS), HttpStatus.OK);
-    }
-
-
-    @Transactional(rollbackFor = {SQLException.class})
-    public ResponseEntity<Object> changeProfile(UserDto dto) {
-        Optional<User> optionalUser = repository.findById(dto.getId());
-        if (!optionalUser.isPresent()) {
-            return new ResponseEntity<>(new Message("No se encontró el usuario", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
-        }
-        User user = optionalUser.get();
-        user.setProfile(dto.getProfile());
-        user = repository.saveAndFlush(user);
-        if (user == null) {
-            return new ResponseEntity<>(new Message("No se modificó la foto de perfil", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(new Message(user, "Foto de perfil modificada", TypesResponse.SUCCESS), HttpStatus.OK);
     }
 
 }

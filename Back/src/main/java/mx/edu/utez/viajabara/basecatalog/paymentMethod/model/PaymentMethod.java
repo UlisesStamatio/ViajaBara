@@ -13,7 +13,7 @@ public class PaymentMethod {
     @Column(name = "name", columnDefinition = "VARCHAR(50)")
     private String name;
 
-    @Column(name = "apikey", columnDefinition = "VARCHAR(50)")
+    @Column(name = "apikey", columnDefinition = "VARCHAR(255)")
     private String apikey;
 
     @Column(name = "status", columnDefinition = "BOOL DEFAULT TRUE")

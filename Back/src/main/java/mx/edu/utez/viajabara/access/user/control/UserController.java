@@ -38,10 +38,10 @@ public class UserController {
         this.servicePrivileges = servicePrivileges;
     }
 
-    @PostMapping("/all")
+    @PostMapping("/all-drivers")
     @Secured({USER})
     @ApiOperation(
-            value = "Obtiene todos los usuarios registradas",
+            value = "Obtiene todos los conductores registradas",
             notes = "{\n" +
                     "    \"value\": \"busqueda\",\n" +
                     "    \"paginationType\": { \"filter\": \"parametro\"," +
@@ -52,12 +52,34 @@ public class UserController {
                     " } \n" +
                     "}"
     )
-    public ResponseEntity<Object> findAll(@Validated({PaginationDto.StateGet.class}) @RequestBody PaginationDto paginationDto) throws SQLException {
+    public ResponseEntity<Object> findAllDrivers(@Validated({PaginationDto.StateGet.class}) @RequestBody PaginationDto paginationDto) throws SQLException {
         Authentication auth = SecurityContextHolder
                 .getContext()
                 .getAuthentication();
         UserDetails userDetail = (UserDetails) auth.getPrincipal();
-        return service.findAll(paginationDto, userDetail.getUsername());
+        return service.findAllDrivers(paginationDto, userDetail.getUsername());
+    }
+
+    @PostMapping("/all-consumers")
+    @Secured({USER})
+    @ApiOperation(
+            value = "Obtiene todos los clientes registradas",
+            notes = "{\n" +
+                    "    \"value\": \"busqueda\",\n" +
+                    "    \"paginationType\": { \"filter\": \"parametro\"," +
+                    "    \"sortBy\":\"parametro\"," +
+                    "    \"order\":\"asc\"," +
+                    "    \"page\":\0\"," +
+                    "    \"limit\":\10\"" +
+                    " } \n" +
+                    "}"
+    )
+    public ResponseEntity<Object> findAllClient(@Validated({PaginationDto.StateGet.class}) @RequestBody PaginationDto paginationDto) throws SQLException {
+        Authentication auth = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+        UserDetails userDetail = (UserDetails) auth.getPrincipal();
+        return service.findAllClient(paginationDto, userDetail.getUsername());
     }
 
     @GetMapping("/active")
@@ -96,25 +118,23 @@ public class UserController {
     @PutMapping("")
     @Secured(USER)
     @ApiOperation(
-            value = "Actualiza el usuario con sus roles correspondientes",
-            notes = "{\n" +
-                    "    \"id\": 8,\n" +
-                    "    \"email\": \"noelia@gmail.com\",\n" +
-                    "    \"complement\": \"complement\",\n" +
-                    "    \"emergency\": \"7773792873\",\n" +
-                    "    \"person\": {\n" +
-                    "        \"name\": \"Noelia\",\n" +
-                    "        \"surname\": \"Noelia\",\n" +
-                    "        \"curp\": \"BAPN000627MMSHPLa2\",\n" +
-                    "        \"rfc\": \"BAPN0006279w2\",\n" +
-                    "        \"phone\": \"7773792873\",\n" +
-                    "        \"cellphone\": \"+527773792873\",\n" +
-                    "        \"birthDate\": \"20\",\n" +
-                    "        \"sex\": \"m\",\n" +
-                    "        \"state\": { \"id\": 1 }\n" +
-                    "    },\n" +
-                    "    \"roles\": [ { \"id\": \"1\" } ]\n" +
-                    "}"
+            value = "Actualiza un usuario",
+            notes = "\n" +
+                    "{\n" +
+                    "\"id\":\1\",\n" +
+                    "\"profile\":\"aa\",\n" +
+                    "\"username\": \"juanperez\",\n" +
+                    "\"email\": \"admin@gmail.com\",\n" +
+                    "\"person\": {\n" +
+                    "\"name\": \"Juan\",\n" +
+                    "\"surname\": \"Pérez Herrera\",\n" +
+                    "\"cellphone\": \"7773792873\",\n" +
+                    "\"birthDate\": \"2000-02-02\",\n" +
+                    "\"sex\": \"h\",\n" +
+                    "\"state\": { \"id\": 1 }\n" +
+                    "},\n" +
+                    "\"roles\": [ { \"id\": 2 } ]\n" +
+                    "}\n"
     )
     public ResponseEntity<Object> update(@Validated(UserDto.Modify.class) @RequestBody UserDto dto) throws SQLException {
         return service.update(dto);
