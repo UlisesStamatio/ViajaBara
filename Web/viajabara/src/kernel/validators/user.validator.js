@@ -52,6 +52,7 @@ const userValidator = {
         return null;
     },
     validateCellphone(cellphone){
+        cellphone = cellphone.toString()
         if(!cellphone) return "El campo es obligatorio.";
         else if(REGEX_INJECTION_HTML.test(cellphone)) return "El número de télefono es inválido."
         else if(!REGEX_CELLPHONE.test(cellphone)) return "El número de télefono es inválido."
