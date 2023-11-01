@@ -35,4 +35,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = "SELECT *, p.name as name, p.surname as surname FROM users u inner join people p on u.person_id = p.id and UPPER(CONCAT(p.name,' ',p.surname)) LIKE UPPER(?1) AND JSON_EXTRACT(u.roles, '$[*].id') LIKE '%3%'", nativeQuery = true)
     List<User> searchAllConsumersByPaginationName(String value, String email, Pageable offset);
+
+    @Query(value = "SELECT *, p.name as name, p.surname as surname FROM users u inner join people p on u.person_id = p.id AND JSON_EXTRACT(u.roles, '$[*].id') LIKE '%2%'",nativeQuery = true)
+    List<User> searchAllDrivers();
+
+    @Query(value = "SELECT *, p.name as name, p.surname as surname FROM users u inner join people p on u.person_id = p.id AND JSON_EXTRACT(u.roles, '$[*].id') LIKE '%3%'",nativeQuery = true)
+    List<User> searchAllConsumers();
 }

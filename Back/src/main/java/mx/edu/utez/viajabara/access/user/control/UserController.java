@@ -38,48 +38,30 @@ public class UserController {
         this.servicePrivileges = servicePrivileges;
     }
 
-    @PostMapping("/all-drivers")
+    @GetMapping ("/all-drivers")
     @Secured({USER})
     @ApiOperation(
-            value = "Obtiene todos los conductores registradas",
-            notes = "{\n" +
-                    "    \"value\": \"busqueda\",\n" +
-                    "    \"paginationType\": { \"filter\": \"parametro\"," +
-                    "    \"sortBy\":\"parametro\"," +
-                    "    \"order\":\"asc\"," +
-                    "    \"page\":\0\"," +
-                    "    \"limit\":\10\"" +
-                    " } \n" +
-                    "}"
+            value = "Obtiene todos los conductores registradas"
     )
-    public ResponseEntity<Object> findAllDrivers(@Validated({PaginationDto.StateGet.class}) @RequestBody PaginationDto paginationDto) throws SQLException {
+    public ResponseEntity<Object> findAllDrivers() throws SQLException {
         Authentication auth = SecurityContextHolder
                 .getContext()
                 .getAuthentication();
         UserDetails userDetail = (UserDetails) auth.getPrincipal();
-        return service.findAllDrivers(paginationDto, userDetail.getUsername());
+        return service.findAllDrivers();
     }
 
-    @PostMapping("/all-consumers")
+    @GetMapping("/all-consumers")
     @Secured({USER})
     @ApiOperation(
-            value = "Obtiene todos los clientes registradas",
-            notes = "{\n" +
-                    "    \"value\": \"busqueda\",\n" +
-                    "    \"paginationType\": { \"filter\": \"parametro\"," +
-                    "    \"sortBy\":\"parametro\"," +
-                    "    \"order\":\"asc\"," +
-                    "    \"page\":\0\"," +
-                    "    \"limit\":\10\"" +
-                    " } \n" +
-                    "}"
+            value = "Obtiene todos los clientes registradas"
     )
-    public ResponseEntity<Object> findAllClient(@Validated({PaginationDto.StateGet.class}) @RequestBody PaginationDto paginationDto) throws SQLException {
+    public ResponseEntity<Object> findAllClient() throws SQLException {
         Authentication auth = SecurityContextHolder
                 .getContext()
                 .getAuthentication();
         UserDetails userDetail = (UserDetails) auth.getPrincipal();
-        return service.findAllClient(paginationDto, userDetail.getUsername());
+        return service.findAllClient();
     }
 
     @GetMapping("/active")
