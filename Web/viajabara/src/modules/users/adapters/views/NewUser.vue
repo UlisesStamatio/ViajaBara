@@ -94,7 +94,7 @@
                 v-model.trim="user.sex"
                 :class="{ 'is-invalid': errors.sex, 'is-valid': errors.sex === null }"
               >
-                <option value="" selected>Selecciona una opción...</option>
+                <option value="" selected disabled>Selecciona una opción...</option>
                 <option value="1" >Masculino</option>
                 <option value="2">Femenino</option>
               </select>
@@ -115,6 +115,23 @@
               />
               <div class="invalid-feedback" v-if="errors.birthday">
                   {{ errors.birthday }}
+              </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-lg-4 mb-3">
+              <label>Estado de residencia(<span class="text-danger">*</span>)</label>
+              <select
+                id="state-select"
+                class="form-control"
+                name="state-select"
+                v-model.trim="user.state"
+                :class="{ 'is-invalid': errors.state, 'is-valid': errors.state === null }"
+              >
+                <option value="" selected disabled>Selecciona una opción...</option>
+                <option v-for="({id, name}, index) in states" :key="index" :value="id" >{{name}}</option>
+              </select>
+              <div class="invalid-feedback" v-if="errors.state">
+                  {{ errors.state }}
               </div>
             </div>
 
@@ -218,6 +235,7 @@ import blobToBase64 from '../../../../kernel/translate/blobToBase64'
 import userValidator from '../../../../kernel/validators/user.validator'
 import newUser from '../../use-cases/new.user'
 import router from '../../../../router/index'
+import listStates from '../../../state/use-cases/list.state'
 
 export default {
   name: "NewUser",
@@ -228,6 +246,7 @@ export default {
       activeStep: 0,
       formSteps: 3,
       preview: "",
+      states: [],
       user:{
         profile: "",
         name: "",
@@ -239,6 +258,7 @@ export default {
         username: "",
         email: "",
         confirmEmail: "",
+        state: "",
 
       },
       errors:{
@@ -252,16 +272,18 @@ export default {
         username: "",
         email: "",
         confirmEmail: "",
+         state: "",
       }
     };
   },
-  mounted() {
+  async mounted() {
     if (document.getElementById("edit-description")) {
       // eslint-disable-next-line no-unused-vars
       var quill = new Quill("#edit-description", {
         theme: "snow", // Specify theme in configuration
       });
     }
+    await this.listStates();
     this.generateImg();
   },
   methods: {
@@ -275,6 +297,17 @@ export default {
     prevStep() {
       if (this.activeStep > 0) {
         this.activeStep -= 1;
+      }
+    },
+    async listStates(){
+      const response = {...await listStates()};
+      const {error, data} = response;
+      if(!error){
+          const {result} = data
+          console.log(result);
+          this.states = result
+      }else{
+          console.log("Hola");
       }
     },
     async generateImg(){
@@ -317,6 +350,7 @@ export default {
       this.errors.surname = userValidator.validateSurname(user.surname);
       this.errors.sex = userValidator.validateSex(user.sex);
       this.errors.birthday = userValidator.validateBirthday(user.birthday);
+      this.errors.state = userValidator.validateState(user.state, this.states);
       this.errors.cellphone = userValidator.validateCellphone(user.cellphone);
       this.errors.username = userValidator.validateUsername(user.username);
       this.errors.email = userValidator.validateEmail(user.email);
@@ -324,7 +358,7 @@ export default {
 
       if(!this.errors.name && !this.errors.lastname && ! this.errors.surname &&
          !this.errors.sex && !this.errors.birthday && !this.errors.cellphone &&
-         !this.errors.username && !this.errors.email  && ! this.errors.confirmEmail){
+         !this.errors.username && !this.errors.email  && ! this.errors.confirmEmail && !this.errors.state){
            this.$swal({
           title: "¿Estás segura(a) de guardar los cambios?",
           text: "¡No podrás revertir esto.!",

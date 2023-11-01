@@ -2,7 +2,7 @@ import Operations from "./user.storage";
 
 const OperationsController = {
     async newUser(data){
-        const {profile, username, email, name, lastname, surname, cellphone, birthday, sex, } = data
+        const {profile, username, email, name, lastname, surname, cellphone, birthday, sex, state } = data
         const lastData = {
             profile: profile,
             username: username,
@@ -14,7 +14,7 @@ const OperationsController = {
                 birthDate: birthday,
                 sex: `${parseInt(sex) === 1 ? 'h' : 'm'}`,
                 state:{
-                    id: 1
+                    id: parseInt(state)
                 }
             },
             roles:[{
@@ -28,6 +28,10 @@ const OperationsController = {
     },
     async listUsers(){
         const response = await Operations.lisUsers('/all-drivers')
+        return response;
+    },
+    async listConsumers(){
+        const response = await Operations.listConsumers('/all-consumers')
         return response;
     }
 }

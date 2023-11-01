@@ -1,20 +1,51 @@
 <template>
   <div class="py-4 container-fluid">
     <div class="row">
+      <div class="col-lg-4 mb-2">
+          <div class="nav-wrapper position-relative end-0">
+            <ul class="nav nav-pills nav-fill p-1" role="tablist">
+              <li class="nav-item">
+                <a
+                  class="nav-link mb-0 px-0 py-1"
+                  :class="{'active active': active}"
+                  data-bs-toggle="tab"
+                  role="tab"
+                  aria-selected="true"
+                  @click="changeTab(1)"
+                  style="cursor:pointer;"
+                  >Conductores</a
+                >
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link mb-0 px-0 py-1"
+                  data-bs-toggle="tab"
+                  :class="{'active active': !active}"
+                  role="tab"
+                  @click="changeTab(2)"
+                  style="cursor:pointer;"
+                  aria-selected="false"
+                  >Clientes</a
+                >
+              </li>
+            </ul>
+        </div>
+      </div>
       <div class="col-12">
-        <div class="card">
+
+        <div class="card" v-show="active">
           <!-- Card header -->
           <div class="pb-0 card-header">
             <div class="d-lg-flex">
               <div>
-                <h5 class="mb-0">Lista de usuarios</h5>
+                <h5 class="mb-0">Lista de conductores</h5>
               </div>
               <div class="my-auto mt-4 ms-auto mt-lg-0">
                 <div class="my-auto ms-auto">
                   <router-link
                     :to="{ name: 'Registro Usuario' }"
                     class="mb-0 btn bg-gradient-primary btn-sm"
-                    >+&nbsp; Nuevo Usuario</router-link
+                    >+&nbsp; Nuevo Conductor</router-link
                   >
                 </div>
               </div>
@@ -22,7 +53,7 @@
           </div>
           <div class="px-0 pb-0 card-body">
             <div class="table-responsive">
-              <table id="products-list" class="table table-flush">
+              <table id="drivers-list" class="table table-flush">
                 <thead class="thead-light">
                   <tr>
                     <th>#</th>
@@ -34,18 +65,19 @@
                     <th>Acciones</th>
                   </tr>
                 </thead>
-                               <tbody>
-                  <tr>
+              <tbody v-if="users.length !== 0">
+                
+                  <tr v-for="({email, person:{name, surname}, username, roles, status }, index) in users" :key="index">
                     <td>
-                      1
+                      {{(index + 1)}}
                     </td>
-                    <td class="text-sm">Isabel Rodríguez Pérez</td>
-                    <td class="text-sm">isabel.rodriguez@example.com</td>
-                    <td class="text-sm">AmigaComprensiva</td>
-                    <td class="text-sm">Conductor</td>
+                    <td class="text-sm">{{name + ' ' + surname}}</td>
+                    <td class="text-sm">{{email}}</td>
+                    <td class="text-sm">{{username}}</td>
+                    <td class="text-sm">{{roles.length > 0 ? roles[0].name.toLowerCase() : 'Sin rol'}}</td>
                     <td>
-                      <span class="badge badge-success badge-sm"
-                        >Activo</span
+                      <span class="badge  badge-sm" :class="{'badge-success': status, 'badge-danger': !status}"
+                        >{{status ? 'Activo' : 'Inactivo'}}</span
                       >
                     </td>
                     <td class="text-sm">
@@ -54,7 +86,7 @@
                         :to="{ name: 'Modificar Usuario' }"
 
                         data-bs-toggle="tooltip"
-                        data-bs-original-title="Editar producto"
+                        data-bs-original-title="Editar usuario"
                       >
                         <i class="fa fa-pencil-square-o text-secondary"></i>
                       </router-link>
@@ -63,325 +95,116 @@
                         href="javascript:;"
                         class="mx-3"
                         data-bs-toggle="tooltip"
-                        data-bs-original-title="Preview product"
+                        data-bs-original-title="Detalles del usuario"
                       >
                         <i class="fas fa-eye text-secondary"></i>
                       </a>
                       <a
                         href="javascript:;"
                         data-bs-toggle="tooltip"
-                        data-bs-original-title="Delete product"
+                        data-bs-original-title="Desactivar usuario"
+                        v-if="status"
                       >
                         <i class="fa fa-times-circle text-secondary"></i>
                       </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      2
-                    </td>
-                    <td class="text-sm">Alejandro Martínez García</td>
-                    <td class="text-sm">alejandro.martinez@example.com</td>
-                    <td class="text-sm">SonrisaRadiante</td>
-                    <td class="text-sm">Conductor</td>
-                    <td>
-                      <span class="badge badge-success badge-sm"
-                        >Activo</span
-                      >
-                    </td>
-                     <td class="text-sm">
 
-                      <a
-                        href="javascript:;"
-
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Edit product"
-                      >
-                        <i class="fa fa-pencil-square-o text-secondary"></i>
-                      </a>
-                        <a
-                        href="javascript:;"
-                        class="mx-3"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Preview product"
-                      >
-                        <i class="fas fa-eye text-secondary"></i>
-                      </a>
-                      <a
+                       <a
                         href="javascript:;"
                         data-bs-toggle="tooltip"
-                        data-bs-original-title="Delete product"
-                      >
-                        <i class="fa fa-times-circle text-secondary"></i>
-                      </a>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td>
-                      3
-                    </td>
-                    <td class="text-sm">Laura González López</td>
-                    <td class="text-sm">laura.gonzalez@example.com</td>
-                    <td class="text-sm">AventureroAudaz</td>
-                    <td class="text-sm">Conductor</td>
-                    <td>
-                      <span class="badge badge-success badge-sm">Activo</span>
-                    </td>
-                      <td class="text-sm">
-
-                      <a
-                        href="javascript:;"
-
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Edit product"
-                      >
-                        <i class="fa fa-pencil-square-o text-secondary"></i>
-                      </a>
-                        <a
-                        href="javascript:;"
-                        class="mx-3"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Preview product"
-                      >
-                        <i class="fas fa-eye text-secondary"></i>
-                      </a>
-                      <a
-                        href="javascript:;"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Delete product"
-                      >
-                        <i class="fa fa-times-circle text-secondary"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                     4
-                    </td>
-                    <td class="text-sm">Carlos Sánchez Fernández</td>
-                    <td class="text-sm">carlos.sanchez@example.com</td>
-                    <td class="text-sm">LunaEnamorada</td>
-                    <td class="text-sm">Cliente</td>
-                    <td>
-                      <span class="badge badge-success badge-sm"
-                        >Activo</span
-                      >
-                    </td>
-                    <td class="text-sm">
-
-                      <a
-                        href="javascript:;"
-
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Edit product"
-                      >
-                        <i class="fa fa-pencil-square-o text-secondary"></i>
-                      </a>
-                        <a
-                        href="javascript:;"
-                        class="mx-3"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Preview product"
-                      >
-                        <i class="fas fa-eye text-secondary"></i>
-                      </a>
-                      <a
-                        href="javascript:;"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Delete product"
-                      >
-                        <i class="fa fa-times-circle text-secondary"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                     5
-                    </td>
-                    <td class="text-sm">María Torres Ruiz</td>
-                    <td class="text-sm">maria.torres@example.com</td>
-                    <td class="text-sm">ViajeroIntrépido</td>
-                    <td class="text-sm">Conductor</td>
-                    <td>
-                      <span class="badge badge-success badge-sm">Activo</span>
-                    </td>
-                    <td class="text-sm">
-
-                      <a
-                        href="javascript:;"
-
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Edit product"
-                      >
-                        <i class="fa fa-pencil-square-o text-secondary"></i>
-                      </a>
-                        <a
-                        href="javascript:;"
-                        class="mx-3"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Preview product"
-                      >
-                        <i class="fas fa-eye text-secondary"></i>
-                      </a>
-                      <a
-                        href="javascript:;"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Delete product"
-                      >
-                        <i class="fa fa-times-circle text-secondary"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                     6
-                    </td>
-                    <td class="text-sm">Javier López Martínez</td>
-                    <td class="text-sm">javier.lopez@example.com</td>
-                    <td class="text-sm">MariposaFeliz</td>
-                    <td class="text-sm">Conductor</td>
-                    <td>
-                      <span class="badge badge-danger badge-sm">Inactivo</span>
-                    </td>
-                   <td class="text-sm">
-
-                      <a
-                        href="javascript:;"
-
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Edit product"
-                      >
-                        <i class="fa fa-pencil-square-o text-secondary"></i>
-                      </a>
-                        <a
-                        href="javascript:;"
-                        class="mx-3"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Preview product"
-                      >
-                        <i class="fas fa-eye text-secondary"></i>
-                      </a>
-                      <a
-                        href="javascript:;"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Delete product"
+                        data-bs-original-title="Activar usuario"
+                        v-if="!status"
                       >
                         <i class="fa fa-check-circle text-secondary"></i>
                       </a>
                     </td>
                   </tr>
+                 
+                </tbody>
+                 <tfoot>
                   <tr>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>SKU</th>
+                    <th>Quantity</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" v-show="!active">
+          <!-- Card header -->
+          <div class="pb-0 card-header">
+            <div class="d-lg-flex">
+              <div>
+                <h5 class="mb-0">Lista de clientes</h5>
+              </div>
+            </div>
+          </div>
+          <div class="px-0 pb-0 card-body">
+            <div class="table-responsive">
+              <table id="clients-list" class="table table-flush">
+                <thead class="thead-light">
+                  <tr>
+                    <th>#</th>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Usuario</th>
+                    <th>Rol</th>
+                    <th>Estatus</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+              <tbody v-if="consumers.length !== 0">
+                
+                  <tr v-for="({email, person:{name, surname}, username, roles, status }, index) in consumers" :key="index">
                     <td>
-                     7
+                      {{(index + 1)}}
                     </td>
-                    <td class="text-sm">Paula Rodríguez González</td>
-                    <td class="text-sm">paula.rodriguez@example.com</td>
-                    <td class="text-sm">ExploradorValiente</td>
-                    <td class="text-sm">Conductor</td>
+                    <td class="text-sm">{{name + ' ' + surname}}</td>
+                    <td class="text-sm">{{email}}</td>
+                    <td class="text-sm">{{username}}</td>
+                    <td class="text-sm">{{roles.length > 0 ? roles[0].name.toLowerCase() : 'Sin rol'}}</td>
                     <td>
-                      <span class="badge badge-danger badge-sm">Inactivo</span>
+                      <span class="badge  badge-sm" :class="{'badge-success': status, 'badge-danger': !status}"
+                        >{{status ? 'Activo' : 'Inactivo'}}</span
+                      >
                     </td>
                     <td class="text-sm">
 
-                      <a
-                        href="javascript:;"
-
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Edit product"
-                      >
-                        <i class="fa fa-pencil-square-o text-secondary"></i>
-                      </a>
+                      
                         <a
                         href="javascript:;"
                         class="mx-3"
                         data-bs-toggle="tooltip"
-                        data-bs-original-title="Preview product"
+                        data-bs-original-title="Detalles del usuario"
                       >
                         <i class="fas fa-eye text-secondary"></i>
                       </a>
                       <a
                         href="javascript:;"
                         data-bs-toggle="tooltip"
-                        data-bs-original-title="Delete product"
+                        data-bs-original-title="Desactivar usuario"
+                        v-if="status"
+                      >
+                        <i class="fa fa-times-circle text-secondary"></i>
+                      </a>
+
+                       <a
+                        href="javascript:;"
+                        data-bs-toggle="tooltip"
+                        data-bs-original-title="Activar usuario"
+                        v-if="!status"
                       >
                         <i class="fa fa-check-circle text-secondary"></i>
                       </a>
                     </td>
                   </tr>
-                  <tr>
-                    <td>
-                     8
-                    </td>
-                    <td class="text-sm">Clothing</td>
-                    <td class="text-sm">$1,199</td>
-                    <td class="text-sm">00121399</td>
-                    <td class="text-sm">51293</td>
-                    <td>
-                      <span class="badge badge-success badge-sm">in Stock</span>
-                    </td>
-                    <td class="text-sm">
-                      <a
-                        href="javascript:;"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Preview product"
-                      >
-                        <i class="fas fa-eye text-secondary"></i>
-                      </a>
-                      <a
-                        href="javascript:;"
-                        class="mx-3"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Edit product"
-                      >
-                        <i class="fas fa-user-edit text-secondary"></i>
-                      </a>
-                      <a
-                        href="javascript:;"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Delete product"
-                      >
-                        <i class="fas fa-trash text-secondary"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      9
-                    </td>
-                    <td class="text-sm">Furniture</td>
-                    <td class="text-sm">$1,900</td>
-                    <td class="text-sm">434729</td>
-                    <td class="text-sm">1100191321</td>
-                    <td>
-                      <span class="badge badge-success badge-sm">In Stock</span>
-                    </td>
-                    <td class="text-sm">
-                      <a
-                        href="javascript:;"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Preview product"
-                      >
-                        <i class="fas fa-eye text-secondary"></i>
-                      </a>
-                      <a
-                        href="javascript:;"
-                        class="mx-3"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Edit product"
-                      >
-                        <i class="fas fa-user-edit text-secondary"></i>
-                      </a>
-                      <a
-                        href="javascript:;"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Delete product"
-                      >
-                        <i class="fas fa-trash text-secondary"></i>
-                      </a>
-                    </td>
-                  </tr>
-
+                 
                 </tbody>
                  <tfoot>
                   <tr>
@@ -404,56 +227,101 @@
 </template>
 
 <script>
+import setNavPills from "@/assets/js/nav-pills.js";
 import { DataTable } from "simple-datatables";
 import setTooltip from "@/assets/js/tooltip.js";
-
+import listUsers from '../../use-cases/list.user.js'
+import listConsumers from '../../use-cases/list.consumers.js'
 
 export default {
   name: "ProductsList",
   data(){
     return{
       users: [],
+      consumers: [],
+      active: true,
     }
   },
-  mounted() {
-    if (document.getElementById("products-list")) {
-      const dataTableSearch = new DataTable("#products-list", {
-        searchable: true,
-        fixedHeight: false,
-        perPage: 7,
-        labels: {
-            placeholder: "Buscar...", // The search input placeholder
-            perPage: "{select} Registros por página", // per-page dropdown label
-            noRows: "Ningún dato encontrado", // Message shown when there are no search results
-            info: "Mostrando {start} de {end} de {rows} registros",  //
-            noResults: "No hay resultados que coincidan con su búsqueda"
-        },
-        
-      });
-
-      document.querySelectorAll(".export").forEach(function (el) {
-        el.addEventListener("click", function () {
-          var type = el.dataset.type;
-
-          var data = {
-            type: type,
-            filename: "soft-ui-" + type,
-          };
-
-          if (type === "csv") {
-            data.columnDelimiter = "|";
-          }
-
-          dataTableSearch.export(data);
-        });
-      });
-    }
+  async mounted() {
+    setNavPills();
+    await this.datatableDriver();
     setTooltip(this.$store.state.bootstrap);
+
   },
   methods:{
     async listUsers(){
-      console.log("List users");
+      const response = {...await listUsers()};
+      const {error, data} = response;
+      if(!error){
+          const {result} = data
+          this.users = result
+      }else{
+          this.$swal({
+            icon: "error", 
+            title: 'Ocurrio un error durante la consultar. Inténtalo de nuevo.',
+            type: "basic",
+          });
+      }
+    },
+    async listConsumers(){
+      const response = {...await listConsumers()};
+      const {error, data} = response;
+      if(!error){
+          const {result} = data
+          this.consumers = result
+      }else{
+          this.$swal({
+            icon: "error", 
+            title: 'Ocurrio un error durante la consultar. Inténtalo de nuevo.',
+            type: "basic",
+        });
+      }
+    },
+    async datatableDriver(){
+          await this.listUsers();
+          if (document.getElementById("drivers-list")) {
+           new DataTable("#drivers-list", {
+              searchable: true,
+              fixedHeight: false,
+              perPage: 5,
+              labels: {
+                  placeholder: "Buscar...", // The search input placeholder
+                  perPage: "{select} Registros por página", // per-page dropdown label
+                  noRows: "Ningún dato encontrado", // Message shown when there are no search results
+                  info: "Mostrando {start} de {end} de {rows} registros",  //
+                  noResults: "No hay resultados que coincidan con su búsqueda"
+              },
+            });
+          }
+    },
+    async datatableClient(){
+          await this.listConsumers();
+          if (document.getElementById("clients-list")) {
+          new DataTable("#clients-list", {
+              searchable: true,
+              fixedHeight: false,
+              perPage: 5,
+              labels: {
+                  placeholder: "Buscar...", // The search input placeholder
+                  perPage: "{select} Registros por página", // per-page dropdown label
+                  noRows: "Ningún dato encontrado", // Message shown when there are no search results
+                  info: "Mostrando {start} de {end} de {rows} registros",  //
+                  noResults: "No hay resultados que coincidan con su búsqueda"
+              },
+            });
+          }
+    },
+    async changeTab(tab){
+      if(tab === 1){
+        this.datatableDriver();
+        this.active=true;
+      }else{
+        this.datatableClient();
+        this.active=false;
+      } 
     }
-  }
+  },
+  
+
 };
 </script>
