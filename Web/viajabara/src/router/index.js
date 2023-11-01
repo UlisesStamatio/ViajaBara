@@ -66,7 +66,7 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: "/usuario/consultar/modificar",
+    path: "/usuario/consultar/modificar/:id",
     name: "Modificar Usuario",
     component: UpdateUser,
     meta: { requiresAuth: true }

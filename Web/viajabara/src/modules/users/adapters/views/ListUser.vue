@@ -67,7 +67,7 @@
                 </thead>
               <tbody v-if="users.length !== 0">
                 
-                  <tr v-for="({email, person:{name, surname}, username, roles, status }, index) in users" :key="index">
+                  <tr v-for="({email, person:{name, surname}, username, roles, status, id}, index) in users" :key="index">
                     <td>
                       {{(index + 1)}}
                     </td>
@@ -83,7 +83,7 @@
                     <td class="text-sm">
 
                       <router-link
-                        :to="{ name: 'Modificar Usuario' }"
+                        :to="{ name: 'Modificar Usuario', params: {id: id} }"
 
                         data-bs-toggle="tooltip"
                         data-bs-original-title="Editar usuario"
@@ -242,6 +242,7 @@ export default {
       active: true,
     }
   },
+
   async mounted() {
     setNavPills();
     await this.datatableDriver();
