@@ -44,6 +44,13 @@ const userValidator = {
         else if(REGEX_INJECTION_HTML.test(birthday)) return "La fecha de nacimiento es inválida."
         return null;
     },
+    validateState(option, states){
+        option = parseInt(option)
+        if(!option || option === '') return "El campo es obligatorio.";
+        else if(option < 1 || option > (states.length + 1) ) return "La opción es incorrecta."
+        else if(REGEX_INJECTION_HTML.test(option)) return "El estado de residencia es inválido."
+        return null;
+    },
     validateCellphone(cellphone){
         if(!cellphone) return "El campo es obligatorio.";
         else if(REGEX_INJECTION_HTML.test(cellphone)) return "El número de télefono es inválido."
