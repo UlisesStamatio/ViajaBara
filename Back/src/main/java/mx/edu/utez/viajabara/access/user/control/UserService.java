@@ -70,96 +70,26 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<Object> findAllDrivers(PaginationDto paginationDto, String textFilter) throws SQLException {
-        if (paginationDto.getPaginationType().getFilter() == null || paginationDto.getPaginationType().getFilter().isEmpty() ||
-                paginationDto.getPaginationType().getSortBy() == null || paginationDto.getPaginationType().getSortBy().isEmpty() ||
-                paginationDto.getPaginationType().getOrder() == null || paginationDto.getPaginationType().getOrder().isEmpty()
-        )
-            throw new SQLException("Campos vacíos", String.valueOf(TypesResponse.ERROR));
-
-        if (!paginationDto.getPaginationType().getFilter().equals("name") && !paginationDto.getPaginationType().getFilter().equals("email") || !paginationDto.getPaginationType().getSortBy().equals("name") && !paginationDto.getPaginationType().getSortBy().equals("email"))
-            return new ResponseEntity<>(new Message("Organización inválida", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
-
-        if (!paginationDto.getPaginationType().getOrder().equals("asc") && !paginationDto.getPaginationType().getOrder().equals("desc"))
-            return new ResponseEntity<>(new Message("Orden inválido", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
-
-        paginationDto.setValue("%" + paginationDto.getValue() + "%");
-        List<User> list;
-        switch (paginationDto.getPaginationType().getFilter()) {
-            case "email":
-                list = repository.searchAllDriversByPaginationEmail(
-                        paginationDto.getValue(), textFilter,
-                        PageRequest.of(paginationDto.getPaginationType().getPage(),
-                                paginationDto.getPaginationType().getLimit(),
-                                paginationDto.getPaginationType().getOrder().equalsIgnoreCase("ASC")
-                                        ? Sort.by(paginationDto.getPaginationType().getSortBy()).ascending()
-                                        : Sort.by(paginationDto.getPaginationType().getSortBy()).descending())
-                );
-                break;
-            case "name":
-                list = repository.searchAllDriversByPaginationName(
-                        paginationDto.getValue(), textFilter,
-                        PageRequest.of(paginationDto.getPaginationType().getPage(),
-                                paginationDto.getPaginationType().getLimit(),
-                                paginationDto.getPaginationType().getOrder().equalsIgnoreCase("ASC")
-                                        ? Sort.by(paginationDto.getPaginationType().getSortBy()).ascending()
-                                        : Sort.by(paginationDto.getPaginationType().getSortBy()).descending())
-                );
-                break;
-            default:
-                return new ResponseEntity<>(new Message("Búsqueda inválida", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Object> findAllDrivers() throws SQLException {
+        List<User> users = repository.searchAllDrivers();
+        List<User> userList = new ArrayList<>();
+        for (User user:users) {
+            user.setProfile(null);
+            userList.add(user);
         }
-        return new ResponseEntity<>(new Message(new Consult(list,
-                list.size()),
-                "Listado de usuarios registrados",
-                TypesResponse.SUCCESS), HttpStatus.OK);
+        return new ResponseEntity<>(new Message(userList, "Listado de conductores registrados", TypesResponse.SUCCESS), HttpStatus.OK);
     }
 
 
     @Transactional(readOnly = true)
-    public ResponseEntity<Object> findAllClient(PaginationDto paginationDto, String textFilter) throws SQLException {
-        if (paginationDto.getPaginationType().getFilter() == null || paginationDto.getPaginationType().getFilter().isEmpty() ||
-                paginationDto.getPaginationType().getSortBy() == null || paginationDto.getPaginationType().getSortBy().isEmpty() ||
-                paginationDto.getPaginationType().getOrder() == null || paginationDto.getPaginationType().getOrder().isEmpty()
-        )
-            throw new SQLException("Campos vacíos", String.valueOf(TypesResponse.ERROR));
-
-        if (!paginationDto.getPaginationType().getFilter().equals("name") && !paginationDto.getPaginationType().getFilter().equals("email") || !paginationDto.getPaginationType().getSortBy().equals("name") && !paginationDto.getPaginationType().getSortBy().equals("email"))
-            return new ResponseEntity<>(new Message("Organización inválida", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
-
-        if (!paginationDto.getPaginationType().getOrder().equals("asc") && !paginationDto.getPaginationType().getOrder().equals("desc"))
-            return new ResponseEntity<>(new Message("Orden inválido", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
-
-        paginationDto.setValue("%" + paginationDto.getValue() + "%");
-        List<User> list;
-        switch (paginationDto.getPaginationType().getFilter()) {
-            case "email":
-                list = repository.searchAllConsumersByPaginationEmail(
-                        paginationDto.getValue(), textFilter,
-                        PageRequest.of(paginationDto.getPaginationType().getPage(),
-                                paginationDto.getPaginationType().getLimit(),
-                                paginationDto.getPaginationType().getOrder().equalsIgnoreCase("ASC")
-                                        ? Sort.by(paginationDto.getPaginationType().getSortBy()).ascending()
-                                        : Sort.by(paginationDto.getPaginationType().getSortBy()).descending())
-                );
-                break;
-            case "name":
-                list = repository.searchAllConsumersByPaginationName(
-                        paginationDto.getValue(), textFilter,
-                        PageRequest.of(paginationDto.getPaginationType().getPage(),
-                                paginationDto.getPaginationType().getLimit(),
-                                paginationDto.getPaginationType().getOrder().equalsIgnoreCase("ASC")
-                                        ? Sort.by(paginationDto.getPaginationType().getSortBy()).ascending()
-                                        : Sort.by(paginationDto.getPaginationType().getSortBy()).descending())
-                );
-                break;
-            default:
-                return new ResponseEntity<>(new Message("Búsqueda inválida", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Object> findAllClient() throws SQLException {
+        List<User> users = repository.searchAllConsumers();
+        List<User> userList = new ArrayList<>();
+        for (User user:users) {
+            user.setProfile(null);
+            userList.add(user);
         }
-        return new ResponseEntity<>(new Message(new Consult(list,
-                list.size()),
-                "Listado de usuarios registrados",
-                TypesResponse.SUCCESS), HttpStatus.OK);
+        return new ResponseEntity<>(new Message(userList, "Listado de clientes registrados", TypesResponse.SUCCESS), HttpStatus.OK);
     }
 
     @Transactional(readOnly = true)
