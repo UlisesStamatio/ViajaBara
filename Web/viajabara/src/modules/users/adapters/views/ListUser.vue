@@ -407,8 +407,14 @@
 import { DataTable } from "simple-datatables";
 import setTooltip from "@/assets/js/tooltip.js";
 
+
 export default {
   name: "ProductsList",
+  data(){
+    return{
+      users: [],
+    }
+  },
   mounted() {
     if (document.getElementById("products-list")) {
       const dataTableSearch = new DataTable("#products-list", {
@@ -444,5 +450,10 @@ export default {
     }
     setTooltip(this.$store.state.bootstrap);
   },
+  methods:{
+    async listUsers(){
+      console.log("List users");
+    }
+  }
 };
 </script>
