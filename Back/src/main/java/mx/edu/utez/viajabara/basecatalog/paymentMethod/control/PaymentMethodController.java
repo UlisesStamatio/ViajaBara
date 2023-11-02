@@ -55,7 +55,7 @@ public class PaymentMethodController {
                     "\"apikey\": \"dasdasdasdsadasdasdasdsa\" " +
                     " }"
     )
-    public ResponseEntity<Object> update(@Validated({PaymentMethodDto.Modify.class}) @RequestBody PaymentMethodDto dto) {
+    public ResponseEntity<Object> update(@Validated({PaymentMethodDto.Modify.class}) @RequestBody PaymentMethodDto dto) throws SQLException {
         return service.update(dto);
     }
 

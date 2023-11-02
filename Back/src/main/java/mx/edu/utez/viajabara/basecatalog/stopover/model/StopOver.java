@@ -1,6 +1,7 @@
 package mx.edu.utez.viajabara.basecatalog.stopover.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import mx.edu.utez.viajabara.basecatalog.route.model.Route;
 
 import javax.persistence.*;
@@ -30,6 +31,7 @@ public class StopOver {
     private boolean status;
 
     @ManyToOne
+    @JsonIgnore
     private Route route;
 
     public StopOver() {

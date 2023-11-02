@@ -44,7 +44,6 @@ public class Route {
     private boolean status;
 
     @OneToMany(mappedBy = "route")
-    @JsonIgnore
     private List<StopOver> stopOvers;
 
     public Route() {

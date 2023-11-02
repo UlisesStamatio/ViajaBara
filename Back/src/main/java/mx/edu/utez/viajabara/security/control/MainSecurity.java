@@ -80,6 +80,8 @@ public class MainSecurity extends WebSecurityConfigurerAdapter {
                         .antMatchers("/api/visual-config/**").hasAuthority(PrivilegeName.CONFIGURACIONES_VISUALES.name())
                         .antMatchers("/api/state/**").hasAuthority(PrivilegeName.ESTADOS.name())
                         .antMatchers("/api/duties/**").hasAuthority(PrivilegeName.SERVICIOS.name())
+                        .antMatchers("/api/buses/**").hasAuthority(PrivilegeName.AUTOBUSES.name())
+                        .antMatchers("/api/routes/**").hasAuthority(PrivilegeName.RUTAS.name())
                         .antMatchers("/api/logged/**").authenticated()
                         .antMatchers("/api/lists/**").permitAll()
                         .antMatchers("/api/general/**").permitAll()
