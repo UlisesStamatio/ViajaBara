@@ -60,16 +60,16 @@
                        <a
                         data-bs-toggle="tooltip"
                         data-bs-original-title="Desactivar método"
-                        v-show="status"
-                        :id="'time-'+id"
+                        v-if="status"
+                        :id="'times-'+id"
                       >
                         <i class="fa fa-times-circle text-secondary"></i>
                       </a>
                       <a
                         data-bs-toggle="tooltip"
                         data-bs-original-title="Activar método"
-                        v-show="!status"
-                        :id="'time-'+id"
+                        v-if="!status"
+                        :id="'times-'+id"
                       >
                         <i class="fa fa-check-circle text-secondary"></i>
                       </a>
@@ -93,17 +93,22 @@
 import { DataTable } from "simple-datatables";
 import setTooltip from "@/assets/js/tooltip.js";
 import listMethods from '../../use-cases/list.methods'
+import changeStatusMethod from '../../use-cases/change.status.method'
 
 export default {
   name: "ListMethod",
   data(){
     return{
       methods: [],
+      datatable: {},
     }
   },
   async mounted() {
     await this.datatableMethods()
     setTooltip(this.$store.state.bootstrap);
+
+
+
   },
   methods:{
     async listMethods(){
@@ -123,7 +128,7 @@ export default {
     async datatableMethods(){
         await this.listMethods();
        if (document.getElementById("methods-list")) {
-        new DataTable("#methods-list", {
+        this.datatable = new DataTable("#methods-list", {
         searchable: true,
         fixedHeight: false,
         perPage: 5,
@@ -134,9 +139,67 @@ export default {
             info: "Mostrando {start} de {end} de {rows} registros",  //
             noResults: "No hay resultados que coincidan con su búsqueda"
         },
-        
-      });
-    }
+
+
+          });
+        this.datatable.on('datatable.page', () =>{
+              this.eventListeners()
+        })
+        //En valoración
+        // this.datatable.on('datatable.perPage', function (event) {
+        //       var perPage = event.detail.perPage;
+        // });
+        }
+      this.eventListeners()
+    },
+    async changeStatus(id){
+       this.$swal({
+            title: "¿Estás segura(a) de realizar la acción?",
+            text: "¡No podrás revertir esto.!",
+            icon: "warning",
+            showCancelButton: true,
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Confirmar",
+            customClass: {
+              confirmButton: "btn bg-gradient-success",
+              cancelButton: "btn bg-gradient-secondary",
+            },
+            buttonsStyling: false,
+          }).then(async(result) => {
+            if (result.isConfirmed) {
+                const response = {...await changeStatusMethod(id)};
+                const {error, data, message} = response;
+                if(!error){
+                    const {result:{text}} =data
+                    this.$swal({
+                      icon: "success",
+                      title: message,
+                      text: text,
+                      type: 'success-message',
+                    });
+                    await this.datatableMethods()
+                }else{
+                    this.$swal({
+                      icon: "error", 
+                      title: 'Ocurrio un error durante la actualización. Inténtalo de nuevo.',
+                      type: "basic",
+                  });
+                }
+            } else if (result.dismiss === this.$swal.DismissReason.cancel) {
+              this.$swal.dismiss;
+            }
+          })
+    },
+    eventListeners(){
+          let elementos = document.querySelectorAll('[id*="times"]');
+          const method = this.changeStatus;
+
+          elementos.forEach(function(elemento) {
+              elemento.addEventListener('click', async function() {
+                  const id = elemento.id.toString().split('-')[1]
+                  await method(id)
+              });
+          });
     }
   }
 };

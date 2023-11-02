@@ -21,10 +21,10 @@ const OperationsController = {
         const response = await Operations.getMethod('/one', payload)
         return response;
     },
-    // async changeStatusUser(payload){
-    //     const response = await Operations.changeStatusUser('/change-status', payload)
-    //     return response;
-    // }
+    async changeStatusMethod(payload){
+        const response = await Operations.changeStatusMethod('/change-status', payload)
+        return response;
+    }
 }
 
 export default OperationsController;
