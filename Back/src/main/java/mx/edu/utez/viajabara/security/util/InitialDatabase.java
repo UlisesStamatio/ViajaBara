@@ -97,13 +97,34 @@ public class InitialDatabase implements CommandLineRunner {
         }
         privilegesCA += privilege.toString() + ",";
 
+        optionalPrivilege = privilegeService.findByName(PrivilegeName.AUTOBUSES);
+        if (!optionalPrivilege.isPresent()) {
+            privilege = new Privilege(PrivilegeName.AUTOBUSES,
+                    "Catálogo que permite tener el control de todos aquellos " +
+                            "autobuses que están en el sistema");
+            privilege = privilegeService.saveInitial(privilege);
+        } else {
+            privilege = optionalPrivilege.get();
+        }
+        privilegesCA += privilege.toString() + ",";
+
+        optionalPrivilege = privilegeService.findByName(PrivilegeName.RUTAS);
+        if (!optionalPrivilege.isPresent()) {
+            privilege = new Privilege(PrivilegeName.RUTAS,
+                    "Catálogo que permite tener el control de todas aquellas " +
+                            "rutas que están en el sistema");
+            privilege = privilegeService.saveInitial(privilege);
+        } else {
+            privilege = optionalPrivilege.get();
+        }
+        privilegesCA += privilege.toString() + ",";
 
 
         optionalPrivilege = privilegeService.findByName(PrivilegeName.ROLES);
         if (!optionalPrivilege.isPresent()) {
             privilege = new Privilege(PrivilegeName.ROLES,
                     "Catálogo que permite tener el control de todos aquellos " +
-                            "rolesCA que pueden permitir el acceso a funcionalidades del sistema");
+                            "roles que pueden permitir el acceso a funcionalidades del sistema");
             privilege = privilegeService.saveInitial(privilege);
         } else {
             privilege = optionalPrivilege.get();

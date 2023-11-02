@@ -5,6 +5,8 @@ import mx.edu.utez.viajabara.basecatalog.paymentMethod.model.PaymentMethodDto;
 import mx.edu.utez.viajabara.basecatalog.paymentMethod.model.PaymentMethodRepository;
 import mx.edu.utez.viajabara.utils.entity.Message;
 import mx.edu.utez.viajabara.utils.entity.TypesResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import java.util.Optional;
 @Transactional
 @Service
 public class PaymentMethodService {
+    private final static Logger logger = LoggerFactory.getLogger(PaymentMethodService.class);
 
     private final PaymentMethodRepository repository;
 
@@ -56,7 +59,7 @@ public class PaymentMethodService {
     }
 
     @Transactional(rollbackFor = {SQLException.class})
-    public ResponseEntity<Object> update(PaymentMethodDto dto) {
+    public ResponseEntity<Object> update(PaymentMethodDto dto) throws SQLException {
         Optional<PaymentMethod> optional = repository.findById(dto.getId());
         if (!optional.isPresent()) {
             return new ResponseEntity<>(new Message("No se encontró el metodo de pago", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
