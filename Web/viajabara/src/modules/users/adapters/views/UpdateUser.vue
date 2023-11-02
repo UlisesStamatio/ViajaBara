@@ -207,7 +207,7 @@
                 <button 
                 type="button"
                 class="mb-0 me-2 ms-auto btn js-btn-next bg-gradient-secondary"
-                title="Crear usuario"
+                title="Cancelar"
                 @click="goBackPage"
                 >
                   Cancelar
