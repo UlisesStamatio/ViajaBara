@@ -1,76 +1,79 @@
 <template>
-  <div class="container-fluid">
-    <div class="row">
+  <div class="container-fluid" >
+    <form class="row" @submit.prevent="preNewMethod()">
       <div class="mx-auto col-lg-12 col-12">
         <div class="mt-4 card card-body">
           <h6 class="mb-0">Información básica</h6>
           <hr class="my-3 horizontal dark" />
           <div class="row mx-5">
-            <div class="col-12">
+            <div class="col-12 mb-4">
               <label>Nombre(<span class="text-danger">*</span>)</label>
-              <soft-input
-                id="name"
+              <input 
                 type="text"
                 placeholder="eg. SeguridadEnLineaTotal"
-                name="name"
-                size=""
-              />
+                id="name"
+                v-model="method.name"
+                class="form-control"
+                :class="{ 'is-invalid': errors.name, 'is-valid': errors.name === null }"
+                maxlength="51"
+              >
+              <div class="invalid-feedback" v-if="errors.name">
+                  {{ errors.name }}
+              </div>
             </div>
-            <div class="col-12">
+            <div class="col-12 mb-4">
               <label>API KEY(<span class="text-danger">*</span>)</label>
-              <soft-input
-                id="lastname"
+              <input 
                 type="text"
-                placeholder="eg. xjhjha27shghzg216tr1263hgsayg62tvw"
-                name="lastname"
-                size=""
-              />
+                placeholder="eg. SeguridadEnLineaTotal"
+                id="name"
+                v-model="method.apikey"
+                class="form-control"
+                :class="{ 'is-invalid': errors.apikey, 'is-valid': errors.apikey === null }"
+                 maxlength="256"
+              >
+              <div class="invalid-feedback" v-if="errors.apikey">
+                  {{ errors.apikey }}
+              </div>
             </div>
         </div>
           <div class="row mt-4">
             <div class="col-12 text-end ">
-              <soft-button
+              <button 
                 type="button"
-                color="secondary"
-                variant="gradient"
-                class="mb-0 me-2 ms-auto js-btn-next"
-                title="Next"
-                @click="this.$parent.nextStep"
-                >Cancelar</soft-button>
-              <soft-button
-                type="button"
-                color="dark"
-                variant="gradient"
-                class="mb-0 ms-auto js-btn-next"
-                title="Next"
-                @click="this.$parent.nextStep"
-                >Crear método</soft-button>
+                class="mb-0 me-2 ms-auto btn js-btn-next bg-gradient-secondary"
+                title="Cancelar"
+                 @click="goBackPage"
+                >
+                  Cancelar
+                </button>
+
+                <button 
+                type="submit"
+                class="mb-0 ms-auto btn js-btn-next bg-gradient-dark"
+                title="Crear método"
+                >
+                  Crear método
+                </button>
             </div>
           </div>
       </div>
     </div>
-  </div>
+  </form>
   </div>
 </template>
 
 <script>
 import Quill from "quill";
 import Choices from "choices.js";
-// import UserInfo from "../../../../views/pages/Users/components/UserInfo.vue";
-// import Address from "../../../../views/pages/Users/components/Address.vue";
-// import Socials from "../../../../views/pages/Users/components/Socials.vue";
-// import Profile from "../../../../views/pages/Users/components/Profile.vue";
-import SoftInput from "@/components/SoftInput.vue";
-import SoftButton from "@/components/SoftButton.vue";
+import methodValidator from '../../../../kernel/validators/method.validator'
+import router from '../../../../router/index'
+import newMethod from '../../use-cases/new.method'
+
 export default {
   name: "NewMethod",
   components: {
-    // UserInfo,
-    // Address,
-    // Socials,
-    // Profile,
-    SoftInput,
-    SoftButton
+
   },
   data() {
     return {
@@ -78,6 +81,14 @@ export default {
       activeClass: "js-active position-relative",
       activeStep: 0,
       formSteps: 3,
+      method:{
+        name: "",
+        apikey: ""
+      },
+      errors:{
+        name: "",
+        apikey: ""
+      }
     };
   },
   mounted() {
@@ -114,6 +125,56 @@ export default {
         this.activeStep -= 1;
       }
     },
+     goBackPage(){
+      this.method = {}
+      this.errors = {}
+      router.push({name: 'Consultar Métodos'})
+    },
+    async preNewMethod(){
+        let method = {...this.method};
+
+        this.errors.name = methodValidator.validateName(method.name);
+        this.errors.apikey = methodValidator.validateApiKey(method.apikey);
+
+        if(!this.errors.name && !this.errors.apikey){
+         this.$swal({
+          title: "¿Estás segura(a) de guardar los cambios?",
+          text: "¡No podrás revertir esto.!",
+          icon: "warning",
+          showCancelButton: true,
+          cancelButtonText: "Cancelar",
+          confirmButtonText: "Confirmar",
+          customClass: {
+            confirmButton: "btn bg-gradient-success",
+            cancelButton: "btn bg-gradient-secondary",
+          },
+          buttonsStyling: false,
+        }).then(async(result) => {
+          if (result.isConfirmed) {
+              const {message, error, data} = await newMethod(method)
+              if(!error){
+                const {result:{text}} = data
+                this.$swal({
+                  icon: "success",
+                  title: message,
+                  text: text,
+                  type: 'success-message',
+                });
+                router.push({name: 'Consultar Métodos'})
+              }else{
+                const {text} = data
+                this.$swal({
+                    icon: "error", 
+                    title: message,
+                    text: text,
+                    type: "basic",
+                  });
+              }
+          } else if (result.dismiss === this.$swal.DismissReason.cancel) {
+            this.$swal.dismiss;
+          }})
+        }
+    }
   },
 };
 </script>
