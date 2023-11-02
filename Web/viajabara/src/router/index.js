@@ -91,7 +91,7 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: "/metodo/consultar/modificar",
+    path: "/metodo/consultar/modificar/:id",
     name: "Modificar Método",
     component: UpdateMethod,
     meta: { requiresAuth: true }
