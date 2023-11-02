@@ -42,14 +42,23 @@ public class RouteController {
     @PostMapping("")
     @Secured({RUTAS})
     @ApiOperation(
-            value = "Registra un autobús",
+            value = "Registra una ruta",
             notes = "{\n" +
-                    "  \"fuel\": \"Diesel\",\n" +
-                    "  \"image\": \"fdsfsdfsdf\",\n" +
-                    "  \"mark\": \"Mercedes\",\n" +
-                    "  \"model\": \"b20\",\n" +
-                    "  \"plaque\": \"SAF3321\",\n" +
-                    "  \"serial\": \"DSADASDASD\"\n" +
+                    "  \"duty\": {\n" +
+                    "    \"id\": 1\n" +
+                    "  },\n" +
+                    "  \"end_latitude\": \"aaaaa\",\n" +
+                    "  \"end_longitude\": \"bbbbb\",\n" +
+                    "  \"start_latitude\": \"ccccc\",\n" +
+                    "  \"start_longitude\": \"dddddd\",\n" +
+                    "  \"stopOvers\": [\n" +
+                    "    {\n" +
+                    "      \"latitude\": \"eeeee\",\n" +
+                    "      \"longitude\": \"fffff\",\n" +
+                    "      \"sequence\": 1,\n" +
+                    "      \"status\": true\n" +
+                    "    }\n" +
+                    "  ]\n" +
                     "}"
     )
     public ResponseEntity<Object> save(@Validated(RouteDto.Register.class) @RequestBody RouteDto dto) throws SQLException {
