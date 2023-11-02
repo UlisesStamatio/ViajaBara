@@ -69,4 +69,14 @@ public class PaymentMethodController {
         return service.changeStatus(dto);
     }
 
+    @PutMapping("/one")
+    @Secured({METODOS_DE_PAGO})
+    @ApiOperation(
+            value = "Obtener un método",
+            notes = "{ \"id\": 2 }"
+    )
+    public ResponseEntity<Object> getOne(@Validated(PaymentMethodDto.ChangeStatus.class) @RequestBody PaymentMethodDto dto) {
+        return service.getOne(dto.getId());
+    }
+
 }

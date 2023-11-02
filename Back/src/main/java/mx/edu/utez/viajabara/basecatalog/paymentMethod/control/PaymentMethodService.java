@@ -1,5 +1,7 @@
 package mx.edu.utez.viajabara.basecatalog.paymentMethod.control;
 
+import mx.edu.utez.viajabara.access.user.model.User;
+import mx.edu.utez.viajabara.access.user.model.UserDto;
 import mx.edu.utez.viajabara.basecatalog.paymentMethod.model.PaymentMethod;
 import mx.edu.utez.viajabara.basecatalog.paymentMethod.model.PaymentMethodDto;
 import mx.edu.utez.viajabara.basecatalog.paymentMethod.model.PaymentMethodRepository;
@@ -43,6 +45,11 @@ public class PaymentMethodService {
         return repository.findById(id);
     }
 
+    @Transactional(readOnly = true)
+    public ResponseEntity<Object> getOne(Long id) {
+        Optional<PaymentMethod> optionalPaymentMethod = repository.findById(id);
+        return optionalPaymentMethod.<ResponseEntity<Object>>map(method -> new ResponseEntity<>(new Message(method, "Método encontrado", TypesResponse.SUCCESS), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(new Message("Método no encontrado", TypesResponse.WARNING), HttpStatus.NOT_FOUND));
+    }
 
     @Transactional(rollbackFor = {SQLException.class})
     public ResponseEntity<Object> save(PaymentMethodDto dto) throws SQLException {
@@ -70,6 +77,7 @@ public class PaymentMethodService {
         }
         PaymentMethod paymentMethod = optional.get();
         paymentMethod.setName(dto.getName());
+        paymentMethod.setApikey(dto.getApikey());
         paymentMethod = repository.saveAndFlush(paymentMethod);
         if (paymentMethod == null) {
             return new ResponseEntity<>(new Message("No se modificó el  metodo de pago", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
