@@ -22,7 +22,6 @@ const getUser = async(id) =>{
             state: id,
         }
     }
-    console.log(response);
     return response;
 }
 

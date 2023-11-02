@@ -95,14 +95,14 @@
                         <i class="fa fa-pencil-square-o text-secondary"></i>
                       </router-link>
                       
-                        <a
-                        href="javascript:;"
+                        <router-link
+                        :to="{ name: 'Detalles Usuario', params: {id: id} }"
                         class="mx-3"
                         data-bs-toggle="tooltip"
                         data-bs-original-title="Detalles del usuario"
                       >
                         <i class="fas fa-eye text-secondary"></i>
-                      </a>
+                      </router-link>
                       <a
                         v-cloak
                         data-bs-toggle="tooltip"
@@ -171,20 +171,19 @@
                       >
                     </td>
                     <td class="text-sm">
+                        <router-link
+                        :to="{ name: 'Detalles Usuario', params: {id: id} }"
 
-                      
-                        <a
-                        href="javascript:;"
-                        class="mx-3"
                         data-bs-toggle="tooltip"
                         data-bs-original-title="Detalles del usuario"
                       >
-                        <i class="fas fa-eye text-secondary"></i>
-                      </a>
+                      <i class="fas fa-eye text-secondary"></i>
+                       </router-link>
                      <a
                         v-cloak
                         data-bs-toggle="tooltip"
                         data-bs-original-title="Desactivar usuario"
+                        class="mx-3"
                         v-if="status"
                         :id="'times-' + id"
                       >
@@ -194,6 +193,7 @@
                         v-cloak
                         data-bs-toggle="tooltip"
                         data-bs-original-title="Activar usuario"
+                        class="mx-3"
                         v-if="!status"
                         :id="'times-' + id"
                         >
@@ -253,7 +253,6 @@ export default {
       if(!error){
           const {result} = data
           this.users = result
-          console.log(this.users);
       }else{
           this.$swal({
             icon: "error", 
@@ -277,7 +276,6 @@ export default {
       }
     },
     async changeStatus(id){
-      console.log("Entro aqui ", id);
        this.$swal({
             title: "¿Estás segura(a) de realizar la acción?",
             text: "¡No podrás revertir esto.!",
@@ -362,7 +360,6 @@ export default {
     },
      eventListeners(){
           let elementos = document.querySelectorAll('[id*="times"]');
-          console.log(elementos);
           const method = this.changeStatus;
 
           elementos.forEach(function(elemento) {
@@ -375,7 +372,6 @@ export default {
   },
   watch:{
     users: async function(){
-      console.log("Hola");
     }
   }
   
