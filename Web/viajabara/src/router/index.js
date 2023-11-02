@@ -6,6 +6,7 @@ import Error403 from "../modules/auth/adapters/views/Error403.vue";
 import ListUser from "../modules/users/adapters/views/ListUser.vue";
 import NewUser from "../modules/users/adapters/views/NewUser.vue";
 import UpdateUser from "../modules/users/adapters/views/UpdateUser.vue";
+import DetailUser from "../modules/users/adapters/views/DetailUser.vue";
 import ListMethod from "../modules/payment-methods/adapters/views/ListMethod.vue";
 import NewMethod from "../modules/payment-methods/adapters/views/NewMethod.vue";
 import UpdateMethod from "../modules/payment-methods/adapters/views/UpdateMethod.vue";
@@ -69,6 +70,12 @@ const routes = [
     path: "/usuario/consultar/modificar/:id",
     name: "Modificar Usuario",
     component: UpdateUser,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: "/usuario/consultar/detalles/:id",
+    name: "Detalles Usuario",
+    component: DetailUser,
     meta: { requiresAuth: true }
   },
   {

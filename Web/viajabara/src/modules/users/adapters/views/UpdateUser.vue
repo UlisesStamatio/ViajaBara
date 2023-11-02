@@ -319,11 +319,11 @@ export default {
           const {result} = data
           this.states = result
       }else{
-           this.$swal({
-            icon: "error", 
-            title: 'Ocurrio un error durante la consultar. Inténtalo de nuevo.',
-            type: "basic",
-          });
+          this.$swal({
+          icon: "error", 
+          title: 'Ocurrio un error durante la consultar. Inténtalo de nuevo.',
+          type: "basic",
+        });
       }
     },
     async getUser(id){

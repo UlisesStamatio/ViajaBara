@@ -28,7 +28,6 @@ const OperationsController = {
     },
     async updateUser(data){
         const {profile, username, email, name, lastname, surname, cellphone, birthday, sex, state, id } = data
-        console.log(id);
         const lastData = {
             id: id,
             profile: profile,

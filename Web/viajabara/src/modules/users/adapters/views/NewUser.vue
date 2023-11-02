@@ -304,10 +304,13 @@ export default {
       const {error, data} = response;
       if(!error){
           const {result} = data
-          console.log(result);
           this.states = result
       }else{
-          console.log("Hola");
+          this.$swal({
+            icon: "error", 
+            title: 'Ocurrio un error durante la consultar. Inténtalo de nuevo.',
+            type: "basic",
+          });
       }
     },
     async generateImg(){
