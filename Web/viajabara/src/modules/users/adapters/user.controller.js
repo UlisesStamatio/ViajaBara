@@ -64,6 +64,10 @@ const OperationsController = {
     async getUser(payload){
         const response = await Operations.getUser('/one', payload)
         return response;
+    },
+    async changeStatusUser(payload){
+        const response = await Operations.changeStatusUser('/change-status', payload)
+        return response;
     }
 }
 

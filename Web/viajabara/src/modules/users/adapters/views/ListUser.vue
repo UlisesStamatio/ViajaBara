@@ -34,6 +34,7 @@
       <div class="col-12">
 
         <div class="card" v-show="active">
+
           <!-- Card header -->
           <div class="pb-0 card-header">
             <div class="d-lg-flex">
@@ -53,9 +54,12 @@
           </div>
           <div class="px-0 pb-0 card-body">
             <div class="table-responsive">
+              
               <table id="drivers-list" class="table table-flush">
+
                 <thead class="thead-light">
                   <tr>
+                    
                     <th>#</th>
                     <th>Nombre</th>
                     <th>Correo</th>
@@ -63,10 +67,10 @@
                     <th>Rol</th>
                     <th>Estatus</th>
                     <th>Acciones</th>
+
                   </tr>
                 </thead>
               <tbody v-if="users.length !== 0">
-                
                   <tr v-for="({email, person:{name, surname}, username, roles, status, id}, index) in users" :key="index">
                     <td>
                       {{(index + 1)}}
@@ -100,36 +104,28 @@
                         <i class="fas fa-eye text-secondary"></i>
                       </a>
                       <a
-                        href="javascript:;"
+                        v-cloak
                         data-bs-toggle="tooltip"
                         data-bs-original-title="Desactivar usuario"
                         v-if="status"
+                        :id="'times-' + id"
                       >
-                        <i class="fa fa-times-circle text-secondary"></i>
+                        <i class="fa fa-times-circle text-secondary" ></i>
                       </a>
-
-                       <a
-                        href="javascript:;"
+                        <a
+                        v-cloak
                         data-bs-toggle="tooltip"
                         data-bs-original-title="Activar usuario"
                         v-if="!status"
-                      >
-                        <i class="fa fa-check-circle text-secondary"></i>
+                        :id="'times-' + id"
+                        >
+                        <i class="fa fa-check-circle text-secondary" ></i>
                       </a>
                     </td>
                   </tr>
                  
                 </tbody>
                  <tfoot>
-                  <tr>
-                    <th>Product</th>
-                    <th>Category</th>
-                    <th>Price</th>
-                    <th>SKU</th>
-                    <th>Quantity</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
                 </tfoot>
               </table>
             </div>
@@ -160,8 +156,8 @@
                   </tr>
                 </thead>
               <tbody v-if="consumers.length !== 0">
-                
-                  <tr v-for="({email, person:{name, surname}, username, roles, status }, index) in consumers" :key="index">
+                  
+                  <tr v-for="({email, person:{name, surname}, username, roles, status, id }, index) in consumers" :key="index">
                     <td>
                       {{(index + 1)}}
                     </td>
@@ -185,37 +181,29 @@
                       >
                         <i class="fas fa-eye text-secondary"></i>
                       </a>
-                      <a
-                        href="javascript:;"
+                     <a
+                        v-cloak
                         data-bs-toggle="tooltip"
                         data-bs-original-title="Desactivar usuario"
                         v-if="status"
+                        :id="'times-' + id"
                       >
-                        <i class="fa fa-times-circle text-secondary"></i>
+                        <i class="fa fa-times-circle text-secondary" ></i>
                       </a>
-
-                       <a
-                        href="javascript:;"
+                        <a
+                        v-cloak
                         data-bs-toggle="tooltip"
                         data-bs-original-title="Activar usuario"
                         v-if="!status"
-                      >
-                        <i class="fa fa-check-circle text-secondary"></i>
+                        :id="'times-' + id"
+                        >
+                        <i class="fa fa-check-circle text-secondary" ></i>
                       </a>
                     </td>
                   </tr>
                  
                 </tbody>
                  <tfoot>
-                  <tr>
-                    <th>Product</th>
-                    <th>Category</th>
-                    <th>Price</th>
-                    <th>SKU</th>
-                    <th>Quantity</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
                 </tfoot>
               </table>
             </div>
@@ -232,6 +220,10 @@ import { DataTable } from "simple-datatables";
 import setTooltip from "@/assets/js/tooltip.js";
 import listUsers from '../../use-cases/list.user.js'
 import listConsumers from '../../use-cases/list.consumers.js'
+import changeStatusUser from '../../use-cases/change.status.user'
+//import router from '../../../../router/index'
+
+
 
 export default {
   name: "ProductsList",
@@ -240,13 +232,18 @@ export default {
       users: [],
       consumers: [],
       active: true,
+      value: true,
     }
   },
 
   async mounted() {
     setNavPills();
+    this.active = true;
     await this.datatableDriver();
+    this.eventListeners()
     setTooltip(this.$store.state.bootstrap);
+
+
 
   },
   methods:{
@@ -256,6 +253,7 @@ export default {
       if(!error){
           const {result} = data
           this.users = result
+          console.log(this.users);
       }else{
           this.$swal({
             icon: "error", 
@@ -278,10 +276,49 @@ export default {
         });
       }
     },
+    async changeStatus(id){
+      console.log("Entro aqui ", id);
+       this.$swal({
+            title: "¿Estás segura(a) de realizar la acción?",
+            text: "¡No podrás revertir esto.!",
+            icon: "warning",
+            showCancelButton: true,
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Confirmar",
+            customClass: {
+              confirmButton: "btn bg-gradient-success",
+              cancelButton: "btn bg-gradient-secondary",
+            },
+            buttonsStyling: false,
+          }).then(async(result) => {
+            if (result.isConfirmed) {
+                const response = {...await changeStatusUser(id)};
+                const {error, data, message} = response;
+                if(!error){
+                    const {result:{text}} =data
+                    this.$swal({
+                      icon: "success",
+                      title: message,
+                      text: text,
+                      type: 'success-message',
+                    });
+                    await this.datatableDriver()
+                }else{
+                    this.$swal({
+                      icon: "error", 
+                      title: 'Ocurrio un error durante la actualización. Inténtalo de nuevo.',
+                      type: "basic",
+                  });
+                }
+            } else if (result.dismiss === this.$swal.DismissReason.cancel) {
+              this.$swal.dismiss;
+            }
+          })
+    },
     async datatableDriver(){
           await this.listUsers();
           if (document.getElementById("drivers-list")) {
-           new DataTable("#drivers-list", {
+          new DataTable("#drivers-list", {
               searchable: true,
               fixedHeight: false,
               perPage: 5,
@@ -314,14 +351,33 @@ export default {
     },
     async changeTab(tab){
       if(tab === 1){
-        this.datatableDriver();
+        await this.datatableDriver();
+        this.eventListeners()
         this.active=true;
       }else{
-        this.datatableClient();
+        await this.datatableClient();
+        this.eventListeners()
         this.active=false;
       } 
+    },
+     eventListeners(){
+          let elementos = document.querySelectorAll('[id*="times"]');
+          console.log(elementos);
+          const method = this.changeStatus;
+
+          elementos.forEach(function(elemento) {
+              elemento.addEventListener('click', async function() {
+                  const id = elemento.id.toString().split('-')[1]
+                  await method(id)
+              });
+          });
     }
   },
+  watch:{
+    users: async function(){
+      console.log("Hola");
+    }
+  }
   
 
 };
