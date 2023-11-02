@@ -49,13 +49,14 @@
                       >
                         <i class="fa fa-pencil-square-o text-secondary"></i>
                       </router-link>
-                        <a
+                        <router-link
+                          :to="{ name: 'Detalles Método', params:{id:id} }"
                           class="mx-3"
                           data-bs-toggle="tooltip"
                           data-bs-original-title="Detalles del método"
                       >
                         <i class="fas fa-eye text-secondary"></i>
-                      </a>
+                      </router-link>
                        <a
                         data-bs-toggle="tooltip"
                         data-bs-original-title="Desactivar método"

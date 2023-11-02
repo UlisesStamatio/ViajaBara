@@ -10,6 +10,7 @@ import DetailUser from "../modules/users/adapters/views/DetailUser.vue";
 import ListMethod from "../modules/payment-methods/adapters/views/ListMethod.vue";
 import NewMethod from "../modules/payment-methods/adapters/views/NewMethod.vue";
 import UpdateMethod from "../modules/payment-methods/adapters/views/UpdateMethod.vue";
+import DetailMethod from "../modules/payment-methods/adapters/views/DetailMethod.vue";
 import ListBus from "../modules/buses/adapters/views/ListBus.vue";
 import NewBus from "../modules/buses/adapters/views/NewBus.vue";
 import UpdateBus from "../modules/buses/adapters/views/UpdateBus.vue";
@@ -94,6 +95,12 @@ const routes = [
     path: "/metodo/consultar/modificar/:id",
     name: "Modificar Método",
     component: UpdateMethod,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: "/metodo/consultar/detalles/:id",
+    name: "Detalles Método",
+    component: DetailMethod,
     meta: { requiresAuth: true }
   },
   {
