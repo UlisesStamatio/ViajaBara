@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:viajabara/kernel/colors/colors_app.dart';
+import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/modules/history/adapters/screens/historyStars.dart';
 
 class History extends StatefulWidget {
@@ -75,7 +75,11 @@ class _HistoryState extends State<History> {
                               widthFactor: 0.75,
                               child: ElevatedButton(
                                 onPressed: () {
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const HistoryStars()));
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const HistoryStars()));
                                 },
                                 style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all(
@@ -201,7 +205,7 @@ class _HistoryState extends State<History> {
                         )
                       ],
                     ),
-                  ),  
+                  ),
                   // *************************************
                 ],
               ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:viajabara/kernel/colors/colors_app.dart';
+import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 
 class CardSquare extends StatelessWidget {
   CardSquare({
@@ -20,12 +20,11 @@ class CardSquare extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         height: 250,
-        width: null,
         child: GestureDetector(
           onTap: tap,
           child: Card(
               elevation: 0.4,
-              shape: RoundedRectangleBorder(
+              shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(8.0))),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,7 +32,7 @@ class CardSquare extends StatelessWidget {
                   Flexible(
                       flex: 3,
                       child: Container(
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                         borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(6.0),
                             topRight: Radius.circular(6.0)),
@@ -48,10 +47,10 @@ class CardSquare extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(title,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     color: ColorsApp.header, fontSize: 13)),
                             Text(cta,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     color: ColorsApp.primayColor,
                                     fontSize: 11,
                                     fontWeight: FontWeight.w600))

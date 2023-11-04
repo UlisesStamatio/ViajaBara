@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:viajabara/kernel/colors/colors_app.dart';
-import 'package:viajabara/kernel/validations/validations.dart';
+import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 
 class Register2 extends StatefulWidget {
   const Register2({super.key});

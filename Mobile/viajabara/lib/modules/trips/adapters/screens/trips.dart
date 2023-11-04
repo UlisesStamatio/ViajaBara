@@ -1,9 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:viajabara/config/navigation/general_mechanisms_navigation.dart';
-import 'package:viajabara/kernel/colors/colors_app.dart';
+import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 
-import 'package:viajabara/modules/generalMechanisms/adapters/screens/login.dart';
 import 'package:viajabara/modules/trips/adapters/screens/traveling.dart';
 
 class Trips extends StatefulWidget {
@@ -27,23 +25,13 @@ class _TripsState extends State<Trips> {
         foregroundColor: ColorsApp.muted2,
         actions: <Widget>[
           Container(
-            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Image.asset(
               'assets/images/viajabara_logo_purple.png',
               width: 100,
               height: 50,
-              color: ColorsApp.muted2,
+              color: ColorsApp.primayColor,
             ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.logout, color: ColorsApp.primayColor),
-            onPressed: () {
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(
-                    builder: (context) => const GeneralMechanismsNavigation()),
-                (route) => false,
-              );
-            },
           ),
         ],
         backgroundColor: ColorsApp.whiteColor,
@@ -72,7 +60,6 @@ class _TripsState extends State<Trips> {
                     margin: const EdgeInsets.all(10),
                     child: Column(
                       children: <Widget>[
-                        // Primera fila con icono y descripción
                         Container(
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           child: const Column(
@@ -82,7 +69,6 @@ class _TripsState extends State<Trips> {
                             ],
                           ),
                         ),
-                        // Segunda fila con lista de textos (2 por fila)
                         Container(
                           padding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 20),
@@ -100,7 +86,6 @@ class _TripsState extends State<Trips> {
                             },
                           ),
                         ),
-                        // Tercera fila con dos botones
                         Container(
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           child: Row(
@@ -120,24 +105,20 @@ class _TripsState extends State<Trips> {
                                 ]),
                               ),
                               ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) => const Traveling()),
+                                ),
                                 style: ButtonStyle(
                                     backgroundColor: MaterialStateProperty.all(
                                         ColorsApp.primayColor)),
-                                child: InkWell(
-                                  onTap: () => Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const Traveling()),
+                                child: const Row(children: [
+                                  Icon(Icons.play_arrow),
+                                  SizedBox(
+                                    width: 10,
                                   ),
-                                  child: const Row(children: [
-                                    Icon(Icons.play_arrow),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text('En curso')
-                                  ]),
-                                ),
+                                  Text('En curso')
+                                ]),
                               ),
                             ],
                           ),

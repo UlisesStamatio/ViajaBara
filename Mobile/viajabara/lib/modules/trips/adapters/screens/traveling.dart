@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:viajabara/config/navigation/general_mechanisms_navigation.dart';
 import 'package:viajabara/kernel/blocs/gps/gps_bloc.dart';
-import 'package:viajabara/kernel/colors/colors_app.dart';
-import 'package:viajabara/kernel/widgets/check_gps_enabled.dart';
-
-import 'package:viajabara/kernel/widgets/check_permission_localization.dart';
-import 'package:viajabara/modules/generalMechanisms/adapters/screens/login.dart';
+import 'package:viajabara/kernel/themes/colors/colors_app.dart';
+import 'package:viajabara/kernel/widgets/gps/gps_access_screen.dart';
+import 'package:viajabara/kernel/widgets/gps/map_screen.dart';
 
 class Traveling extends StatefulWidget {
   const Traveling({super.key});
@@ -68,24 +66,20 @@ class _TravelingState extends State<Traveling> {
               fit: BoxFit.cover,
             ),
             Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: BlocBuilder<GpsBloc, GpsState>(
-                builder: (context, state) {
-                  print('state $state');
+                top: 0,
+                left: 0,
+                right: 0,
+                child: BlocBuilder<GpsBloc, GpsState>(
+                  builder: (context, state) {
+                    print('state $state');
 
-                  return !state.isGpsEnabled
-                      ? const CheckGpsEnabled()
-                      : !state.isGpsPermissionGranted
-                          ? const CheckPermissionLocalization()
-                          : Card(
-                              child: Text("data"),
-                            );
-                },
-              ),
-              // child: CheckPermissionLocalization(),
-            ),
+                    return state.isAllGranted
+                        ? const MapScreen()
+                        : const GpsAccessScreen();
+                  },
+                )
+                // child: CheckPermissionLocalization(),
+                ),
           ],
         ),
       ),

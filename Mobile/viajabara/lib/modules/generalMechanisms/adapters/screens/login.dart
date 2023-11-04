@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:viajabara/kernel/colors/colors_app.dart';
+import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/validations/validations.dart';
-import 'package:viajabara/kernel/widgets/menu.dart';
-import 'package:viajabara/modules/trips/adapters/screens/trips.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});

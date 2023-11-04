@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:viajabara/kernel/colors/colors_app.dart';
+import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 
 class HistoryStars extends StatelessWidget {
   const HistoryStars({super.key});

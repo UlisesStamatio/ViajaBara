@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:viajabara/kernel/colors/colors_app.dart';
+import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 
 class CustomBottomNavigationTab extends StatelessWidget {
   final int selectedIndex;
@@ -17,11 +17,14 @@ class CustomBottomNavigationTab extends StatelessWidget {
             icon: Icon(CupertinoIcons.bus), label: 'Viajes'),
         BottomNavigationBarItem(icon: Icon(Icons.history), label: 'Historial'),
         BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.profile_circled), label: 'Perfil')
+            icon: Icon(CupertinoIcons.profile_circled), label: 'Perfil'),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.logout), label: 'Cerrar sesión'),
       ],
       currentIndex: selectedIndex,
       selectedItemColor: ColorsApp.primayColor,
       onTap: onItemTapped,
+      unselectedItemColor: ColorsApp.blackColor,
     );
   }
 }
