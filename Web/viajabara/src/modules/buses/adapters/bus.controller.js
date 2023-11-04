@@ -31,10 +31,10 @@ const OperationsController = {
     //   const response = await Operations.updateUser('/', lastData)
     //   return response;
     // },
-    // async listUsers(){
-    //     const response = await Operations.lisUsers('/all-drivers')
-    //     return response;
-    // },
+    async listBuses(){
+        const response = await Operations.listBuses('/all')
+        return response;
+    },
     // async listConsumers(){
     //     const response = await Operations.listConsumers('/all-consumers')
     //     return response;

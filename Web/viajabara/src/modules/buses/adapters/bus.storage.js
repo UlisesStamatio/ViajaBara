@@ -19,20 +19,20 @@ const Operations = {
       return response;
     },
 
-    // async lisUsers(url){
-    //   let response;
-    //   try {
-    //     response= await axiosInstance.get(`${BASE_URL_USER}${url}`);
-    //     response = statusValidator(response);
-    //   } catch (error) {
-    //     if(error.response){
-    //       response = statusValidator(error.response);
-    //     }else{
-    //       router.push({name: 'Error Error403'})
-    //     }
-    //   }
-    //   return response;
-    // },
+    async listBuses(url){
+      let response;
+      try {
+        response= await axiosInstance.get(`${BASE_URL_BUS}${url}`);
+        response = statusValidator(response);
+      } catch (error) {
+        if(error.response){
+          response = statusValidator(error.response);
+        }else{
+          router.push({name: 'Error Error403'})
+        }
+      }
+      return response;
+    },
 
     // async listConsumers(url){
     //   let response;
