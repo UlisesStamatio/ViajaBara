@@ -6,7 +6,9 @@ const OperationsController = {
       const response = await Operations.login('/login', data)
       if(!response.error){
         let {data:{token}} = response
+        let {data} = response
         storeSession.setToken(token);
+        storeSession.setDataSession(data)
       }
       return response;
     }

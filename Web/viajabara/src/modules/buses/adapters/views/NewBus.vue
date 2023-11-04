@@ -1,4 +1,5 @@
 <template>
+<Loader :isLoading="isLoading"/>
   <div class="py-4 container-fluid">
     <form class="mt-4 row" @submit.prevent="preNewBus()">
       <div class="col-lg-4">
@@ -157,10 +158,12 @@ import imagesEmpty from '../../../../assets/img/errorImagen.png'
 import busValidator from '../../../../kernel/validators/bus.validator'
 import newBus from '../../use-cases/new.bus'
 import router from '../../../../router/index'
+import Loader from '../../../../components/Loader.vue'
 
 export default {
   name: "NewBus",
    components: {
+    Loader,
   },
   data(){
      return{
@@ -181,6 +184,7 @@ export default {
         fuel: ""
       },
       image: "",
+      isLoading: false,
      }
   },
   mounted() {
@@ -287,7 +291,9 @@ export default {
         }).then(async(result) => {
           if (result.isConfirmed) {
               bus.image = document.getElementById('image-bus').src.split('base64,')[1]
+              this.isLoading = true;
               const {message, error, data} = await newBus(bus)
+              this.isLoading = false;
               if(!error){
                 const {result:{text}} = data
                 this.$swal({

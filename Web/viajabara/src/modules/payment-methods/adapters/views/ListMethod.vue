@@ -1,4 +1,5 @@
 <template>
+<Loader :isLoading="isLoading"/>
   <div class="py-4 container-fluid">
     <div class="row">
       <div class="col-12">
@@ -94,26 +95,30 @@ import { DataTable } from "simple-datatables";
 import setTooltip from "@/assets/js/tooltip.js";
 import listMethods from '../../use-cases/list.methods'
 import changeStatusMethod from '../../use-cases/change.status.method'
+import Loader from '../../../../components/Loader.vue'
 
 export default {
   name: "ListMethod",
+  components:{
+    Loader,
+  },
   data(){
     return{
       methods: [],
       datatable: {},
+      isLoading: false,
     }
   },
   async mounted() {
     await this.datatableMethods()
     setTooltip(this.$store.state.bootstrap);
-
-
-
   },
   methods:{
     async listMethods(){
+      this.isLoading = true;
       const response = {...await listMethods()};
       const {error, data} = response;
+      this.isLoading = false;
       if(!error){
           const {result} = data
           this.methods = result
@@ -167,8 +172,10 @@ export default {
             buttonsStyling: false,
           }).then(async(result) => {
             if (result.isConfirmed) {
+                this.isLoading = true;
                 const response = {...await changeStatusMethod(id)};
                 const {error, data, message} = response;
+                this.isLoading = false;
                 if(!error){
                     const {result:{text}} =data
                     this.$swal({

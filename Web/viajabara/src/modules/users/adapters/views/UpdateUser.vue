@@ -1,8 +1,7 @@
 <template>
+<Loader :isLoading="isLoading"/>
   <div class="container-fluid">
-
-
-    <form class="row g-3" @submit.prevent="preNewUser">
+    <form class="row g-3" @submit.prevent="preUpdateUser">
       <div class="col-12 col-sm-4">
         <div class="mt-4 card card-body">
                     <div class="row text-center">
@@ -236,9 +235,13 @@ import router from '../../../../router/index'
 import listStates from '../../../state/use-cases/list.state'
 import getUser from '../../use-cases/get.user'
 import updateUser from '../../use-cases/update.user'
+import Loader from '../../../../components/Loader.vue'
 
 export default {
-  name: "NewUser",
+  name: "UpdateUser",
+  components:{
+    Loader
+  },
   data() {
     return {
       showMenu: false,
@@ -276,6 +279,7 @@ export default {
       },
       idUser: 0,
       userOriginal: {},
+      isLoading: false,
     };
   },
   computed:{
@@ -327,9 +331,11 @@ export default {
       }
     },
     async getUser(id){
+      this.isLoading = true;
       const response = {...await getUser(id)};
       const {error, data} = response;
-        if(!error){
+      this.isLoading = false;
+      if(!error){
           const {result:{profile}} = data
           const {result} = data
           document.getElementById("image_profile").src = `data:image/png;base64,${profile}`;
@@ -369,7 +375,7 @@ export default {
       this.errors = {}
        router.push({name: 'Consultar Usuarios'})
     },
-    async preNewUser(){
+    async preUpdateUser(){
       let user  = { ...this.user} 
       this.errors.name = userValidator.validateName(user.name);
       this.errors.lastname = userValidator.validateLastname(user.lastname);
@@ -402,8 +408,10 @@ export default {
             if (result.isConfirmed) {
                 user.id =  this.idUser
                 user.profile = document.getElementById('image_profile').src.split('base64,')[1]
+                this.isLoading = true;
                 const response = await updateUser(user)
                 const {message, error, data}  = response
+                 this.isLoading = false;
                 if(!error){
                   const {result:{text}} = data
                   this.$swal({
