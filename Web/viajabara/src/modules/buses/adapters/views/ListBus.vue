@@ -34,7 +34,7 @@
                   </tr>
                 </thead>
                 <tbody v-if="buses.length !== 0">
-                  <tr v-for="({serial, mark, model, status}, index) in buses" :key="index">
+                  <tr v-for="({serial, mark, model, status, id}, index) in buses" :key="index">
                     <td>
                       {{index + 1}}
                     </td>
@@ -49,7 +49,7 @@
                     <td class="text-sm">
 
                       <router-link
-                        :to="{ name: 'Modificar Autobus' }"
+                        :to="{ name: 'Modificar Autobus', params:{id:id} }"
 
                         data-bs-toggle="tooltip"
                         data-bs-original-title="Editar autobus"

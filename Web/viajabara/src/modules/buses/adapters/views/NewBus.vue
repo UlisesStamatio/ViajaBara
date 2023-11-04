@@ -15,7 +15,7 @@
               </div>
               <div class="col-12 mt-2 text-center">
                  <input type="file" id="img-input" class="d-none" @change="handleFileChange" accept=".png, .jpg, .jpeg" > 
-                 <div :class="{'invalid-feedback':errors.profile}" style="color: red;">
+                 <div  style="color: red;">
                   {{ errors.image}}
                 </div>
               </div>
