@@ -57,19 +57,18 @@
                         <i class="fa fa-pencil-square-o text-secondary"></i>
                       </router-link>
                       
-                        <a
-                        href="javascript:;"
+                        <router-link
+                        :to="{ name: 'Detalles Autobus', params:{id:id} }"
                         class="mx-3"
                         data-bs-toggle="tooltip"
                         data-bs-original-title="Detalles del autobus"
                       >
                         <i class="fas fa-eye text-secondary"></i>
-                      </a>
+                      </router-link>
                       <a
                         v-cloak
                         data-bs-toggle="tooltip"
                         data-bs-original-title="Desactivar autobus"
-                        class="mx-3"
                         v-if="status"
                         :id="'times-' + id"
                       >
@@ -79,7 +78,6 @@
                         v-cloak
                         data-bs-toggle="tooltip"
                         data-bs-original-title="Activar autobus"
-                        class="mx-3"
                         v-if="!status"
                         :id="'times-' + id"
                         >

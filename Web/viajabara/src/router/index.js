@@ -14,6 +14,7 @@ import DetailMethod from "../modules/payment-methods/adapters/views/DetailMethod
 import ListBus from "../modules/buses/adapters/views/ListBus.vue";
 import NewBus from "../modules/buses/adapters/views/NewBus.vue";
 import UpdateBus from "../modules/buses/adapters/views/UpdateBus.vue";
+import DetailBus from "../modules/buses/adapters/views/DetailBus.vue";
 import ListRoute from "../modules/routes/adapters/views/ListRoute.vue";
 import NewRoute from "../modules/routes/adapters/views/NewRoute.vue";
 import UpdateRoute from "../modules/routes/adapters/views/UpdateRoute.vue";
@@ -119,6 +120,12 @@ const routes = [
     path: "/autobus/consultar/modificar/:id",
     name: "Modificar Autobus",
     component: UpdateBus,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: "/autobus/consultar/detalles/:id",
+    name: "Detalles Autobus",
+    component: DetailBus,
     meta: { requiresAuth: true }
   },
   {
