@@ -38,13 +38,26 @@
                       </div>
                     </div>
 
-                    <div class=" col-12 mb-2">
+                    <div class=" col-12 mb-2">  
                       <label>Contraseña</label>
-                      <input type="password" v-model="form.password" class="form-control" placeholder="Ingresa tu contraseña" :class="{ 'is-invalid': errors.password, 'is-valid': errors.password === null }" required/> 
-                      <div class="invalid-feedback" v-if="errors.password">
+                          <div class="input-group flex-nowrap">
+                            <input
+                            :type="showPassword ? 'text' : 'password'" 
+                            class="form-control" 
+                            placeholder="Ingresa tu contraseña" 
+                            id="password-input"  
+                            v-model="form.password"
+                            :class="{ 'is-invalid': errors.password, 'is-valid': errors.password === null }"
+                            />
+                            <span class="input-group-text" id="password-input" @click="togglePasswordVisibility">
+                              <i class="fas" :class="showPassword ?  'fa-eye' : 'fa-eye-slash' "></i>
+                            </span>
+                        </div>
+                         <div style="font-size: 0.875em; color: #fd5c70;" v-if="errors.password">
                           {{ errors.password }}
-                      </div>
+                        </div>
                     </div>
+
 
                     <div class="col-12 mb-2">
                       <label for="submit" class="form-label mb-2" >Captcha</label>
@@ -148,6 +161,7 @@ export default {
         captcha: ""
       },
       isLoading: false,
+      showPassword: false,
     }
   },
   mounted(){
@@ -204,6 +218,9 @@ export default {
 
 
       //router.push({ name: 'Modificar Viaje' });
+    },
+     togglePasswordVisibility() {
+      this.showPassword = !this.showPassword;
     }
   },
   created() {
@@ -232,4 +249,5 @@ export default {
   .selectable{
     cursor: pointer;
   }
+
 </style>
