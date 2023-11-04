@@ -1,4 +1,5 @@
 <template>
+  <Loader :isLoading="isLoading"/>
   <div class="container top-0 position-sticky z-index-sticky">
     <div class="row">
       <div class="col-12">
@@ -28,7 +29,7 @@
 
                   <form class="row g-3 needs-validation" novalidate @submit.prevent="prelogin">
                     <div class="col-12 mb-2">
-                      <label>Email</label>
+                      <label>Correo</label>
                       <div class="input-group has-validation">
                         <input type="email" v-model="form.email" class="form-control" :class="{ 'is-invalid': errors.email, 'is-valid': errors.email === null }" placeholder="Ingresa tu correo" required/> 
                         <div class="invalid-feedback" v-if="errors.email">
@@ -124,12 +125,14 @@ import Validations from "../../../../kernel/validators/login.validator"
 import Login from '../../use-cases/login'
 import router from '../../../../router/index'
 import { mapMutations } from "vuex";
+import Loader from '../../../../components/Loader.vue'
 const body = document.getElementsByTagName("body")[0];
 
 export default {
   name: "Login",
   components: {
     Navbar,
+    Loader,
   },
   data(){
     return {
@@ -143,7 +146,8 @@ export default {
         email: "",
         password: "",
         captcha: ""
-      }
+      },
+      isLoading: false,
     }
   },
   mounted(){
@@ -173,8 +177,10 @@ export default {
       }
 
       if(!this.errors.email && !this.errors.captcha && !this.errors.password){
+          this.isLoading = true;
           const response = await Login(form)
           const {data, error} = response;
+          this.isLoading = false;
           if(!error){
             const {roles} = data;
             if(roles.some((rol) => rol.keyRole === 'ADMIN')){

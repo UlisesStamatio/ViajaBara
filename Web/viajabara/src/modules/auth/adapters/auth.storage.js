@@ -8,6 +8,7 @@ const Operations = {
       let response;
       try {
         response= await axiosInstance.post(`${BASE_URL}${url}`, JSON.stringify(data));
+        console.log(response);
         response = statusValidator(response);
       } catch (error) {
         if(error.response){

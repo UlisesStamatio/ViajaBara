@@ -114,6 +114,7 @@ export default {
     },
     logout(){
       storeSession.deleteToken()
+      storeSession.deleteDataSession()
       router.push({name: "Signin Illustration"})
     }
   },

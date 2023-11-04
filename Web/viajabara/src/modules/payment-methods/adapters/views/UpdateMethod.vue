@@ -1,4 +1,5 @@
 <template>
+  <Loader :isLoading="isLoading"/>
   <div class="container-fluid" >
     <form class="row" @submit.prevent="preUpdateMethod()">
       <div class="mx-auto col-lg-12 col-12">
@@ -70,11 +71,12 @@ import methodValidator from '../../../../kernel/validators/method.validator'
 import router from '../../../../router/index'
 import updateMethod from '../../use-cases/update.method'
 import getMethod from '../../use-cases/get.method'
+import Loader from '../../../../components/Loader.vue'
 
 export default {
   name: "NewMethod",
   components: {
-
+    Loader
   },
   data() {
     return {
@@ -92,6 +94,7 @@ export default {
       },
       idMethod:0,
       methodOriginal: {},
+      isLoading: false,
     };
   },
   async mounted() {
@@ -147,8 +150,10 @@ export default {
       router.push({name: 'Consultar Métodos'})
     },
      async getMethod(id){
+      this.isLoading = true;
       const response = {...await getMethod(id)};
       const {error, data} = response;
+      this.isLoading = false;
         if(!error){
           const {result} = data
           this.method = result;
@@ -183,7 +188,9 @@ export default {
         }).then(async(result) => {
           if (result.isConfirmed) {
               method.id = this.idMethod 
+              this.isLoading = true;
               const {message, error, data} = await updateMethod(method)
+              this.isLoading = false;
               if(!error){
                 const {result:{text}} = data
                 this.$swal({

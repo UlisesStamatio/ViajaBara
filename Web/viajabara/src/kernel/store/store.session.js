@@ -10,6 +10,18 @@ const storeSession = {
     },
     deleteToken(){
         localStorage.removeItem("session")
+    },
+
+    setDataSession(data){
+        localStorage.setItem('data', JSON.stringify(data))
+    },
+    getDataSession(){
+        let data = localStorage.getItem('data')
+        data = JSON.parse(data)
+        return data;
+    },
+    deleteDataSession(){
+        localStorage.removeItem("data")
     }
 }
 

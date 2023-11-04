@@ -19,7 +19,8 @@ import VueTilt from "vue-tilt.js";
 import VueSweetalert2 from "vue-sweetalert2";
 import VueAxios from "vue-axios";
 import SoftUIDashboard from "./soft-ui-dashboard";
-import axiosInstance from "./config/axios";
+import axiosInstance from "./config/axios"
+import VueGoogleMaps from '@fawmi/vue-google-maps';
 
 const appInstance = createApp(App);
 appInstance.use(store);
@@ -28,6 +29,12 @@ appInstance.use(VueTilt);
 appInstance.use(VueSweetalert2);
 appInstance.use(SoftUIDashboard);
 appInstance.use(VueAxios, axiosInstance)
+appInstance.use(VueGoogleMaps, {
+    load:{
+        key: process.env.GOOGLE_MAPS_API_KEY || ''
+    },
+    autobindAllEvents: true,
+})
 
 
 appInstance.mount("#app");
