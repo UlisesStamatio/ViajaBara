@@ -13,18 +13,14 @@ const OperationsController = {
         const response = await Operations.listBuses('/all')
         return response;
     },
-    // async listConsumers(){
-    //     const response = await Operations.listConsumers('/all-consumers')
-    //     return response;
-    // },
     async getBus(payload){
         const response = await Operations.getBus('/getOne', payload)
         return response;
     },
-    // async changeStatusUser(payload){
-    //     const response = await Operations.changeStatusUser('/change-status', payload)
-    //     return response;
-    // }
+    async changeStatusBus(payload){
+        const response = await Operations.changeStatusBus('/change-status', payload)
+        return response;
+    }
 }
 
 export default OperationsController;
