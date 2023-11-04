@@ -1,4 +1,5 @@
 <template>
+<Loader :isLoading="isLoading"/>
   <div class="py-4 container-fluid">
     <div class="row">
       <div class="col-12">
@@ -104,13 +105,18 @@ import { DataTable } from "simple-datatables";
 import setTooltip from "@/assets/js/tooltip.js";
 import listBuses from '../../use-cases/list.bus'
 import changeStatusBus from '../../use-cases/change.status.bus'
+import Loader from '../../../../components/Loader.vue'
 
 export default {
   name: "ListBus",
+  components:{
+    Loader,
+  },
   data(){
     return{
       buses: [],
       datatable: {},
+      isLoading: false,
     }
   },
   async mounted() {
@@ -119,8 +125,10 @@ export default {
   },
   methods:{
     async listBuses(){
+      this.isLoading = true;
       const response = {...await listBuses()};
       const {error, data} = response;
+      this.isLoading = false;
       if(!error){
           const {result} = data
           this.buses = result
@@ -170,8 +178,10 @@ export default {
             buttonsStyling: false,
           }).then(async(result) => {
             if (result.isConfirmed) {
+                this.isLoading = true;
                 const response = {...await changeStatusBus(id)};
                 const {error, data, message} = response;
+                this.isLoading = false;
                 if(!error){
                     const {result:{text}} =data
                     this.$swal({

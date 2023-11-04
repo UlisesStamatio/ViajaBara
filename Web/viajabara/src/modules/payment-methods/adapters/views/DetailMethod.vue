@@ -1,4 +1,5 @@
 <template>
+<Loader :isLoading="isLoading"/>
   <div class="container-fluid" >
     <div class="row" >
       <div class="mx-auto col-lg-12 col-12">
@@ -52,11 +53,12 @@ import Quill from "quill";
 import Choices from "choices.js";
 import router from '../../../../router/index'
 import getMethod from '../../use-cases/get.method'
+import Loader from '../../../../components/Loader.vue'
 
 export default {
   name: "DetailMethod",
   components: {
-
+    Loader,
   },
   data() {
     return {
@@ -69,6 +71,7 @@ export default {
         apikey: ""
       },
       idMethod:0,
+      isLoading: false,
     };
   },
   async mounted() {
@@ -114,8 +117,10 @@ export default {
       router.push({name: 'Consultar Métodos'})
     },
      async getMethod(id){
+      this.isLoading = true;
       const response = {...await getMethod(id)};
       const {error, data} = response;
+      this.isLoading = false;
         if(!error){
           const {result} = data
           this.method = result;
