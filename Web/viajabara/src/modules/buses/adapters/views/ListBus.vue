@@ -29,370 +29,66 @@
                     <th>Número de serie</th>
                     <th>Marca</th>
                     <th>Modelo</th>
-                    <th>Cantidad</th>
                     <th>Estatus</th>
                     <th>Acciones</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
+                <tbody v-if="buses.length !== 0">
+                  <tr v-for="({serial, mark, model, status, id}, index) in buses" :key="index">
                     <td>
-                      1
+                      {{index + 1}}
                     </td>
-                    <td class="text-sm">23456789</td>
-                    <td class="text-sm">TransporteMaxPlus</td>
-                    <td class="text-sm">MaxRider3000</td>
-                    <td class="text-sm">38</td>
+                    <td class="text-sm">{{serial}}</td>
+                    <td class="text-sm">{{mark}}</td>
+                    <td class="text-sm">{{model}}</td>
                     <td>
-                      <span class="badge badge-success badge-sm"
-                        >Activo</span
+                       <span class="badge  badge-sm" :class="{'badge-success': status, 'badge-danger': !status}"
+                        >{{status ? 'Activo' : 'Inactivo'}}</span
                       >
                     </td>
                     <td class="text-sm">
 
                       <router-link
-                        :to="{ name: 'Modificar Autobus' }"
+                        :to="{ name: 'Modificar Autobus', params:{id:id} }"
 
                         data-bs-toggle="tooltip"
-                        data-bs-original-title="Editar producto"
+                        data-bs-original-title="Editar autobus"
                       >
                         <i class="fa fa-pencil-square-o text-secondary"></i>
                       </router-link>
                       
-                        <a
-                        href="javascript:;"
+                        <router-link
+                        :to="{ name: 'Detalles Autobus', params:{id:id} }"
                         class="mx-3"
                         data-bs-toggle="tooltip"
-                        data-bs-original-title="Preview product"
+                        data-bs-original-title="Detalles del autobus"
                       >
                         <i class="fas fa-eye text-secondary"></i>
-                      </a>
+                      </router-link>
                       <a
-                        href="javascript:;"
+                        v-cloak
                         data-bs-toggle="tooltip"
-                        data-bs-original-title="Delete product"
+                        data-bs-original-title="Desactivar autobus"
+                        v-if="status"
+                        :id="'times-' + id"
                       >
-                        <i class="fa fa-times-circle text-secondary"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      2
-                    </td>
-                    <td class="text-sm">98765432</td>
-                    <td class="text-sm">EcoViajeSupremo</td>
-                    <td class="text-sm">EcoLuxExpress</td>
-                    <td class="text-sm">35</td>
-                    <td>
-                      <span class="badge badge-success badge-sm"
-                        >Activo</span
-                      >
-                    </td>
-                     <td class="text-sm">
-
-                      <a
-                        href="javascript:;"
-
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Edit product"
-                      >
-                        <i class="fa fa-pencil-square-o text-secondary"></i>
+                        <i class="fa fa-times-circle text-secondary" ></i>
                       </a>
                         <a
-                        href="javascript:;"
-                        class="mx-3"
+                        v-cloak
                         data-bs-toggle="tooltip"
-                        data-bs-original-title="Preview product"
-                      >
-                        <i class="fas fa-eye text-secondary"></i>
-                      </a>
-                      <a
-                        href="javascript:;"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Delete product"
-                      >
-                        <i class="fa fa-times-circle text-secondary"></i>
+                        data-bs-original-title="Activar autobus"
+                        v-if="!status"
+                        :id="'times-' + id"
+                        >
+                        <i class="fa fa-check-circle text-secondary" ></i>
                       </a>
                     </td>
                   </tr>
 
-                  <tr>
-                    <td>
-                      3
-                    </td>
-                    <td class="text-sm">12345678</td>
-                    <td class="text-sm">MegaTurismoUltra</td>
-                    <td class="text-sm">UltraVoyagerX</td>
-                    <td class="text-sm">40</td>
-                    <td>
-                      <span class="badge badge-success badge-sm">Activo</span>
-                    </td>
-                      <td class="text-sm">
-
-                      <a
-                        href="javascript:;"
-
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Edit product"
-                      >
-                        <i class="fa fa-pencil-square-o text-secondary"></i>
-                      </a>
-                        <a
-                        href="javascript:;"
-                        class="mx-3"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Preview product"
-                      >
-                        <i class="fas fa-eye text-secondary"></i>
-                      </a>
-                      <a
-                        href="javascript:;"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Delete product"
-                      >
-                        <i class="fa fa-times-circle text-secondary"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                     4
-                    </td>
-                    <td class="text-sm">87654321</td>
-                    <td class="text-sm">TransContinentalXpress</td>
-                    <td class="text-sm">TransMaxPro</td>
-                    <td class="text-sm">37</td>
-                    <td>
-                      <span class="badge badge-success badge-sm"
-                        >Activo</span
-                      >
-                    </td>
-                    <td class="text-sm">
-
-                      <a
-                        href="javascript:;"
-
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Edit product"
-                      >
-                        <i class="fa fa-pencil-square-o text-secondary"></i>
-                      </a>
-                        <a
-                        href="javascript:;"
-                        class="mx-3"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Preview product"
-                      >
-                        <i class="fas fa-eye text-secondary"></i>
-                      </a>
-                      <a
-                        href="javascript:;"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Delete product"
-                      >
-                        <i class="fa fa-times-circle text-secondary"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                     5
-                    </td>
-                    <td class="text-sm">34567890</td>
-                    <td class="text-sm">EcoTravesíaDeluxe</td>
-                    <td class="text-sm">DeluxeEcoRider</td>
-                    <td class="text-sm">34</td>
-                    <td>
-                      <span class="badge badge-success badge-sm">Activo</span>
-                    </td>
-                    <td class="text-sm">
-
-                      <a
-                        href="javascript:;"
-
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Edit product"
-                      >
-                        <i class="fa fa-pencil-square-o text-secondary"></i>
-                      </a>
-                        <a
-                        href="javascript:;"
-                        class="mx-3"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Preview product"
-                      >
-                        <i class="fas fa-eye text-secondary"></i>
-                      </a>
-                      <a
-                        href="javascript:;"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Delete product"
-                      >
-                        <i class="fa fa-times-circle text-secondary"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                     6
-                    </td>
-                    <td class="text-sm">56789012</td>
-                    <td class="text-sm">MajesticRideMaster</td>
-                    <td class="text-sm">MajesticMasterRider</td>
-                    <td class="text-sm">39</td>
-                    <td>
-                      <span class="badge badge-danger badge-sm">Inactivo</span>
-                    </td>
-                   <td class="text-sm">
-
-                      <a
-                        href="javascript:;"
-
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Edit product"
-                      >
-                        <i class="fa fa-pencil-square-o text-secondary"></i>
-                      </a>
-                        <a
-                        href="javascript:;"
-                        class="mx-3"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Preview product"
-                      >
-                        <i class="fas fa-eye text-secondary"></i>
-                      </a>
-                      <a
-                        href="javascript:;"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Delete product"
-                      >
-                        <i class="fa fa-check-circle text-secondary"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                     7
-                    </td>
-                    <td class="text-sm">43210987</td>
-                    <td class="text-sm">TurboEstrellaMáxima</td>
-                    <td class="text-sm">TurboMaxEstrella</td>
-                    <td class="text-sm">36</td>
-                    <td>
-                      <span class="badge badge-danger badge-sm">Inactivo</span>
-                    </td>
-                    <td class="text-sm">
-
-                      <a
-                        href="javascript:;"
-
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Edit product"
-                      >
-                        <i class="fa fa-pencil-square-o text-secondary"></i>
-                      </a>
-                        <a
-                        href="javascript:;"
-                        class="mx-3"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Preview product"
-                      >
-                        <i class="fas fa-eye text-secondary"></i>
-                      </a>
-                      <a
-                        href="javascript:;"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Delete product"
-                      >
-                        <i class="fa fa-check-circle text-secondary"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                     8
-                    </td>
-                    <td class="text-sm">Clothing</td>
-                    <td class="text-sm">$1,199</td>
-                    <td class="text-sm">00121399</td>
-                    <td class="text-sm">51293</td>
-                    <td>
-                      <span class="badge badge-success badge-sm">in Stock</span>
-                    </td>
-                    <td class="text-sm">
-                      <a
-                        href="javascript:;"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Preview product"
-                      >
-                        <i class="fas fa-eye text-secondary"></i>
-                      </a>
-                      <a
-                        href="javascript:;"
-                        class="mx-3"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Edit product"
-                      >
-                        <i class="fas fa-user-edit text-secondary"></i>
-                      </a>
-                      <a
-                        href="javascript:;"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Delete product"
-                      >
-                        <i class="fas fa-trash text-secondary"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      9
-                    </td>
-                    <td class="text-sm">Furniture</td>
-                    <td class="text-sm">$1,900</td>
-                    <td class="text-sm">434729</td>
-                    <td class="text-sm">1100191321</td>
-                    <td>
-                      <span class="badge badge-success badge-sm">In Stock</span>
-                    </td>
-                    <td class="text-sm">
-                      <a
-                        href="javascript:;"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Preview product"
-                      >
-                        <i class="fas fa-eye text-secondary"></i>
-                      </a>
-                      <a
-                        href="javascript:;"
-                        class="mx-3"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Edit product"
-                      >
-                        <i class="fas fa-user-edit text-secondary"></i>
-                      </a>
-                      <a
-                        href="javascript:;"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Delete product"
-                      >
-                        <i class="fas fa-trash text-secondary"></i>
-                      </a>
-                    </td>
-                  </tr>
 
                 </tbody>
                  <tfoot>
-                  <tr>
-                    <th>Product</th>
-                    <th>Category</th>
-                    <th>Price</th>
-                    <th>SKU</th>
-                    <th>Quantity</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
                 </tfoot>
               </table>
             </div>
@@ -406,15 +102,43 @@
 <script>
 import { DataTable } from "simple-datatables";
 import setTooltip from "@/assets/js/tooltip.js";
+import listBuses from '../../use-cases/list.bus'
+import changeStatusBus from '../../use-cases/change.status.bus'
 
 export default {
   name: "ListBus",
-  mounted() {
-    if (document.getElementById("products-list")) {
-      const dataTableSearch = new DataTable("#products-list", {
+  data(){
+    return{
+      buses: [],
+      datatable: {},
+    }
+  },
+  async mounted() {
+    await this.datatableBuses();
+    setTooltip(this.$store.state.bootstrap);
+  },
+  methods:{
+    async listBuses(){
+      const response = {...await listBuses()};
+      const {error, data} = response;
+      if(!error){
+          const {result} = data
+          this.buses = result
+      }else{
+          this.$swal({
+            icon: "error", 
+            title: 'Ocurrio un error durante la consultar. Inténtalo de nuevo.',
+            type: "basic",
+          });
+      }
+    },
+    async datatableBuses(){
+        await this.listBuses()
+        if (document.getElementById("products-list")) {
+      this.datatable =  new DataTable("#products-list", {
         searchable: true,
         fixedHeight: false,
-        perPage: 7,
+        perPage: 5,
         labels: {
             placeholder: "Buscar...", // The search input placeholder
             perPage: "{select} Registros por página", // per-page dropdown label
@@ -424,25 +148,62 @@ export default {
         },
         
       });
+      this.eventListeners()
+      this.datatable.on('datatable.page', () =>{
+              this.eventListeners()
+      })
 
-      document.querySelectorAll(".export").forEach(function (el) {
-        el.addEventListener("click", function () {
-          var type = el.dataset.type;
-
-          var data = {
-            type: type,
-            filename: "soft-ui-" + type,
-          };
-
-          if (type === "csv") {
-            data.columnDelimiter = "|";
-          }
-
-          dataTableSearch.export(data);
-        });
-      });
     }
-    setTooltip(this.$store.state.bootstrap);
-  },
+    },
+    async changeStatus(id){
+       this.$swal({
+            title: "¿Estás segura(a) de realizar la acción?",
+            text: "¡No podrás revertir esto.!",
+            icon: "warning",
+            showCancelButton: true,
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Confirmar",
+            customClass: {
+              confirmButton: "btn bg-gradient-success",
+              cancelButton: "btn bg-gradient-secondary",
+            },
+            buttonsStyling: false,
+          }).then(async(result) => {
+            if (result.isConfirmed) {
+                const response = {...await changeStatusBus(id)};
+                const {error, data, message} = response;
+                if(!error){
+                    const {result:{text}} =data
+                    this.$swal({
+                      icon: "success",
+                      title: message,
+                      text: text,
+                      type: 'success-message',
+                    });
+                    await this.datatableBuses()
+                }else{
+                    this.$swal({
+                      icon: "error", 
+                      title: 'Ocurrio un error durante la actualización. Inténtalo de nuevo.',
+                      type: "basic",
+                  });
+                }
+            } else if (result.dismiss === this.$swal.DismissReason.cancel) {
+              this.$swal.dismiss;
+            }
+          })
+    },
+    eventListeners(){
+          let elementos = document.querySelectorAll('[id*="times"]');
+          const method = this.changeStatus;
+
+          elementos.forEach(function(elemento) {
+              elemento.addEventListener('click', async function() {
+                  const id = elemento.id.toString().split('-')[1]
+                  await method(id)
+              });
+          });
+    }
+  }
 };
 </script>
