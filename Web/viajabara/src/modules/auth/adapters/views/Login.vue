@@ -49,7 +49,7 @@
                             v-model="form.password"
                             :class="{ 'is-invalid': errors.password, 'is-valid': errors.password === null }"
                             />
-                            <span class="input-group-text" id="password-input" @click="togglePasswordVisibility">
+                            <span class="input-group-text" id="password-input" @click="togglePasswordVisibility" style="cursor:pointer;">
                               <i class="fas" :class="showPassword ?  'fa-eye' : 'fa-eye-slash' "></i>
                             </span>
                         </div>
