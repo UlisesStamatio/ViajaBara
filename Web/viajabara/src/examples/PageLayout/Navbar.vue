@@ -1,7 +1,7 @@
 <template>
   <!-- Navbar -->
   <nav
-    class="top-0 navbar navbar-expand-lg position-absolute z-index-3"
+    class="sticky-top top-0 navbar navbar-expand-lg position-absolute z-index-3"
     :class="isBlur ? isBlur : 'shadow-none my-2 navbar-transparent w-100'"
   >
     <div class="container">
@@ -32,60 +32,45 @@
         <ul class="mx-auto navbar-nav navbar-nav-hover">
           <li class="mx-2 nav-item dropdown dropdown-hover">
             <a
-              id="dropdownMenuPages"
-              role="button"
+              :href="'/inicio#home'"
               class="cursor-pointer nav-link ps-2 d-flex justify-content-between align-items-center"
               :class="[darkModes]"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
             >
               Inicio
             </a>
           </li>
           <li class="mx-2 nav-item dropdown dropdown-hover">
             <a
-              id="dropdownMenuAccount"
-              role="button"
+              :href="'/inicio#who'"
               class="cursor-pointer nav-link ps-2 d-flex justify-content-between align-items-center"
               :class="[darkModes]"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
             >
               ¿Quiénes somos?
             </a>
           </li>
           <li class="mx-2 nav-item dropdown dropdown-hover">
             <a
-              id="dropdownMenuBlocks"
-              role="button"
+              :href="'/inicio#route'"
               class="cursor-pointer nav-link ps-2 d-flex justify-content-between align-items-center"
               :class="[darkModes]"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
             >
               Ruta actual
             </a>
           </li>
           <li class="mx-2 nav-item dropdown dropdown-hover">
             <a
-              id="dropdownMenuEcommerce"
-              role="button"
+              :href="'/inicio#services'"
               class="cursor-pointer nav-link ps-2 d-flex justify-content-between align-items-center"
               :class="[darkModes]"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
             >
               Servicios adicionales
             </a>
           </li>
           <li class="mx-2 nav-item dropdown dropdown-hover">
             <a
-              id="dropdownMenuDocs"
-              role="button"
+              :href="'/inicio#quotes'"
               class="cursor-pointer nav-link ps-2 d-flex justify-content-between align-items-center"
               :class="[darkModes]"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
             >
               Cotiza tu viaje
             </a>
@@ -93,12 +78,9 @@
 
             <li class="mx-2 nav-item dropdown dropdown-hover">
             <a
-              id="dropdownMenuDocs"
-              role="button"
+              :href="'/inicio#contact'"
               class="cursor-pointer nav-link ps-2 d-flex justify-content-between align-items-center"
               :class="[darkModes]"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
             >
               Contáctanos
             </a>

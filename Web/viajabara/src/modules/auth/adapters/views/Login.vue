@@ -81,7 +81,7 @@
                   <p class="mx-auto text-sm ">
                     ¿Has olvidado tu contraseña? 
                     <router-link
-                      :to="{ name: 'Signup Illustration' }"
+                      :to="{ name: 'Recuperar Contraseña' }"
                       class=" font-weight-bold"
                     >Recuperar</router-link>
                   </p>

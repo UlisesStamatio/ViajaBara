@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import SignupIllustration from "../views/auth/signup/Illustration.vue";
+
 import Error404 from "../modules/auth/adapters/views/Error404.vue";
 import Error500 from "../modules/auth/adapters/views/Error500.vue";
 import Error403 from "../modules/auth/adapters/views/Error403.vue";
@@ -24,12 +25,13 @@ import NewTravel from "../modules/travels/adapters/views/NewTravel.vue";
 import UpdateTravel from "../modules/travels/adapters/views/UpdateTravel.vue";
 import LandingPage from "../modules/auth/adapters/views/LandingPage.vue";
 import Login from "../modules/auth/adapters/views/Login.vue"
+import ResetPassword from "../modules/auth/adapters/views/ResetPassword.vue"
 
 const routes = [
   {
     path: "/",
     name: "/",
-    redirect: "/inicio",
+    redirect: "/inicio#home",
   },
 
   {
@@ -176,6 +178,12 @@ const routes = [
     name: "Página Inicio",
     component: LandingPage,
   },
+  {
+    path: "/recuperar",
+    name: "Recuperar Contraseña",
+    component: ResetPassword,
+  },
+  
 ];
 
 const router = createRouter({
