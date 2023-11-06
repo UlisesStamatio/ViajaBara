@@ -151,11 +151,11 @@ export default {
       const response = {...await getProfile(identKey)};
       const {error, data} = response;
         if(!error){
-           const {result:{profile, name, surname}} = data
+           const {result:{profile, name, surname, lastname}} = data
            const {result} = data
            document.getElementById("image-profile").src = `data:image/png;base64,${profile}`;
            this.user = result;
-           this.name = `${name} ${surname}`
+           this.name = `${name} ${lastname} ${surname}`
       }else{
            this.$swal({
             icon: "error", 
