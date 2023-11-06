@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:viajabara/kernel/colors/colors_app.dart'; // Asegúrate de que esta ruta sea correcta
+import 'package:viajabara/kernel/colors/colors_app.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class HistoryUser extends StatefulWidget {
   const HistoryUser({Key? key}) : super(key: key);
@@ -104,7 +105,7 @@ class _HistoryUserState extends State<HistoryUser> {
                                 TextButton.icon(
                                   icon: const Icon(Icons.thumb_up_outlined),
                                   label: const Text('Calificar'),
-                                  onPressed: () {},
+                                  onPressed: () => _mostrarModal(context),
                                   style: TextButton.styleFrom(
                                       primary: Colors.white,
                                       backgroundColor: ColorsApp.primayColor,
@@ -131,8 +132,8 @@ class _HistoryUserState extends State<HistoryUser> {
                             children: <Widget>[
                               CircleAvatar(
                                 radius: 45,
-                                backgroundImage: AssetImage(
-                                    'assets/images/Girl.png'),
+                                backgroundImage:
+                                    AssetImage('assets/images/Girl.png'),
                               ),
                               SizedBox(width: 20.0),
                               Expanded(
@@ -181,7 +182,8 @@ class _HistoryUserState extends State<HistoryUser> {
                                       minimumSize: const Size(150, 40)),
                                 ),
                                 TextButton.icon(
-                                  icon: const Icon(Icons.star_purple500_outlined),
+                                  icon:
+                                      const Icon(Icons.star_purple500_outlined),
                                   label: const Text('4/5'),
                                   onPressed: () {},
                                   style: TextButton.styleFrom(
@@ -199,6 +201,96 @@ class _HistoryUserState extends State<HistoryUser> {
                   // Puedes agregar más tarjetas aquí si es necesario
                 ],
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _mostrarModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(25.0),
+        ),
+      ),
+      builder: (BuildContext context) {
+        return _contenidoDelModal();
+      },
+    );
+  }
+
+  Widget _contenidoDelModal() {
+    double screenHeight = MediaQuery.of(context).size.height;
+    return Container(
+      height: screenHeight * 0.8,
+      padding: const EdgeInsets.all(20.0),
+      color: Colors.transparent,
+      child: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            const CircleAvatar(
+              radius: 80.0,
+              backgroundImage: AssetImage('assets/images/perfilGirl.avif'),
+            ),
+            const SizedBox(height: 10.0),
+            const Text('Nathaly Escalona', style: TextStyle(fontSize: 25.0)),
+            const SizedBox(height: 10.0),
+            const Text('¿Qué te ha parecido el viaje?',
+                style: TextStyle(fontSize: 20.0)),
+            const SizedBox(height: 10.0),
+            const Text('Calificación',
+                style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 10.0),
+            RatingBar.builder(
+              initialRating: 3,
+              minRating: 1,
+              direction: Axis.horizontal,
+              allowHalfRating: true,
+              itemCount: 5,
+              itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+              itemBuilder: (context, _) =>
+                  const Icon(Icons.star, color: Colors.amber),
+              onRatingUpdate: (rating) {
+                print(rating);
+              },
+            ),
+            const SizedBox(height: 20.0),
+            const TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                labelText: 'Comentarios',
+              ),
+              maxLines: 3,
+            ),
+            const SizedBox(height: 20.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                TextButton.icon(
+                  icon: const Icon(Icons.arrow_forward_ios_outlined),
+                  label: const Text('Omitir'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  style: TextButton.styleFrom(
+                      primary: Colors.white,
+                      backgroundColor: ColorsApp.primayColor,
+                      minimumSize: const Size(150, 40)),
+                ),
+                TextButton.icon(
+                  icon: const Icon(Icons.thumb_up_outlined),
+                  label: const Text('Calificar'),
+                  onPressed: () {},
+                  style: TextButton.styleFrom(
+                      primary: Colors.white,
+                      backgroundColor: ColorsApp.primayColor,
+                      minimumSize: const Size(150, 40)),
+                ),
+              ],
             ),
           ],
         ),
