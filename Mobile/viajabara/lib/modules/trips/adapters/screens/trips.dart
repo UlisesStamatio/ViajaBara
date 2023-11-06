@@ -64,30 +64,62 @@ class _TripsState extends State<Trips> {
                           padding: const EdgeInsets.symmetric(vertical: 10),
                           child: const Column(
                             children: <Widget>[
-                              Icon(CupertinoIcons.bus, size: 28.0),
+                              Icon(CupertinoIcons.bus, size: 50.0),
                               Text('Horario'),
                             ],
                           ),
                         ),
                         Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 20),
-                          height: 125.0,
-                          child: GridView.builder(
-                            shrinkWrap: false,
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              childAspectRatio: 5,
-                              crossAxisCount: 2,
-                            ),
-                            itemCount: 5,
-                            itemBuilder: (context, index) {
-                              return Text('Texto ${index + 1}');
-                            },
-                          ),
-                        ),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 20),
+                            height: 100.0,
+                            child: const Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      'Salida: 8:30 a.m',
+                                      style: TextStyle(fontSize: 18.0),
+                                    ),
+                                    Text(
+                                      'Llegada: 12:30 p.m',
+                                      style: TextStyle(fontSize: 18.0),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 10.0),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(
+                                      'Tiempo estimado: 4hrs',
+                                      style: TextStyle(
+                                          fontSize: 18.0,
+                                          color: ColorsApp.primayColor),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 10.0),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      'Destino: Guadalajara',
+                                      style: TextStyle(fontSize: 18.0),
+                                    ),
+                                    Text(
+                                      'Directo - Local',
+                                      style: TextStyle(fontSize: 18.0),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            )),
                         Container(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          padding: const EdgeInsets.all(15),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: <Widget>[
@@ -121,6 +153,90 @@ class _TripsState extends State<Trips> {
                                 ]),
                               ),
                             ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Card(
+                    elevation: 5,
+                    margin: const EdgeInsets.all(10),
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          child: const Column(
+                            children: <Widget>[
+                              Icon(CupertinoIcons.bus, size: 50.0),
+                              Text('Horario'),
+                            ],
+                          ),
+                        ),
+                        Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 20),
+                            height: 100.0,
+                            child: const Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      'Salida: 2:00 a.m',
+                                      style: TextStyle(fontSize: 18.0),
+                                    ),
+                                    Text(
+                                      'Llegada: 6:30 p.m',
+                                      style: TextStyle(fontSize: 18.0),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 10.0),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Text(
+                                      'Tiempo estimado: 4:30hrs',
+                                      style: TextStyle(
+                                          fontSize: 18.0,
+                                          color: ColorsApp.primayColor),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 10.0),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      'Destino: Veracruz',
+                                      style: TextStyle(fontSize: 18.0),
+                                    ),
+                                    Text(
+                                      '1 Escala   - Local',
+                                      style: TextStyle(fontSize: 18.0),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            )),
+                        Container(
+                          padding: const EdgeInsets.all(15),
+                          child: ElevatedButton(
+                            onPressed: () {},
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                  ColorsApp.primayColor),
+                            ),
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.remove_red_eye_outlined),
+                                SizedBox(width: 10),
+                                Text('Detalles')
+                              ],
+                            ),
                           ),
                         ),
                       ],
