@@ -46,19 +46,43 @@
         </div>
 
         <ul class="navbar-nav justify-content-end">
-          <li class="nav-item d-flex align-items-center">
-            <router-link
-              :to="{ name: 'Signin Illustration' }"
-              class="px-0 nav-link font-weight-bold"
-              :class="textWhite ? textWhite : 'text-body'"
-            >
-                  <img
+
+          <div class="btn-group dropstart">
+            <a  data-bs-toggle="dropdown" aria-expanded="false" >
+              <img
                     alt="Image placeholder"
+                    id="image-profile"
                     class="avatar avatar-sm rounded-circle me-2"
-                    src="../../assets/img/team-1.jpg">
-              <a  class="d-sm-inline d-none" @click="logout">Cerrar sesión </a>
-            </router-link>
-          </li>
+                    style="cursor:pointer;"
+                    />
+            </a>
+            <ul class="dropdown-menu">
+               <li class="dropdown-item disabled text-dark" disabled>{{name}}</li>
+                <li><hr class="dropdown-divider"></li>
+              <li class="dropdown-item font-weight-bold" @click="goProfile">
+                Perfil
+              </li>
+              <li class="dropdown-item" @click="logout">Cerrar sesión</li>
+            </ul>
+          </div>
+
+          
+          <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
+              <a
+                id="iconNavbarSidenav"
+                href="#"
+                class="p-0 nav-link text-body"
+                @click="toggleSidebar"
+              >
+                <div class="sidenav-toggler-inner">
+                  <i class="sidenav-toggler-line"></i>
+                  <i class="sidenav-toggler-line"></i>
+                  <i class="sidenav-toggler-line"></i>
+                </div>
+              </a>
+            </li>
+          
+
 
         </ul>
       </div>
@@ -70,7 +94,7 @@ import Breadcrumbs from "../Breadcrumbs.vue";
 import { mapMutations, mapActions, mapState } from "vuex";
 import router from '../../router/index';
 import storeSession from '../../kernel/store/store.session';
-
+import getProfile from '../../modules/users/use-cases/get.profile'
 export default {
   name: "Navbar",
   components: {
@@ -89,6 +113,8 @@ export default {
   data() {
     return {
       showMenu: false,
+      user: {},
+      name: "",
     };
   },
   computed: {
@@ -104,6 +130,9 @@ export default {
   created() {
     this.minNav;
   },
+  async mounted(){
+   await this.getProfile()
+  },
   methods: {
     ...mapMutations(["navbarMinimize", "toggleConfigurator"]),
     ...mapActions(["toggleSidebarColor"]),
@@ -116,6 +145,27 @@ export default {
       storeSession.deleteToken()
       storeSession.deleteDataSession()
       router.push({name: "Signin Illustration"})
+    },
+    async getProfile(){
+      let {identKey}  = storeSession.getDataSession()
+      const response = {...await getProfile(identKey)};
+      const {error, data} = response;
+        if(!error){
+           const {result:{profile, name, surname}} = data
+           const {result} = data
+           document.getElementById("image-profile").src = `data:image/png;base64,${profile}`;
+           this.user = result;
+           this.name = `${name} ${surname}`
+      }else{
+           this.$swal({
+            icon: "error", 
+            title: 'Ocurrio un error durante la consultar. Inténtalo de nuevo.',
+            type: "basic",
+          });
+      }
+    },
+    goProfile(){
+      router.push({name: 'Perfil Usuario'})
     }
   },
 };

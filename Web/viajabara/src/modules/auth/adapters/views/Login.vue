@@ -49,7 +49,7 @@
                             v-model="form.password"
                             :class="{ 'is-invalid': errors.password, 'is-valid': errors.password === null }"
                             />
-                            <span class="input-group-text" id="password-input" @click="togglePasswordVisibility">
+                            <span class="input-group-text" id="password-input" @click="togglePasswordVisibility" style="cursor:pointer;">
                               <i class="fas" :class="showPassword ?  'fa-eye' : 'fa-eye-slash' "></i>
                             </span>
                         </div>
@@ -81,7 +81,7 @@
                   <p class="mx-auto text-sm ">
                     ¿Has olvidado tu contraseña? 
                     <router-link
-                      :to="{ name: 'Signup Illustration' }"
+                      :to="{ name: 'Recuperar Contraseña' }"
                       class=" font-weight-bold"
                     >Recuperar</router-link>
                   </p>
