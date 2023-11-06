@@ -3,7 +3,7 @@
   <div class="py-4 container-fluid">
     <form class="mt-4 row" @submit.prevent="preNewBus()">
       <div class="col-lg-4">
-        <div class="card h-100">
+        <div class="card">
           <div class="card-body">
             <div class="row">
               <div class="col-12 text-center">

@@ -8,9 +8,9 @@ export const statusValidator = (response) =>{
     }else if(response.status === 404){
         router.push({name: 'Error Error404'})
     }else if(response.status === 500){
-        router.push({name: 'Error Error500'})
+        router.push({name: 'Error Error403'})
     }else if(response.status === 403 || response.status ===  401){
-        router.push({name: 'Error Error500'})
+        router.push({name: 'Error Error403'})
     }else {
         router.push({name: 'Error Error404'})
     }
