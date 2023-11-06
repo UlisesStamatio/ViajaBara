@@ -36,12 +36,10 @@ class _RegisterState extends State<Register> {
                 'assets/images/bg.png',
                 fit: BoxFit.cover,
               ),
-              Positioned(
-                top: 120,
-                left: 0,
-                right: 0,
+              SingleChildScrollView(
                 child: Center(
                   child: Column(children: <Widget>[
+                    const SizedBox(height: 120),
                     Image.asset(
                       'assets/images/viajabara_logo.png',
                       height: 60,
@@ -67,7 +65,7 @@ class _RegisterState extends State<Register> {
                             ),
                             Container(
                               padding: const EdgeInsets.only(
-                                bottom: 10,
+                                bottom: 20,
                               ),
                               child: TextFormField(
                                 keyboardType: TextInputType.emailAddress,

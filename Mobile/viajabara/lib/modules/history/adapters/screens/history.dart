@@ -14,6 +14,29 @@ class _HistoryState extends State<History> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Container(
+            alignment: Alignment.centerLeft,
+            child: const Text(
+              'Historial',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            )),
+        foregroundColor: ColorsApp.muted2,
+        actions: <Widget>[
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Image.asset(
+              'assets/images/viajabara_logo_purple.png',
+              width: 100,
+              height: 50,
+              color: ColorsApp.primayColor,
+            ),
+          ),
+        ],
+        backgroundColor: ColorsApp.whiteColor,
+        shadowColor: ColorsApp.blackColor,
+        elevation: 2,
+      ),
       body: SafeArea(
         child: Stack(
           fit: StackFit.expand,
@@ -22,25 +45,11 @@ class _HistoryState extends State<History> {
               'assets/images/bg.png',
               fit: BoxFit.cover,
             ),
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
+            SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Container(
-                    color: ColorsApp.bgColorScreen,
-                    alignment: Alignment.centerRight,
-                    width:
-                        double.infinity, // Ocupa todo el ancho de la pantalla
-                    child: Image.asset(
-                      'assets/images/viajabara_logo_purple.png',
-                      width: 200,
-                      height: 50,
-                    ),
-                  ),
                   // *************************************
                   Card(
                     elevation: 5,
@@ -51,7 +60,7 @@ class _HistoryState extends State<History> {
                         Container(
                           padding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 20),
-                          height: 125.0,
+                          height: 70.0,
                           child: const Column(
                             crossAxisAlignment: CrossAxisAlignment
                                 .start, // Alinear a la izquierda
@@ -59,17 +68,17 @@ class _HistoryState extends State<History> {
                                 .spaceEvenly, // Espaciado uniforme
                             children: <Widget>[
                               Text('Salida : Lugar YYYY/mm/dd HH:MM',
-                                  style: TextStyle(fontSize: 17.0)),
+                                  style: TextStyle(fontSize: 15.0)),
                               Text(
                                 'Llegada : Lugar YYYY/mm/dd HH:MM',
-                                style: TextStyle(fontSize: 17.0),
+                                style: TextStyle(fontSize: 15.0),
                               ),
                             ],
                           ),
                         ),
                         // Tercera fila con dos botones
                         Container(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          padding: const EdgeInsets.only(bottom: 10),
                           child: Align(
                             alignment: Alignment.center,
                             child: FractionallySizedBox(
@@ -89,9 +98,15 @@ class _HistoryState extends State<History> {
                                 child: const Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(Icons.remove_red_eye_outlined),
+                                    Icon(
+                                      Icons.remove_red_eye_outlined,
+                                      size: 22,
+                                    ),
                                     SizedBox(width: 10),
-                                    Text('Detalles')
+                                    Text(
+                                      'Detalles',
+                                      style: TextStyle(fontSize: 15.0),
+                                    )
                                   ],
                                 ),
                               ),
@@ -110,7 +125,7 @@ class _HistoryState extends State<History> {
                         Container(
                           padding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 20),
-                          height: 125.0,
+                          height: 70.0,
                           child: const Column(
                             crossAxisAlignment: CrossAxisAlignment
                                 .start, // Alinear a la izquierda
@@ -118,17 +133,17 @@ class _HistoryState extends State<History> {
                                 .spaceEvenly, // Espaciado uniforme
                             children: <Widget>[
                               Text('Salida : Lugar YYYY/mm/dd HH:MM',
-                                  style: TextStyle(fontSize: 17.0)),
+                                  style: TextStyle(fontSize: 15.0)),
                               Text(
                                 'Llegada : Lugar YYYY/mm/dd HH:MM',
-                                style: TextStyle(fontSize: 17.0),
+                                style: TextStyle(fontSize: 15.0),
                               ),
                             ],
                           ),
                         ),
                         // Tercera fila con dos botones
                         Container(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          padding: const EdgeInsets.only(bottom: 10),
                           child: Align(
                             alignment: Alignment.center,
                             child: FractionallySizedBox(
@@ -139,7 +154,7 @@ class _HistoryState extends State<History> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
-                                              const HistoryUser()));
+                                              const HistoryStars()));
                                 },
                                 style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all(
@@ -148,9 +163,15 @@ class _HistoryState extends State<History> {
                                 child: const Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(Icons.remove_red_eye_outlined),
+                                    Icon(
+                                      Icons.remove_red_eye_outlined,
+                                      size: 22,
+                                    ),
                                     SizedBox(width: 10),
-                                    Text('Detalles')
+                                    Text(
+                                      'Detalles',
+                                      style: TextStyle(fontSize: 15.0),
+                                    )
                                   ],
                                 ),
                               ),
@@ -169,7 +190,7 @@ class _HistoryState extends State<History> {
                         Container(
                           padding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 20),
-                          height: 125.0,
+                          height: 70.0,
                           child: const Column(
                             crossAxisAlignment: CrossAxisAlignment
                                 .start, // Alinear a la izquierda
@@ -177,23 +198,29 @@ class _HistoryState extends State<History> {
                                 .spaceEvenly, // Espaciado uniforme
                             children: <Widget>[
                               Text('Salida : Lugar YYYY/mm/dd HH:MM',
-                                  style: TextStyle(fontSize: 17.0)),
+                                  style: TextStyle(fontSize: 15.0)),
                               Text(
                                 'Llegada : Lugar YYYY/mm/dd HH:MM',
-                                style: TextStyle(fontSize: 17.0),
+                                style: TextStyle(fontSize: 15.0),
                               ),
                             ],
                           ),
                         ),
                         // Tercera fila con dos botones
                         Container(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          padding: const EdgeInsets.only(bottom: 10),
                           child: Align(
                             alignment: Alignment.center,
                             child: FractionallySizedBox(
                               widthFactor: 0.75,
                               child: ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const HistoryStars()));
+                                },
                                 style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all(
                                       ColorsApp.primayColor),
@@ -201,9 +228,15 @@ class _HistoryState extends State<History> {
                                 child: const Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(Icons.remove_red_eye_outlined),
+                                    Icon(
+                                      Icons.remove_red_eye_outlined,
+                                      size: 22,
+                                    ),
                                     SizedBox(width: 10),
-                                    Text('Detalles')
+                                    Text(
+                                      'Detalles',
+                                      style: TextStyle(fontSize: 15.0),
+                                    )
                                   ],
                                 ),
                               ),

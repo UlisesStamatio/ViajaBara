@@ -27,35 +27,24 @@ class _TravelingState extends State<Traveling> {
         foregroundColor: ColorsApp.muted2,
         actions: <Widget>[
           Container(
-            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Image.asset(
               'assets/images/viajabara_logo_purple.png',
               width: 100,
               height: 50,
-              color: ColorsApp.muted2,
+              color: ColorsApp.primayColor,
             ),
           ),
-          IconButton(
-            icon: const Icon(Icons.logout, color: ColorsApp.primayColor),
-            tooltip: 'Show Snackbar',
-            onPressed: () {
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(
-                    builder: (context) => const GeneralMechanismsNavigation()),
-                (route) => false,
-              );
-            },
-          ),
         ],
+        backgroundColor: ColorsApp.whiteColor,
+        shadowColor: ColorsApp.blackColor,
+        elevation: 2,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: ColorsApp.primayColor),
           onPressed: () {
             Navigator.of(context).pop(); // Regresar a la página anterior
           },
         ),
-        backgroundColor: ColorsApp.whiteColor,
-        shadowColor: ColorsApp.blackColor,
-        elevation: 2,
       ),
       body: SafeArea(
         child: Stack(
@@ -65,19 +54,15 @@ class _TravelingState extends State<Traveling> {
               'assets/images/bg.png',
               fit: BoxFit.cover,
             ),
-            Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: BlocBuilder<GpsBloc, GpsState>(
-                  builder: (context, state) {
-                    print('state $state');
+            SingleChildScrollView(child: BlocBuilder<GpsBloc, GpsState>(
+              builder: (context, state) {
+                print('state $state');
 
-                    return state.isAllGranted
-                        ? const MapScreen()
-                        : const GpsAccessScreen();
-                  },
-                )
+                return state.isAllGranted
+                    ? const MapScreen()
+                    : const GpsAccessScreen();
+              },
+            )
                 // child: CheckPermissionLocalization(),
                 ),
           ],

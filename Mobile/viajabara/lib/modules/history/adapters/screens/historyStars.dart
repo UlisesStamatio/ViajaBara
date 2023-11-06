@@ -7,6 +7,35 @@ class HistoryStars extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Container(
+            alignment: Alignment.centerLeft,
+            child: const Text(
+              'Comentarios',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            )),
+        foregroundColor: ColorsApp.muted2,
+        actions: <Widget>[
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Image.asset(
+              'assets/images/viajabara_logo_purple.png',
+              width: 100,
+              height: 50,
+              color: ColorsApp.primayColor,
+            ),
+          ),
+        ],
+        backgroundColor: ColorsApp.whiteColor,
+        shadowColor: ColorsApp.blackColor,
+        elevation: 2,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: ColorsApp.primayColor),
+          onPressed: () {
+            Navigator.of(context).pop(); // Regresar a la página anterior
+          },
+        ),
+      ),
       body: SafeArea(
         child: Stack(
           fit: StackFit.expand,
@@ -15,59 +44,18 @@ class HistoryStars extends StatelessWidget {
               'assets/images/bg.png',
               fit: BoxFit.cover,
             ),
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
+            SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Container(
-                    color: ColorsApp.bgColorScreen,
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        InkWell(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Row(
-                            children: <Widget>[
-                              Icon(
-                                Icons.arrow_back_ios_new_rounded,
-                                color: ColorsApp.secondaryColor,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    left:
-                                        8.0), // Agrega un margen a la izquierda del texto
-                                child: Text(
-                                  "Regresar",
-                                  style: TextStyle(
-                                      color: ColorsApp.blackColor,
-                                      fontSize: 16.0),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Image.asset(
-                          'assets/images/viajabara_logo_purple.png',
-                          width: 200,
-                          height: 50,
-                        ),
-                      ],
-                    ),
-                  ),
                   Card(
                     elevation: 5,
                     margin: const EdgeInsets.only(top: 20),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                           vertical: 10, horizontal: 20),
-                      height: 100.0,
+                      height: 80.0,
                       child: const Column(
                         crossAxisAlignment:
                             CrossAxisAlignment.start, // Alinear a la izquierda

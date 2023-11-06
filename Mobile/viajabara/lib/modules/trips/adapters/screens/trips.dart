@@ -46,10 +46,7 @@ class _TripsState extends State<Trips> {
               'assets/images/bg.png',
               fit: BoxFit.cover,
             ),
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
+            SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -72,7 +69,7 @@ class _TripsState extends State<Trips> {
                         Container(
                           padding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 20),
-                          height: 125.0,
+                          height: 100.0,
                           child: GridView.builder(
                             shrinkWrap: false,
                             gridDelegate:

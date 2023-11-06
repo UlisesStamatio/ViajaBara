@@ -14,7 +14,7 @@ class _Register2State extends State<Register2> {
   bool _switchValueOne = false;
   final TextEditingController _names = TextEditingController(text: '');
   final TextEditingController _lastnames = TextEditingController(text: '');
-  final TextEditingController _sex = TextEditingController(text: '');
+  late String _sex;
   final TextEditingController _birthday = TextEditingController(text: '');
   final TextEditingController _residentState = TextEditingController(text: '');
   final TextEditingController _phone = TextEditingController(text: '');
@@ -37,12 +37,10 @@ class _Register2State extends State<Register2> {
                 'assets/images/bg.png',
                 fit: BoxFit.cover,
               ),
-              Positioned(
-                top: 120,
-                left: 0,
-                right: 0,
+              SingleChildScrollView(
                 child: Center(
                   child: Column(children: <Widget>[
+                    const SizedBox(height: 120),
                     Image.asset(
                       'assets/images/viajabara_logo.png',
                       height: 60,
@@ -68,7 +66,7 @@ class _Register2State extends State<Register2> {
                             ),
                             Container(
                               padding: const EdgeInsets.only(
-                                bottom: 10,
+                                bottom: 20,
                               ),
                               child: TextFormField(
                                 keyboardType: TextInputType.name,
@@ -193,7 +191,11 @@ class _Register2State extends State<Register2> {
                                         Icons.person,
                                         color: ColorsApp.primayColor,
                                       ),
-                                      Text('Sexo*')
+                                      Text(
+                                        'Sexo*',
+                                        style:
+                                            TextStyle(color: ColorsApp.muted),
+                                      )
                                     ]),
                                 Row(
                                   mainAxisAlignment:
@@ -216,8 +218,10 @@ class _Register2State extends State<Register2> {
                                         Switch.adaptive(
                                           value: !_switchValueOne,
                                           onChanged: (bool newValue) =>
-                                              setState(() =>
-                                                  _switchValueOne = !newValue),
+                                              setState(() {
+                                            _sex = "H";
+                                            _switchValueOne = newValue;
+                                          }),
                                           activeColor: ColorsApp.primayColor,
                                         ),
                                       ],
@@ -238,8 +242,10 @@ class _Register2State extends State<Register2> {
                                         Switch.adaptive(
                                           value: _switchValueOne,
                                           onChanged: (bool newValue) =>
-                                              setState(() =>
-                                                  _switchValueOne = newValue),
+                                              setState(() {
+                                            _sex = "M";
+                                            _switchValueOne = newValue;
+                                          }),
                                           activeColor: ColorsApp.primayColor,
                                         ),
                                       ],

@@ -7,6 +7,29 @@ class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Container(
+            alignment: Alignment.centerLeft,
+            child: const Text(
+              'Perfil',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            )),
+        foregroundColor: ColorsApp.muted2,
+        actions: <Widget>[
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Image.asset(
+              'assets/images/viajabara_logo_purple.png',
+              width: 100,
+              height: 50,
+              color: ColorsApp.primayColor,
+            ),
+          ),
+        ],
+        backgroundColor: ColorsApp.whiteColor,
+        shadowColor: ColorsApp.blackColor,
+        elevation: 2,
+      ),
       body: SafeArea(
         child: Stack(
           fit: StackFit.expand,
@@ -20,17 +43,6 @@ class Profile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Container(
-                    color: ColorsApp.bgColorScreen,
-                    alignment: Alignment.centerRight,
-                    width:
-                        double.infinity, // Ocupa todo el ancho de la pantalla
-                    child: Image.asset(
-                      'assets/images/viajabara_logo_purple.png',
-                      width: 200,
-                      height: 50,
-                    ),
-                  ),
                   const SizedBox(height: 10), // Espacio entre el logo y la Card
                   Card(
                     margin: const EdgeInsets.all(16),
@@ -41,7 +53,7 @@ class Profile extends StatelessWidget {
                             height:
                                 20), // Espacio en la parte superior de la Card
                         const CircleAvatar(
-                          radius: 90,
+                          radius: 60,
                           backgroundImage: AssetImage('assets/images/Girl.png'),
                         ),
                         Padding(
@@ -58,71 +70,156 @@ class Profile extends StatelessWidget {
                           ),
                         ),
                         const Divider(),
-                        const ListTile(
-                          title: Text(
-                            '89',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 20, // O el tamaño que prefieras
+                        const Row(
+                          children: [
+                            Expanded(
+                              child: ListTile(
+                                title: Text(
+                                  '89',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 18, // O el tamaño que prefieras
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  'Viajes realizados',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize:
+                                        15, // O el tamaño que prefieras para el subtitle
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                          subtitle: Text(
-                            'Viajes realizados',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize:
-                                  18, // O el tamaño que prefieras para el subtitle
+                            Expanded(
+                              child: ListTile(
+                                title: Text(
+                                  '23',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 18, // O el tamaño que prefieras
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  'Último mes',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize:
+                                        15, // O el tamaño que prefieras para el subtitle
+                                  ),
+                                ),
+                              ),
                             ),
+                          ],
+                        ),
+                        const Divider(),
+
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 15),
+                          alignment: Alignment.centerLeft,
+                          child: const Text(
+                            'Cambiar contraseña',
+                            style: TextStyle(color: ColorsApp.linksColor),
                           ),
                         ),
-                        const ListTile(
-                          title: Text(
-                            '23',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 20, // O el tamaño que prefieras
-                            ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 15),
+                          alignment: Alignment.centerLeft,
+                          child: const Text(
+                            'Editar foto de perfil',
+                            style: TextStyle(color: ColorsApp.linksColor),
                           ),
-                          subtitle: Text(
-                            'Último mes',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize:
-                                  18, // O el tamaño que prefieras para el subtitle
-                            ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 15),
+                          alignment: Alignment.centerLeft,
+                          child: const Text(
+                            'Modificar tu información personal',
+                            style: TextStyle(color: ColorsApp.linksColor),
                           ),
                         ),
 
                         const Divider(),
-                        const ListTile(
-                          title: Text('Cambiar contraseña'),
-                          textColor: ColorsApp.linksColor,
-                        ),
-                        const ListTile(
-                          title: Text('Editar foto de perfil'),
-                          textColor: ColorsApp.linksColor,
-                        ),
-                        const ListTile(
-                          title: Text('Modificar tu información personal'),
-                          textColor: ColorsApp.linksColor,
-                        ),
-                        const Divider(),
-                        const ListTile(
-                          leading: Icon(Icons.email),
-                          title: Text('vanessa987@gmail.com'),
-                        ),
-                        const ListTile(
-                          leading: Icon(Icons.phone),
-                          title: Text('7776788767'),
-                        ),
-                        const ListTile(
-                          leading: Icon(Icons.calendar_today),
-                          title: Text('08/06/1998'),
-                        ),
-                        const ListTile(
-                          leading: Icon(Icons.female),
-                          title: Text('Mujer'),
-                        ),
+
+                        Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 15),
+                            alignment: Alignment.centerLeft,
+                            child: const Row(
+                              children: [
+                                Icon(
+                                  Icons.email,
+                                  color: ColorsApp.muted,
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  'vanessa987@gmail.com',
+                                  style: TextStyle(color: ColorsApp.muted),
+                                ),
+                              ],
+                            )),
+                        Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 15),
+                            alignment: Alignment.centerLeft,
+                            child: const Row(
+                              children: [
+                                Icon(
+                                  Icons.phone,
+                                  color: ColorsApp.muted,
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  '7776788767',
+                                  style: TextStyle(color: ColorsApp.muted),
+                                ),
+                              ],
+                            )),
+                        Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 15),
+                            alignment: Alignment.centerLeft,
+                            child: const Row(
+                              children: [
+                                Icon(
+                                  Icons.calendar_today,
+                                  color: ColorsApp.muted,
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  '08/06/1998',
+                                  style: TextStyle(color: ColorsApp.muted),
+                                ),
+                              ],
+                            )),
+                        Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 15),
+                            alignment: Alignment.centerLeft,
+                            child: const Row(
+                              children: [
+                                Icon(
+                                  Icons.female,
+                                  color: ColorsApp.muted,
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  'Mujer',
+                                  style: TextStyle(color: ColorsApp.muted),
+                                ),
+                              ],
+                            )),
                         const SizedBox(
                             height:
                                 20), // Espacio en la parte inferior de la Card
