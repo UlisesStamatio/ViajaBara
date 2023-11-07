@@ -96,8 +96,7 @@ class HistoryStars extends StatelessWidget {
           children: <Widget>[
             CircleAvatar(
               radius: 30, // puedes ajustar el tamaño de la imagen redonda aquí
-              backgroundImage: NetworkImage(
-                  'https://cdn.icon-icons.com/icons2/1999/PNG/512/avatar_people_person_profile_student_user_icon_123383.png'), // reemplaza con la ruta de tu imagen
+              backgroundImage: AssetImage('assets/images/perfilGirl.avif'), // reemplaza con la ruta de tu imagen
             ),
             SizedBox(width: 16.0),
             Expanded(
