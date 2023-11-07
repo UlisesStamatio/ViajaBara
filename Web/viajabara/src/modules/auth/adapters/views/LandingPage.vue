@@ -257,7 +257,7 @@
     <hr class="mt-5 mb-2 horizontal dark" />
     <section class="container pb-5" id="quotes">
       <div class="row">
-        <div class="col-12 text-center"><h2>Contiza tu viaje</h2></div>
+        <div class="col-12 text-center"><h2>Cotiza tu viaje</h2></div>
         <div class="col-12 mt-5">
           <div class="card">
             <div class="card-body">
