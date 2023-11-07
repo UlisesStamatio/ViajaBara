@@ -53,9 +53,7 @@ class _HistoryUserState extends State<HistoryUser> {
                             children: <Widget>[
                               CircleAvatar(
                                 radius: 45,
-                                backgroundImage: NetworkImage(
-                                    'https://cdn.icon-icons.com/icons2/1999/PNG/512/avatar_people_person_profile_student_user_icon_123383.png'),
-                              ),
+                                backgroundImage: AssetImage('assets/images/perfilGirl.avif'),),
                               SizedBox(width: 20.0),
                               Expanded(
                                 child: Column(
