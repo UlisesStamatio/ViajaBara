@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/validations/validations.dart';
+import 'package:viajabara/modules/historyUser/adapters/screens/historyUser.dart';
+import 'package:viajabara/providers/auth_provider.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -13,6 +15,7 @@ class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   bool _isButtonDisabled = true;
   bool _passwordVisible = false;
+  bool _islogged = false;
   final TextEditingController _email = TextEditingController(text: '');
   final TextEditingController _pass = TextEditingController(text: '');
 
@@ -241,18 +244,42 @@ class _LoginState extends State<Login> {
                               ),
                             ),
                             ElevatedButton(
-                                onPressed: _isButtonDisabled
-                                    ? null
-                                    : () => Navigator.pushReplacementNamed(
-                                        context, "/menu"),
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                    _isButtonDisabled
-                                        ? ColorsApp.muted
-                                        : ColorsApp.primayColor,
-                                  ),
+                              onPressed: _isButtonDisabled ? null : () async {
+                                      setState(() {
+                                        _isButtonDisabled = true;
+                                      });
+
+                                      bool isLogged = await AuthProvider().login(_email.text, _pass.text);
+
+                                      if (!mounted){
+                                        return; // Verificar si el widget está aún montado
+                                      }
+
+                                      if (isLogged) {
+                                        Navigator.pushReplacementNamed(context, "/menu");
+                                      } else {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                                'Usuario o contraseña incorrectos'),
+                                          ),
+                                        );
+                                      }
+
+                                      setState(() {
+                                        _isButtonDisabled = false;
+                                      });
+                                    },
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(
+                                  _isButtonDisabled
+                                      ? ColorsApp.muted
+                                      : ColorsApp.primayColor,
                                 ),
-                                child: const Text('Iniciar sesión')),
+                              ),
+                              child: const Text('Iniciar sesión'),
+                            )
                           ],
                         ),
                       ),
