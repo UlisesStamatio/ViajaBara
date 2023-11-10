@@ -17,7 +17,8 @@ class CustomBottomNavigationTab extends StatelessWidget {
             icon: Icon(CupertinoIcons.bus), label: 'Viajes'),
         BottomNavigationBarItem(icon: Icon(Icons.history), label: 'Historial'),
         BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.profile_circled), label: 'Perfil'),
+            icon: Icon(CupertinoIcons.person_crop_circle_fill),
+            label: 'Perfil'),
         BottomNavigationBarItem(
             icon: Icon(Icons.logout), label: 'Cerrar sesión'),
       ],

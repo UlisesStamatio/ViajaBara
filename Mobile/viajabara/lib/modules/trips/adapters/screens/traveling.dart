@@ -51,7 +51,7 @@ class _TravelingState extends State<Traveling> {
           fit: StackFit.expand,
           children: <Widget>[
             Image.asset(
-              'assets/images/bg.png',
+              'assets/images/bg_dark.png',
               fit: BoxFit.cover,
             ),
             SingleChildScrollView(child: BlocBuilder<GpsBloc, GpsState>(

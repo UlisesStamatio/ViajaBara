@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:viajabara/config/navigation/general_mechanisms_navigation.dart';
 import 'package:viajabara/config/navigation/history_navigation%20.dart';
 import 'package:viajabara/config/navigation/profile_navigation.dart';
 import 'package:viajabara/config/navigation/trips_navigation.dart';

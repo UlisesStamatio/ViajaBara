@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:viajabara/kernel/themes/colors/colors_app.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:viajabara/kernel/colors/colors_app.dart';
+import 'package:viajabara/kernel/cubits/login/login_form_cubit.dart';
 import 'package:viajabara/kernel/validations/validations.dart';
 
 class Login extends StatefulWidget {
@@ -18,6 +20,7 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    final loginFormCubit = context.watch<LoginFormCubit>();
     return Scaffold(
       body: Form(
         key: _formKey,
@@ -50,13 +53,19 @@ class _LoginState extends State<Login> {
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           Container(
-                            padding: const EdgeInsets.only(bottom: 40, top: 20),
+                            padding: const EdgeInsets.symmetric(vertical: 20),
                             child: const Text(
                               '¡Bienvenido!',
                               style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: ColorsApp.muted),
+                                  color: ColorsApp.text),
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.only(bottom: 20),
+                            child: const Divider(
+                              color: ColorsApp.text,
                             ),
                           ),
                           Container(
@@ -65,7 +74,10 @@ class _LoginState extends State<Login> {
                             ),
                             child: TextFormField(
                               keyboardType: TextInputType.emailAddress,
-                              controller: _email,
+                              onChanged: (value) {
+                                loginFormCubit.usernameChanged(value);
+                                _formKey.currentState?.validate();
+                              },
                               validator: (value) {
                                 RegExp regex = RegExp(Validations.email);
                                 if (value == null || value.isEmpty) {
@@ -107,7 +119,7 @@ class _LoginState extends State<Login> {
                                 errorBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(4.0),
                                     borderSide: const BorderSide(
-                                        color: ColorsApp.errorColor,
+                                        color: ColorsApp.dangerColor,
                                         width: 1.0,
                                         style: BorderStyle.solid)),
                                 focusedErrorBorder: OutlineInputBorder(
@@ -125,7 +137,10 @@ class _LoginState extends State<Login> {
                             ),
                             child: TextFormField(
                               keyboardType: TextInputType.text,
-                              controller: _pass,
+                              onChanged: (value) {
+                                loginFormCubit.passwordChanged(value);
+                                _formKey.currentState?.validate();
+                              },
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'Campo obligatorio';
@@ -191,7 +206,7 @@ class _LoginState extends State<Login> {
                                 errorBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(4.0),
                                     borderSide: const BorderSide(
-                                        color: ColorsApp.errorColor,
+                                        color: ColorsApp.dangerColor,
                                         width: 1.0,
                                         style: BorderStyle.solid)),
                                 focusedErrorBorder: OutlineInputBorder(
@@ -208,7 +223,7 @@ class _LoginState extends State<Login> {
                             alignment: Alignment.centerRight,
                             child: InkWell(
                               onTap: () => Navigator.pushReplacementNamed(
-                                  context, '/register'),
+                                  context, '/forgotPassword'),
                               child: const Text(
                                 '¿Olvidaste tu contraseña?',
                                 style: TextStyle(color: ColorsApp.primayColor),
@@ -238,8 +253,11 @@ class _LoginState extends State<Login> {
                           ElevatedButton(
                               onPressed: _isButtonDisabled
                                   ? null
-                                  : () => Navigator.pushReplacementNamed(
-                                      context, "/menu"),
+                                  : () {
+                                      loginFormCubit.onSubmit();
+                                      Navigator.pushReplacementNamed(
+                                          context, "/menu");
+                                    },
                               style: ButtonStyle(
                                 backgroundColor: MaterialStateProperty.all(
                                   _isButtonDisabled

@@ -42,7 +42,7 @@ class _HistoryState extends State<History> {
           fit: StackFit.expand,
           children: <Widget>[
             Image.asset(
-              'assets/images/bg.png',
+              'assets/images/bg_dark.png',
               fit: BoxFit.cover,
             ),
             SingleChildScrollView(
@@ -60,7 +60,6 @@ class _HistoryState extends State<History> {
                         Container(
                           padding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 20),
-                          height: 70.0,
                           child: const Column(
                             crossAxisAlignment: CrossAxisAlignment
                                 .start, // Alinear a la izquierda
@@ -68,10 +67,12 @@ class _HistoryState extends State<History> {
                                 .spaceEvenly, // Espaciado uniforme
                             children: <Widget>[
                               Text('Salida : Lugar YYYY/mm/dd HH:MM',
-                                  style: TextStyle(fontSize: 15.0)),
+                                  style: TextStyle(
+                                      fontSize: 15.0, color: ColorsApp.text)),
                               Text(
                                 'Llegada : Lugar YYYY/mm/dd HH:MM',
-                                style: TextStyle(fontSize: 15.0),
+                                style: TextStyle(
+                                    fontSize: 15.0, color: ColorsApp.text),
                               ),
                             ],
                           ),
@@ -100,12 +101,78 @@ class _HistoryState extends State<History> {
                                   children: [
                                     Icon(
                                       Icons.remove_red_eye_outlined,
-                                      size: 22,
+                                      size: 20,
                                     ),
                                     SizedBox(width: 10),
                                     Text(
                                       'Detalles',
-                                      style: TextStyle(fontSize: 15.0),
+                                      style: TextStyle(fontSize: 14),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  Card(
+                    elevation: 5,
+                    margin: const EdgeInsets.all(10),
+                    child: Column(
+                      children: <Widget>[
+                        // *** Segunda fila con lista de textos (2 por fila)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 20),
+                          child: const Column(
+                            crossAxisAlignment: CrossAxisAlignment
+                                .start, // Alinear a la izquierda
+                            mainAxisAlignment: MainAxisAlignment
+                                .spaceEvenly, // Espaciado uniforme
+                            children: <Widget>[
+                              Text('Salida : Lugar YYYY/mm/dd HH:MM',
+                                  style: TextStyle(
+                                      fontSize: 15.0, color: ColorsApp.text)),
+                              Text(
+                                'Llegada : Lugar YYYY/mm/dd HH:MM',
+                                style: TextStyle(
+                                    fontSize: 15.0, color: ColorsApp.text),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // Tercera fila con dos botones
+                        Container(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: FractionallySizedBox(
+                              widthFactor: 0.75,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const HistoryUser()));
+                                },
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      ColorsApp.primayColor),
+                                ),
+                                child: const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.remove_red_eye_outlined,
+                                      size: 20,
+                                    ),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      'Detalles',
+                                      style: TextStyle(fontSize: 14),
                                     )
                                   ],
                                 ),
@@ -125,7 +192,6 @@ class _HistoryState extends State<History> {
                         Container(
                           padding: const EdgeInsets.symmetric(
                               vertical: 10, horizontal: 20),
-                          height: 70.0,
                           child: const Column(
                             crossAxisAlignment: CrossAxisAlignment
                                 .start, // Alinear a la izquierda
@@ -133,15 +199,17 @@ class _HistoryState extends State<History> {
                                 .spaceEvenly, // Espaciado uniforme
                             children: <Widget>[
                               Text('Salida : Lugar YYYY/mm/dd HH:MM',
-                                  style: TextStyle(fontSize: 15.0)),
+                                  style: TextStyle(
+                                      fontSize: 15.0, color: ColorsApp.text)),
                               Text(
                                 'Llegada : Lugar YYYY/mm/dd HH:MM',
-                                style: TextStyle(fontSize: 15.0),
+                                style: TextStyle(
+                                    fontSize: 15.0, color: ColorsApp.text),
                               ),
                             ],
                           ),
                         ),
-                        // Tercera fila con dos botones
+                        // *** Tercera fila con dos botones
                         Container(
                           padding: const EdgeInsets.only(bottom: 10),
                           child: Align(
@@ -149,13 +217,7 @@ class _HistoryState extends State<History> {
                             child: FractionallySizedBox(
                               widthFactor: 0.75,
                               child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const HistoryStars()));
-                                },
+                                onPressed: () {},
                                 style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all(
                                       ColorsApp.primayColor),
@@ -165,77 +227,12 @@ class _HistoryState extends State<History> {
                                   children: [
                                     Icon(
                                       Icons.remove_red_eye_outlined,
-                                      size: 22,
+                                      size: 20,
                                     ),
                                     SizedBox(width: 10),
                                     Text(
                                       'Detalles',
-                                      style: TextStyle(fontSize: 15.0),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Card(
-                    elevation: 5,
-                    margin: const EdgeInsets.all(10),
-                    child: Column(
-                      children: <Widget>[
-                        // Segunda fila con lista de textos (2 por fila)
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 20),
-                          height: 70.0,
-                          child: const Column(
-                            crossAxisAlignment: CrossAxisAlignment
-                                .start, // Alinear a la izquierda
-                            mainAxisAlignment: MainAxisAlignment
-                                .spaceEvenly, // Espaciado uniforme
-                            children: <Widget>[
-                              Text('Salida : Lugar YYYY/mm/dd HH:MM',
-                                  style: TextStyle(fontSize: 15.0)),
-                              Text(
-                                'Llegada : Lugar YYYY/mm/dd HH:MM',
-                                style: TextStyle(fontSize: 15.0),
-                              ),
-                            ],
-                          ),
-                        ),
-                        // Tercera fila con dos botones
-                        Container(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: FractionallySizedBox(
-                              widthFactor: 0.75,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const HistoryStars()));
-                                },
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      ColorsApp.primayColor),
-                                ),
-                                child: const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.remove_red_eye_outlined,
-                                      size: 22,
-                                    ),
-                                    SizedBox(width: 10),
-                                    Text(
-                                      'Detalles',
-                                      style: TextStyle(fontSize: 15.0),
+                                      style: TextStyle(fontSize: 14),
                                     )
                                   ],
                                 ),

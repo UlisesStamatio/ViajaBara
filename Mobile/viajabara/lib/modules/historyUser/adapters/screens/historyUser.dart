@@ -13,6 +13,29 @@ class _HistoryUserState extends State<HistoryUser> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Container(
+            alignment: Alignment.centerLeft,
+            child: const Text(
+              'Historial',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            )),
+        foregroundColor: ColorsApp.muted,
+        actions: <Widget>[
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Image.asset(
+              'assets/images/viajabara_logo_purple.png',
+              width: 100,
+              height: 50,
+              color: ColorsApp.primayColor,
+            ),
+          ),
+        ],
+        backgroundColor: ColorsApp.whiteColor,
+        shadowColor: ColorsApp.blackColor,
+        elevation: 2,
+      ),
       body: SafeArea(
         child: Stack(
           fit: StackFit.expand,
@@ -21,24 +44,11 @@ class _HistoryUserState extends State<HistoryUser> {
               'assets/images/bg.png',
               fit: BoxFit.cover,
             ),
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
+            SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Container(
-                    color: ColorsApp.bgColorScreen,
-                    alignment: Alignment.centerRight,
-                    width: double.infinity,
-                    child: Image.asset(
-                      'assets/images/viajabara_logo_purple.png',
-                      width: 200,
-                      height: 50,
-                    ),
-                  ),
                   Card(
                     elevation: 5,
                     margin: const EdgeInsets.symmetric(
@@ -53,7 +63,9 @@ class _HistoryUserState extends State<HistoryUser> {
                             children: <Widget>[
                               CircleAvatar(
                                 radius: 45,
-                                backgroundImage: AssetImage('assets/images/perfilGirl.avif'),),
+                                backgroundImage:
+                                    AssetImage('assets/images/perfilGirl.avif'),
+                              ),
                               SizedBox(width: 20.0),
                               Expanded(
                                 child: Column(
@@ -182,7 +194,7 @@ class _HistoryUserState extends State<HistoryUser> {
                                 TextButton.icon(
                                   icon:
                                       const Icon(Icons.star_purple500_outlined),
-                                  label: const Text('4/5'),
+                                  label: const Text('4.5'),
                                   onPressed: () {},
                                   style: TextButton.styleFrom(
                                       primary: Colors.white,

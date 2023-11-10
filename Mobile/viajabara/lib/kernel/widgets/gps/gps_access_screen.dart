@@ -23,7 +23,7 @@ class _GpsAccessScreenState extends State<GpsAccessScreen> {
             : !state.isGpsPermissionGranted
                 ? const CheckPermissionLocalization()
                 : const Card(
-                    child: Text("xd"),
+                    child: Text(""),
                   );
       },
     );

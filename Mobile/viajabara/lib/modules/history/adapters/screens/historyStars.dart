@@ -41,7 +41,7 @@ class HistoryStars extends StatelessWidget {
           fit: StackFit.expand,
           children: <Widget>[
             Image.asset(
-              'assets/images/bg.png',
+              'assets/images/bg_dark.png',
               fit: BoxFit.cover,
             ),
             SingleChildScrollView(
@@ -62,9 +62,9 @@ class HistoryStars extends StatelessWidget {
                         mainAxisAlignment:
                             MainAxisAlignment.spaceEvenly, // Espaciado uniforme
                         children: <Widget>[
-                          Text('Salida : Lugar YYYY/mm/dd HH:MM',
+                          Text('Salida : Lugar YYYY-mm-dd HH:MM',
                               style: TextStyle(fontSize: 17.0)),
-                          Text('Llegada : Lugar YYYY/mm/dd HH:MM',
+                          Text('Llegada : Lugar YYYY-mm-dd HH:MM',
                               style: TextStyle(fontSize: 17.0)),
                         ],
                       ),
@@ -96,7 +96,8 @@ class HistoryStars extends StatelessWidget {
           children: <Widget>[
             CircleAvatar(
               radius: 30, // puedes ajustar el tamaño de la imagen redonda aquí
-              backgroundImage: AssetImage('assets/images/perfilGirl.avif'), // reemplaza con la ruta de tu imagen
+              backgroundImage: AssetImage(
+                  'assets/images/perfilGirl.avif'), // reemplaza con la ruta de tu imagen
             ),
             SizedBox(width: 16.0),
             Expanded(
@@ -105,11 +106,8 @@ class HistoryStars extends StatelessWidget {
                 children: <Widget>[
                   Row(
                     children: [
+                      Text("Calificación: 4.5"),
                       Icon(Icons.star, color: Colors.yellow),
-                      Icon(Icons.star, color: Colors.yellow),
-                      Icon(Icons.star, color: Colors.yellow),
-                      Icon(Icons.star, color: Colors.grey),
-                      Icon(Icons.star, color: Colors.grey),
                     ],
                   ),
                   SizedBox(height: 8.0),

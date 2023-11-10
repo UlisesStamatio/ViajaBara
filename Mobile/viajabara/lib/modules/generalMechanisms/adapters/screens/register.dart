@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:viajabara/kernel/themes/colors/colors_app.dart';
+import 'package:viajabara/kernel/colors/colors_app.dart';
 import 'package:viajabara/kernel/validations/validations.dart';
+import 'package:viajabara/modules/generalMechanisms/adapters/screens/register2.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -53,14 +54,19 @@ class _RegisterState extends State<Register> {
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             Container(
-                              padding:
-                                  const EdgeInsets.only(bottom: 40, top: 20),
+                              padding: const EdgeInsets.symmetric(vertical: 20),
                               child: const Text(
                                 'Únete y viaja de volada',
                                 style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
-                                    color: ColorsApp.muted),
+                                    color: ColorsApp.text),
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.only(bottom: 20),
+                              child: const Divider(
+                                color: ColorsApp.text,
                               ),
                             ),
                             Container(
@@ -111,7 +117,7 @@ class _RegisterState extends State<Register> {
                                   errorBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(4.0),
                                       borderSide: const BorderSide(
-                                          color: ColorsApp.errorColor,
+                                          color: ColorsApp.dangerColor,
                                           width: 1.0,
                                           style: BorderStyle.solid)),
                                   focusedErrorBorder: OutlineInputBorder(
@@ -195,7 +201,7 @@ class _RegisterState extends State<Register> {
                                   errorBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(4.0),
                                       borderSide: const BorderSide(
-                                          color: ColorsApp.errorColor,
+                                          color: ColorsApp.dangerColor,
                                           width: 1.0,
                                           style: BorderStyle.solid)),
                                   focusedErrorBorder: OutlineInputBorder(
@@ -285,7 +291,7 @@ class _RegisterState extends State<Register> {
                                   errorBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(4.0),
                                       borderSide: const BorderSide(
-                                          color: ColorsApp.errorColor,
+                                          color: ColorsApp.dangerColor,
                                           width: 1.0,
                                           style: BorderStyle.solid)),
                                   focusedErrorBorder: OutlineInputBorder(
@@ -300,8 +306,12 @@ class _RegisterState extends State<Register> {
                             ElevatedButton(
                                 onPressed: _isButtonDisabled
                                     ? null
-                                    : () => Navigator.pushReplacementNamed(
-                                        context, '/register2'),
+                                    : () => Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const Register2()),
+                                        ),
                                 style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all(
                                     _isButtonDisabled

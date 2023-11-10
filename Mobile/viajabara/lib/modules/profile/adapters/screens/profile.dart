@@ -14,7 +14,7 @@ class Profile extends StatelessWidget {
               'Perfil',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             )),
-        foregroundColor: ColorsApp.muted2,
+        foregroundColor: ColorsApp.muted,
         actions: <Widget>[
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -69,7 +69,7 @@ class Profile extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const Divider(),
+
                         const Row(
                           children: [
                             Expanded(
@@ -78,15 +78,14 @@ class Profile extends StatelessWidget {
                                   '89',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    fontSize: 18, // O el tamaño que prefieras
-                                  ),
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
                                 ),
                                 subtitle: Text(
                                   'Viajes realizados',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    fontSize:
-                                        15, // O el tamaño que prefieras para el subtitle
+                                    fontSize: 15,
                                   ),
                                 ),
                               ),
@@ -97,22 +96,21 @@ class Profile extends StatelessWidget {
                                   '23',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    fontSize: 18, // O el tamaño que prefieras
-                                  ),
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
                                 ),
                                 subtitle: Text(
                                   'Último mes',
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize:
-                                        15, // O el tamaño que prefieras para el subtitle
-                                  ),
+                                  style: TextStyle(fontSize: 15),
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        const Divider(),
+                        Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: const Divider(color: ColorsApp.text)),
 
                         Container(
                           padding: const EdgeInsets.symmetric(
@@ -120,7 +118,9 @@ class Profile extends StatelessWidget {
                           alignment: Alignment.centerLeft,
                           child: const Text(
                             'Cambiar contraseña',
-                            style: TextStyle(color: ColorsApp.linksColor),
+                            style: TextStyle(
+                                color: ColorsApp.primayColor,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                         Container(
@@ -129,7 +129,9 @@ class Profile extends StatelessWidget {
                           alignment: Alignment.centerLeft,
                           child: const Text(
                             'Editar foto de perfil',
-                            style: TextStyle(color: ColorsApp.linksColor),
+                            style: TextStyle(
+                                color: ColorsApp.primayColor,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                         Container(
@@ -138,11 +140,15 @@ class Profile extends StatelessWidget {
                           alignment: Alignment.centerLeft,
                           child: const Text(
                             'Modificar tu información personal',
-                            style: TextStyle(color: ColorsApp.linksColor),
+                            style: TextStyle(
+                                color: ColorsApp.primayColor,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
 
-                        const Divider(),
+                        Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: const Divider(color: ColorsApp.text)),
 
                         Container(
                             padding: const EdgeInsets.symmetric(
@@ -152,14 +158,14 @@ class Profile extends StatelessWidget {
                               children: [
                                 Icon(
                                   Icons.email,
-                                  color: ColorsApp.muted,
+                                  color: ColorsApp.text,
                                 ),
                                 SizedBox(
                                   width: 10,
                                 ),
                                 Text(
                                   'vanessa987@gmail.com',
-                                  style: TextStyle(color: ColorsApp.muted),
+                                  style: TextStyle(color: ColorsApp.text),
                                 ),
                               ],
                             )),
@@ -171,14 +177,14 @@ class Profile extends StatelessWidget {
                               children: [
                                 Icon(
                                   Icons.phone,
-                                  color: ColorsApp.muted,
+                                  color: ColorsApp.text,
                                 ),
                                 SizedBox(
                                   width: 10,
                                 ),
                                 Text(
                                   '7776788767',
-                                  style: TextStyle(color: ColorsApp.muted),
+                                  style: TextStyle(color: ColorsApp.text),
                                 ),
                               ],
                             )),
@@ -189,15 +195,15 @@ class Profile extends StatelessWidget {
                             child: const Row(
                               children: [
                                 Icon(
-                                  Icons.calendar_today,
-                                  color: ColorsApp.muted,
+                                  Icons.cake,
+                                  color: ColorsApp.text,
                                 ),
                                 SizedBox(
                                   width: 10,
                                 ),
                                 Text(
-                                  '08/06/1998',
-                                  style: TextStyle(color: ColorsApp.muted),
+                                  '1996-06-08',
+                                  style: TextStyle(color: ColorsApp.text),
                                 ),
                               ],
                             )),
@@ -209,14 +215,14 @@ class Profile extends StatelessWidget {
                               children: [
                                 Icon(
                                   Icons.female,
-                                  color: ColorsApp.muted,
+                                  color: ColorsApp.text,
                                 ),
                                 SizedBox(
                                   width: 10,
                                 ),
                                 Text(
                                   'Mujer',
-                                  style: TextStyle(color: ColorsApp.muted),
+                                  style: TextStyle(color: ColorsApp.text),
                                 ),
                               ],
                             )),

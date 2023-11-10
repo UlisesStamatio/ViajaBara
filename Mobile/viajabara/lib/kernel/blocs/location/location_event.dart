@@ -1,6 +1,6 @@
 part of 'location_bloc.dart';
 
-sealed class LocationEvent extends Equatable {
+abstract class LocationEvent extends Equatable {
   const LocationEvent();
 
   @override
@@ -9,10 +9,9 @@ sealed class LocationEvent extends Equatable {
 
 class OnNewUserLocationEvent extends LocationEvent {
   final LatLng newLocation;
-
-  OnNewUserLocationEvent(this.newLocation);
+  const OnNewUserLocationEvent(this.newLocation);
 }
 
-class onStartFollowingUser extends LocationEvent {}
+class OnStartFollowingUser extends LocationEvent {}
 
-class onStopFollowingUser extends LocationEvent {}
+class OnStopFollowingUser extends LocationEvent {}

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:viajabara/kernel/themes/colors/colors_app.dart';
+import 'package:viajabara/kernel/colors/colors_app.dart';
 
 class Register2 extends StatefulWidget {
   const Register2({super.key});
@@ -54,14 +54,19 @@ class _Register2State extends State<Register2> {
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             Container(
-                              padding:
-                                  const EdgeInsets.only(bottom: 40, top: 20),
+                              padding: const EdgeInsets.symmetric(vertical: 20),
                               child: const Text(
-                                'Únete y viaja de volada',
+                                'Ya falta poco',
                                 style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
-                                    color: ColorsApp.muted),
+                                    color: ColorsApp.text),
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.only(bottom: 20),
+                              child: const Divider(
+                                color: ColorsApp.text,
                               ),
                             ),
                             Container(
@@ -109,7 +114,7 @@ class _Register2State extends State<Register2> {
                                   errorBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(4.0),
                                       borderSide: const BorderSide(
-                                          color: ColorsApp.errorColor,
+                                          color: ColorsApp.dangerColor,
                                           width: 1.0,
                                           style: BorderStyle.solid)),
                                   focusedErrorBorder: OutlineInputBorder(
@@ -167,7 +172,7 @@ class _Register2State extends State<Register2> {
                                   errorBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(4.0),
                                       borderSide: const BorderSide(
-                                          color: ColorsApp.errorColor,
+                                          color: ColorsApp.dangerColor,
                                           width: 1.0,
                                           style: BorderStyle.solid)),
                                   focusedErrorBorder: OutlineInputBorder(
@@ -299,7 +304,7 @@ class _Register2State extends State<Register2> {
                                   errorBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(4.0),
                                       borderSide: const BorderSide(
-                                          color: ColorsApp.errorColor,
+                                          color: ColorsApp.dangerColor,
                                           width: 1.0,
                                           style: BorderStyle.solid)),
                                   focusedErrorBorder: OutlineInputBorder(
@@ -357,7 +362,7 @@ class _Register2State extends State<Register2> {
                                   errorBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(4.0),
                                       borderSide: const BorderSide(
-                                          color: ColorsApp.errorColor,
+                                          color: ColorsApp.dangerColor,
                                           width: 1.0,
                                           style: BorderStyle.solid)),
                                   focusedErrorBorder: OutlineInputBorder(
@@ -415,7 +420,7 @@ class _Register2State extends State<Register2> {
                                   errorBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(4.0),
                                       borderSide: const BorderSide(
-                                          color: ColorsApp.errorColor,
+                                          color: ColorsApp.dangerColor,
                                           width: 1.0,
                                           style: BorderStyle.solid)),
                                   focusedErrorBorder: OutlineInputBorder(

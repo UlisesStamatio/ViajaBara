@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:viajabara/config/navigation/general_mechanisms_navigation.dart';
 
 class Splash extends StatefulWidget {
+  const Splash({super.key});
+
   @override
   State<Splash> createState() => _SplashState();
 }
@@ -9,8 +12,12 @@ class _SplashState extends State<Splash> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 2),
-        () => Navigator.pushReplacementNamed(context, '/login'));
+    Future.delayed(
+        const Duration(seconds: 2),
+        () => Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const GeneralMechanismsNavigation())));
   }
 
   @override
@@ -19,12 +26,10 @@ class _SplashState extends State<Splash> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // Fondo de pantalla
           Image.asset(
-            'assets/images/bg.png', // Ruta de tu imagen de fondo
-            fit: BoxFit.cover, // Ajusta la imagen para cubrir todo el espacio
+            'assets/images/bg.png',
+            fit: BoxFit.cover,
           ),
-          // Contenido centrado
           Center(
             child: Image.asset('assets/images/viajabara_logo.png',
                 width: 200, height: 150),
