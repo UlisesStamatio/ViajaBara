@@ -16,6 +16,7 @@ class _RegisterState extends State<Register> {
   bool _passwordVisible = false;
   bool _repeatPasswordVisible = false;
   final TextEditingController _email = TextEditingController(text: '');
+  final TextEditingController _username = TextEditingController(text: '');
   final TextEditingController _pass = TextEditingController(text: '');
   final TextEditingController _repeatPass = TextEditingController(text: '');
 
@@ -90,7 +91,7 @@ class _RegisterState extends State<Register> {
                                   color: ColorsApp.text,
                                 ),
                                 decoration: InputDecoration(
-                                  labelText: 'Usuario o correo*',
+                                  labelText: 'Correo eléctronico*',
                                   hintText: "example.com",
                                   filled: true,
                                   fillColor: ColorsApp.whiteColor,
@@ -131,7 +132,65 @@ class _RegisterState extends State<Register> {
                             ),
                             Container(
                               padding: const EdgeInsets.only(
-                                bottom: 20,
+                                bottom: 10,
+                              ),
+                              child: TextFormField(
+                                keyboardType: TextInputType.name,
+                                controller: _username,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Campo obligatorio';
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                cursorColor: ColorsApp.primayColor,
+                                style: const TextStyle(
+                                  color: ColorsApp.text,
+                                ),
+                                decoration: InputDecoration(
+                                  labelText: 'Usuario*',
+                                  hintText: "Usurio96",
+                                  filled: true,
+                                  fillColor: ColorsApp.whiteColor,
+                                  hintStyle: const TextStyle(
+                                    color: ColorsApp.muted,
+                                  ),
+                                  labelStyle: const TextStyle(
+                                    color: ColorsApp.muted,
+                                  ),
+                                  prefixIcon: const Icon(Icons.person),
+                                  prefixIconColor: ColorsApp.primayColor,
+                                  enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(4.0),
+                                      borderSide: const BorderSide(
+                                          color: ColorsApp.muted,
+                                          width: 1.0,
+                                          style: BorderStyle.solid)),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(4.0),
+                                      borderSide: const BorderSide(
+                                          color: ColorsApp.primayColor,
+                                          width: 1.0,
+                                          style: BorderStyle.solid)),
+                                  errorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(4.0),
+                                      borderSide: const BorderSide(
+                                          color: ColorsApp.dangerColor,
+                                          width: 1.0,
+                                          style: BorderStyle.solid)),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(4.0),
+                                      borderSide: const BorderSide(
+                                          color: ColorsApp.muted,
+                                          width: 1.0,
+                                          style: BorderStyle.solid)),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.only(
+                                bottom: 10,
                               ),
                               child: TextFormField(
                                 keyboardType: TextInputType.text,
@@ -215,7 +274,7 @@ class _RegisterState extends State<Register> {
                             ),
                             Container(
                               padding: const EdgeInsets.only(
-                                bottom: 20,
+                                bottom: 10,
                               ),
                               child: TextFormField(
                                 keyboardType: TextInputType.text,
@@ -306,12 +365,13 @@ class _RegisterState extends State<Register> {
                             ElevatedButton(
                                 onPressed: _isButtonDisabled
                                     ? null
-                                    : () => Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const Register2()),
-                                        ),
+                                    : () => Navigator.pushReplacementNamed(
+                                            context, '/register2',
+                                            arguments: {
+                                              'email': _email.text,
+                                              'password': _pass.text,
+                                              'username': _username.text,
+                                            }),
                                 style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all(
                                     _isButtonDisabled

@@ -70,7 +70,7 @@ public class AccessController {
                     "}\n"
     )
     public ResponseEntity<Object> save(@Validated({UserDto.Register.class}) @RequestBody UserDto dto) throws SQLException {
-        return userService.save(dto);
+        return userService.saveClient(dto);
     }
 
 
