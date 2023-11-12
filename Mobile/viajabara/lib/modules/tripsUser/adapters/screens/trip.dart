@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:viajabara/kernel/themes/colors/colors_app.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:viajabara/kernel/colors/colors_app.dart';
+import 'package:viajabara/kernel/themes/stuff.dart';
 
 class Trip extends StatefulWidget {
   const Trip({super.key});
@@ -66,16 +68,11 @@ class _TripState extends State<Trip> {
               'Viajar',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             )),
-        foregroundColor: ColorsApp.muted2,
+        foregroundColor: ColorsApp.muted,
         actions: <Widget>[
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Image.asset(
-              'assets/images/viajabara_logo_purple.png',
-              width: 100,
-              height: 50,
-              color: ColorsApp.primayColor,
-            ),
+            child: SvgPicture.asset(StuffApp.logoViajabara, height: 35),
           ),
         ],
         backgroundColor: ColorsApp.whiteColor,
@@ -86,8 +83,8 @@ class _TripState extends State<Trip> {
         child: Stack(
           fit: StackFit.expand,
           children: <Widget>[
-            Image.asset(
-              'assets/images/bg.png',
+            SvgPicture.asset(
+              StuffApp.bgGeneral,
               fit: BoxFit.cover,
             ),
             SingleChildScrollView(
@@ -95,7 +92,6 @@ class _TripState extends State<Trip> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  // *************************************
                   Container(
                     width: MediaQuery.of(context).size.width,
                     color: ColorsApp.whiteColor,
@@ -220,7 +216,8 @@ class _TripState extends State<Trip> {
                                                 borderRadius:
                                                     BorderRadius.circular(4.0),
                                                 borderSide: const BorderSide(
-                                                    color: ColorsApp.errorColor,
+                                                    color:
+                                                        ColorsApp.dangerColor,
                                                     width: 1.0,
                                                     style: BorderStyle.solid)),
                                             focusedErrorBorder:
@@ -386,7 +383,6 @@ class _TripState extends State<Trip> {
                       ],
                     ),
                   )
-                  // *************************************
                 ],
               ),
             ),

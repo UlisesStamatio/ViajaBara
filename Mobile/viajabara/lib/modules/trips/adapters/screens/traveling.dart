@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:viajabara/config/navigation/general_mechanisms_navigation.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:viajabara/kernel/blocs/gps/gps_bloc.dart';
-import 'package:viajabara/kernel/themes/colors/colors_app.dart';
+import 'package:viajabara/kernel/colors/colors_app.dart';
+import 'package:viajabara/kernel/themes/stuff.dart';
 import 'package:viajabara/kernel/widgets/gps/gps_access_screen.dart';
 import 'package:viajabara/kernel/widgets/gps/map_screen.dart';
 
@@ -24,16 +25,11 @@ class _TravelingState extends State<Traveling> {
               'Viajando',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             )),
-        foregroundColor: ColorsApp.muted2,
+        foregroundColor: ColorsApp.muted,
         actions: <Widget>[
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Image.asset(
-              'assets/images/viajabara_logo_purple.png',
-              width: 100,
-              height: 50,
-              color: ColorsApp.primayColor,
-            ),
+            child: SvgPicture.asset(StuffApp.logoViajabara, height: 35),
           ),
         ],
         backgroundColor: ColorsApp.whiteColor,
@@ -42,7 +38,7 @@ class _TravelingState extends State<Traveling> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: ColorsApp.primayColor),
           onPressed: () {
-            Navigator.of(context).pop(); // Regresar a la página anterior
+            Navigator.of(context).pop();
           },
         ),
       ),
@@ -50,8 +46,8 @@ class _TravelingState extends State<Traveling> {
         child: Stack(
           fit: StackFit.expand,
           children: <Widget>[
-            Image.asset(
-              'assets/images/bg_dark.png',
+            SvgPicture.asset(
+              StuffApp.bgGeneral,
               fit: BoxFit.cover,
             ),
             SingleChildScrollView(child: BlocBuilder<GpsBloc, GpsState>(

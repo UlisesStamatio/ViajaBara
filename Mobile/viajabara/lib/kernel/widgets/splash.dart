@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:viajabara/config/navigation/general_mechanisms_navigation.dart';
+import 'package:viajabara/kernel/colors/colors_app.dart';
+import 'package:viajabara/kernel/themes/stuff.dart';
 
 class Splash extends StatefulWidget {
   const Splash({super.key});
@@ -26,13 +29,18 @@ class _SplashState extends State<Splash> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset(
-            'assets/images/bg.png',
-            fit: BoxFit.cover,
+          ColorFiltered(
+            colorFilter: const ColorFilter.mode(
+              ColorsApp.backgroundImagesColor,
+              BlendMode.color,
+            ),
+            child: SvgPicture.asset(
+              StuffApp.bgSplash,
+              fit: BoxFit.cover,
+            ),
           ),
           Center(
-            child: Image.asset('assets/images/viajabara_logo.png',
-                width: 200, height: 150),
+            child: SvgPicture.asset('assets/images/logo_viajabara.svg'),
           ),
         ],
       ),

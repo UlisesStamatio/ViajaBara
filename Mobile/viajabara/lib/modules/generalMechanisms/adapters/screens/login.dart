@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:viajabara/kernel/colors/colors_app.dart';
 import 'package:viajabara/kernel/cubits/login/login_form_cubit.dart';
+import 'package:viajabara/kernel/themes/stuff.dart';
 import 'package:viajabara/kernel/validations/validations.dart';
-import 'package:viajabara/modules/historyUser/adapters/screens/historyUser.dart';
 import 'package:viajabara/providers/auth_provider.dart';
 
 class Login extends StatefulWidget {
@@ -35,21 +36,25 @@ class _LoginState extends State<Login> {
         child: Stack(
           fit: StackFit.expand,
           children: <Widget>[
-            Image.asset(
-              'assets/images/bg.png',
-              fit: BoxFit.cover,
+            ColorFiltered(
+              colorFilter: const ColorFilter.mode(
+                ColorsApp.backgroundImagesColor,
+                BlendMode.color,
+              ),
+              child: SvgPicture.asset(
+                StuffApp.bgLogin,
+                fit: BoxFit.cover,
+              ),
             ),
             SingleChildScrollView(
               child: Center(
                 child: Column(children: <Widget>[
                   const SizedBox(height: 120),
-                  Image.asset(
-                    'assets/images/viajabara_logo.png',
-                    height: 60,
-                  ),
+                  SvgPicture.asset(StuffApp.logoViajabara),
                   Card(
                     elevation: 4.0,
                     margin: const EdgeInsets.all(16.0),
+                    color: ColorsApp.transparentColor,
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
@@ -77,10 +82,11 @@ class _LoginState extends State<Login> {
                             ),
                             child: TextFormField(
                               keyboardType: TextInputType.emailAddress,
-                              onChanged: (value) {
-                                loginFormCubit.usernameChanged(value);
-                                _formKey.currentState?.validate();
-                              },
+                              // onChanged: (value) {
+                              //   loginFormCubit.usernameChanged(value);
+                              //   _formKey.currentState?.validate();
+                              // },
+                              controller: _email,
                               validator: (value) {
                                 RegExp regex = RegExp(Validations.email);
                                 if (value == null || value.isEmpty) {
@@ -100,10 +106,10 @@ class _LoginState extends State<Login> {
                                 filled: true,
                                 fillColor: ColorsApp.whiteColor,
                                 hintStyle: const TextStyle(
-                                  color: ColorsApp.muted,
+                                  color: ColorsApp.text,
                                 ),
                                 labelStyle: const TextStyle(
-                                  color: ColorsApp.muted,
+                                  color: ColorsApp.text,
                                 ),
                                 prefixIcon: const Icon(Icons.email),
                                 prefixIconColor: ColorsApp.primayColor,
@@ -128,7 +134,7 @@ class _LoginState extends State<Login> {
                                 focusedErrorBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(4.0),
                                     borderSide: const BorderSide(
-                                        color: ColorsApp.muted,
+                                        color: ColorsApp.text,
                                         width: 1.0,
                                         style: BorderStyle.solid)),
                               ),
@@ -140,10 +146,11 @@ class _LoginState extends State<Login> {
                             ),
                             child: TextFormField(
                               keyboardType: TextInputType.text,
-                              onChanged: (value) {
-                                loginFormCubit.passwordChanged(value);
-                                _formKey.currentState?.validate();
-                              },
+                              // onChanged: (value) {
+                              //   loginFormCubit.passwordChanged(value);
+                              //   _formKey.currentState?.validate();
+                              // },
+                              controller: _pass,
                               validator: (value) {
                                 if (value!.isEmpty) {
                                   return 'Campo obligatorio';
@@ -162,10 +169,10 @@ class _LoginState extends State<Login> {
                                 filled: true,
                                 fillColor: ColorsApp.whiteColor,
                                 hintStyle: const TextStyle(
-                                  color: ColorsApp.muted,
+                                  color: ColorsApp.text,
                                 ),
                                 labelStyle: const TextStyle(
-                                  color: ColorsApp.muted,
+                                  color: ColorsApp.text,
                                 ),
                                 suffixIcon: IconButton(
                                   icon: Icon(
@@ -173,7 +180,7 @@ class _LoginState extends State<Login> {
                                         ? Icons.visibility_off
                                         : Icons.visibility,
                                     color: _passwordVisible
-                                        ? ColorsApp.muted
+                                        ? ColorsApp.text
                                         : ColorsApp.primayColor,
                                   ),
                                   onPressed: () {
@@ -215,7 +222,7 @@ class _LoginState extends State<Login> {
                                 focusedErrorBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(4.0),
                                     borderSide: const BorderSide(
-                                        color: ColorsApp.muted,
+                                        color: ColorsApp.text,
                                         width: 1.0,
                                         style: BorderStyle.solid)),
                               ),
@@ -253,22 +260,6 @@ class _LoginState extends State<Login> {
                               ],
                             ),
                           ),
-                          ElevatedButton(
-                              onPressed: _isButtonDisabled
-                                  ? null
-                                  : () {
-                                      loginFormCubit.onSubmit();
-                                      Navigator.pushReplacementNamed(
-                                          context, "/menu");
-                                    },
-                              style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all(
-                                  _isButtonDisabled
-                                      ? ColorsApp.muted
-                                      : ColorsApp.primayColor,
-                                ),
-                              ),
-                              child: const Text('Iniciar sesión')),
                           ElevatedButton(
                             onPressed: _isButtonDisabled
                                 ? null

@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:viajabara/kernel/colors/colors_app.dart';
+import 'package:viajabara/kernel/themes/stuff.dart';
 
 import 'package:viajabara/modules/trips/adapters/screens/traveling.dart';
 import 'package:viajabara/modules/tripsUser/adapters/screens/trip.dart';
@@ -27,12 +29,7 @@ class _TripsState extends State<Trips> {
         actions: <Widget>[
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Image.asset(
-              'assets/images/viajabara_logo_purple.png',
-              width: 100,
-              height: 50,
-              color: ColorsApp.primayColor,
-            ),
+            child: SvgPicture.asset(StuffApp.logoViajabara, height: 35),
           ),
         ],
         backgroundColor: ColorsApp.whiteColor,
@@ -43,8 +40,8 @@ class _TripsState extends State<Trips> {
         child: Stack(
           fit: StackFit.expand,
           children: <Widget>[
-            Image.asset(
-              'assets/images/bg_dark.png',
+            SvgPicture.asset(
+              StuffApp.bgGeneral,
               fit: BoxFit.cover,
             ),
             SingleChildScrollView(
@@ -52,7 +49,6 @@ class _TripsState extends State<Trips> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  // *************************************
                   Card(
                     elevation: 5,
                     margin: const EdgeInsets.all(10),
@@ -196,7 +192,6 @@ class _TripsState extends State<Trips> {
                       ],
                     ),
                   ),
-                  // ************ CARD 2 *******************************************
                   Card(
                     elevation: 5,
                     margin: const EdgeInsets.all(10),
@@ -313,7 +308,6 @@ class _TripsState extends State<Trips> {
                       ],
                     ),
                   ),
-                  // *************************************
                 ],
               ),
             ),

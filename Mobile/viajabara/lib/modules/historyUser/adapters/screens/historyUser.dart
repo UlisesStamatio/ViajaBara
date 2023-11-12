@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:viajabara/kernel/colors/colors_app.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:viajabara/kernel/colors/colors_app.dart';
+import 'package:viajabara/kernel/themes/stuff.dart';
 
 class HistoryUser extends StatefulWidget {
   const HistoryUser({Key? key}) : super(key: key);
@@ -24,12 +26,7 @@ class _HistoryUserState extends State<HistoryUser> {
         actions: <Widget>[
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Image.asset(
-              'assets/images/viajabara_logo_purple.png',
-              width: 100,
-              height: 50,
-              color: ColorsApp.primayColor,
-            ),
+            child: SvgPicture.asset(StuffApp.logoViajabara, height: 35),
           ),
         ],
         backgroundColor: ColorsApp.whiteColor,
@@ -40,8 +37,8 @@ class _HistoryUserState extends State<HistoryUser> {
         child: Stack(
           fit: StackFit.expand,
           children: <Widget>[
-            Image.asset(
-              'assets/images/bg.png',
+            SvgPicture.asset(
+              StuffApp.bgGeneral,
               fit: BoxFit.cover,
             ),
             SingleChildScrollView(

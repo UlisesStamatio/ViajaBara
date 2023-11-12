@@ -23,8 +23,6 @@ class _MenuState extends State<Menu> {
       if (index == 3) {
         _showIndexedStack = false;
         Navigator.pushReplacementNamed(context, "/login");
-      } else {
-        _showIndexedStack = true;
       }
       print(_selectIndex);
       print(_showIndexedStack);

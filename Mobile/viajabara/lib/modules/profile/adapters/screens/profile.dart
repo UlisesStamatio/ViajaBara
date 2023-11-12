@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:viajabara/kernel/colors/colors_app.dart';
+import 'package:viajabara/kernel/themes/stuff.dart';
 
 class Profile extends StatelessWidget {
   const Profile({super.key});
+
+  final double topWidgetHeight = 10.0;
+  final double avatarRadius = 20.0;
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +23,7 @@ class Profile extends StatelessWidget {
         actions: <Widget>[
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Image.asset(
-              'assets/images/viajabara_logo_purple.png',
-              width: 100,
-              height: 50,
-              color: ColorsApp.primayColor,
-            ),
+            child: SvgPicture.asset(StuffApp.logoViajabara, height: 35),
           ),
         ],
         backgroundColor: ColorsApp.whiteColor,
@@ -34,8 +34,8 @@ class Profile extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: <Widget>[
-            Image.asset(
-              'assets/images/bg.png',
+            SvgPicture.asset(
+              StuffApp.bgGeneral,
               fit: BoxFit.cover,
             ),
             SingleChildScrollView(
@@ -43,19 +43,14 @@ class Profile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  const SizedBox(height: 10), // Espacio entre el logo y la Card
+                  SizedBox(height: 70),
                   Card(
                     margin: const EdgeInsets.all(16),
                     elevation: 5,
+                    color: ColorsApp.transparentColor,
                     child: Column(
                       children: [
-                        const SizedBox(
-                            height:
-                                20), // Espacio en la parte superior de la Card
-                        const CircleAvatar(
-                          radius: 60,
-                          backgroundImage: AssetImage('assets/images/Girl.png'),
-                        ),
+                        SizedBox(height: 70),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Title(
@@ -69,7 +64,6 @@ class Profile extends StatelessWidget {
                             ),
                           ),
                         ),
-
                         const Row(
                           children: [
                             Expanded(
@@ -233,6 +227,14 @@ class Profile extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+            ),
+            Positioned(
+              left: (MediaQuery.of(context).size.width / 3),
+              top: avatarRadius,
+              child: CircleAvatar(
+                radius: 60,
+                backgroundImage: const AssetImage('assets/images/Girl.png'),
               ),
             ),
           ],
