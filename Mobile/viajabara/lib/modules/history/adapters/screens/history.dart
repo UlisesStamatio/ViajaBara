@@ -144,13 +144,7 @@ class _HistoryState extends State<History> {
                             child: FractionallySizedBox(
                               widthFactor: 0.75,
                               child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const HistoryUser()));
-                                },
+                                onPressed: () {},
                                 style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all(
                                       ColorsApp.primayColor),

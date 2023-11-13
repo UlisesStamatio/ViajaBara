@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:viajabara/config/navigation/history_navigation%20.dart';
+import 'package:viajabara/config/navigation/driver/history_navigation_driver.dart';
+import 'package:viajabara/config/navigation/driver/trips_navigation_driver.dart';
 import 'package:viajabara/config/navigation/profile_navigation.dart';
-import 'package:viajabara/config/navigation/trips_navigation.dart';
+import 'package:viajabara/config/navigation/user/history_navigation.dart';
+import 'package:viajabara/config/navigation/user/trips_navigation.dart';
 import 'package:viajabara/kernel/widgets/custom_bottom_navigation_tab.dart';
 
 class Menu extends StatefulWidget {
@@ -14,6 +16,20 @@ class Menu extends StatefulWidget {
 class _MenuState extends State<Menu> {
   int _selectIndex = 0;
   bool _showIndexedStack = true;
+  String email = '';
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () {
+      final arguments = ModalRoute.of(context)?.settings.arguments as Map;
+      if (arguments != null) {
+        setState(() {
+          email = arguments['email'];
+        });
+      }
+    });
+  }
 
   // final homeNavigatorKey = GlobalKey<NavigatorState>();
   // final accountNavigatorKey = GlobalKey<NavigatorState>();
@@ -33,15 +49,25 @@ class _MenuState extends State<Menu> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _showIndexedStack
-          ? IndexedStack(
-              index: _selectIndex,
-              children: [
-                const TripsNavigation(),
-                const HistoryNavigation(),
-                const ProfileNavigation(),
-                Container(),
-              ],
-            )
+          ? email == "20203tn159@utez.edu.mx"
+              ? IndexedStack(
+                  index: _selectIndex,
+                  children: [
+                    const TripsNavigationDriver(),
+                    const HistoryNavigationDriver(),
+                    const ProfileNavigation(),
+                    Container(),
+                  ],
+                )
+              : IndexedStack(
+                  index: _selectIndex,
+                  children: [
+                    const TripsNavigation(),
+                    const HistoryNavigation(),
+                    const ProfileNavigation(),
+                    Container(),
+                  ],
+                )
           : null,
       bottomNavigationBar: CustomBottomNavigationTab(
           selectedIndex: _selectIndex, onItemTapped: _onItemTapped),

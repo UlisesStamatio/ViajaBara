@@ -287,10 +287,7 @@ class _TripsState extends State<Trips> {
                           padding: const EdgeInsets.only(
                               bottom: 10, right: 30, left: 30),
                           child: ElevatedButton(
-                            onPressed: () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (context) => const Trip()),
-                            ),
+                            onPressed: () {},
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(
                                   ColorsApp.primayColor),

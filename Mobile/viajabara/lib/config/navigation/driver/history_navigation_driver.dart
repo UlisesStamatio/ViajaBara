@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:viajabara/modules/history/adapters/screens/history.dart';
 
-class HistoryNavigation extends StatelessWidget {
-  const HistoryNavigation({super.key});
+class HistoryNavigationDriver extends StatelessWidget {
+  const HistoryNavigationDriver({super.key});
 
   @override
   Widget build(BuildContext context) {

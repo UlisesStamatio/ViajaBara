@@ -248,8 +248,8 @@ class _LoginState extends State<Login> {
                               children: [
                                 const Text('o '),
                                 InkWell(
-                                  onTap: () => Navigator.pushNamed(
-                                      context, '/register'),
+                                  onTap: () =>
+                                      Navigator.pushNamed(context, '/register'),
                                   child: const Text(
                                     '¿aún no te has registrado?',
                                     style: TextStyle(
@@ -276,8 +276,10 @@ class _LoginState extends State<Login> {
                                     }
 
                                     if (isLogged) {
-                                      Navigator.pushReplacementNamed(
-                                          context, "/menu");
+                                      Navigator.pushNamed(context, '/menu',
+                                          arguments: {
+                                            'email': _email.text,
+                                          });
                                     } else {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
