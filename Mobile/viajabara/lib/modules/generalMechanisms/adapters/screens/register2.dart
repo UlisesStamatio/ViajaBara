@@ -3,7 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:viajabara/domain/entities/list_states.dart';
 import 'package:viajabara/domain/entities/response_message.dart';
 import 'package:viajabara/domain/entities/user_data.dart';
-import 'package:viajabara/kernel/colors/colors_app.dart';
+import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
 import 'package:viajabara/providers/auth_provider.dart';
 
@@ -97,7 +97,7 @@ class _Register2State extends State<Register2> {
                                 Container(
                                   padding: const EdgeInsets.only(bottom: 10),
                                   child: Stack(
-                                    alignment: Alignment.center, 
+                                    alignment: Alignment.center,
                                     children: <Widget>[
                                       const Align(
                                         alignment: Alignment.center,
@@ -113,7 +113,8 @@ class _Register2State extends State<Register2> {
                                       Align(
                                         alignment: Alignment.centerLeft,
                                         child: IconButton(
-                                          icon: const Icon(Icons.arrow_back, color: ColorsApp.primayColor),
+                                          icon: const Icon(Icons.arrow_back,
+                                              color: ColorsApp.primayColor),
                                           onPressed: () {
                                             Navigator.pop(context);
                                           },
@@ -374,46 +375,54 @@ class _Register2State extends State<Register2> {
                                   ),
                                 ),
                                 Container(
-                                    padding: const EdgeInsets.only(bottom: 20),
-                                    child: DropdownButtonFormField<int>(
-                                      value: selectedState,
-                                      decoration: InputDecoration(
-                                        labelText: 'Estado de residencia*',
-                                        hintText: 'Selecciona un estado',
-                                        filled: true,
-                                        fillColor: ColorsApp.whiteColor, // Reemplaza con ColorsApp.whiteColor si es necesario
-                                        prefixIcon: const Icon(Icons.location_city),
-                                        prefixIconColor: ColorsApp.primayColor, // Reemplaza con ColorsApp.primayColor si es necesario
-                                        enabledBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(4.0),
-                                          borderSide: const BorderSide(
-                                              color: ColorsApp.primayColor,
-                                              width:1.0), // Reemplaza con ColorsApp.muted si es necesario
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(4.0),
-                                          borderSide: const BorderSide(
-                                              color: ColorsApp.primayColor,
-                                              width:1.0), // Reemplaza con ColorsApp.primayColor si es necesario
-                                        ),
-                                        // Añade borderStyles adicionales según sea necesario
+                                  padding: const EdgeInsets.only(bottom: 20),
+                                  child: DropdownButtonFormField<int>(
+                                    value: selectedState,
+                                    decoration: InputDecoration(
+                                      labelText: 'Estado de residencia*',
+                                      hintText: 'Selecciona un estado',
+                                      filled: true,
+                                      fillColor: ColorsApp
+                                          .whiteColor, // Reemplaza con ColorsApp.whiteColor si es necesario
+                                      prefixIcon:
+                                          const Icon(Icons.location_city),
+                                      prefixIconColor: ColorsApp
+                                          .primayColor, // Reemplaza con ColorsApp.primayColor si es necesario
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(4.0),
+                                        borderSide: const BorderSide(
+                                            color: ColorsApp.primayColor,
+                                            width:
+                                                1.0), // Reemplaza con ColorsApp.muted si es necesario
                                       ),
-                                      onChanged: (int? newValue) {
-                                        setState(() {
-                                          selectedState = newValue;
-                                        });
-                                      },
-                                      validator: (value) => value == null ? 'Campo obligatorio': null,
-                                      items: states.map<DropdownMenuItem<int>>((StateItem state) {
-                                        return DropdownMenuItem<int>(
-                                          value: state.id,
-                                          child: Text(state.name),
-                                        );
-                                      }).toList(),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(4.0),
+                                        borderSide: const BorderSide(
+                                            color: ColorsApp.primayColor,
+                                            width:
+                                                1.0), // Reemplaza con ColorsApp.primayColor si es necesario
+                                      ),
+                                      // Añade borderStyles adicionales según sea necesario
                                     ),
+                                    onChanged: (int? newValue) {
+                                      setState(() {
+                                        selectedState = newValue;
+                                      });
+                                    },
+                                    validator: (value) => value == null
+                                        ? 'Campo obligatorio'
+                                        : null,
+                                    items: states.map<DropdownMenuItem<int>>(
+                                        (StateItem state) {
+                                      return DropdownMenuItem<int>(
+                                        value: state.id,
+                                        child: Text(state.name),
+                                      );
+                                    }).toList(),
                                   ),
+                                ),
                                 Container(
                                   padding: const EdgeInsets.only(
                                     bottom: 10,
@@ -477,40 +486,48 @@ class _Register2State extends State<Register2> {
                                   ),
                                 ),
                                 ElevatedButton(
-                                  onPressed: _isButtonDisabled? null: () async {
-                                    UserData userData = UserData(
-                                      email: email,
-                                      username: username,
-                                      password: password,
-                                      name: _names.text,
-                                      surname: _lastnames.text,
-                                      birthDate: _birthday.text,
-                                      state: selectedState!,
-                                      cellphone: _phone.text,
-                                      sex: _sex);
+                                    onPressed: _isButtonDisabled
+                                        ? null
+                                        : () async {
+                                            UserData userData = UserData(
+                                                email: email,
+                                                username: username,
+                                                password: password,
+                                                name: _names.text,
+                                                surname: _lastnames.text,
+                                                birthDate: _birthday.text,
+                                                state: selectedState!,
+                                                cellphone: _phone.text,
+                                                sex: _sex);
 
-                                      ResponseMessage isRegister = await AuthProvider().register(userData);
+                                            ResponseMessage isRegister =
+                                                await AuthProvider()
+                                                    .register(userData);
 
-                                      if (!mounted) {
-                                        return; // Verificar si el widget está aún montado
-                                      }
+                                            if (!mounted) {
+                                              return; // Verificar si el widget está aún montado
+                                            }
 
-                                      print(isRegister);
-                                      if (isRegister.type =='SUCCESS') {
-                                        Navigator.pushReplacementNamed(context, '/login');
-                                      } else {
-                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(isRegister.text)));
-                                      }
-
-                                },
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all(_isButtonDisabled
-                                        ? ColorsApp.muted
-                                        : ColorsApp.primayColor,
-                                  ),
-                                ),
-                                child: const Text('Registrar')),
+                                            print(isRegister);
+                                            if (isRegister.type == 'SUCCESS') {
+                                              Navigator.pushReplacementNamed(
+                                                  context, '/login');
+                                            } else {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(SnackBar(
+                                                      content: Text(
+                                                          isRegister.text)));
+                                            }
+                                          },
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                        _isButtonDisabled
+                                            ? ColorsApp.muted
+                                            : ColorsApp.primayColor,
+                                      ),
+                                    ),
+                                    child: const Text('Registrar')),
                               ],
                             ),
                           ),

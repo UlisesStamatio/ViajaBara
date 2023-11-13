@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:viajabara/modules/tripsUser/adapters/screens/booking.dart';
+import 'package:viajabara/modules/tripsUser/adapters/screens/payment.dart';
 import 'package:viajabara/modules/tripsUser/adapters/screens/trip.dart';
 
 class TripsNavigation extends StatelessWidget {
@@ -11,6 +13,8 @@ class TripsNavigation extends StatelessWidget {
       initialRoute: '/trip',
       routes: {
         '/trip': (context) => const Trip(),
+        '/booking': (context) => const Booking(),
+        '/pay': (context) => const Payment(),
       },
     );
   }

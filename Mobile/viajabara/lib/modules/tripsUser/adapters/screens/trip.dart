@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:viajabara/kernel/colors/colors_app.dart';
+import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
 
 class Trip extends StatefulWidget {
@@ -18,6 +19,7 @@ class _TripState extends State<Trip> {
   final _formKey = GlobalKey<FormState>();
   DateTime fecha = DateTime.now();
   TextEditingController dateController = TextEditingController();
+  bool _isButtonDisabled = true;
 
   @override
   void initState() {
@@ -98,6 +100,12 @@ class _TripState extends State<Trip> {
                     margin: const EdgeInsets.only(bottom: 10),
                     child: Form(
                       key: _formKey,
+                      onChanged: () {
+                        setState(() {
+                          _isButtonDisabled =
+                              !_formKey.currentState!.validate();
+                        });
+                      },
                       child: Column(
                         children: <Widget>[
                           Container(
@@ -254,40 +262,197 @@ class _TripState extends State<Trip> {
                                       )
                                     ],
                                   ),
+                                  const SizedBox(
+                                    height: 20.0,
+                                  ),
+                                  Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: <Widget>[
+                                        SizedBox(
+                                          width: 20,
+                                        ),
+                                        Flexible(
+                                          child: TextFormField(
+                                            keyboardType: TextInputType.number,
+                                            inputFormatters: <TextInputFormatter>[
+                                              FilteringTextInputFormatter
+                                                  .digitsOnly
+                                            ],
+                                            validator: (value) {
+                                              if (value == null ||
+                                                  value.isEmpty) {
+                                                return 'Campo obligatorio';
+                                              } else if (int.parse(value) < 0 ||
+                                                  int.parse(value) > 20) {
+                                                print(
+                                                    "Asientos ${int.parse(value)}");
+                                                return 'Coloca un valor entre 1-20';
+                                              }
+                                              return null;
+                                            },
+                                            cursorColor: ColorsApp.primayColor,
+                                            style: const TextStyle(
+                                              color: ColorsApp.text,
+                                            ),
+                                            decoration: InputDecoration(
+                                              labelText: 'Asientos*',
+                                              hintText: "1",
+                                              filled: true,
+                                              fillColor: ColorsApp.whiteColor,
+                                              hintStyle: const TextStyle(
+                                                color: ColorsApp.text,
+                                              ),
+                                              labelStyle: const TextStyle(
+                                                color: ColorsApp.text,
+                                              ),
+                                              errorMaxLines: 2,
+                                              enabledBorder: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          4.0),
+                                                  borderSide: const BorderSide(
+                                                      color: ColorsApp.muted,
+                                                      width: 1.0,
+                                                      style:
+                                                          BorderStyle.solid)),
+                                              focusedBorder: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          4.0),
+                                                  borderSide: const BorderSide(
+                                                      color:
+                                                          ColorsApp.primayColor,
+                                                      width: 1.0,
+                                                      style:
+                                                          BorderStyle.solid)),
+                                              errorBorder: OutlineInputBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          4.0),
+                                                  borderSide: const BorderSide(
+                                                      color:
+                                                          ColorsApp.dangerColor,
+                                                      width: 1.0,
+                                                      style:
+                                                          BorderStyle.solid)),
+                                              focusedErrorBorder:
+                                                  OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              4.0),
+                                                      borderSide:
+                                                          const BorderSide(
+                                                              color: ColorsApp
+                                                                  .text,
+                                                              width: 1.0,
+                                                              style: BorderStyle
+                                                                  .solid)),
+                                            ),
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        ElevatedButton(
+                                          onPressed: () {},
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                              _isButtonDisabled
+                                                  ? ColorsApp.muted
+                                                  : ColorsApp.primayColor,
+                                            ),
+                                          ),
+                                          child: const Row(children: [
+                                            Icon(Icons.search),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text('Buscar')
+                                          ]),
+                                        ),
+                                        SizedBox(
+                                          width: 20,
+                                        ),
+                                      ])
                                 ],
                               )),
-                          Container(
-                            padding: const EdgeInsets.all(15),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: <Widget>[
-                                ElevatedButton(
-                                  onPressed: () {},
-                                  style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all(
-                                              ColorsApp.primayColor)),
-                                  child: const Row(children: [
-                                    Icon(Icons.remove_red_eye_outlined),
-                                    SizedBox(
-                                      width: 10,
+                        ],
+                      ),
+                    ),
+                  ),
+                  Card(
+                    elevation: 5,
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 20.0, horizontal: 16.0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          const Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              CircleAvatar(
+                                radius: 45,
+                                backgroundImage:
+                                    AssetImage('assets/images/perfilGirl.avif'),
+                              ),
+                              SizedBox(width: 20.0),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                      'Salida: Lugar HH:MM',
+                                      style: TextStyle(
+                                        fontSize: 18.0,
+                                      ),
                                     ),
-                                    Text('Detalles')
-                                  ]),
+                                    SizedBox(height: 10.0),
+                                    Text(
+                                      'Llegada: Lugar HH:MM',
+                                      style: TextStyle(
+                                        fontSize: 18.0,
+                                      ),
+                                    ),
+                                    SizedBox(height: 10.0),
+                                    Text(
+                                      'Pagado: \$100.0',
+                                      style: TextStyle(
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                ElevatedButton(
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 15.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                TextButton.icon(
+                                  icon:
+                                      const Icon(Icons.remove_red_eye_outlined),
+                                  label: const Text('Detalles'),
                                   onPressed: () {},
-                                  style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all(
-                                              ColorsApp.primayColor)),
-                                  child: const Row(children: [
-                                    Icon(Icons.play_arrow),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text('En curso')
-                                  ]),
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: ColorsApp.whiteColor,
+                                    backgroundColor: ColorsApp.primayColor,
+                                  ),
+                                ),
+                                TextButton.icon(
+                                  icon: const Icon(CupertinoIcons.cart_fill),
+                                  label: const Text('Reservar'),
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, '/booking');
+                                  },
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: ColorsApp.whiteColor,
+                                    backgroundColor: ColorsApp.primayColor,
+                                  ),
                                 ),
                               ],
                             ),
@@ -296,93 +461,6 @@ class _TripState extends State<Trip> {
                       ),
                     ),
                   ),
-                  Card(
-                    elevation: 5,
-                    margin: const EdgeInsets.all(10),
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          child: const Column(
-                            children: <Widget>[
-                              Icon(CupertinoIcons.bus, size: 50.0),
-                              Text('Horario'),
-                            ],
-                          ),
-                        ),
-                        Container(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 20),
-                            height: 100.0,
-                            child: const Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Text(
-                                      'Salida: 2:00 a.m',
-                                      style: TextStyle(fontSize: 18.0),
-                                    ),
-                                    Text(
-                                      'Llegada: 6:30 p.m',
-                                      style: TextStyle(fontSize: 18.0),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 10.0),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text(
-                                      'Tiempo estimado: 4:30hrs',
-                                      style: TextStyle(
-                                          fontSize: 18.0,
-                                          color: ColorsApp.primayColor),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 10.0),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Text(
-                                      'Destino: Veracruz',
-                                      style: TextStyle(fontSize: 18.0),
-                                    ),
-                                    Text(
-                                      '1 Escala   - Local',
-                                      style: TextStyle(fontSize: 18.0),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )),
-                        Container(
-                          padding: const EdgeInsets.all(15),
-                          child: ElevatedButton(
-                            onPressed: () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (context) => const Trip()),
-                            ),
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(
-                                  ColorsApp.primayColor),
-                            ),
-                            child: const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.remove_red_eye_outlined),
-                                SizedBox(width: 10),
-                                Text('Detalles')
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
                 ],
               ),
             ),

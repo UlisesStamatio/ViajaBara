@@ -5,6 +5,7 @@ import 'package:viajabara/config/navigation/profile_navigation.dart';
 import 'package:viajabara/config/navigation/user/history_navigation.dart';
 import 'package:viajabara/config/navigation/user/trips_navigation.dart';
 import 'package:viajabara/kernel/widgets/custom_bottom_navigation_tab.dart';
+import 'package:viajabara/kernel/widgets/custom_bottom_navigation_tab_driver.dart';
 
 class Menu extends StatefulWidget {
   const Menu({super.key});
@@ -69,8 +70,11 @@ class _MenuState extends State<Menu> {
                   ],
                 )
           : null,
-      bottomNavigationBar: CustomBottomNavigationTab(
-          selectedIndex: _selectIndex, onItemTapped: _onItemTapped),
+      bottomNavigationBar: email == "20203tn159@utez.edu.mx"
+          ? CustomBottomNavigationTabDriver(
+              selectedIndex: _selectIndex, onItemTapped: _onItemTapped)
+          : CustomBottomNavigationTab(
+              selectedIndex: _selectIndex, onItemTapped: _onItemTapped),
     );
   }
 }

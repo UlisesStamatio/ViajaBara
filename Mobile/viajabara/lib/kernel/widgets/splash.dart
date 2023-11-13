@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:viajabara/config/navigation/general_mechanisms_navigation.dart';
-import 'package:viajabara/kernel/colors/colors_app.dart';
+import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
 
 class Splash extends StatefulWidget {
@@ -40,7 +40,7 @@ class _SplashState extends State<Splash> {
             ),
           ),
           Center(
-            child: SvgPicture.asset('assets/images/logo_viajabara.svg'),
+            child: SvgPicture.asset(StuffApp.logoViajabara),
           ),
         ],
       ),

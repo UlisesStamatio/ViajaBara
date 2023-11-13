@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:viajabara/kernel/colors/colors_app.dart';
+import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
 import 'package:viajabara/kernel/validations/validations.dart';
 import 'package:viajabara/modules/generalMechanisms/adapters/screens/register2.dart';
@@ -61,7 +61,8 @@ class _RegisterState extends State<Register> {
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             Container(
-                              padding:const EdgeInsets.only(bottom: 10, top: 20),
+                              padding:
+                                  const EdgeInsets.only(bottom: 10, top: 20),
                               child: Stack(
                                 alignment: Alignment.center,
                                 children: <Widget>[
@@ -81,7 +82,7 @@ class _RegisterState extends State<Register> {
                                     child: IconButton(
                                       icon: const Icon(Icons.arrow_back,
                                           color: ColorsApp.primayColor),
-                                      onPressed: () { 
+                                      onPressed: () {
                                         Navigator.pop(context);
                                       },
                                     ),

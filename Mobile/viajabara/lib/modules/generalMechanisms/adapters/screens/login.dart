@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:viajabara/kernel/colors/colors_app.dart';
 import 'package:viajabara/kernel/cubits/login/login_form_cubit.dart';
+import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
 import 'package:viajabara/kernel/validations/validations.dart';
 import 'package:viajabara/providers/auth_provider.dart';
@@ -19,8 +19,9 @@ class _LoginState extends State<Login> {
   bool _isButtonDisabled = true;
   bool _passwordVisible = false;
   bool _islogged = false;
-  final TextEditingController _email = TextEditingController(text: '');
-  final TextEditingController _pass = TextEditingController(text: '');
+  final TextEditingController _email =
+      TextEditingController(text: '20203tn063@utez.edu.mx');
+  final TextEditingController _pass = TextEditingController(text: 'Admin123');
 
   @override
   Widget build(BuildContext context) {

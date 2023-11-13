@@ -2,11 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 
-class CustomBottomNavigationTab extends StatelessWidget {
+class CustomBottomNavigationTabDriver extends StatelessWidget {
   final int selectedIndex;
   final Function(int) onItemTapped;
 
-  const CustomBottomNavigationTab(
+  const CustomBottomNavigationTabDriver(
       {Key? key, required this.selectedIndex, required this.onItemTapped});
 
   @override
@@ -15,7 +15,7 @@ class CustomBottomNavigationTab extends StatelessWidget {
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.bus),
-            label: 'Viajar',
+            label: 'Viajes',
             backgroundColor: ColorsApp.whiteColor),
         BottomNavigationBarItem(
             icon: Icon(Icons.history),
