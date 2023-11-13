@@ -61,13 +61,32 @@ class _RegisterState extends State<Register> {
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             Container(
-                              padding: const EdgeInsets.symmetric(vertical: 20),
-                              child: const Text(
-                                'Únete y viaja de volada',
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: ColorsApp.text),
+                              padding:const EdgeInsets.only(bottom: 10, top: 20),
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: <Widget>[
+                                  const Align(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      'Únete y viaja de volada',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: ColorsApp.muted,
+                                      ),
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: IconButton(
+                                      icon: const Icon(Icons.arrow_back,
+                                          color: ColorsApp.primayColor),
+                                      onPressed: () { 
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                             Container(
@@ -371,7 +390,7 @@ class _RegisterState extends State<Register> {
                             ElevatedButton(
                                 onPressed: _isButtonDisabled
                                     ? null
-                                    : () => Navigator.pushReplacementNamed(
+                                    : () => Navigator.pushNamed(
                                             context, '/register2',
                                             arguments: {
                                               'email': _email.text,

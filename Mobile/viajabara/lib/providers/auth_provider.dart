@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:viajabara/domain/entities/list_states.dart';
+import 'package:viajabara/domain/entities/response_message.dart';
 import 'package:viajabara/domain/entities/user_data.dart';
 
 class AuthProvider {
@@ -8,8 +10,7 @@ class AuthProvider {
   Future<bool> login(String email, String password) async {
     var dataJson = jsonEncode({'email': email, 'password': password});
     try {
-      final response = await dio
-          .post('http://192.168.0.104:8083/api/auth/login', data: dataJson);
+      final response = await dio.post('http://192.168.0.106:8083/api/auth/login', data: dataJson);
 
       return response.statusCode == 200;
     } on DioException catch (e) {
@@ -20,7 +21,7 @@ class AuthProvider {
     }
   }
 
-  Future<bool> register(UserData userData) async {
+  Future<ResponseMessage> register(UserData userData) async {
     var dataJson = jsonEncode({
       'profile': "Pruebaaaa",
       'username': userData.username,
@@ -40,16 +41,30 @@ class AuthProvider {
     });
 
     try {
-      final response = await dio
-          .post('http://192.168.0.104:8083/api/auth/register', data: dataJson);
-      print("Si entra aquí");
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        return false;
-      }
+      final response = await dio.post('http://192.168.0.106:8083/api/auth/register', data: dataJson);
+        Map<String, dynamic> data = response.data;
+        ResponseMessage responseMessage = ResponseMessage(text: data['text'], type: data['type']);
+        return responseMessage;      
     } on DioException catch (e) {
-      throw Exception('Error al registrar al usuario: ${e.message}');
+      if (e.response?.statusCode == 400) {
+        Map<String, dynamic> data = e.response!.data;
+        ResponseMessage responseMessage = ResponseMessage(text: data['text'], type: data['type']);
+        return responseMessage;
+      }
+      throw Exception('Error de inicio de sesión: ${e.message}');
+    }
+  }
+
+  Future<List<StateItem>> getStates() async {
+    final response = await dio.get('http://192.168.0.106:8083/api/lists/states');
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> data = response.data;
+      List<dynamic> statesJson = data['result'];
+      List<StateItem> states = statesJson.map((state) => StateItem(name: state['name'].toString(), id: state['id'])).toList();
+      return states;
+    } else {
+      throw Exception('Fallo al obtener los registros');
     }
   }
 }

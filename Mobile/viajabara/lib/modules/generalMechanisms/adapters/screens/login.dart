@@ -248,7 +248,7 @@ class _LoginState extends State<Login> {
                               children: [
                                 const Text('o '),
                                 InkWell(
-                                  onTap: () => Navigator.pushReplacementNamed(
+                                  onTap: () => Navigator.pushNamed(
                                       context, '/register'),
                                   child: const Text(
                                     '¿aún no te has registrado?',

@@ -5,7 +5,7 @@ class UserData {
   final String name;
   final String surname;
   final String birthDate;
-  final String state;
+  final int state;
   final String cellphone;
   final String sex;
 
