@@ -82,6 +82,7 @@ public class MainSecurity extends WebSecurityConfigurerAdapter {
                         .antMatchers("/api/duties/**").hasAuthority(PrivilegeName.SERVICIOS.name())
                         .antMatchers("/api/buses/**").hasAuthority(PrivilegeName.AUTOBUSES.name())
                         .antMatchers("/api/routes/**").hasAuthority(PrivilegeName.RUTAS.name())
+                        .antMatchers("/api/trips/**").hasAuthority(PrivilegeName.VIAJES.name())
                         .antMatchers("/api/logged/**").authenticated()
                         .antMatchers("/api/lists/**").permitAll()
                         .antMatchers("/api/general/**").permitAll()

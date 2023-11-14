@@ -41,4 +41,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query(value = "SELECT *, p.name as name, p.surname as surname FROM users u inner join people p on u.person_id = p.id AND JSON_EXTRACT(u.roles, '$[*].id') LIKE '%3%'",nativeQuery = true)
     List<User> searchAllConsumers();
+
+    @Query(value = "SELECT *, p.name as name, p.surname as surname FROM users u inner join people p on u.person_id = p.id AND JSON_EXTRACT(u.roles, '$[*].id') LIKE '%2%' and u.status is true",nativeQuery = true)
+    List<User> searchAllDriversEnabled();
 }
