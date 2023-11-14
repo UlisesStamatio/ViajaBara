@@ -44,11 +44,16 @@ public class UserController {
             value = "Obtiene todos los conductores registradas"
     )
     public ResponseEntity<Object> findAllDrivers() throws SQLException {
-        Authentication auth = SecurityContextHolder
-                .getContext()
-                .getAuthentication();
-        UserDetails userDetail = (UserDetails) auth.getPrincipal();
         return service.findAllDrivers();
+    }
+
+    @GetMapping ("/all-drivers-enabled")
+    @Secured({USER})
+    @ApiOperation(
+            value = "Obtiene todos los conductores registradas"
+    )
+    public ResponseEntity<Object> findAllDriversEnabled() throws SQLException {
+        return service.findAllDriversEnabled();
     }
 
     @GetMapping("/all-consumers")
