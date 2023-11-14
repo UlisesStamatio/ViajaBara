@@ -10,8 +10,7 @@ class AuthProvider {
   Future<bool> login(String email, String password) async {
     var dataJson = jsonEncode({'email': email, 'password': password});
     try {
-      final response = await dio
-          .post('http://192.168.100.47:8083/api/auth/login', data: dataJson);
+      final response = await dio.post('http://192.168.0.105:8083/api/auth/login', data: dataJson);
 
       return response.statusCode == 200;
     } on DioException catch (e) {
@@ -42,8 +41,7 @@ class AuthProvider {
     });
 
     try {
-      final response = await dio
-          .post('http://192.168.100.47:8083/api/auth/register', data: dataJson);
+      final response = await dio.post('http://192.168.0.105:8083/api/auth/register', data: dataJson);
       Map<String, dynamic> data = response.data;
       ResponseMessage responseMessage =
           ResponseMessage(text: data['text'], type: data['type']);
@@ -60,8 +58,7 @@ class AuthProvider {
   }
 
   Future<List<StateItem>> getStates() async {
-    final response =
-        await dio.get('http://192.168.100.47:8083/api/lists/states');
+    final response = await dio.get('http://192.168.0.105:8083/api/lists/states');
 
     if (response.statusCode == 200) {
       Map<String, dynamic> data = response.data;

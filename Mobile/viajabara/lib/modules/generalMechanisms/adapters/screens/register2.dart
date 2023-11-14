@@ -27,7 +27,7 @@ class _Register2State extends State<Register2> {
   List<StateItem> states = [];
   final TextEditingController _names = TextEditingController(text: '');
   final TextEditingController _lastnames = TextEditingController(text: '');
-  final TextEditingController _birthday = TextEditingController(text: '');
+  TextEditingController _dateController = TextEditingController();
   final TextEditingController _phone = TextEditingController(text: '');
 
   @override
@@ -55,6 +55,39 @@ class _Register2State extends State<Register2> {
       });
     } catch (e) {
       print('Error al cargar los estados: $e');
+    }
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime(2002, 07, 08),
+      firstDate: DateTime(1973, 1, 1),
+      lastDate: DateTime(2005, 12, 31),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: ColorsApp.primayColor, // header background color
+              onPrimary: ColorsApp.whiteColor, // header text color
+              onSurface: ColorsApp.text, // body text color
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.red, // button text color
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null) {
+      setState(() {
+        _dateController.text = "${picked.toLocal()}".split(' ')[0];
+        _formKey.currentState?.validate();
+      });
     }
   }
 
@@ -318,20 +351,26 @@ class _Register2State extends State<Register2> {
                                     bottom: 10,
                                   ),
                                   child: TextFormField(
-                                    keyboardType: TextInputType.datetime,
-                                    controller: _birthday,
-                                    validator: (value) {
-                                      if (value!.isEmpty) {
-                                        return 'Campo obligatorio';
-                                      } else {
+                                      controller: _dateController,
+                                      onTap: () => _selectDate(context),
+                                      keyboardType: TextInputType.emailAddress,
+                                      cursorColor: Colors.blue,
+                                      style: const TextStyle(
+                                        color: Color.fromRGBO(93, 50, 86, 1),
+                                      ),
+                                      readOnly: true,
+                                      validator: (value) {
+                                        RegExp regex = RegExp(
+                                            r"^(?:\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$");
+                                        if (_dateController.text == "") {
+                                          return 'Campo obligatorio';
+                                        } else if (!regex
+                                            .hasMatch(_dateController.text)) {
+                                          return "Formato no valido";
+                                        }
                                         return null;
-                                      }
-                                    },
-                                    cursorColor: ColorsApp.primayColor,
-                                    style: const TextStyle(
-                                      color: ColorsApp.text,
-                                    ),
-                                    decoration: InputDecoration(
+                                      },
+                                      decoration: InputDecoration(
                                       labelText: 'Fecha de nacimiento*',
                                       filled: true,
                                       fillColor: ColorsApp.whiteColor,
@@ -495,20 +534,17 @@ class _Register2State extends State<Register2> {
                                                 password: password,
                                                 name: _names.text,
                                                 surname: _lastnames.text,
-                                                birthDate: _birthday.text,
+                                                birthDate: _dateController.text,
                                                 state: selectedState!,
                                                 cellphone: _phone.text,
                                                 sex: _sex);
-
-                                            ResponseMessage isRegister =
-                                                await AuthProvider()
-                                                    .register(userData);
+  
+                                            ResponseMessage isRegister =await AuthProvider().register(userData);
 
                                             if (!mounted) {
                                               return; // Verificar si el widget está aún montado
                                             }
 
-                                            print(isRegister);
                                             if (isRegister.type == 'SUCCESS') {
                                               Navigator.pushReplacementNamed(
                                                   context, '/login');
