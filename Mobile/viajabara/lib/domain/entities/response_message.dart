@@ -1,6 +1,19 @@
-class ResponseMessage{
-  final String text;
-  final String type;
+import 'package:viajabara/domain/entities/roles/roles.dart';
 
-  ResponseMessage({required this.text, required this.type});
+class ResponseMessage{
+  final String? token;
+  final String? email;
+  final String? name;
+  final Roles? roles;
+  final String? text;
+  final String? type;
+
+  ResponseMessage({
+      this.token,
+      this.email, 
+      this.name, 
+      this.roles,
+      this.text,
+      this.type
+    });
 }

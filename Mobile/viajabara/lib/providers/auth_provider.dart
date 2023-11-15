@@ -1,38 +1,23 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:viajabara/config/dio/module_network.dart';
 import 'package:viajabara/domain/entities/list_states.dart';
-import 'package:viajabara/domain/entities/login_response.dart';
 import 'package:viajabara/domain/entities/response_message.dart';
 import 'package:viajabara/domain/entities/roles/roles.dart';
 import 'package:viajabara/domain/entities/user_data.dart';
 
 class AuthProvider {
-  Dio dio = Dio();
+  Dio dio = NetworkModule().instance;
 
   Map<String, dynamic> data = {};
 
-  Future<LoginResponse> login(String email, String password) async {
+  Future<ResponseMessage> login(String email, String password) async {
     var dataJson = jsonEncode({'email': email, 'password': password});
     try {
-      final response = await dio.post('http://192.168.108.128:8083/api/auth/login', data: dataJson);
-      data = response.data;
-      print(data);
-      LoginResponse loginResponse = LoginResponse(
-          token: data['token'],
-          email: data['email'],
-          name: data['name'],
-          roles: Roles(
-              keyRole: data['roles'][0]['keyRole'],
-              name: data['roles'][0]['name'],
-              status: data['roles'][0]['status'])); 
-      return loginResponse;
+      final response = await dio.post('auth/login', data: dataJson);
+      return _parseLoginResponse(response);
     } on DioException catch (e) {
-      if (e.response?.statusCode == 400) {
-        data = e.response!.data;
-        LoginResponse loginResponse = LoginResponse(text: data['text'],type: data['type']);
-        return loginResponse;
-      }
-      throw Exception('Error de inicio de sesión: ${e.message}');
+      return _handleLoginError(e);
     }
   }
 
@@ -54,24 +39,16 @@ class AuthProvider {
         {'id': 3}
       ]
     });
-
     try {
-      final response = await dio.post('http://192.168.108.128:8083/api/auth/register', data: dataJson);
-      data = response.data;
-      ResponseMessage responseMessage = ResponseMessage(text: data['text'], type: data['type']);
-      return responseMessage;
+      final response = await dio.post('auth/register', data: dataJson);
+      return _parseLoginResponse(response);
     } on DioException catch (e) {
-      if (e.response?.statusCode == 400) {
-        data = e.response!.data;
-        ResponseMessage responseMessage = ResponseMessage(text: data['text'], type: data['type']);
-        return responseMessage;
-      }
-      throw Exception('Error de inicio de sesión: ${e.message}');
+      return _handleLoginError(e);
     }
   }
 
   Future<List<StateItem>> getStates() async {
-    final response = await dio.get('http://192.168.108.128:8083/api/lists/states');
+    final response = await dio.get('lists/states');
 
     if (response.statusCode == 200) {
       data = response.data;
@@ -84,5 +61,31 @@ class AuthProvider {
     } else {
       throw Exception('Fallo al obtener los registros');
     }
+  }
+
+  ResponseMessage _parseLoginResponse(Response response) {
+    data = response.data;
+
+    if (data['token'] == null) {
+      return ResponseMessage(text: data['text'], type: data['type']);
+    }
+
+    ResponseMessage responseMessage = ResponseMessage(
+    token: data['token'],
+    email: data['email'],
+    name: data['name'],
+    roles: Roles(
+        keyRole: data['roles'][0]['keyRole'],
+        name: data['roles'][0]['name'],
+        status: data['roles'][0]['status'])); 
+    return responseMessage;
+  }
+
+  ResponseMessage _handleLoginError(DioException e) {
+    if (e.response?.statusCode == 400) {
+      var data = e.response!.data;
+      return ResponseMessage(text: data['text'], type: data['type']);
+    }
+    throw Exception('Error de inicio de sesión: ${e.message}');
   }
 }

@@ -550,9 +550,7 @@ class _Register2State extends State<Register2> {
                                                   context, '/login');
                                             } else {
                                               ScaffoldMessenger.of(context)
-                                                  .showSnackBar(SnackBar(
-                                                      content: Text(
-                                                          isRegister.text)));
+                                                  .showSnackBar(SnackBar(content: Text(isRegister.text!)));
                                             }
                                           },
                                     style: ButtonStyle(

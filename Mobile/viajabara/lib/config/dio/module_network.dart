@@ -16,7 +16,7 @@ class NetworkModule {
   }
 
   final BaseOptions _options = BaseOptions(
-    baseUrl: "https://tuurlbase.com/api/",
+    baseUrl: 'http://192.168.108.128:8083/api/',
     connectTimeout: const Duration(seconds: 15),
     receiveTimeout: const Duration(seconds: 15),
     headers: {
@@ -46,6 +46,3 @@ class NetworkModule {
 }
 
 final dio = NetworkModule().instance;
-
-final response = dio.get('endpoint');
-final responsePost = dio.post('endpoint');
