@@ -70,6 +70,7 @@ import Breadcrumbs from "../Breadcrumbs.vue";
 import { mapMutations, mapActions, mapState } from "vuex";
 import router from '../../router/index';
 import storeSession from '../../kernel/store/store.session';
+import getProfile from '../../modules/users/use-cases/get.profile'
 
 export default {
   name: "Navbar",
@@ -104,6 +105,12 @@ export default {
   created() {
     this.minNav;
   },
+  async mounted(){
+    const token = storeSession.getToken();
+    if(token){
+      await this.getProfile()
+    }
+  },
   methods: {
     ...mapMutations(["navbarMinimize", "toggleConfigurator"]),
     ...mapActions(["toggleSidebarColor"]),
@@ -115,6 +122,28 @@ export default {
     logout(){
       storeSession.deleteToken()
       router.push({name: "Signin Illustration"})
+    },
+    async getProfile(){
+      console.log("Entro en el getProfile");
+      let {identKey}  = storeSession.getDataSession()
+      const response = {...await getProfile(identKey)};
+      const {error, data} = response;
+        if(!error){
+           const {result:{profile, name, surname, lastname}} = data
+           const {result} = data
+           document.getElementById("image-profile").src = `data:image/png;base64,${profile}`;
+           this.user = result;
+           this.name = `${name} ${lastname} ${surname}`
+      }else{
+           this.$swal({
+            icon: "error", 
+            title: 'Ocurrio un error durante la consultar. Inténtalo de nuevo.',
+            type: "basic",
+          });
+      }
+    },
+    goProfile(){
+      router.push({name: 'Perfil Usuario'})
     }
   },
 };

@@ -13,13 +13,34 @@
       <div class="row">
         <div class="mx-auto text-center col-md-6">
           <div class="row">
-            <div class="col-12 text-white" style="font-size: 5rem; font-family: 'Work Sans', sans-serif;" >ViajaBara</div>
-            <div class="col-12 text-white" style="font-size: 5rem; font-family: 'Parisienne', cursive; font-style:  italic ;"> y de volada</div>
-            <div class="col-12 text-white mt-4" > Para ViajaBara tu salud es lo más importante, por ello tomamos las medidas sanitarias necesarias para brindarte la mayor seguridad en tus viajes. Utiliza tu cubrebocas durante el viaje. ¡cuidémonos¡</div>
+            <div
+              class="col-12 text-white"
+              style="font-size: 5rem; font-family: 'Parisienne', cursive;"
+            >
+              ViajaBara
+            </div>
+            <div
+              class="col-12 text-white"
+              style="
+                font-size: 5rem;
+                font-family: 'Parisienne', cursive;
+                font-style: italic;
+              "
+            >
+              y de volada
+            </div>
+            <div class="col-12 text-white mt-4">
+                <button class="btn btn-info justify-content-center"><i class="fab fa-whatsapp text-white me-2" style="font-size: 1.5em;"></i> RESERVACIONES</button>
+            </div>
           </div>
         </div>
          <div class="mx-auto text-center col-md-6 mx-2 d-none d-lg-block" >
           <img src="../../../../assets/img/landing-image.png" class="img-auto" srcset="">
+        </div>
+        <div class="col-8 offset-2 mt-4">
+          <p class="text-white text-center">Para ViajaBara tu salud es lo más importante, por ello tomamos las
+              medidas sanitarias necesarias para brindarte la mayor seguridad en
+              tus viajes. Utiliza tu cubrebocas durante el viaje. ¡cuidémonos¡</p>
         </div>
       </div>
 
@@ -27,94 +48,245 @@
   </div>
 
   <div class="container my-6">
-    <section class="container">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <h2>¿Quiénes somos?</h2>
-                    <p class="mt-5">ViajaBara SAS de CV es una empresa de transporte comprometida con brindarte un servicio de calidad en cada uno de tus viajes.</p>
-                    <p class="mt-3">Contamos con el mejor servicio del mercado teniendo vans con confort premium, climatizadas y asientos reclinables además de contar con una operación 100% regulada, choferes expertos con licencia federal para garantizar la aeguridad y protección total con nuestro seguro de viajero, nuestras vans están listas para todo y siempre limpias siguiendo protocolos sanitarios.</p>
-                    <p class="mt-2">¡También gestionamos envíos de paquetería!</p>
-                    <p class="mt-2">ViajaBara es una nueva forma de viajar, ViajaBara te ofrece un transporte rápido, cómodo y seguro. ¡Vive la experiencia de viajar con ViajaBara¡</p>
-                </div>
-                 <div class="col-12 text-center">
-                    
-                </div>
-
-            </div>
+    <section class="container" id="who">
+      <div class="row">
+        <div class="col-12 text-center">
+          <h2>¿Quiénes somos?</h2>
+          <p class="mt-5">
+            ViajaBara SAS de CV es una empresa de transporte comprometida con
+            brindarte un servicio de calidad en cada uno de tus viajes.
+          </p>
+          <p class="mt-3 fw-bold">
+            Contamos con el mejor servicio del mercado teniendo vans con confort
+            premium, climatizadas y asientos reclinables además de contar con
+            una operación 100% regulada, choferes expertos con licencia federal
+            para garantizar la aeguridad y protección total con nuestro seguro
+            de viajero, nuestras vans están listas para todo y siempre limpias
+            siguiendo protocolos sanitarios.
+          </p>
+          <p class="mt-2 fw-bold">¡También gestionamos envíos de paquetería!</p>
+          <p class="mt-2">
+            ViajaBara es una nueva forma de viajar, ViajaBara te ofrece un
+            transporte rápido, cómodo y seguro. ¡Vive la experiencia de viajar
+            con ViajaBara¡
+          </p>
+        </div>
+        <div class="col-12 text-center"></div>
+      </div>
     </section>
-     <hr class="mt-5 mb-2 horizontal dark" />
-    <section class="container">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <h2 class="mb-5">Ruta Actual</h2>
-                    <div class="multisteps-form__progress mb-5">
-                        <button
-                        class="multisteps-form__progress-btn js-active"
-                        type="button"
-                        title="User Info"
-                        :class="activeStep >= 0 ? activeClass : ''"
-                        @click="activeStep = 0" >
-                        <span class="d-block">Parque alameda</span>
-                        <span class="d-block">Walmart Jiutepec</span>
-                        <span class="d-block">Parada UPEMOR</span>
-                        </button>
-                        <button
-                        class="multisteps-form__progress-btn js-active"
-                        type="button"
-                        title="Address"
-                        :class="activeStep >= 1 ? activeClass : ''"
-                        @click="activeStep = 1"
-                        >
-                        <span class="d-block">Cecina Yecapixtla</span>
-                        
-                        </button>
-                        <button
-                        class="multisteps-form__progress-btn js-active"
-                        type="button"
-                        title="Socials"
-                        :class="activeStep >= 2 ? activeClass : ''"
-                        @click="activeStep = 2"
-                        >
-                         <span class="d-block">Plaza Aventura</span>
-                        
-                        </button>
-                    </div>
-
-                     <div class="multisteps-form__progress">
-                        <button
-                        class="multisteps-form__progress-btn js-active"
-                        type="button"
-                        title="User Info"
-                        :class="activeStep >= 0 ? activeClass : ''"
-                        @click="activeStep = 0" >
-                        <span class="d-block">Café Yaguar Tlaxcalancing</span>
-                        </button>
-                        <button
-                        class="multisteps-form__progress-btn js-active"
-                        type="button"
-                        title="Address"
-                        :class="activeStep >= 1 ? activeClass : ''"
-                        @click="activeStep = 1"
-                        >
-                        <span class="d-block">Parada Home Depot Cuautla</span>
-                        
-                        </button>
-                        <button
-                        class="multisteps-form__progress-btn js-active"
-                        type="button"
-                        title="Socials"
-                        :class="activeStep >= 2 ? activeClass : ''"
-                        @click="activeStep = 2"
-                        >
-                         <span class="d-block">IMSS Cuernavaca</span>
-                        
-                        </button>
-                    </div>
-                </div>
+    <hr class="mt-5 mb-2 horizontal dark" />
+    <section class="container" id="route">
+      <div class="row">
+        <div class="col-12 text-center">
+          <h2 class="mb-5">Ruta Actual</h2>
+          <div class="row">
+            <div class="col-12 text-start ms-5 mb-3">
+              <h6 class="text-secondary">Cuernavaca - Puebla</h6>
             </div>
+            <div class="col-12 ">
+              <div class="multisteps-form__progress mb-5">
+            <button
+              class="multisteps-form__progress-btn js-active"
+              type="button"
+              title="User Info"
+              :class="activeStep >= 0 ? activeClass : ''"
+              @click="activeStep = 0"
+            >
+              <span class="d-block">Parque alameda</span>
+              <span class="d-block">Walmart Jiutepec</span>
+              <span class="d-block">Parada UPEMOR</span>
+            </button>
+            <button
+              class="multisteps-form__progress-btn js-active"
+              type="button"
+              title="Address"
+              :class="activeStep >= 1 ? activeClass : ''"
+              @click="activeStep = 1"
+            >
+              <span class="d-block">Cecina Yecapixtla</span>
+            </button>
+            <button
+              class="multisteps-form__progress-btn js-active"
+              type="button"
+              title="Socials"
+              :class="activeStep >= 2 ? activeClass : ''"
+              @click="activeStep = 2"
+            >
+              <span class="d-block">Plaza Aventura</span>
+            </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12 text-start ms-5 mb-3">
+                <h6 class="text-secondary">Puebla - Cuernavaca </h6>
+            </div>
+            <div class="col-12">
+                  <div class="multisteps-form__progress">
+                    <button
+                      class="multisteps-form__progress-btn js-active"
+                      type="button"
+                      title="User Info"
+                      :class="activeStep >= 0 ? activeClass : ''"
+                      @click="activeStep = 0"
+                    >
+                      <span class="d-block">Café Yaguar Tlaxcalancingo</span>
+                    </button>
+                    <button
+                      class="multisteps-form__progress-btn js-active"
+                      type="button"
+                      title="Address"
+                      :class="activeStep >= 1 ? activeClass : ''"
+                      @click="activeStep = 1"
+                    >
+                      <span class="d-block">Parada Home Depot Cuautla</span>
+                    </button>
+                    <button
+                      class="multisteps-form__progress-btn js-active"
+                      type="button"
+                      title="Socials"
+                      :class="activeStep >= 2 ? activeClass : ''"
+                      @click="activeStep = 2"
+                    >
+                      <span class="d-block">IMSS Cuernavaca</span>
+                    </button>
+                  </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <hr class="mt-5 mb-2 horizontal dark" />
+    <section class="container" id="services">
+      <div class="row">
+        <div class="col-12 text-center"><h2>Servicios adicionales</h2></div>
+        <div class="col-12 mt-5 col-md-3">
+          <div class="card">
+            <div
+              class="py-3 text-center card-header d-flex justify-content-center"
+            >
+              <div
+                class="icon icon-shape icon-lg shadow text-center border-radius-lg bg-gradient-primary"
+              >
+                <i
+                  class="opacity-10 text-white fas fa-bus"
+                  aria-hidden="true"
+                  style="font-size: 32px"
+                ></i>
+              </div>
+            </div>
+            <div class="p-3 pt-0 text-center card-body">
+              <h6 class="mb-0 text-center">Transporte Escolar</h6>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 mt-5 col-md-3">
+          <div class="card">
+            <div
+              class="py-3 text-center card-header d-flex justify-content-center"
+            >
+              <div
+                class="icon icon-shape icon-lg shadow text-center border-radius-lg bg-gradient-primary"
+              >
+                <i
+                  class="opacity-10 text-white fas fa-bus"
+                  aria-hidden="true"
+                  style="font-size: 32px"
+                ></i>
+              </div>
+            </div>
+            <div class="p-3 pt-0 text-center card-body">
+              <h6 class="mb-0 text-center">Transporte Turistico</h6>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 mt-5 col-md-3">
+          <div class="card">
+            <div
+              class="py-3 text-center card-header d-flex justify-content-center"
+            >
+              <div
+                class="icon icon-shape icon-lg shadow text-center border-radius-lg bg-gradient-primary"
+              >
+                <i
+                  class="opacity-10 text-white fas fa-car"
+                  aria-hidden="true"
+                  style="font-size: 32px"
+                ></i>
+              </div>
+            </div>
+            <div class="p-3 pt-0 text-center card-body">
+              <h6 class="mb-0 text-center">
+                Transporte para eventos y empresas
+              </h6>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-3 mt-5">
+          <div class="card">
+            <div
+              class="py-3 text-center card-header d-flex justify-content-center"
+            >
+              <div
+                class="icon icon-shape icon-lg shadow text-center border-radius-lg bg-gradient-primary"
+              >
+                <i
+                  class="opacity-10 text-white fas fa-box"
+                  aria-hidden="true"
+                  style="font-size: 32px"
+                ></i>
+              </div>
+            </div>
+            <div class="p-3 pt-0 text-center card-body">
+              <h6 class="mb-0 text-center">Paquetería</h6>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
   </div>
+  
+  <footer class="container-fluid bg-gradient-primary" id="contact">
+    <div class="row py-2">
+      <div class="col-12 text-center text-white">
+        <span class="fw-bold" style="font-size: 1.5em">
+          <img :src="bus" class="me-2" alt="" />
+          ViajaBara
+        </span>
+      </div>
+      <div class="col-12 text-center text-white">
+        <span style="font-family: 'monserrat'; font-size: 1.2em">
+          Viaja sencillo, barato y de volada.</span
+        >
+      </div>
+      <div class="col-12 mt-3 text-center">
+        <a href="javascript:;" target="_blank" class="text-secondary ms-4 me-4">
+          <span
+            class="fab fa-instagram text-white"
+            style="font-size: 2.5em"
+          ></span>
+        </a>
+
+        <a href="javascript:;" target="_blank" class="text-secondary me-4">
+          <span
+            class="fab fa-facebook text-white"
+            style="font-size: 2.5em"
+          ></span>
+        </a>
+
+        <a href="javascript:;" target="_blank" class="text-secondary me-4">
+          <span
+            class="fab fa-whatsapp text-white"
+            style="font-size: 2.5em"
+          ></span>
+        </a>
+      </div>
+    </div>
+  </footer>
 </template>
 <script>
 import Navbar from "@/examples/PageLayout/Navbar.vue";

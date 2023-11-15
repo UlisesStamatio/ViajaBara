@@ -135,7 +135,7 @@ import Box3d from "../../components/Icon/Box3d.vue";
 import Settings from "../../components/Icon/Settings.vue";
 
 export default {
-  name: "Navbar",
+  name: "NavbarAnonimous",
   components: {
     Office,
     Shop,
