@@ -82,6 +82,17 @@ public class UserService {
 
 
     @Transactional(readOnly = true)
+    public ResponseEntity<Object> findAllDriversEnabled() throws SQLException {
+        List<User> users = repository.searchAllDriversEnabled();
+        List<User> userList = new ArrayList<>();
+        for (User user:users) {
+            user.setProfile(null);
+            userList.add(user);
+        }
+        return new ResponseEntity<>(new Message(userList, "Listado de conductores activos", TypesResponse.SUCCESS), HttpStatus.OK);
+    }
+
+    @Transactional(readOnly = true)
     public ResponseEntity<Object> findAllClient() throws SQLException {
         List<User> users = repository.searchAllConsumers();
         List<User> userList = new ArrayList<>();
