@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:viajabara/domain/entities/login_response.dart';
 import 'package:viajabara/kernel/cubits/login/login_form_cubit.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
@@ -269,28 +270,29 @@ class _LoginState extends State<Login> {
                                       _isButtonDisabled = true;
                                     });
 
-                                    bool isLogged = await AuthProvider()
-                                        .login(_email.text, _pass.text);
+                                    LoginResponse isLogged = await AuthProvider().login(_email.text, _pass.text);
 
                                     if (!mounted) {
                                       return; // Verificar si el widget está aún montado
                                     }
 
-                                    if (isLogged) {
-                                      Navigator.pushNamed(context, '/menu',
-                                          arguments: {
-                                            'email': _email.text,
-                                          });
-                                    } else {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
-                                        const SnackBar(
-                                          content: Text(
-                                              'Usuario o contraseña incorrectos'),
-                                        ),
-                                      );
+                                    if(isLogged.token != null){
+                                      setState(() {
+                                        _islogged = true;
+                                      });
+                                    }else{
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('Usuario o contraseña incorrectos')),
+                                    );
                                     }
 
+                                    if (_islogged) { 
+                                      Navigator.pushNamed(context, '/menu',
+                                          arguments: {
+                                            'rol': isLogged.roles?.keyRole,
+                                          });
+                                    }
+                                    
                                     setState(() {
                                       _isButtonDisabled = false;
                                     });

@@ -539,7 +539,7 @@ class _Register2State extends State<Register2> {
                                                 cellphone: _phone.text,
                                                 sex: _sex);
   
-                                            ResponseMessage isRegister =await AuthProvider().register(userData);
+                                            ResponseMessage isRegister = await AuthProvider().register(userData);
 
                                             if (!mounted) {
                                               return; // Verificar si el widget está aún montado

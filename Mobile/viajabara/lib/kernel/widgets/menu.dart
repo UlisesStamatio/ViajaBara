@@ -17,7 +17,7 @@ class Menu extends StatefulWidget {
 class _MenuState extends State<Menu> {
   int _selectIndex = 0;
   bool _showIndexedStack = true;
-  String email = '';
+  String rol = '';
 
   @override
   void initState() {
@@ -26,7 +26,7 @@ class _MenuState extends State<Menu> {
       final arguments = ModalRoute.of(context)?.settings.arguments as Map;
       if (arguments != null) {
         setState(() {
-          email = arguments['email'];
+          rol = arguments['rol'];
         });
       }
     });
@@ -50,7 +50,7 @@ class _MenuState extends State<Menu> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _showIndexedStack
-          ? email == "20203tn159@utez.edu.mx"
+          ? rol == 'ADMIN'
               ? IndexedStack(
                   index: _selectIndex,
                   children: [
@@ -70,7 +70,7 @@ class _MenuState extends State<Menu> {
                   ],
                 )
           : null,
-      bottomNavigationBar: email == "20203tn159@utez.edu.mx"
+      bottomNavigationBar: rol == "CLIEN"
           ? CustomBottomNavigationTabDriver(
               selectedIndex: _selectIndex, onItemTapped: _onItemTapped)
           : CustomBottomNavigationTab(
