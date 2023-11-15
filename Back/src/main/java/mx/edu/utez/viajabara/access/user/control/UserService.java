@@ -82,6 +82,17 @@ public class UserService {
 
 
     @Transactional(readOnly = true)
+    public ResponseEntity<Object> findAllDriversEnabled() throws SQLException {
+        List<User> users = repository.searchAllDriversEnabled();
+        List<User> userList = new ArrayList<>();
+        for (User user:users) {
+            user.setProfile(null);
+            userList.add(user);
+        }
+        return new ResponseEntity<>(new Message(userList, "Listado de conductores activos", TypesResponse.SUCCESS), HttpStatus.OK);
+    }
+
+    @Transactional(readOnly = true)
     public ResponseEntity<Object> findAllClient() throws SQLException {
         List<User> users = repository.searchAllConsumers();
         List<User> userList = new ArrayList<>();
@@ -183,6 +194,51 @@ public class UserService {
         User user = new User();
         user.asignValuesRegister(dto);
         user.setPassword(passwordEncoder.encode(dto.getEmail()));
+        String roles = setRoles(dto.getRoles());
+        user.setRoles(roles);
+        user.setPerson((Person) message.getResult());
+        user.setProfile(dto.getProfile());
+        user.setUsername(dto.getUsername());
+        user = repository.saveAndFlush(user);
+        if (user == null) {
+            return new ResponseEntity<>(new Message("Usuario no registrado", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(new Message(user, "Usuario registrado", TypesResponse.SUCCESS), HttpStatus.OK);
+    }
+
+    @Transactional(rollbackFor = {SQLException.class})
+    public ResponseEntity<Object> saveClient(UserDto dto) throws SQLException {
+        if (dto.getPerson().getName() == null || dto.getPerson().getSurname() == null
+                || dto.getPerson().getSex() == null || dto.getPerson().getBirthDate() == null
+                || dto.getPerson().getState() == null || dto.getEmail() == null
+                || dto.getPerson().getCellphone() == null
+        ) {
+            throw new SQLException("Campos vacíos", String.valueOf(TypesResponse.ERROR));
+        }
+        if (!emailValidator.isValid(dto.getEmail())) {
+            return new ResponseEntity<>(new Message("Email malformado", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<User> optionalUser = repository.findFirstByEmail(dto.getEmail());
+        if (optionalUser.isPresent()) {
+            return new ResponseEntity<>(new Message("El correo electrónico del usuario ya existe", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
+        }
+        if (dto.getRoles().isEmpty()) {
+            return new ResponseEntity<>(new Message("No ingresó roles", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
+        }
+        if(dto.getPassword() == null || dto.getPassword()==""){
+            return new ResponseEntity<>(new Message("No ingresó contraseña", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
+        }
+        PersonDto personDto = new PersonDto(dto.getPerson());
+        ResponseEntity responseEntity = personService.save(personDto);
+        Message message = (Message) responseEntity.getBody();
+        assert message != null;
+        if (!message.getType().equals(TypesResponse.SUCCESS)) {
+            return new ResponseEntity<>(new Message(message.getText(), message.getType()), HttpStatus.BAD_REQUEST);
+        }
+        User user = new User();
+        user.asignValuesRegister(dto);
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
         String roles = setRoles(dto.getRoles());
         user.setRoles(roles);
         user.setPerson((Person) message.getResult());

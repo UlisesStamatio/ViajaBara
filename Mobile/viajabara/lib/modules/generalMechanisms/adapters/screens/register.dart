@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:viajabara/kernel/colors/colors_app.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:viajabara/kernel/themes/colors/colors_app.dart';
+import 'package:viajabara/kernel/themes/stuff.dart';
 import 'package:viajabara/kernel/validations/validations.dart';
+import 'package:viajabara/modules/generalMechanisms/adapters/screens/register2.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -15,6 +18,7 @@ class _RegisterState extends State<Register> {
   bool _passwordVisible = false;
   bool _repeatPasswordVisible = false;
   final TextEditingController _email = TextEditingController(text: '');
+  final TextEditingController _username = TextEditingController(text: '');
   final TextEditingController _pass = TextEditingController(text: '');
   final TextEditingController _repeatPass = TextEditingController(text: '');
 
@@ -32,23 +36,25 @@ class _RegisterState extends State<Register> {
           child: Stack(
             fit: StackFit.expand,
             children: <Widget>[
-              Image.asset(
-                'assets/images/bg.png',
-                fit: BoxFit.cover,
+              ColorFiltered(
+                colorFilter: const ColorFilter.mode(
+                  ColorsApp.backgroundImagesColor,
+                  BlendMode.color,
+                ),
+                child: SvgPicture.asset(
+                  StuffApp.bgRegister,
+                  fit: BoxFit.cover,
+                ),
               ),
-              Positioned(
-                top: 120,
-                left: 0,
-                right: 0,
+              SingleChildScrollView(
                 child: Center(
                   child: Column(children: <Widget>[
-                    Image.asset(
-                      'assets/images/viajabara_logo.png',
-                      height: 60,
-                    ),
+                    const SizedBox(height: 120),
+                    SvgPicture.asset(StuffApp.logoViajabara),
                     Card(
                       elevation: 4.0,
                       margin: const EdgeInsets.all(16.0),
+                      color: ColorsApp.transparentColor,
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Column(
@@ -56,13 +62,96 @@ class _RegisterState extends State<Register> {
                           children: <Widget>[
                             Container(
                               padding:
-                                  const EdgeInsets.only(bottom: 40, top: 20),
-                              child: const Text(
-                                'Únete y viaja de volada',
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: ColorsApp.muted),
+                                  const EdgeInsets.only(bottom: 10, top: 20),
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: <Widget>[
+                                  const Align(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      'Únete y viaja de volada',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: ColorsApp.muted,
+                                      ),
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: IconButton(
+                                      icon: const Icon(Icons.arrow_back,
+                                          color: ColorsApp.primayColor),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.only(bottom: 20),
+                              child: const Divider(
+                                color: ColorsApp.text,
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.only(
+                                bottom: 10,
+                              ),
+                              child: TextFormField(
+                                keyboardType: TextInputType.name,
+                                controller: _username,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Campo obligatorio';
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                cursorColor: ColorsApp.primayColor,
+                                style: const TextStyle(
+                                  color: ColorsApp.text,
+                                ),
+                                decoration: InputDecoration(
+                                  labelText: 'Usuario*',
+                                  hintText: "Usuario",
+                                  filled: true,
+                                  fillColor: ColorsApp.whiteColor,
+                                  hintStyle: const TextStyle(
+                                    color: ColorsApp.text,
+                                  ),
+                                  labelStyle: const TextStyle(
+                                    color: ColorsApp.text,
+                                  ),
+                                  prefixIcon: const Icon(Icons.person),
+                                  prefixIconColor: ColorsApp.primayColor,
+                                  enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(4.0),
+                                      borderSide: const BorderSide(
+                                          color: ColorsApp.muted,
+                                          width: 1.0,
+                                          style: BorderStyle.solid)),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(4.0),
+                                      borderSide: const BorderSide(
+                                          color: ColorsApp.primayColor,
+                                          width: 1.0,
+                                          style: BorderStyle.solid)),
+                                  errorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(4.0),
+                                      borderSide: const BorderSide(
+                                          color: ColorsApp.dangerColor,
+                                          width: 1.0,
+                                          style: BorderStyle.solid)),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(4.0),
+                                      borderSide: const BorderSide(
+                                          color: ColorsApp.text,
+                                          width: 1.0,
+                                          style: BorderStyle.solid)),
+                                ),
                               ),
                             ),
                             Container(
@@ -86,15 +175,15 @@ class _RegisterState extends State<Register> {
                                   color: ColorsApp.text,
                                 ),
                                 decoration: InputDecoration(
-                                  labelText: 'Usuario o correo*',
+                                  labelText: 'Correo eléctronico*',
                                   hintText: "example.com",
                                   filled: true,
                                   fillColor: ColorsApp.whiteColor,
                                   hintStyle: const TextStyle(
-                                    color: ColorsApp.muted,
+                                    color: ColorsApp.text,
                                   ),
                                   labelStyle: const TextStyle(
-                                    color: ColorsApp.muted,
+                                    color: ColorsApp.text,
                                   ),
                                   prefixIcon: const Icon(Icons.email),
                                   prefixIconColor: ColorsApp.primayColor,
@@ -113,13 +202,13 @@ class _RegisterState extends State<Register> {
                                   errorBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(4.0),
                                       borderSide: const BorderSide(
-                                          color: ColorsApp.errorColor,
+                                          color: ColorsApp.dangerColor,
                                           width: 1.0,
                                           style: BorderStyle.solid)),
                                   focusedErrorBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(4.0),
                                       borderSide: const BorderSide(
-                                          color: ColorsApp.muted,
+                                          color: ColorsApp.text,
                                           width: 1.0,
                                           style: BorderStyle.solid)),
                                 ),
@@ -127,7 +216,7 @@ class _RegisterState extends State<Register> {
                             ),
                             Container(
                               padding: const EdgeInsets.only(
-                                bottom: 20,
+                                bottom: 10,
                               ),
                               child: TextFormField(
                                 keyboardType: TextInputType.text,
@@ -150,10 +239,10 @@ class _RegisterState extends State<Register> {
                                   filled: true,
                                   fillColor: ColorsApp.whiteColor,
                                   hintStyle: const TextStyle(
-                                    color: ColorsApp.muted,
+                                    color: ColorsApp.text,
                                   ),
                                   labelStyle: const TextStyle(
-                                    color: ColorsApp.muted,
+                                    color: ColorsApp.text,
                                   ),
                                   suffixIcon: IconButton(
                                     icon: Icon(
@@ -161,7 +250,7 @@ class _RegisterState extends State<Register> {
                                           ? Icons.visibility_off
                                           : Icons.visibility,
                                       color: _passwordVisible
-                                          ? ColorsApp.muted
+                                          ? ColorsApp.text
                                           : ColorsApp.primayColor,
                                     ),
                                     onPressed: () {
@@ -197,13 +286,13 @@ class _RegisterState extends State<Register> {
                                   errorBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(4.0),
                                       borderSide: const BorderSide(
-                                          color: ColorsApp.errorColor,
+                                          color: ColorsApp.dangerColor,
                                           width: 1.0,
                                           style: BorderStyle.solid)),
                                   focusedErrorBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(4.0),
                                       borderSide: const BorderSide(
-                                          color: ColorsApp.muted,
+                                          color: ColorsApp.text,
                                           width: 1.0,
                                           style: BorderStyle.solid)),
                                 ),
@@ -211,7 +300,7 @@ class _RegisterState extends State<Register> {
                             ),
                             Container(
                               padding: const EdgeInsets.only(
-                                bottom: 20,
+                                bottom: 10,
                               ),
                               child: TextFormField(
                                 keyboardType: TextInputType.text,
@@ -233,15 +322,15 @@ class _RegisterState extends State<Register> {
                                 ),
                                 obscureText: !_repeatPasswordVisible,
                                 decoration: InputDecoration(
-                                  labelText: 'Repetir contraseña*',
+                                  labelText: 'Confirmar contraseña*',
                                   hintText: "*****",
                                   filled: true,
                                   fillColor: ColorsApp.whiteColor,
                                   hintStyle: const TextStyle(
-                                    color: ColorsApp.muted,
+                                    color: ColorsApp.text,
                                   ),
                                   labelStyle: const TextStyle(
-                                    color: ColorsApp.muted,
+                                    color: ColorsApp.text,
                                   ),
                                   suffixIcon: IconButton(
                                     icon: Icon(
@@ -249,7 +338,7 @@ class _RegisterState extends State<Register> {
                                           ? Icons.visibility_off
                                           : Icons.visibility,
                                       color: _repeatPasswordVisible
-                                          ? ColorsApp.muted
+                                          ? ColorsApp.text
                                           : ColorsApp.primayColor,
                                     ),
                                     onPressed: () {
@@ -287,13 +376,13 @@ class _RegisterState extends State<Register> {
                                   errorBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(4.0),
                                       borderSide: const BorderSide(
-                                          color: ColorsApp.errorColor,
+                                          color: ColorsApp.dangerColor,
                                           width: 1.0,
                                           style: BorderStyle.solid)),
                                   focusedErrorBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(4.0),
                                       borderSide: const BorderSide(
-                                          color: ColorsApp.muted,
+                                          color: ColorsApp.text,
                                           width: 1.0,
                                           style: BorderStyle.solid)),
                                 ),
@@ -302,8 +391,13 @@ class _RegisterState extends State<Register> {
                             ElevatedButton(
                                 onPressed: _isButtonDisabled
                                     ? null
-                                    : () => Navigator.pushReplacementNamed(
-                                        context, '/register2'),
+                                    : () => Navigator.pushNamed(
+                                            context, '/register2',
+                                            arguments: {
+                                              'email': _email.text,
+                                              'password': _pass.text,
+                                              'username': _username.text,
+                                            }),
                                 style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all(
                                     _isButtonDisabled

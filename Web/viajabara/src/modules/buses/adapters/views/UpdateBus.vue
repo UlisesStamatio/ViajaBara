@@ -1,8 +1,9 @@
 <template>
+<Loader :isLoading="isLoading"/>
   <div class="py-4 container-fluid">
     <form class="mt-4 row" @submit.prevent="preUpdateBus()">
       <div class="col-lg-4">
-        <div class="card h-100">
+        <div class="card ">
           <div class="card-body">
             <div class="row">
               <div class="col-12 text-center">
@@ -157,10 +158,12 @@ import busValidator from '../../../../kernel/validators/bus.validator'
 import getBus from '../../use-cases/get.bus'
 import updateBus from '../../use-cases/update.bus'
 import router from '../../../../router/index'
+import Loader from '../../../../components/Loader.vue'
 
 export default {
   name: "UpdateBus",
    components: {
+    Loader,
   },
   data(){
      return{
@@ -236,8 +239,10 @@ export default {
   },
   methods: {
     async getBus(id){
+      this.isLoading = true;
       const response = {...await getBus(id)};
       const {error, data} = response;
+      this.isLoading = false;
         if(!error){
           const {result} = data
           document.getElementById("image-bus").src = `data:image/png;base64,${result.image}`;
@@ -314,7 +319,9 @@ export default {
         }).then(async(result) => {
           if (result.isConfirmed) {
               bus.image = document.getElementById('image-bus').src.split('base64,')[1]
+              this.isLoading = true;
               const {message, error, data} = await updateBus(bus)
+              this.isLoading = false;
               if(!error){
                 const {result:{text}} = data
                 this.$swal({

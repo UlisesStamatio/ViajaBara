@@ -121,4 +121,12 @@ public class Route {
     public void setStatus(boolean status) {
         this.status = status;
     }
+
+    public List<StopOver> getStopOvers() {
+        return stopOvers;
+    }
+
+    public void setStopOvers(List<StopOver> stopOvers) {
+        this.stopOvers = stopOvers;
+    }
 }

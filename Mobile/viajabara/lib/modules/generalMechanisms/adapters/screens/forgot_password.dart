@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:viajabara/kernel/colors/colors_app.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:viajabara/kernel/themes/colors/colors_app.dart';
+import 'package:viajabara/kernel/themes/stuff.dart';
 import 'package:viajabara/kernel/validations/validations.dart';
 
 class ForgotPassword extends StatefulWidget {
@@ -30,37 +32,44 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           child: Stack(
             fit: StackFit.expand,
             children: <Widget>[
-              Image.asset(
-                'assets/images/bg.png',
-                fit: BoxFit.cover,
+              ColorFiltered(
+                colorFilter: const ColorFilter.mode(
+                  ColorsApp.backgroundImagesColor,
+                  BlendMode.color,
+                ),
+                child: SvgPicture.asset(
+                  StuffApp.bgRecover,
+                  fit: BoxFit.cover,
+                ),
               ),
-              Positioned(
-                top: 200,
-                left: 0,
-                right: 0,
+              SingleChildScrollView(
                 child: Center(
                   child: Column(children: <Widget>[
-                    Image.asset(
-                      'assets/images/viajabara_logo.png',
-                      height: 60,
-                    ),
+                    const SizedBox(height: 120),
+                    SvgPicture.asset(StuffApp.logoViajabara),
                     Card(
                       elevation: 4.0,
                       margin: const EdgeInsets.all(16.0),
+                      color: ColorsApp.transparentColor,
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             Container(
-                              padding:
-                                  const EdgeInsets.only(bottom: 40, top: 20),
+                              padding: const EdgeInsets.symmetric(vertical: 20),
                               child: const Text(
                                 'Recupera tu acceso',
                                 style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
-                                    color: ColorsApp.muted),
+                                    color: ColorsApp.text),
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.only(bottom: 20),
+                              child: const Divider(
+                                color: ColorsApp.text,
                               ),
                             ),
                             Container(
@@ -89,10 +98,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                   filled: true,
                                   fillColor: ColorsApp.whiteColor,
                                   hintStyle: const TextStyle(
-                                    color: ColorsApp.muted,
+                                    color: ColorsApp.text,
                                   ),
                                   labelStyle: const TextStyle(
-                                    color: ColorsApp.muted,
+                                    color: ColorsApp.text,
                                   ),
                                   prefixIcon: const Icon(Icons.email),
                                   prefixIconColor: ColorsApp.primayColor,
@@ -111,13 +120,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                   errorBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(4.0),
                                       borderSide: const BorderSide(
-                                          color: ColorsApp.errorColor,
+                                          color: ColorsApp.dangerColor,
                                           width: 1.0,
                                           style: BorderStyle.solid)),
                                   focusedErrorBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(4.0),
                                       borderSide: const BorderSide(
-                                          color: ColorsApp.muted,
+                                          color: ColorsApp.text,
                                           width: 1.0,
                                           style: BorderStyle.solid)),
                                 ),

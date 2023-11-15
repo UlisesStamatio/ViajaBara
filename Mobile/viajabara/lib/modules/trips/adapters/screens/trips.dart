@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:viajabara/config/navigation/general_mechanisms_navigation.dart';
-import 'package:viajabara/kernel/colors/colors_app.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:viajabara/kernel/themes/colors/colors_app.dart';
+import 'package:viajabara/kernel/themes/stuff.dart';
 
-import 'package:viajabara/modules/generalMechanisms/adapters/screens/login.dart';
 import 'package:viajabara/modules/trips/adapters/screens/traveling.dart';
+import 'package:viajabara/modules/tripsUser/adapters/screens/trip.dart';
 
 class Trips extends StatefulWidget {
   const Trips({super.key});
@@ -24,26 +25,11 @@ class _TripsState extends State<Trips> {
               'Viajes',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             )),
-        foregroundColor: ColorsApp.muted2,
+        foregroundColor: ColorsApp.muted,
         actions: <Widget>[
           Container(
-            alignment: Alignment.centerRight,
-            child: Image.asset(
-              'assets/images/viajabara_logo_purple.png',
-              width: 100,
-              height: 50,
-              color: ColorsApp.muted2,
-            ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.logout, color: ColorsApp.primayColor),
-            onPressed: () {
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(
-                    builder: (context) => const GeneralMechanismsNavigation()),
-                (route) => false,
-              );
-            },
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: SvgPicture.asset(StuffApp.logoViajabara, height: 35),
           ),
         ],
         backgroundColor: ColorsApp.whiteColor,
@@ -54,55 +40,108 @@ class _TripsState extends State<Trips> {
         child: Stack(
           fit: StackFit.expand,
           children: <Widget>[
-            Image.asset(
-              'assets/images/bg.png',
+            SvgPicture.asset(
+              StuffApp.bgGeneral,
               fit: BoxFit.cover,
             ),
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
+            SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  // *************************************
                   Card(
                     elevation: 5,
                     margin: const EdgeInsets.all(10),
                     child: Column(
                       children: <Widget>[
-                        // Primera fila con icono y descripción
-                        Container(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          child: const Column(
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: <Widget>[
-                              Icon(CupertinoIcons.bus, size: 28.0),
-                              Text('Horario'),
-                            ],
+                              Container(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Icon(CupertinoIcons.bus, size: 20.0),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text('Horario',
+                                        style: TextStyle(
+                                            fontSize: 15.0,
+                                            color: ColorsApp.text,
+                                            fontWeight: FontWeight.bold)),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: const Text(
+                                  'Tiempo estimado: 4hrs',
+                                  style: TextStyle(
+                                      fontSize: 15.0,
+                                      color: ColorsApp.primayColor,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ]),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: const Divider(
+                            color: ColorsApp.text,
                           ),
                         ),
-                        // Segunda fila con lista de textos (2 por fila)
                         Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 20),
-                          height: 125.0,
-                          child: GridView.builder(
-                            shrinkWrap: false,
-                            gridDelegate:
-                                const SliverGridDelegateWithFixedCrossAxisCount(
-                              childAspectRatio: 5,
-                              crossAxisCount: 2,
-                            ),
-                            itemCount: 5,
-                            itemBuilder: (context, index) {
-                              return Text('Texto ${index + 1}');
-                            },
-                          ),
-                        ),
-                        // Tercera fila con dos botones
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 20),
+                            height: 60.0,
+                            child: const Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      'Salida: 8:30 a.m',
+                                      style: TextStyle(
+                                        fontSize: 15.0,
+                                        color: ColorsApp.text,
+                                      ),
+                                    ),
+                                    Text(
+                                      'Llegada: 12:30 p.m',
+                                      style: TextStyle(
+                                        fontSize: 15.0,
+                                        color: ColorsApp.text,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 10.0),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      'Destino: Guadalajara',
+                                      style: TextStyle(
+                                        fontSize: 15.0,
+                                        color: ColorsApp.text,
+                                      ),
+                                    ),
+                                    Text(
+                                      'Directo - Local',
+                                      style: TextStyle(
+                                        fontSize: 15.0,
+                                        color: ColorsApp.text,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            )),
                         Container(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
+                          padding: const EdgeInsets.only(bottom: 10),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: <Widget>[
@@ -112,40 +151,160 @@ class _TripsState extends State<Trips> {
                                     backgroundColor: MaterialStateProperty.all(
                                         ColorsApp.primayColor)),
                                 child: const Row(children: [
-                                  Icon(Icons.remove_red_eye_outlined),
+                                  Icon(
+                                    Icons.remove_red_eye_outlined,
+                                    size: 18,
+                                  ),
                                   SizedBox(
                                     width: 10,
                                   ),
-                                  Text('Detalles')
+                                  Text(
+                                    'Detalles',
+                                    style: TextStyle(fontSize: 15),
+                                  )
                                 ]),
                               ),
                               ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) => const Traveling()),
+                                ),
                                 style: ButtonStyle(
                                     backgroundColor: MaterialStateProperty.all(
                                         ColorsApp.primayColor)),
-                                child: InkWell(
-                                  onTap: () => Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const Traveling()),
+                                child: const Row(children: [
+                                  Icon(
+                                    Icons.play_arrow,
+                                    size: 18,
                                   ),
-                                  child: const Row(children: [
-                                    Icon(Icons.play_arrow),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Text('En curso')
-                                  ]),
-                                ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    'En curso',
+                                    style: TextStyle(fontSize: 15),
+                                  )
+                                ]),
                               ),
                             ],
                           ),
                         ),
                       ],
                     ),
-                  )
-                  // *************************************
+                  ),
+                  Card(
+                    elevation: 5,
+                    margin: const EdgeInsets.all(10),
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: <Widget>[
+                              Container(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Icon(CupertinoIcons.bus, size: 20.0),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text('Horario',
+                                        style: TextStyle(
+                                            fontSize: 15.0,
+                                            color: ColorsApp.text,
+                                            fontWeight: FontWeight.bold)),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: const Text(
+                                  'Tiempo estimado: 4:30hrs',
+                                  style: TextStyle(
+                                      fontSize: 15.0,
+                                      color: ColorsApp.primayColor,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ]),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: const Divider(
+                            color: ColorsApp.text,
+                          ),
+                        ),
+                        Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 20),
+                            height: 60.0,
+                            child: const Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      'Salida: 2:00 p.m',
+                                      style: TextStyle(
+                                        fontSize: 15.0,
+                                        color: ColorsApp.text,
+                                      ),
+                                    ),
+                                    Text(
+                                      'Llegada: 6:30 p.m',
+                                      style: TextStyle(
+                                        fontSize: 15.0,
+                                        color: ColorsApp.text,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 10.0),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      'Destino: Veracruz',
+                                      style: TextStyle(
+                                        fontSize: 15.0,
+                                        color: ColorsApp.text,
+                                      ),
+                                    ),
+                                    Text(
+                                      '1 Escala - Local',
+                                      style: TextStyle(
+                                        fontSize: 15.0,
+                                        color: ColorsApp.text,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            )),
+                        Container(
+                          padding: const EdgeInsets.only(
+                              bottom: 10, right: 30, left: 30),
+                          child: ElevatedButton(
+                            onPressed: () {},
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                  ColorsApp.primayColor),
+                            ),
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.remove_red_eye_outlined),
+                                SizedBox(width: 10),
+                                Text('Detalles')
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),

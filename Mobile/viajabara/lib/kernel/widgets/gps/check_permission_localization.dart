@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:viajabara/kernel/colors/colors_app.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:viajabara/kernel/blocs/blocs.dart';
+import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 
 class CheckPermissionLocalization extends StatelessWidget {
   const CheckPermissionLocalization({super.key});
@@ -16,7 +18,10 @@ class CheckPermissionLocalization extends StatelessWidget {
             const Text("Es necesario el acceso a GPS"),
             IntrinsicWidth(
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  final gpsBloc = BlocProvider.of<GpsBloc>(context);
+                  gpsBloc.askGpsAccess();
+                },
                 style: ButtonStyle(
                   backgroundColor:
                       MaterialStateProperty.all(ColorsApp.primayColor),

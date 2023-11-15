@@ -1,4 +1,5 @@
 <template>
+  <Loader :isLoading="isLoading"/>
   <div class="container top-0 position-sticky z-index-sticky">
     <div class="row">
       <div class="col-12">
@@ -28,7 +29,7 @@
 
                   <form class="row g-3 needs-validation" novalidate @submit.prevent="prelogin">
                     <div class="col-12 mb-2">
-                      <label>Email</label>
+                      <label>Correo</label>
                       <div class="input-group has-validation">
                         <input type="email" v-model="form.email" class="form-control" :class="{ 'is-invalid': errors.email, 'is-valid': errors.email === null }" placeholder="Ingresa tu correo" required/> 
                         <div class="invalid-feedback" v-if="errors.email">
@@ -37,13 +38,26 @@
                       </div>
                     </div>
 
-                    <div class=" col-12 mb-2">
+                    <div class=" col-12 mb-2">  
                       <label>Contraseña</label>
-                      <input type="password" v-model="form.password" class="form-control" placeholder="Ingresa tu contraseña" :class="{ 'is-invalid': errors.password, 'is-valid': errors.password === null }" required/> 
-                      <div class="invalid-feedback" v-if="errors.password">
+                          <div class="input-group flex-nowrap">
+                            <input
+                            :type="showPassword ? 'text' : 'password'" 
+                            class="form-control" 
+                            placeholder="Ingresa tu contraseña" 
+                            id="password-input"  
+                            v-model="form.password"
+                            :class="{ 'is-invalid': errors.password, 'is-valid': errors.password === null }"
+                            />
+                            <span class="input-group-text" id="password-input" @click="togglePasswordVisibility" style="cursor:pointer;">
+                              <i class="fas" :class="showPassword ?  'fa-eye' : 'fa-eye-slash' "></i>
+                            </span>
+                        </div>
+                         <div style="font-size: 0.875em; color: #fd5c70;" v-if="errors.password">
                           {{ errors.password }}
-                      </div>
+                        </div>
                     </div>
+
 
                     <div class="col-12 mb-2">
                       <label for="submit" class="form-label mb-2" >Captcha</label>
@@ -67,7 +81,7 @@
                   <p class="mx-auto text-sm ">
                     ¿Has olvidado tu contraseña? 
                     <router-link
-                      :to="{ name: 'Signup Illustration' }"
+                      :to="{ name: 'Recuperar Contraseña' }"
                       class=" font-weight-bold"
                     >Recuperar</router-link>
                   </p>
@@ -124,12 +138,14 @@ import Validations from "../../../../kernel/validators/login.validator"
 import Login from '../../use-cases/login'
 import router from '../../../../router/index'
 import { mapMutations } from "vuex";
+import Loader from '../../../../components/Loader.vue'
 const body = document.getElementsByTagName("body")[0];
 
 export default {
   name: "Login",
   components: {
     Navbar,
+    Loader,
   },
   data(){
     return {
@@ -143,7 +159,9 @@ export default {
         email: "",
         password: "",
         captcha: ""
-      }
+      },
+      isLoading: false,
+      showPassword: false,
     }
   },
   mounted(){
@@ -173,8 +191,10 @@ export default {
       }
 
       if(!this.errors.email && !this.errors.captcha && !this.errors.password){
+          this.isLoading = true;
           const response = await Login(form)
           const {data, error} = response;
+          this.isLoading = false;
           if(!error){
             const {roles} = data;
             if(roles.some((rol) => rol.keyRole === 'ADMIN')){
@@ -198,6 +218,9 @@ export default {
 
 
       //router.push({ name: 'Modificar Viaje' });
+    },
+     togglePasswordVisibility() {
+      this.showPassword = !this.showPassword;
     }
   },
   created() {
@@ -226,4 +249,5 @@ export default {
   .selectable{
     cursor: pointer;
   }
+
 </style>

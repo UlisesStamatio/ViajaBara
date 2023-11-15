@@ -1,7 +1,6 @@
 <template>
+<Loader :isLoading="isLoading"/>
   <div class="container-fluid">
-
-
     <form class="row g-3" @submit.prevent="preNewUser">
       <div class="col-12 col-sm-4">
         <div class="mt-4 card card-body">
@@ -236,9 +235,13 @@ import userValidator from '../../../../kernel/validators/user.validator'
 import newUser from '../../use-cases/new.user'
 import router from '../../../../router/index'
 import listStates from '../../../state/use-cases/list.state'
+import Loader from '../../../../components/Loader.vue'
 
 export default {
   name: "NewUser",
+  components:{
+    Loader
+  },
   data() {
     return {
       showMenu: false,
@@ -273,7 +276,8 @@ export default {
         email: "",
         confirmEmail: "",
          state: "",
-      }
+      },
+      isLoading: false,
     };
   },
   async mounted() {
@@ -300,8 +304,10 @@ export default {
       }
     },
     async listStates(){
+      this.isLoading = true;
       const response = {...await listStates()};
       const {error, data} = response;
+      this.isLoading = false;
       if(!error){
           const {result} = data
           this.states = result
@@ -377,7 +383,9 @@ export default {
         }).then(async(result) => {
           if (result.isConfirmed) {
               user.profile = document.getElementById('image_profile').src.split('base64,')[1]
+              this.isLoading = true;
               const {message, error, data} = await newUser(user)
+              this.isLoading = false;
               if(!error){
                 const {result:{text}} = data
                 this.$swal({

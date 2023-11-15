@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:viajabara/kernel/colors/colors_app.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:viajabara/kernel/themes/colors/colors_app.dart';
+import 'package:viajabara/kernel/themes/stuff.dart';
 
 class HistoryStars extends StatelessWidget {
   const HistoryStars({super.key});
@@ -7,76 +9,59 @@ class HistoryStars extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Container(
+            alignment: Alignment.centerLeft,
+            child: const Text(
+              'Comentarios',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            )),
+        foregroundColor: ColorsApp.muted,
+        actions: <Widget>[
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: SvgPicture.asset(StuffApp.logoViajabara, height: 35),
+          ),
+        ],
+        backgroundColor: ColorsApp.whiteColor,
+        shadowColor: ColorsApp.blackColor,
+        elevation: 2,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: ColorsApp.primayColor),
+          onPressed: () {
+            Navigator.of(context).pop(); // Regresar a la página anterior
+          },
+        ),
+      ),
       body: SafeArea(
         child: Stack(
           fit: StackFit.expand,
           children: <Widget>[
-            Image.asset(
-              'assets/images/bg.png',
+            SvgPicture.asset(
+              StuffApp.bgGeneral,
               fit: BoxFit.cover,
             ),
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
+            SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Container(
-                    color: ColorsApp.bgColorScreen,
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        InkWell(
-                          onTap: () {
-                            Navigator.pop(context);
-                          },
-                          child: const Row(
-                            children: <Widget>[
-                              Icon(
-                                Icons.arrow_back_ios_new_rounded,
-                                color: ColorsApp.secondaryColor,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    left:
-                                        8.0), // Agrega un margen a la izquierda del texto
-                                child: Text(
-                                  "Regresar",
-                                  style: TextStyle(
-                                      color: ColorsApp.blackColor,
-                                      fontSize: 16.0),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Image.asset(
-                          'assets/images/viajabara_logo_purple.png',
-                          width: 200,
-                          height: 50,
-                        ),
-                      ],
-                    ),
-                  ),
                   Card(
                     elevation: 5,
                     margin: const EdgeInsets.only(top: 20),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
                           vertical: 10, horizontal: 20),
-                      height: 100.0,
+                      height: 80.0,
                       child: const Column(
                         crossAxisAlignment:
                             CrossAxisAlignment.start, // Alinear a la izquierda
                         mainAxisAlignment:
                             MainAxisAlignment.spaceEvenly, // Espaciado uniforme
                         children: <Widget>[
-                          Text('Salida : Lugar YYYY/mm/dd HH:MM',
+                          Text('Salida : Lugar YYYY-mm-dd HH:MM',
                               style: TextStyle(fontSize: 17.0)),
-                          Text('Llegada : Lugar YYYY/mm/dd HH:MM',
+                          Text('Llegada : Lugar YYYY-mm-dd HH:MM',
                               style: TextStyle(fontSize: 17.0)),
                         ],
                       ),
@@ -108,8 +93,8 @@ class HistoryStars extends StatelessWidget {
           children: <Widget>[
             CircleAvatar(
               radius: 30, // puedes ajustar el tamaño de la imagen redonda aquí
-              backgroundImage: NetworkImage(
-                  'https://cdn.icon-icons.com/icons2/1999/PNG/512/avatar_people_person_profile_student_user_icon_123383.png'), // reemplaza con la ruta de tu imagen
+              backgroundImage: AssetImage(
+                  'assets/images/perfilGirl.avif'), // reemplaza con la ruta de tu imagen
             ),
             SizedBox(width: 16.0),
             Expanded(
@@ -118,11 +103,8 @@ class HistoryStars extends StatelessWidget {
                 children: <Widget>[
                   Row(
                     children: [
+                      Text("Calificación: 4.5"),
                       Icon(Icons.star, color: Colors.yellow),
-                      Icon(Icons.star, color: Colors.yellow),
-                      Icon(Icons.star, color: Colors.yellow),
-                      Icon(Icons.star, color: Colors.grey),
-                      Icon(Icons.star, color: Colors.grey),
                     ],
                   ),
                   SizedBox(height: 8.0),

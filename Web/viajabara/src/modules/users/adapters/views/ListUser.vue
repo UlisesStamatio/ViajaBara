@@ -1,4 +1,5 @@
 <template>
+<Loader :isLoading="isLoading"/>
   <div class="py-4 container-fluid">
     <div class="row">
       <div class="col-lg-4 mb-2">
@@ -221,18 +222,22 @@ import setTooltip from "@/assets/js/tooltip.js";
 import listUsers from '../../use-cases/list.user.js'
 import listConsumers from '../../use-cases/list.consumers.js'
 import changeStatusUser from '../../use-cases/change.status.user'
-//import router from '../../../../router/index'
+import Loader from '../../../../components/Loader.vue'
 
 
 
 export default {
   name: "ProductsList",
+  components:{
+    Loader,
+  },
   data(){
     return{
       users: [],
       consumers: [],
       active: true,
       value: true,
+      isLoading: false,
     }
   },
 
@@ -248,11 +253,14 @@ export default {
   },
   methods:{
     async listUsers(){
+      this.isLoading = true;
       const response = {...await listUsers()};
       const {error, data} = response;
+      this.isLoading = false;
       if(!error){
           const {result} = data
           this.users = result
+
       }else{
           this.$swal({
             icon: "error", 
@@ -262,8 +270,10 @@ export default {
       }
     },
     async listConsumers(){
+      this.isLoading = true;
       const response = {...await listConsumers()};
       const {error, data} = response;
+      this.isLoading = false;
       if(!error){
           const {result} = data
           this.consumers = result
@@ -290,8 +300,10 @@ export default {
             buttonsStyling: false,
           }).then(async(result) => {
             if (result.isConfirmed) {
+                this.isLoading = true;
                 const response = {...await changeStatusUser(id)};
                 const {error, data, message} = response;
+                this.isLoading = false;
                 if(!error){
                     const {result:{text}} =data
                     this.$swal({

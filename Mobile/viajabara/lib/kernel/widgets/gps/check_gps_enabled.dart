@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:viajabara/kernel/colors/colors_app.dart';
+import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 
 class CheckGpsEnabled extends StatelessWidget {
   const CheckGpsEnabled({super.key});
@@ -13,7 +13,10 @@ class CheckGpsEnabled extends StatelessWidget {
         child: const Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Es necesario habilitar el GPS"),
+            Text(
+              "Es necesario habilitar el GPS",
+              style: TextStyle(color: ColorsApp.text),
+            ),
           ],
         ),
       ),

@@ -1,8 +1,7 @@
 <template>
+<Loader :isLoading="isLoading"/>
   <div class="container-fluid">
-
-
-    <form class="row g-3" @submit.prevent="preNewUser">
+    <div class="row g-3" >
       <div class="col-12 col-md-4">
         <div class="mt-4 card card-body">
                     <div class="row text-center">
@@ -172,7 +171,7 @@
           </div>
       </div>
     </div>
-  </form>
+  </div>
   </div>
 </template>
 
@@ -181,9 +180,13 @@ import Quill from "quill";
 import router from '../../../../router/index'
 import listStates from '../../../state/use-cases/list.state'
 import getUser from '../../use-cases/get.user'
+import Loader from '../../../../components/Loader.vue'
 
 export default {
   name: "DetailUser",
+  components:{
+    Loader,
+  },
   data() {
     return {
       showMenu: false,
@@ -207,6 +210,7 @@ export default {
 
       },
       idUser: 0,
+      isLoading: false,
     };
   },
   async mounted() {
@@ -248,8 +252,10 @@ export default {
       }
     },
     async getUser(id){
+      this.isLoading = true;
       const response = {...await getUser(id)};
       const {error, data} = response;
+      this.isLoading = false;
         if(!error){
           const {result:{profile}} = data
           const {result} = data

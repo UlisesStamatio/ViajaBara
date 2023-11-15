@@ -65,6 +65,32 @@ public class RouteController {
         return service.save(dto);
     }
 
+    @PutMapping("")
+    @Secured({RUTAS})
+    @ApiOperation(
+            value = "Actualiza una ruta",
+            notes = "{\n" +
+                    "  \"duty\": {\n" +
+                    "    \"id\": 1\n" +
+                    "  },\n" +
+                    "  \"end_latitude\": \"aaaaa\",\n" +
+                    "  \"end_longitude\": \"bbbbb\",\n" +
+                    "  \"start_latitude\": \"ccccc\",\n" +
+                    "  \"start_longitude\": \"dddddd\",\n" +
+                    "  \"stopOvers\": [\n" +
+                    "    {\n" +
+                    "      \"latitude\": \"eeeee\",\n" +
+                    "      \"longitude\": \"fffff\",\n" +
+                    "      \"sequence\": 1,\n" +
+                    "      \"status\": true\n" +
+                    "    }\n" +
+                    "  ]\n" +
+                    "}"
+    )
+    public ResponseEntity<Object> update(@Validated(RouteDto.Modify.class) @RequestBody RouteDto dto) throws SQLException {
+        return service.update(dto);
+    }
+
     @PutMapping("/getOne")
     @Secured({RUTAS})
     @ApiOperation(
@@ -73,5 +99,15 @@ public class RouteController {
     )
     public ResponseEntity<Object> getOne(@Validated(RouteDto.ChangeStatus.class) @RequestBody RouteDto dto) {
         return service.getOne(dto.getId());
+    }
+
+    @PutMapping("/change-status")
+    @Secured({RUTAS})
+    @ApiOperation(
+            value = "Cambia el estado de una ruta",
+            notes = "{ \"id\": 2 }"
+    )
+    public ResponseEntity<Object> changeStatus(@Validated(RouteDto.ChangeStatus.class) @RequestBody RouteDto dto) {
+        return service.changeStatus(dto);
     }
 }

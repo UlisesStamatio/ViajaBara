@@ -1,4 +1,5 @@
 <template>
+  <Loader :isLoading="isLoading"/>
   <div class="container-fluid" >
     <form class="row" @submit.prevent="preNewMethod()">
       <div class="mx-auto col-lg-12 col-12">
@@ -69,11 +70,12 @@ import Choices from "choices.js";
 import methodValidator from '../../../../kernel/validators/method.validator'
 import router from '../../../../router/index'
 import newMethod from '../../use-cases/new.method'
+import Loader from '../../../../components/Loader.vue'
 
 export default {
   name: "NewMethod",
   components: {
-
+    Loader
   },
   data() {
     return {
@@ -88,7 +90,8 @@ export default {
       errors:{
         name: "",
         apikey: ""
-      }
+      },
+      isLoading: false,
     };
   },
   mounted() {
@@ -151,7 +154,9 @@ export default {
           buttonsStyling: false,
         }).then(async(result) => {
           if (result.isConfirmed) {
+              this.isLoading = true;
               const {message, error, data} = await newMethod(method)
+              this.isLoading = false;
               if(!error){
                 const {result:{text}} = data
                 this.$swal({

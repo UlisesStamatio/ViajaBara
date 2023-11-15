@@ -1,4 +1,5 @@
 <template>
+  <Loader :isLoading="isLoading"/>
   <div class="py-4 container-fluid">
     <form class="mt-4 row">
       <div class="col-lg-4">
@@ -114,10 +115,12 @@ import Quill from "quill";
 import Choices from "choices.js";
 import getBus from '../../use-cases/get.bus'
 import router from '../../../../router/index'
+import Loader from '../../../../components/Loader.vue'
 
 export default {
   name: "DetailBus",
    components: {
+    Loader,
   },
   data(){
      return{
@@ -130,6 +133,7 @@ export default {
         fuel: ""
       },
       idBus: 0,
+      isLoading: false,
      }
   },
     async mounted() {
@@ -173,8 +177,10 @@ export default {
   },
   methods: {
     async getBus(id){
+      this.isLoading = true;
       const response = {...await getBus(id)};
       const {error, data} = response;
+      this.isLoading = false;
         if(!error){
           const {result} = data
           document.getElementById("image-bus").src = `data:image/png;base64,${result.image}`;

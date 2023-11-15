@@ -91,6 +91,7 @@ export default {
       activeClass: "js-active position-relative",
       activeStep: 0,
       formSteps: 3,
+      center: {lat: 51.093048, lng: 6.842120},
     };
   },
   mounted() {
