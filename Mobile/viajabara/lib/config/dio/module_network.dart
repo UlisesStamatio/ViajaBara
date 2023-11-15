@@ -16,7 +16,7 @@ class NetworkModule {
   }
 
   final BaseOptions _options = BaseOptions(
-    baseUrl: 'http://192.168.108.128:8083/api/',
+    baseUrl: 'http://192.168.0.104:8083/api/',
     connectTimeout: const Duration(seconds: 15),
     receiveTimeout: const Duration(seconds: 15),
     headers: {
@@ -31,9 +31,8 @@ class NetworkModule {
   }
 
   _initializeInterceptors() {
-    _dio!.interceptors
-        .add(InterceptorsWrapper(onRequest: (options, handler) async {
-      // Añade el token a las peticiones
+    _dio!.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) async {
+      
       String? token = await getToken();
       if (token != null) {
         options.headers['Authorization'] = 'Bearer $token';

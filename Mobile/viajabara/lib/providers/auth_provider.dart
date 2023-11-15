@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:viajabara/config/dio/module_network.dart';
 import 'package:viajabara/domain/entities/list_states.dart';
 import 'package:viajabara/domain/entities/response_message.dart';
@@ -70,6 +71,8 @@ class AuthProvider {
       return ResponseMessage(text: data['text'], type: data['type']);
     }
 
+    saveToken(data['token']);
+
     ResponseMessage responseMessage = ResponseMessage(
     token: data['token'],
     email: data['email'],
@@ -87,5 +90,10 @@ class AuthProvider {
       return ResponseMessage(text: data['text'], type: data['type']);
     }
     throw Exception('Error de inicio de sesión: ${e.message}');
+  }
+
+  Future<void> saveToken(String token) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('token', token);
   }
 }
