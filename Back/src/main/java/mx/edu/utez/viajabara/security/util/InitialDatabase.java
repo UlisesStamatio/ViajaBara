@@ -56,7 +56,7 @@ public class InitialDatabase implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args){
+    public void run(String... args) {
         /* PRIVILEGIOS */
         /*CONTROL DE ACCESO*/
         Privilege privilege;
@@ -129,6 +129,18 @@ public class InitialDatabase implements CommandLineRunner {
             privilege = optionalPrivilege.get();
         }
         privilegesCA += privilege.toString() + ",";
+
+        optionalPrivilege = privilegeService.findByName(PrivilegeName.VIAJES_ABIERTOS);
+        if (!optionalPrivilege.isPresent()) {
+            privilege = new Privilege(PrivilegeName.VIAJES_ABIERTOS,
+                    "Catálogo que permite tener el control de todos aquellos " +
+                            "viajes abiertos que están en el sistema");
+            privilege = privilegeService.saveInitial(privilege);
+        } else {
+            privilege = optionalPrivilege.get();
+        }
+        privilegesCA += privilege.toString() + ",";
+
 
         optionalPrivilege = privilegeService.findByName(PrivilegeName.ROLES);
         if (!optionalPrivilege.isPresent()) {

@@ -25,8 +25,9 @@ public class OpenTrips {
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
-    @Column(name = "status", columnDefinition = "BOOL DEFAULT TRUE")
-    private boolean status;
+    //1.-En espera 2.-En curso 3.-Finalizado
+    @Column(name = "status", columnDefinition = "INT(1)")
+    private int status;
 
 
     @OneToMany(mappedBy = "openTrips")
@@ -36,7 +37,7 @@ public class OpenTrips {
     public OpenTrips() {
     }
 
-    public OpenTrips(Trip trip, Date startDate, boolean status) {
+    public OpenTrips(Trip trip, Date startDate, int status) {
         this.trip = trip;
         this.startDate = startDate;
         this.status = status;
@@ -74,11 +75,19 @@ public class OpenTrips {
         this.createdAt = createdAt;
     }
 
-    public boolean isStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(int status) {
         this.status = status;
+    }
+
+    public List<SeatingSales> getSeatingSales() {
+        return seatingSales;
+    }
+
+    public void setSeatingSales(List<SeatingSales> seatingSales) {
+        this.seatingSales = seatingSales;
     }
 }
