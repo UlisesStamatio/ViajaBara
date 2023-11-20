@@ -2,7 +2,6 @@ package mx.edu.utez.viajabara.basecatalog.bus.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import mx.edu.utez.viajabara.basecatalog.seating.model.Seating;
 import mx.edu.utez.viajabara.basecatalog.trip.model.Trip;
 
 import javax.persistence.*;
@@ -41,10 +40,6 @@ public class Bus {
     @Column(name = "status", columnDefinition = "BOOL DEFAULT TRUE")
     private boolean status;
 
-
-    @OneToMany(mappedBy = "bus")
-    @JsonIgnore
-    private List<Seating> seatings;
 
     @OneToMany(mappedBy = "bus")
     @JsonIgnore

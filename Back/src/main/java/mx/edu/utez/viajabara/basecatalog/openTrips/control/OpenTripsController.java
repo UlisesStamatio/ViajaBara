@@ -1,9 +1,9 @@
-package mx.edu.utez.viajabara.basecatalog.route.control;
-
+package mx.edu.utez.viajabara.basecatalog.openTrips.control;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import mx.edu.utez.viajabara.basecatalog.route.model.RouteDto;
+import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTripsDto;
+import mx.edu.utez.viajabara.basecatalog.trip.model.TripDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -13,33 +13,44 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.SQLException;
 
 @RestController
-@RequestMapping("/api/routes")
-@Api(tags = "Rutas")
+@RequestMapping("/api/open-trips")
+@Api(tags = "Viajes Abiertos")
 @CrossOrigin(origins = {"*"}, methods = {RequestMethod.POST, RequestMethod.GET, RequestMethod.PUT, RequestMethod.DELETE})
-public class RouteController {
-    public static final String RUTAS = "RUTAS";
+public class OpenTripsController {
 
-    private final RouteService service;
+    public static final String VIAJES_ABIERTOS = "VIAJES_ABIERTOS";
+
+    private final OpenTripsService service;
 
     @Autowired
-    public RouteController(RouteService service) {
+    public OpenTripsController(OpenTripsService service) {
         this.service = service;
     }
 
+    @PutMapping("/getOne")
+    @Secured({VIAJES_ABIERTOS})
+    @ApiOperation(
+            value = "Obtiene un viaje",
+            notes = "{ \"id\": 2 }"
+    )
+    public ResponseEntity<Object> getOne(@Validated(TripDto.ChangeStatus.class) @RequestBody TripDto dto) {
+        return service.getOne(dto.getId());
+    }
+
     @GetMapping("/all")
-    @Secured({RUTAS})
+    @Secured({VIAJES_ABIERTOS})
     public ResponseEntity<Object> findAll() throws SQLException {
         return service.findAll();
     }
 
     @GetMapping("/enabled")
-    @Secured({RUTAS})
+    @Secured({VIAJES_ABIERTOS})
     public ResponseEntity<Object> findAllEnabled() throws SQLException {
         return service.findAllEnabled();
     }
 
     @PostMapping("")
-    @Secured({RUTAS})
+    @Secured({VIAJES_ABIERTOS})
     @ApiOperation(
             value = "Registra una ruta",
             notes = "{\n" +
@@ -60,12 +71,12 @@ public class RouteController {
                     "  ]\n" +
                     "}"
     )
-    public ResponseEntity<Object> save(@Validated(RouteDto.Register.class) @RequestBody RouteDto dto) throws SQLException {
+    public ResponseEntity<Object> save(@Validated(OpenTripsDto.Register.class) @RequestBody OpenTripsDto dto) throws SQLException {
         return service.save(dto);
     }
 
     @PutMapping("")
-    @Secured({RUTAS})
+    @Secured({VIAJES_ABIERTOS})
     @ApiOperation(
             value = "Actualiza una ruta",
             notes = "{\n" +
@@ -86,27 +97,17 @@ public class RouteController {
                     "  ]\n" +
                     "}"
     )
-    public ResponseEntity<Object> update(@Validated(RouteDto.Modify.class) @RequestBody RouteDto dto) throws SQLException {
+    public ResponseEntity<Object> update(@Validated(OpenTripsDto.Modify.class) @RequestBody OpenTripsDto dto) throws SQLException {
         return service.update(dto);
     }
 
-    @PutMapping("/getOne")
-    @Secured({RUTAS})
-    @ApiOperation(
-            value = "Obtiene una ruta",
-            notes = "{ \"id\": 2 }"
-    )
-    public ResponseEntity<Object> getOne(@Validated(RouteDto.ChangeStatus.class) @RequestBody RouteDto dto) {
-        return service.getOne(dto.getId());
-    }
-
     @PutMapping("/change-status")
-    @Secured({RUTAS})
+    @Secured({VIAJES_ABIERTOS})
     @ApiOperation(
             value = "Cambia el estado de una ruta",
             notes = "{ \"id\": 2 }"
     )
-    public ResponseEntity<Object> changeStatus(@Validated(RouteDto.ChangeStatus.class) @RequestBody RouteDto dto) {
+    public ResponseEntity<Object> changeStatus(@Validated(OpenTripsDto.ChangeStatus.class) @RequestBody OpenTripsDto dto) throws SQLException {
         return service.changeStatus(dto);
     }
 }

@@ -74,7 +74,7 @@ public class TripService {
     @Transactional(readOnly = true)
     public ResponseEntity<Object> getOne(Long id) {
         Optional<Trip> optional = repository.findById(id);
-        return optional.<ResponseEntity<Object>>map(route -> new ResponseEntity<>(new Message(route, "Viaje encontrado", TypesResponse.SUCCESS), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(new Message("Ruta no encontrada", TypesResponse.WARNING), HttpStatus.NOT_FOUND));
+        return optional.<ResponseEntity<Object>>map(route -> new ResponseEntity<>(new Message(route, "Viaje encontrado", TypesResponse.SUCCESS), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(new Message("Viaje no encontrado", TypesResponse.WARNING), HttpStatus.NOT_FOUND));
     }
 
     @Transactional(rollbackFor = {SQLException.class})
