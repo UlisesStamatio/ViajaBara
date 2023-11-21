@@ -9,6 +9,7 @@ public enum PrivilegeName {
     AUTOBUSES,
     VIAJES,
     VIAJES_ABIERTOS,
+    VENTA_ASIENTOS,
     RUTAS,
     METODOS_DE_PAGO,
     SERVICIOS,
