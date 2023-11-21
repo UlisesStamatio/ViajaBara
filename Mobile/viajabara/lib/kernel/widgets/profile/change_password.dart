@@ -1,0 +1,228 @@
+import 'package:flutter/material.dart';
+import 'package:viajabara/kernel/themes/colors/colors_app.dart';
+
+class ChangePassword extends StatefulWidget {
+  const ChangePassword({Key? key}) : super(key: key);
+
+  @override
+  _ChangePassword createState() => _ChangePassword();
+}
+
+class _ChangePassword extends State<ChangePassword> {
+  final _formKey = GlobalKey<FormState>();
+  bool _isButtonDisabled = true;
+  bool _passwordVisible = false;
+  bool _repeatPasswordVisible = false;
+  final TextEditingController _pass = TextEditingController(text: '');
+  final TextEditingController _repeatPass = TextEditingController(text: '');
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Form(
+        key: _formKey,
+        onChanged: () {
+          setState(() {
+            _isButtonDisabled = !_formKey.currentState!.validate();
+          });
+        },
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              const Text(
+                'Cambiar contraseña',
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: ColorsApp.primayColor),
+              ),
+              const SizedBox(height: 30),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: TextFormField(
+                  keyboardType: TextInputType.text,
+                  controller: _pass,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Campo obligatorio';
+                    } else {
+                      return null;
+                    }
+                  },
+                  cursorColor: ColorsApp.primayColor,
+                  style: const TextStyle(
+                    color: ColorsApp.text,
+                  ),
+                  obscureText: !_passwordVisible,
+                  decoration: InputDecoration(
+                    labelText: 'Contraseña nueva*',
+                    hintText: "*****",
+                    filled: true,
+                    fillColor: ColorsApp.whiteColor,
+                    hintStyle: const TextStyle(
+                      color: ColorsApp.text,
+                    ),
+                    labelStyle: const TextStyle(
+                      color: ColorsApp.text,
+                    ),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _passwordVisible
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color: _passwordVisible
+                            ? ColorsApp.text
+                            : ColorsApp.primayColor,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _passwordVisible = !_passwordVisible;
+                        });
+                      },
+                    ),
+                    prefixIcon: IconButton(
+                      icon: const Icon(
+                        Icons.lock,
+                        color: ColorsApp.primayColor,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _passwordVisible = !_passwordVisible;
+                        });
+                      },
+                    ),
+                    prefixIconColor: ColorsApp.primayColor,
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                        borderSide: const BorderSide(
+                            color: ColorsApp.muted,
+                            width: 1.0,
+                            style: BorderStyle.solid)),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                        borderSide: const BorderSide(
+                            color: ColorsApp.primayColor,
+                            width: 1.0,
+                            style: BorderStyle.solid)),
+                    errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                        borderSide: const BorderSide(
+                            color: ColorsApp.dangerColor,
+                            width: 1.0,
+                            style: BorderStyle.solid)),
+                    focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                        borderSide: const BorderSide(
+                            color: ColorsApp.text,
+                            width: 1.0,
+                            style: BorderStyle.solid)),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 40),
+                child: TextFormField(
+                  keyboardType: TextInputType.text,
+                  controller: _repeatPass,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Campo obligatorio';
+                    } else {
+                      if (value.toString() != _pass.text.toString()) {
+                        return 'Las contraseñas no coinciden';
+                      }
+                      return null;
+                    }
+                  },
+                  cursorColor: ColorsApp.primayColor,
+                  style: const TextStyle(
+                    color: ColorsApp.text,
+                  ),
+                  obscureText: !_repeatPasswordVisible,
+                  decoration: InputDecoration(
+                    labelText: 'Confirmar contraseña*',
+                    hintText: "*****",
+                    filled: true,
+                    fillColor: ColorsApp.whiteColor,
+                    hintStyle: const TextStyle(
+                      color: ColorsApp.text,
+                    ),
+                    labelStyle: const TextStyle(
+                      color: ColorsApp.text,
+                    ),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _repeatPasswordVisible
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color: _repeatPasswordVisible
+                            ? ColorsApp.text
+                            : ColorsApp.primayColor,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _repeatPasswordVisible = !_repeatPasswordVisible;
+                        });
+                      },
+                    ),
+                    prefixIcon: IconButton(
+                      icon: const Icon(
+                        Icons.lock,
+                        color: ColorsApp.primayColor,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _repeatPasswordVisible = !_repeatPasswordVisible;
+                        });
+                      },
+                    ),
+                    prefixIconColor: ColorsApp.primayColor,
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                        borderSide: const BorderSide(
+                            color: ColorsApp.muted,
+                            width: 1.0,
+                            style: BorderStyle.solid)),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                        borderSide: const BorderSide(
+                            color: ColorsApp.primayColor,
+                            width: 1.0,
+                            style: BorderStyle.solid)),
+                    errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                        borderSide: const BorderSide(
+                            color: ColorsApp.dangerColor,
+                            width: 1.0,
+                            style: BorderStyle.solid)),
+                    focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                        borderSide: const BorderSide(
+                            color: ColorsApp.text,
+                            width: 1.0,
+                            style: BorderStyle.solid)),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: ElevatedButton(
+                    onPressed: _isButtonDisabled ? null : () => {},
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(
+                        _isButtonDisabled
+                            ? ColorsApp.muted
+                            : ColorsApp.primayColor,
+                      ),
+                    ),
+                    child: const Text('Actualizar contraseña')),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

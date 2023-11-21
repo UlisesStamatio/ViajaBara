@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
 import 'package:viajabara/kernel/validations/validations.dart';
-import 'package:viajabara/modules/generalMechanisms/adapters/screens/register2.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -214,6 +213,7 @@ class _RegisterState extends State<Register> {
                                 ),
                               ),
                             ),
+                            //
                             Container(
                               padding: const EdgeInsets.only(
                                 bottom: 10,

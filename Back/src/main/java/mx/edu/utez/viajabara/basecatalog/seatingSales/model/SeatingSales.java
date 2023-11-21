@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import mx.edu.utez.viajabara.access.user.model.User;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTrips;
 import mx.edu.utez.viajabara.basecatalog.qualifications.model.Qualifications;
-import mx.edu.utez.viajabara.basecatalog.seating.model.Seating;
 
 import javax.persistence.*;
 import java.util.List;
@@ -35,8 +34,8 @@ public class SeatingSales {
     @ManyToOne
     private User client;
 
-    @ManyToOne
-    private Seating seating;
+    @Column(name = "seating", columnDefinition = "INT(1)")
+    private int seating;
 
     @ManyToOne
     private OpenTrips openTrips;
@@ -55,6 +54,17 @@ public class SeatingSales {
         this.end_latitude = end_latitude;
         this.end_longitude = end_longitude;
         this.cost = cost;
+    }
+
+    public SeatingSales(String start_latitude, String start_longitude, String end_latitude, String end_longitude, double cost, User client, int seating, OpenTrips openTrips) {
+        this.start_latitude = start_latitude;
+        this.start_longitude = start_longitude;
+        this.end_latitude = end_latitude;
+        this.end_longitude = end_longitude;
+        this.cost = cost;
+        this.client = client;
+        this.seating = seating;
+        this.openTrips = openTrips;
     }
 
     public Long getId() {
@@ -113,19 +123,19 @@ public class SeatingSales {
         this.client = client;
     }
 
-    public Seating getSeating() {
-        return seating;
-    }
-
-    public void setSeating(Seating seating) {
-        this.seating = seating;
-    }
-
     public OpenTrips getOpenTrips() {
         return openTrips;
     }
 
     public void setOpenTrips(OpenTrips openTrips) {
         this.openTrips = openTrips;
+    }
+
+    public int getSeating() {
+        return seating;
+    }
+
+    public void setSeating(int seating) {
+        this.seating = seating;
     }
 }

@@ -51,23 +51,17 @@ public class TripController {
     @PostMapping("")
     @Secured({VIAJES})
     @ApiOperation(
-            value = "Registra una ruta",
+            value = "Registra un viaje",
             notes = "{\n" +
-                    "  \"duty\": {\n" +
-                    "    \"id\": 1\n" +
-                    "  },\n" +
-                    "  \"end_latitude\": \"aaaaa\",\n" +
-                    "  \"end_longitude\": \"bbbbb\",\n" +
-                    "  \"start_latitude\": \"ccccc\",\n" +
-                    "  \"start_longitude\": \"dddddd\",\n" +
-                    "  \"stopOvers\": [\n" +
-                    "    {\n" +
-                    "      \"latitude\": \"eeeee\",\n" +
-                    "      \"longitude\": \"fffff\",\n" +
-                    "      \"sequence\": 1,\n" +
-                    "      \"status\": true\n" +
+                    "    \"driver\":{\n" +
+                    "        \"id\":1\n" +
+                    "    },\n" +
+                    "    \"bus\":{\n" +
+                    "        \"id\":1\n" +
+                    "    },\n" +
+                    "    \"route\":{\n" +
+                    "        \"id\":1\n" +
                     "    }\n" +
-                    "  ]\n" +
                     "}"
     )
     public ResponseEntity<Object> save(@Validated(TripDto.Register.class) @RequestBody TripDto dto) throws SQLException {
@@ -77,23 +71,18 @@ public class TripController {
     @PutMapping("")
     @Secured({VIAJES})
     @ApiOperation(
-            value = "Actualiza una ruta",
+            value = "Actualiza un viaje",
             notes = "{\n" +
-                    "  \"duty\": {\n" +
-                    "    \"id\": 1\n" +
-                    "  },\n" +
-                    "  \"end_latitude\": \"aaaaa\",\n" +
-                    "  \"end_longitude\": \"bbbbb\",\n" +
-                    "  \"start_latitude\": \"ccccc\",\n" +
-                    "  \"start_longitude\": \"dddddd\",\n" +
-                    "  \"stopOvers\": [\n" +
-                    "    {\n" +
-                    "      \"latitude\": \"eeeee\",\n" +
-                    "      \"longitude\": \"fffff\",\n" +
-                    "      \"sequence\": 1,\n" +
-                    "      \"status\": true\n" +
+                    "id\":1\n" +
+                    "    \"driver\":{\n" +
+                    "        \"id\":1\n" +
+                    "    },\n" +
+                    "    \"bus\":{\n" +
+                    "        \"id\":1\n" +
+                    "    },\n" +
+                    "    \"route\":{\n" +
+                    "        \"id\":1\n" +
                     "    }\n" +
-                    "  ]\n" +
                     "}"
     )
     public ResponseEntity<Object> update(@Validated(TripDto.Modify.class) @RequestBody TripDto dto) throws SQLException {
@@ -103,7 +92,7 @@ public class TripController {
     @PutMapping("/change-status")
     @Secured({VIAJES})
     @ApiOperation(
-            value = "Cambia el estado de una ruta",
+            value = "Cambia el estado de un viaje",
             notes = "{ \"id\": 2 }"
     )
     public ResponseEntity<Object> changeStatus(@Validated(TripDto.ChangeStatus.class) @RequestBody TripDto dto) {

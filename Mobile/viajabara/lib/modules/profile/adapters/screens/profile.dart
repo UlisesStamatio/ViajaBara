@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
+import 'package:viajabara/kernel/widgets/profile/change_information.dart';
+import 'package:viajabara/kernel/widgets/profile/change_password.dart';
+import 'package:viajabara/kernel/widgets/profile/change_photo.dart';
 
 class Profile extends StatelessWidget {
   const Profile({super.key});
@@ -43,14 +46,14 @@ class Profile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  SizedBox(height: 70),
+                  const SizedBox(height: 70),
                   Card(
                     margin: const EdgeInsets.all(16),
                     elevation: 5,
                     color: ColorsApp.transparentColor,
                     child: Column(
                       children: [
-                        SizedBox(height: 70),
+                        const SizedBox(height: 70),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Title(
@@ -105,45 +108,58 @@ class Profile extends StatelessWidget {
                         Container(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: const Divider(color: ColorsApp.text)),
-
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 15),
-                          alignment: Alignment.centerLeft,
-                          child: const Text(
-                            'Cambiar contraseña',
-                            style: TextStyle(
-                                color: ColorsApp.primayColor,
-                                fontWeight: FontWeight.bold),
+                        GestureDetector(
+                          onTap: () {
+                            _showModalPassword(context);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 15),
+                            alignment: Alignment.centerLeft,
+                            child: const Text(
+                              'Cambiar contraseña',
+                              style: TextStyle(
+                                  color: ColorsApp
+                                      .primayColor, 
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 15),
-                          alignment: Alignment.centerLeft,
-                          child: const Text(
-                            'Editar foto de perfil',
-                            style: TextStyle(
-                                color: ColorsApp.primayColor,
-                                fontWeight: FontWeight.bold),
+                        GestureDetector(
+                          onTap: () {
+                            _showModalChangeProfile(context);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 15),
+                            alignment: Alignment.centerLeft,
+                            child: const Text(
+                              'Editar foto de perfil',
+                              style: TextStyle(
+                                  color: ColorsApp.primayColor,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 15),
-                          alignment: Alignment.centerLeft,
-                          child: const Text(
-                            'Modificar tu información personal',
-                            style: TextStyle(
-                                color: ColorsApp.primayColor,
-                                fontWeight: FontWeight.bold),
+                        GestureDetector(
+                          onTap: () {
+                            _showModalChangeInformation(context);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 15),
+                            alignment: Alignment.centerLeft,
+                            child: const Text(
+                              'Modificar tu información personal',
+                              style: TextStyle(
+                                  color: ColorsApp.primayColor,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ),
-
                         Container(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: const Divider(color: ColorsApp.text)),
-
                         Container(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 10, horizontal: 15),
@@ -232,14 +248,59 @@ class Profile extends StatelessWidget {
             Positioned(
               left: (MediaQuery.of(context).size.width / 3),
               top: avatarRadius,
-              child: CircleAvatar(
+              child: const CircleAvatar(
                 radius: 60,
-                backgroundImage: const AssetImage('assets/images/Girl.png'),
+                backgroundImage: AssetImage('assets/images/Girl.png'),
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  void _showModalPassword(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(25.0),
+        ),
+      ),
+      builder: (BuildContext context) {
+        return const ChangePassword();
+      },
+    );
+  }
+
+  void _showModalChangeProfile(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(25.0),
+        ),
+      ),
+      builder: (BuildContext context) {
+        return const ChangePhotoModal();
+      },
+    );
+  }
+
+  void _showModalChangeInformation(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(25.0),
+        ),
+      ),
+      builder: (BuildContext context) {
+        return const ChangeInformation();
+      },
     );
   }
 }
