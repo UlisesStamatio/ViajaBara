@@ -13,6 +13,7 @@ public enum PrivilegeName {
     RUTAS,
     METODOS_DE_PAGO,
     SERVICIOS,
+    CALIFICACIONES,
     CONDUCTOR,
     CLIENTE
 }
