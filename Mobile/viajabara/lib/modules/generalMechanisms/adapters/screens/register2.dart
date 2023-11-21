@@ -467,6 +467,7 @@ class _Register2State extends State<Register2> {
                                     bottom: 10,
                                   ),
                                   child: TextFormField(
+                                    maxLength: 10,
                                     keyboardType: TextInputType.phone,
                                     controller: _phone,
                                     validator: (value) {

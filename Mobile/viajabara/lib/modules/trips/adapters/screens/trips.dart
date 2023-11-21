@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
-
 import 'package:viajabara/modules/trips/adapters/screens/traveling.dart';
-import 'package:viajabara/modules/tripsUser/adapters/screens/trip.dart';
 
 class Trips extends StatefulWidget {
   const Trips({super.key});

@@ -5,7 +5,6 @@ import 'package:viajabara/kernel/blocs/gps/gps_bloc.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
 import 'package:viajabara/kernel/widgets/gps/gps_access_screen.dart';
-import 'package:viajabara/kernel/widgets/gps/map_screen.dart';
 import 'package:viajabara/kernel/widgets/gps/map_screen_user.dart';
 
 class TravelingUser extends StatefulWidget {

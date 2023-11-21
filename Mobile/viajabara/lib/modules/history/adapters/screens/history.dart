@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
 import 'package:viajabara/modules/history/adapters/screens/historyStars.dart';
-import 'package:viajabara/modules/historyUser/adapters/screens/historyUser.dart';
 
 class History extends StatefulWidget {
   const History({super.key});
