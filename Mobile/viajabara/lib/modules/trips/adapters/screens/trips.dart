@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
+import 'package:viajabara/kernel/widgets/details/details_travels.dart';
 import 'package:viajabara/modules/trips/adapters/screens/traveling.dart';
 
 class Trips extends StatefulWidget {
@@ -144,7 +145,9 @@ class _TripsState extends State<Trips> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: <Widget>[
                               ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  _showModalInfo(context);
+                                },
                                 style: ButtonStyle(
                                     backgroundColor: MaterialStateProperty.all(
                                         ColorsApp.primayColor)),
@@ -285,7 +288,9 @@ class _TripsState extends State<Trips> {
                           padding: const EdgeInsets.only(
                               bottom: 10, right: 30, left: 30),
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              _showModalInfo(context);
+                            },
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(
                                   ColorsApp.primayColor),
@@ -309,6 +314,21 @@ class _TripsState extends State<Trips> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showModalInfo(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(25.0),
+        ),
+      ),
+      builder: (BuildContext context) {
+        return const DetailsOfTravels();
+      },
     );
   }
 }

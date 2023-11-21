@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
+import 'package:viajabara/kernel/widgets/details/details_travels.dart';
 
 class Trip extends StatefulWidget {
   const Trip({super.key});
@@ -269,7 +270,7 @@ class _TripState extends State<Trip> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceEvenly,
                                       children: <Widget>[
-                                        SizedBox(
+                                        const SizedBox(
                                           width: 20,
                                         ),
                                         Flexible(
@@ -351,7 +352,7 @@ class _TripState extends State<Trip> {
                                             ),
                                           ),
                                         ),
-                                        Spacer(),
+                                        const Spacer(),
                                         ElevatedButton(
                                           onPressed: () {},
                                           style: ButtonStyle(
@@ -370,7 +371,7 @@ class _TripState extends State<Trip> {
                                             Text('Buscar')
                                           ]),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           width: 20,
                                         ),
                                       ])
@@ -437,7 +438,9 @@ class _TripState extends State<Trip> {
                                   icon:
                                       const Icon(Icons.remove_red_eye_outlined),
                                   label: const Text('Detalles'),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    _showModalInfo(context);
+                                  },
                                   style: TextButton.styleFrom(
                                     foregroundColor: ColorsApp.whiteColor,
                                     backgroundColor: ColorsApp.primayColor,
@@ -467,6 +470,21 @@ class _TripState extends State<Trip> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showModalInfo(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(25.0),
+        ),
+      ),
+      builder: (BuildContext context) {
+        return const DetailsOfTravels();
+      },
     );
   }
 }
