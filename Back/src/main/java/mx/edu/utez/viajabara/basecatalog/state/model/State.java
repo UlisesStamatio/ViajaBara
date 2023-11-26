@@ -1,6 +1,7 @@
 package mx.edu.utez.viajabara.basecatalog.state.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import mx.edu.utez.viajabara.basecatalog.address.model.Address;
 import mx.edu.utez.viajabara.basecatalog.person.model.Person;
 
 import javax.persistence.*;
@@ -24,6 +25,10 @@ public class State {
     @OneToMany(mappedBy = "state")
     @JsonIgnore
     private List<Person> people;
+
+    @OneToMany(mappedBy = "state")
+    @JsonIgnore
+    private List<Address> addresses;
 
     public State() {
     }

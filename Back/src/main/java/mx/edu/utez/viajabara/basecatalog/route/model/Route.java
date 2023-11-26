@@ -2,6 +2,7 @@ package mx.edu.utez.viajabara.basecatalog.route.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import mx.edu.utez.viajabara.basecatalog.address.model.Address;
 import mx.edu.utez.viajabara.basecatalog.duty.model.Duty;
 import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOver;
 import mx.edu.utez.viajabara.basecatalog.trip.model.Trip;
@@ -17,20 +18,20 @@ public class Route {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "start_latitude", columnDefinition = "VARCHAR(30)")
-    private String start_latitude;
-
-    @Column(name = "start_longitude", columnDefinition = "VARCHAR(30)")
-    private String start_longitude;
-
-    @Column(name = "end_latitude", columnDefinition = "VARCHAR(30)")
-    private String end_latitude;
-
-    @Column(name = "end_longitude", columnDefinition = "VARCHAR(30)")
-    private String end_longitude;
+    @ManyToOne
+    @JoinColumn(name = "id_start_address")
+    private Address startAddress;
 
     @ManyToOne
-    private Duty duty;
+    @JoinColumn(name = "id_end_address")
+    private Address endAddress;
+
+    @Column(name = "distance_meters", columnDefinition = "DOUBLE")
+    private double meters;
+
+
+    @Column(name = "distance_time", columnDefinition = "DOUBLE")
+    private double time;
 
     @OneToMany(mappedBy = "route")
     @JsonIgnore
@@ -49,13 +50,11 @@ public class Route {
     public Route() {
     }
 
-    public Route(String start_latitude, String start_longitude, String end_latitude, String end_longitude, Duty duty, boolean status) {
-        this.start_latitude = start_latitude;
-        this.start_longitude = start_longitude;
-        this.end_latitude = end_latitude;
-        this.end_longitude = end_longitude;
-        this.duty = duty;
-        this.status = status;
+    public Route(Address startAddress, Address endAddress, double meters, double time) {
+        this.startAddress = startAddress;
+        this.endAddress = endAddress;
+        this.meters = meters;
+        this.time = time;
     }
 
     public Long getId() {
@@ -66,44 +65,37 @@ public class Route {
         this.id = id;
     }
 
-    public String getStart_latitude() {
-        return start_latitude;
+
+    public Address getStartAddress() {
+        return startAddress;
     }
 
-    public void setStart_latitude(String start_latitude) {
-        this.start_latitude = start_latitude;
+    public void setStartAddress(Address startAddress) {
+        this.startAddress = startAddress;
     }
 
-    public String getStart_longitude() {
-        return start_longitude;
+    public Address getEndAddress() {
+        return endAddress;
     }
 
-    public void setStart_longitude(String start_longitude) {
-        this.start_longitude = start_longitude;
+    public void setEndAddress(Address endAddress) {
+        this.endAddress = endAddress;
     }
 
-    public String getEnd_latitude() {
-        return end_latitude;
+    public double getMeters() {
+        return meters;
     }
 
-    public void setEnd_latitude(String end_latitude) {
-        this.end_latitude = end_latitude;
+    public void setMeters(double meters) {
+        this.meters = meters;
     }
 
-    public String getEnd_longitude() {
-        return end_longitude;
+    public double getTime() {
+        return time;
     }
 
-    public void setEnd_longitude(String end_longitude) {
-        this.end_longitude = end_longitude;
-    }
-
-    public Duty getDuty() {
-        return duty;
-    }
-
-    public void setDuty(Duty duty) {
-        this.duty = duty;
+    public void setTime(double time) {
+        this.time = time;
     }
 
     public Date getCreatedAt() {
