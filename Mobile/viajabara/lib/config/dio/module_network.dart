@@ -29,7 +29,12 @@ class NetworkModule {
   Future<String?> getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? data = prefs.getString('data');
-    Map<String, dynamic> jsonData = json.decode(data!);
+
+    if (data == null) {
+      return null;
+    }
+
+    Map<String, dynamic> jsonData = json.decode(data);
     ResponseMessage responseMessage = ResponseMessage.fromJson(jsonData);
     return responseMessage.token;
   }
