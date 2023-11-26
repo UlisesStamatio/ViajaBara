@@ -229,32 +229,61 @@ class _LoginState extends State<Login> {
                               ),
                             ),
                           ),
-                          Container(
-                            padding: const EdgeInsets.only(bottom: 10),
-                            alignment: Alignment.centerRight,
-                            child: InkWell(
-                              onTap: () => Navigator.pushReplacementNamed(
-                                  context, '/forgotPassword'),
-                              child: const Text(
-                                '¿Olvidaste tu contraseña?',
-                                style: TextStyle(color: ColorsApp.primayColor),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.only(bottom: 20),
-                            alignment: Alignment.centerRight,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                const Text('o '),
-                                InkWell(
-                                  onTap: () =>
-                                      Navigator.pushNamed(context, '/register'),
-                                  child: const Text(
-                                    '¿aún no te has registrado?',
-                                    style: TextStyle(
-                                      color: ColorsApp.primayColor,
+                          Center(
+                            child: Column(
+                              children: <Widget>[
+                                Container(
+                                  padding: const EdgeInsets.only(bottom: 10),
+                                  alignment: Alignment.center,
+                                  child: InkWell(
+                                    onTap: () => Navigator.pushNamed(
+                                        context, '/forgotPassword'),
+                                    child: const Text(
+                                      '¿Olvidaste tu contraseña?',
+                                      style: TextStyle(
+                                          color: ColorsApp.primayColor),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 8.0),
+                                Stack(
+                                  children: <Widget>[
+                                    Row(
+                                      children: <Widget>[
+                                        const Expanded(
+                                          child: Divider(color: Colors.grey),
+                                        ),
+                                        Container(
+                                          color: Colors
+                                              .white, // El color de fondo del Stack
+                                          child: const Text(
+                                            'O',
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                        const Expanded(
+                                          child: Divider(color: Colors.grey),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 8.0),
+                                Container(
+                                  padding: const EdgeInsets.only(bottom: 15),
+                                  alignment: Alignment.center,
+                                  child: InkWell(
+                                    onTap: () => Navigator.pushNamed(
+                                        context, '/register'),
+                                    child: const Text(
+                                      '¿Aún no te has registrado?',
+                                      style: TextStyle(
+                                        color: ColorsApp.primayColor,
+                                      ),
                                     ),
                                   ),
                                 ),

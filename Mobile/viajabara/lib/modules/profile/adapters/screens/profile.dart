@@ -1,16 +1,50 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:viajabara/domain/entities/response_message.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
 import 'package:viajabara/kernel/widgets/profile/change_information.dart';
 import 'package:viajabara/kernel/widgets/profile/change_password.dart';
 import 'package:viajabara/kernel/widgets/profile/change_photo.dart';
 
-class Profile extends StatelessWidget {
+class Profile extends StatefulWidget {
   const Profile({super.key});
 
+  @override
+  State<Profile> createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
   final double topWidgetHeight = 10.0;
   final double avatarRadius = 20.0;
+  String userRole = '';
+  bool isAdmin = false;
+
+  void initState() {
+    super.initState();
+    _loadUserRole();
+  }
+
+  Future<void> _loadUserRole() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? data = prefs.getString('data');
+    Map<String, dynamic> jsonData = json.decode(data!);
+    ResponseMessage responseMessage = ResponseMessage.fromJson(jsonData);
+    String? role = responseMessage.roles?.keyRole;
+
+    if(role == null) {
+      Navigator.pushNamed(context, '/login');
+    }
+
+    if (role == "ADMIN") {
+      setState(() {
+        isAdmin = true;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +101,36 @@ class Profile extends StatelessWidget {
                             ),
                           ),
                         ),
+                        if (isAdmin) ...{
+                          Column(
+                            children: [
+                              const Text("Calificación general"),
+                              const SizedBox(height: 10),
+                              Center(
+                                child: RatingBar.builder(
+                                  initialRating: 3,
+                                  minRating: 1,
+                                  direction: Axis.horizontal,
+                                  allowHalfRating: true,
+                                  itemCount: 5,
+                                  itemPadding: const EdgeInsets.symmetric(
+                                      horizontal: 4.0),
+                                  itemBuilder: (context, _) => const Icon(
+                                    Icons.star,
+                                    color: Colors.amber,
+                                  ),
+                                  onRatingUpdate: (rating) {
+                                    print(rating);
+                                  },
+                                ),
+                              ),
+                              Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  child: const Divider(color: ColorsApp.text)),
+                            ],
+                          ),
+                        },
                         const Row(
                           children: [
                             Expanded(
