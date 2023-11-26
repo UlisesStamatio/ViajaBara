@@ -2,6 +2,7 @@ package mx.edu.utez.viajabara.basecatalog.stopover.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import mx.edu.utez.viajabara.basecatalog.address.model.Address;
 import mx.edu.utez.viajabara.basecatalog.route.model.Route;
 
 import javax.persistence.*;
@@ -14,14 +15,19 @@ public class StopOver {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "latitude", columnDefinition = "VARCHAR(30)")
-    private String latitude;
-
-    @Column(name = "longitude", columnDefinition = "VARCHAR(30)")
-    private String longitude;
+    @ManyToOne
+    @JoinColumn(name = "id_address")
+    private Address address;
 
     @Column(name = "sequence", columnDefinition = "INT(2)")
     private int sequence;
+
+    @Column(name = "distance_meters", columnDefinition = "DOUBLE")
+    private double meters;
+
+
+    @Column(name = "distance_time", columnDefinition = "DOUBLE")
+    private double time;
 
     @Column(name = "create_at", insertable = false, columnDefinition = "TIMESTAMP DEFAULT NOW()")
     @Temporal(TemporalType.TIMESTAMP)
@@ -37,10 +43,11 @@ public class StopOver {
     public StopOver() {
     }
 
-    public StopOver(String latitude, String longitude, int sequence, boolean status, Route route) {
-        this.latitude = latitude;
-        this.longitude = longitude;
+    public StopOver(Address address, int sequence, double meters, double time, boolean status, Route route) {
+        this.address = address;
         this.sequence = sequence;
+        this.meters = meters;
+        this.time = time;
         this.status = status;
         this.route = route;
     }
@@ -53,20 +60,12 @@ public class StopOver {
         this.id = id;
     }
 
-    public String getLatitude() {
-        return latitude;
+    public Address getAddress() {
+        return address;
     }
 
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
-    }
-
-    public String getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public int getSequence() {
@@ -99,5 +98,21 @@ public class StopOver {
 
     public void setRoute(Route route) {
         this.route = route;
+    }
+
+    public double getMeters() {
+        return meters;
+    }
+
+    public void setMeters(double meters) {
+        this.meters = meters;
+    }
+
+    public double getTime() {
+        return time;
+    }
+
+    public void setTime(double time) {
+        this.time = time;
     }
 }

@@ -1,5 +1,9 @@
 package mx.edu.utez.viajabara.basecatalog.route.control;
 
+import javafx.scene.paint.Stop;
+import mx.edu.utez.viajabara.basecatalog.address.control.AddressService;
+import mx.edu.utez.viajabara.basecatalog.address.model.Address;
+import mx.edu.utez.viajabara.basecatalog.address.model.AddressDto;
 import mx.edu.utez.viajabara.basecatalog.duty.model.Duty;
 import mx.edu.utez.viajabara.basecatalog.duty.model.DutyRepository;
 import mx.edu.utez.viajabara.basecatalog.route.model.Route;
@@ -7,6 +11,7 @@ import mx.edu.utez.viajabara.basecatalog.route.model.RouteDto;
 import mx.edu.utez.viajabara.basecatalog.route.model.RouteRepository;
 import mx.edu.utez.viajabara.basecatalog.stopover.control.StopOverService;
 import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOver;
+import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOverDto;
 import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOverRepository;
 import mx.edu.utez.viajabara.utils.entity.Message;
 import mx.edu.utez.viajabara.utils.entity.TypesResponse;
@@ -20,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,15 +37,18 @@ public class RouteService {
     private final RouteRepository repository;
     private final DutyRepository dutyRepository;
     private final StopOverService stopOverService;
+
+    private final AddressService addressService;
     private final StopOverRepository stopOverRepository;
 
 
     @Autowired
-    public RouteService(RouteRepository repository, DutyRepository dutyRepository, StopOverService stopOverService, StopOverRepository stopOverRepository) {
+    public RouteService(RouteRepository repository, DutyRepository dutyRepository, StopOverService stopOverService, StopOverRepository stopOverRepository, AddressService addressService) {
         this.repository = repository;
         this.dutyRepository = dutyRepository;
         this.stopOverService = stopOverService;
         this.stopOverRepository = stopOverRepository;
+        this.addressService = addressService;
     }
 
     @Transactional(readOnly = true)
@@ -60,12 +69,19 @@ public class RouteService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public ResponseEntity<Object> save(RouteDto dto) throws SQLException {
-        Optional<Duty> duty = dutyRepository.findById(dto.getDuty().getId());
-        if (!duty.isPresent()) {
-            return new ResponseEntity<>(new Message("No se encontró el servicio", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
+        AddressDto startAddressDto = new AddressDto( dto.getStartAddress().getLatitude(),  dto.getStartAddress().getLongitude(),  dto.getStartAddress().getDescription(), dto.getStartAddress().getState());
+        Address startAddress = addressService.save(startAddressDto);
+        if(startAddress == null){
+            return new ResponseEntity<>(new Message("No se registró la ruta, el estado es inexistente", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
         }
 
-        Route route = new Route(dto.getStart_latitude(), dto.getStart_longitude(), dto.getEnd_latitude(), dto.getEnd_longitude(), duty.get(), true);
+        AddressDto endAddressDto = new AddressDto( dto.getEndStart().getLatitude(),  dto.getEndStart().getLongitude(),  dto.getEndStart().getDescription(), dto.getEndStart().getState());
+        Address endAddress = addressService.save(startAddressDto);
+        if(endAddress == null){
+            return new ResponseEntity<>(new Message("No se registró la ruta, el estado es inexistente", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
+        }
+
+        Route route = new Route( startAddress, endAddress, dto.getMeters(), dto.getTime());
 
         route = repository.saveAndFlush(route);
         if (route == null) {
@@ -73,9 +89,18 @@ public class RouteService {
         }
         if (dto.getStopOvers() != null) {
             List<StopOver> stopOverList = new ArrayList<>();
-            for (StopOver stop : dto.getStopOvers()) {
-                stop.setRoute(route);
-                stopOverList.add(stop);
+            for (StopOverDto stop : dto.getStopOvers()) {
+                AddressDto stopAdressDto = new AddressDto( stop.getLatitude(),  stop.getLongitude(), stop.getDescription(), stop.getState());
+                Address stopAddress = addressService.save(stopAdressDto);
+                if(stopAddress == null){
+                    return new ResponseEntity<>(new Message("No se registró la parada, el estado es inexistente", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
+                }else{
+                    StopOver stopOver = new StopOver();
+                    stopOver.setRoute(route);
+                    stopOver.setAddress(stopAddress);
+                    stopOverList.add(stopOver);
+                }
+
             }
             stopOverService.save(stopOverList);
         }
@@ -91,10 +116,6 @@ public class RouteService {
             return new ResponseEntity<>(new Message("No se encontró la ruta", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
 
-        Optional<Duty> duty = dutyRepository.findById(dto.getDuty().getId());
-        if (!duty.isPresent()) {
-            return new ResponseEntity<>(new Message("No se encontró el servicio", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
-        }
 
         Route route = optional.get();
 
@@ -107,19 +128,37 @@ public class RouteService {
 
         if (dto.getStopOvers() != null) {
             List<StopOver> stopOverList = new ArrayList<>();
-            for (StopOver stop : dto.getStopOvers()) {
-                stop.setRoute(route);
-                stopOverList.add(stop);
+            for (StopOverDto stop : dto.getStopOvers()) {
+                AddressDto stopAdressDto = new AddressDto( stop.getLatitude(),  stop.getLongitude(), stop.getDescription(), stop.getState());
+                Address stopAddress = addressService.save(stopAdressDto);
+                if(stopAddress == null){
+                    return new ResponseEntity<>(new Message("No se registró la parada, el estado es inexistente", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
+                }else{
+                    StopOver stopOver = new StopOver();
+                    stopOver.setRoute(route);
+                    stopOver.setAddress(stopAddress);
+                    stopOverList.add(stopOver);
+                }
             }
             stopOverService.save(stopOverList);
-            route.setStopOvers(stopOverList);
         }
 
-        route.setStart_latitude(dto.getStart_latitude());
-        route.setStart_longitude(dto.getStart_longitude());
-        route.setEnd_latitude(dto.getEnd_latitude());
-        route.setEnd_longitude(dto.getEnd_longitude());
-        route.setDuty(duty.get());
+        AddressDto startAddressDto = new AddressDto( dto.getStartAddress().getLatitude(),  dto.getStartAddress().getLongitude(),  dto.getStartAddress().getDescription(), dto.getStartAddress().getState());
+        Address startAddress = addressService.save(startAddressDto);
+        if(startAddress == null){
+            return new ResponseEntity<>(new Message("No se registró la ruta, el estado es inexistente", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
+        }
+
+        AddressDto endAddressDto = new AddressDto( dto.getEndStart().getLatitude(),  dto.getEndStart().getLongitude(),  dto.getEndStart().getDescription(), dto.getEndStart().getState());
+        Address endAddress = addressService.save(startAddressDto);
+        if(endAddress == null){
+            return new ResponseEntity<>(new Message("No se registró la ruta, el estado es inexistente", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
+        }
+
+        route.setStartAddress(startAddress);
+        route.setEndAddress(endAddress);
+        route.setMeters(dto.getMeters());
+        route.setTime(dto.getTime());
 
 
         route = repository.saveAndFlush(route);
