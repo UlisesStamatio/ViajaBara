@@ -29,6 +29,7 @@ class _MenuState extends State<Menu> {
           rol = arguments['rol'];
         });
       }
+      print(rol);
     });
   }
 
@@ -50,7 +51,7 @@ class _MenuState extends State<Menu> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _showIndexedStack
-          ? rol == 'ADMIN'
+          ? rol == 'ADMIN' || rol == 'COND'
               ? IndexedStack(
                   index: _selectIndex,
                   children: [
@@ -70,7 +71,7 @@ class _MenuState extends State<Menu> {
                   ],
                 )
           : null,
-      bottomNavigationBar: rol == "CLIEN"
+      bottomNavigationBar: rol == "ADMIN" || rol == 'COND'
           ? CustomBottomNavigationTabDriver(
               selectedIndex: _selectIndex, onItemTapped: _onItemTapped)
           : CustomBottomNavigationTab(

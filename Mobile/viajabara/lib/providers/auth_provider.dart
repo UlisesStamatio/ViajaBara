@@ -6,6 +6,7 @@ import 'package:viajabara/domain/entities/list_states.dart';
 import 'package:viajabara/domain/entities/response_message.dart';
 import 'package:viajabara/domain/entities/roles/roles.dart';
 import 'package:viajabara/domain/entities/user_data.dart';
+import 'package:viajabara/modules/tripsUser/adapters/entities/list_drivers.dart';
 
 class AuthProvider {
   Dio dio = NetworkModule().instance;
@@ -64,6 +65,23 @@ class AuthProvider {
     }
   }
 
+  Future<List<DriverItem>> getDriversEnabled() async {
+    final response = await dio.get('user/all-drivers-enabled');
+
+    if (response.statusCode == 200) {
+      data = response.data;
+      List<dynamic> driversJson = data['result'];
+      List<DriverItem> drivers = driversJson
+          .map((item) => DriverItem(
+              id: item['id'],
+              name: '${item['person']['name']} ${item['person']['surname']}'))
+          .toList();
+      return drivers;
+    } else {
+      throw Exception('Fallo al obtener los registros');
+    }
+  }
+
   ResponseMessage _parseLoginResponse(Response response) {
     data = response.data;
 
@@ -74,13 +92,13 @@ class AuthProvider {
     saveToken(data['token']);
 
     ResponseMessage responseMessage = ResponseMessage(
-    token: data['token'],
-    email: data['email'],
-    name: data['name'],
-    roles: Roles(
-        keyRole: data['roles'][0]['keyRole'],
-        name: data['roles'][0]['name'],
-        status: data['roles'][0]['status'])); 
+        token: data['token'],
+        email: data['email'],
+        name: data['name'],
+        roles: Roles(
+            keyRole: data['roles'][0]['keyRole'],
+            name: data['roles'][0]['name'],
+            status: data['roles'][0]['status']));
     return responseMessage;
   }
 

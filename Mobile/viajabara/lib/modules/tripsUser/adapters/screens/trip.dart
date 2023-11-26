@@ -2,9 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:viajabara/domain/entities/list_states.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
 import 'package:viajabara/kernel/widgets/details/details_travels.dart';
+import 'package:viajabara/modules/tripsUser/adapters/entities/list_drivers.dart';
+import 'package:viajabara/providers/auth_provider.dart';
 
 class Trip extends StatefulWidget {
   const Trip({super.key});
@@ -22,10 +25,48 @@ class _TripState extends State<Trip> {
   TextEditingController dateController = TextEditingController();
   bool _isButtonDisabled = true;
 
+  List<StateItem> states = [];
+  StateItem origin = StateItem(name: '', id: 0);
+  StateItem destiny = StateItem(name: '', id: 0);
+  String date = '';
+  List<DriverItem> drivers = [];
+  DriverItem driver = DriverItem(name: '', id: 0);
+  int seats = 0;
+
   @override
   void initState() {
     super.initState();
     dateController.text = "${fecha.toLocal()}".split(' ')[0];
+
+    loadStates();
+    loadDrivers();
+  }
+
+  void loadStates() async {
+    try {
+      List<StateItem> statesList = await AuthProvider().getStates();
+      setState(() {
+        states = statesList;
+        origin = statesList[0];
+        destiny = statesList[0];
+      });
+      print(states);
+    } catch (e) {
+      print('Error al cargar los estados: $e');
+    }
+  }
+
+  void loadDrivers() async {
+    try {
+      List<DriverItem> driversList = await AuthProvider().getDriversEnabled();
+      setState(() {
+        drivers = driversList;
+        driver = driversList[0];
+      });
+      print(drivers);
+    } catch (e) {
+      print('Error al cargar los conductores: $e');
+    }
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -80,7 +121,7 @@ class _TripState extends State<Trip> {
         ],
         backgroundColor: ColorsApp.whiteColor,
         shadowColor: ColorsApp.blackColor,
-        elevation: 2,
+        elevation: 4,
       ),
       body: SafeArea(
         child: Stack(
@@ -117,40 +158,112 @@ class _TripState extends State<Trip> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceEvenly,
                                     children: <Widget>[
-                                      DropdownMenu<String>(
-                                        label: const Text("Origen*"),
-                                        initialSelection: list.first,
-                                        onSelected: (String? value) {
-                                          // This is called when the user selects an item.
-                                          setState(() {
-                                            dropdownValue = value!;
-                                          });
-                                        },
-                                        dropdownMenuEntries: list
-                                            .map<DropdownMenuEntry<String>>(
-                                                (String value) {
-                                          return DropdownMenuEntry<String>(
-                                              value: value, label: value);
-                                        }).toList(),
+                                      SizedBox(
                                         width: 160,
+                                        child:
+                                            DropdownButtonFormField<StateItem>(
+                                          value: origin,
+                                          decoration: InputDecoration(
+                                            labelText: 'Origen*',
+                                            hintText: 'Selecciona un estado',
+                                            filled: true,
+                                            fillColor: ColorsApp.whiteColor,
+                                            hintStyle: const TextStyle(
+                                              color: ColorsApp.text,
+                                            ),
+                                            labelStyle: const TextStyle(
+                                              color: ColorsApp.text,
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(4.0),
+                                              borderSide: const BorderSide(
+                                                  color: ColorsApp.primayColor,
+                                                  width: 1.0),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(4.0),
+                                              borderSide: const BorderSide(
+                                                  color: ColorsApp.primayColor,
+                                                  width: 1.0),
+                                            ),
+                                          ),
+                                          onChanged: (StateItem? newValue) {
+                                            if (newValue != null) {
+                                              setState(() {
+                                                origin = newValue;
+                                              });
+                                            }
+                                          },
+                                          validator: (value) => value == null
+                                              ? 'Campo obligatorio'
+                                              : null,
+                                          items: states
+                                              .map<DropdownMenuItem<StateItem>>(
+                                                  (StateItem state) {
+                                            return DropdownMenuItem<StateItem>(
+                                              value: state,
+                                              child: SizedBox(
+                                                  width: 80,
+                                                  child: Text(state.name)),
+                                            );
+                                          }).toList(),
+                                        ),
                                       ),
-                                      DropdownMenu<String>(
-                                        label: const Text("Destino*"),
-                                        initialSelection: list.first,
-                                        onSelected: (String? value) {
-                                          // This is called when the user selects an item.
-                                          setState(() {
-                                            dropdownValue = value!;
-                                          });
-                                        },
-                                        dropdownMenuEntries: list
-                                            .map<DropdownMenuEntry<String>>(
-                                                (String value) {
-                                          return DropdownMenuEntry<String>(
-                                              value: value, label: value);
-                                        }).toList(),
+                                      SizedBox(
                                         width: 160,
-                                      )
+                                        child:
+                                            DropdownButtonFormField<StateItem>(
+                                          value: destiny,
+                                          decoration: InputDecoration(
+                                            labelText: 'Destino*',
+                                            hintText: 'Selecciona un estado',
+                                            filled: true,
+                                            fillColor: ColorsApp.whiteColor,
+                                            hintStyle: const TextStyle(
+                                              color: ColorsApp.text,
+                                            ),
+                                            labelStyle: const TextStyle(
+                                              color: ColorsApp.text,
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(4.0),
+                                              borderSide: const BorderSide(
+                                                  color: ColorsApp.primayColor,
+                                                  width: 1.0),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(4.0),
+                                              borderSide: const BorderSide(
+                                                  color: ColorsApp.primayColor,
+                                                  width: 1.0),
+                                            ),
+                                          ),
+                                          onChanged: (StateItem? newValue) {
+                                            if (newValue != null) {
+                                              setState(() {
+                                                destiny = newValue;
+                                              });
+                                            }
+                                          },
+                                          validator: (value) => value == null
+                                              ? 'Campo obligatorio'
+                                              : null,
+                                          items: states
+                                              .map<DropdownMenuItem<StateItem>>(
+                                                  (StateItem state) {
+                                            return DropdownMenuItem<StateItem>(
+                                              value: state,
+                                              child: SizedBox(
+                                                  width: 100,
+                                                  child: Text(state.name)),
+                                            );
+                                          }).toList(),
+                                        ),
+                                      ),
                                     ],
                                   ),
                                   const SizedBox(
@@ -202,23 +315,25 @@ class _TripState extends State<Trip> {
                                             filled: true,
                                             fillColor: ColorsApp.whiteColor,
                                             hintStyle: const TextStyle(
-                                              color: ColorsApp.muted,
+                                              color: ColorsApp.text,
                                             ),
                                             labelStyle: const TextStyle(
-                                              color: ColorsApp.muted,
+                                              color: ColorsApp.text,
                                             ),
                                             enabledBorder: OutlineInputBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(4.0),
                                                 borderSide: const BorderSide(
-                                                    color: ColorsApp.muted,
+                                                    color:
+                                                        ColorsApp.primayColor,
                                                     width: 1.0,
                                                     style: BorderStyle.solid)),
                                             focusedBorder: OutlineInputBorder(
                                                 borderRadius:
                                                     BorderRadius.circular(4.0),
                                                 borderSide: const BorderSide(
-                                                    color: ColorsApp.muted,
+                                                    color:
+                                                        ColorsApp.primayColor,
                                                     width: 1.0,
                                                     style: BorderStyle.solid)),
                                             errorBorder: OutlineInputBorder(
@@ -236,31 +351,67 @@ class _TripState extends State<Trip> {
                                                             4.0),
                                                     borderSide:
                                                         const BorderSide(
-                                                            color:
-                                                                ColorsApp.muted,
+                                                            color: ColorsApp
+                                                                .dangerColor,
                                                             width: 1.0,
                                                             style: BorderStyle
                                                                 .solid)),
                                           ),
                                         ),
                                       ),
-                                      DropdownMenu<String>(
-                                        label: const Text("Conductor*"),
-                                        initialSelection: list.first,
-                                        onSelected: (String? value) {
-                                          // This is called when the user selects an item.
-                                          setState(() {
-                                            dropdownValue = value!;
-                                          });
-                                        },
-                                        dropdownMenuEntries: list
-                                            .map<DropdownMenuEntry<String>>(
-                                                (String value) {
-                                          return DropdownMenuEntry<String>(
-                                              value: value, label: value);
-                                        }).toList(),
+                                      SizedBox(
                                         width: 160,
-                                      )
+                                        child:
+                                            DropdownButtonFormField<DriverItem>(
+                                          value: driver,
+                                          decoration: InputDecoration(
+                                            labelText: 'Conductor',
+                                            hintText: 'Selecciona un conductor',
+                                            filled: true,
+                                            fillColor: ColorsApp.whiteColor,
+                                            hintStyle: const TextStyle(
+                                              color: ColorsApp.text,
+                                            ),
+                                            labelStyle: const TextStyle(
+                                              color: ColorsApp.text,
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(4.0),
+                                              borderSide: const BorderSide(
+                                                  color: ColorsApp.primayColor,
+                                                  width: 1.0),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(4.0),
+                                              borderSide: const BorderSide(
+                                                  color: ColorsApp.primayColor,
+                                                  width: 1.0),
+                                            ),
+                                          ),
+                                          onChanged: (DriverItem? newValue) {
+                                            if (newValue != null) {
+                                              setState(() {
+                                                driver = newValue;
+                                              });
+                                            }
+                                          },
+                                          validator: (value) => value == null
+                                              ? 'Campo obligatorio'
+                                              : null,
+                                          items: drivers.map<
+                                                  DropdownMenuItem<DriverItem>>(
+                                              (DriverItem i) {
+                                            return DropdownMenuItem<DriverItem>(
+                                              value: i,
+                                              child: SizedBox(
+                                                  width: 80,
+                                                  child: Text(i.name)),
+                                            );
+                                          }).toList(),
+                                        ),
+                                      ),
                                     ],
                                   ),
                                   const SizedBox(
@@ -313,7 +464,8 @@ class _TripState extends State<Trip> {
                                                       BorderRadius.circular(
                                                           4.0),
                                                   borderSide: const BorderSide(
-                                                      color: ColorsApp.muted,
+                                                      color:
+                                                          ColorsApp.primayColor,
                                                       width: 1.0,
                                                       style:
                                                           BorderStyle.solid)),

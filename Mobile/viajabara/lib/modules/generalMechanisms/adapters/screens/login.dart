@@ -20,8 +20,9 @@ class _LoginState extends State<Login> {
   bool _isButtonDisabled = true;
   bool _passwordVisible = false;
   bool _islogged = false;
-  final TextEditingController _email = TextEditingController(text: '20203tn159@utez.edu.mx');
-  final TextEditingController _pass = TextEditingController(text: 'Admin123');
+  final TextEditingController _email =
+      TextEditingController(text: '20203tn063@utez.edu.mx');
+  final TextEditingController _pass = TextEditingController(text: 'Admin12');
 
   @override
   Widget build(BuildContext context) {
@@ -269,29 +270,34 @@ class _LoginState extends State<Login> {
                                       _isButtonDisabled = true;
                                     });
 
-                                    ResponseMessage isLogged = await AuthProvider().login(_email.text, _pass.text);
+                                    ResponseMessage isLogged =
+                                        await AuthProvider()
+                                            .login(_email.text, _pass.text);
 
                                     if (!mounted) {
                                       return; // Verificar si el widget está aún montado
                                     }
 
-                                    if(isLogged.token != null){
+                                    if (isLogged.token != null) {
                                       setState(() {
                                         _islogged = true;
                                       });
-                                    }else{
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text('Usuario o contraseña incorrectos')),
-                                    );
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                'Usuario o contraseña incorrectos')),
+                                      );
                                     }
 
-                                    if (_islogged) { 
+                                    if (_islogged) {
                                       Navigator.pushNamed(context, '/menu',
                                           arguments: {
                                             'rol': isLogged.roles?.keyRole,
                                           });
                                     }
-                                    
+
                                     setState(() {
                                       _isButtonDisabled = false;
                                     });

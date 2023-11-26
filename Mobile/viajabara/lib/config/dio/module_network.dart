@@ -16,7 +16,7 @@ class NetworkModule {
   }
 
   final BaseOptions _options = BaseOptions(
-    baseUrl: 'http://192.168.0.104:8083/api/',
+    baseUrl: 'http://192.168.100.47:8083/api/',
     connectTimeout: const Duration(seconds: 15),
     receiveTimeout: const Duration(seconds: 15),
     headers: {
@@ -24,15 +24,14 @@ class NetworkModule {
     },
   );
 
-
   Future<String?> getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString('token');
   }
 
   _initializeInterceptors() {
-    _dio!.interceptors.add(InterceptorsWrapper(onRequest: (options, handler) async {
-      
+    _dio!.interceptors
+        .add(InterceptorsWrapper(onRequest: (options, handler) async {
       String? token = await getToken();
       if (token != null) {
         options.headers['Authorization'] = 'Bearer $token';
