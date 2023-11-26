@@ -46,7 +46,7 @@
                 <div class="my-auto ms-auto">
                   <router-link
                     :to="{ name: 'Registro Usuario' }"
-                    class="mb-0 btn bg-gradient-primary btn-sm"
+                    class="mb-0 btn bg-gradient-danger btn-sm"
                     >+&nbsp; Nuevo Conductor</router-link
                   >
                 </div>
