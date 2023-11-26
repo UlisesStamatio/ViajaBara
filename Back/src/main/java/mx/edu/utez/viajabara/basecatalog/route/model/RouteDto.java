@@ -1,8 +1,12 @@
 package mx.edu.utez.viajabara.basecatalog.route.model;
 
+import mx.edu.utez.viajabara.basecatalog.address.model.Address;
+import mx.edu.utez.viajabara.basecatalog.address.model.AddressDto;
 import mx.edu.utez.viajabara.basecatalog.duty.model.Duty;
 import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOver;
+import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOverDto;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -12,16 +16,14 @@ public class RouteDto {
     @NotNull(groups = {Modify.class,ChangeStatus.class})
     private Long id;
     @NotBlank(groups = {Register.class,Modify.class})
-    private String start_latitude;
+    private AddressDto startAddress;
     @NotBlank(groups = {Register.class,Modify.class})
-    private String start_longitude;
-    @NotBlank(groups = {Register.class,Modify.class})
-    private String end_latitude;
-    @NotBlank(groups = {Register.class,Modify.class})
-    private String end_longitude;
-    @NotNull(groups = {Register.class,Modify.class})
-    private Duty duty;
-    List<StopOver> stopOvers;
+    private AddressDto endStart;
+    @Min(value = 0, groups = {Register.class,Modify.class})
+    private double meters;
+    @Min(value = 0, groups = {Register.class,Modify.class})
+    private double time;
+    List<StopOverDto> stopOvers;
 
     public RouteDto() {
     }
@@ -34,51 +36,43 @@ public class RouteDto {
         this.id = id;
     }
 
-    public String getStart_latitude() {
-        return start_latitude;
+    public AddressDto getStartAddress() {
+        return startAddress;
     }
 
-    public void setStart_latitude(String start_latitude) {
-        this.start_latitude = start_latitude;
+    public void setStartAddress(AddressDto startAddress) {
+        this.startAddress = startAddress;
     }
 
-    public String getStart_longitude() {
-        return start_longitude;
+    public AddressDto getEndStart() {
+        return endStart;
     }
 
-    public void setStart_longitude(String start_longitude) {
-        this.start_longitude = start_longitude;
+    public void setEndStart(AddressDto endStart) {
+        this.endStart = endStart;
     }
 
-    public String getEnd_latitude() {
-        return end_latitude;
+    public double getMeters() {
+        return meters;
     }
 
-    public void setEnd_latitude(String end_latitude) {
-        this.end_latitude = end_latitude;
+    public void setMeters(double meters) {
+        this.meters = meters;
     }
 
-    public String getEnd_longitude() {
-        return end_longitude;
+    public double getTime() {
+        return time;
     }
 
-    public void setEnd_longitude(String end_longitude) {
-        this.end_longitude = end_longitude;
+    public void setTime(double time) {
+        this.time = time;
     }
 
-    public Duty getDuty() {
-        return duty;
-    }
-
-    public void setDuty(Duty duty) {
-        this.duty = duty;
-    }
-
-    public List<StopOver> getStopOvers() {
+    public List<StopOverDto> getStopOvers() {
         return stopOvers;
     }
 
-    public void setStopOvers(List<StopOver> stopOvers) {
+    public void setStopOvers(List<StopOverDto> stopOvers) {
         this.stopOvers = stopOvers;
     }
 

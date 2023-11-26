@@ -25,9 +25,6 @@ public class Duty {
     private boolean status;
 
 
-    @OneToMany(mappedBy = "duty")
-    @JsonIgnore
-    private List<Route> routes;
 
     public Duty() {
     }
