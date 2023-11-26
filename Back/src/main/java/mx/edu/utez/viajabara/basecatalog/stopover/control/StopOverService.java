@@ -43,12 +43,12 @@ public class StopOverService {
         StopOver stop;
 
         for (StopOver stopOver:stopOverList) {
-            Optional<StopOver> optionalStopOver = repository.findFirstByLatitudeAndLongitudeAndRoute(stopOver.getLatitude(),stopOver.getLongitude(),stopOver.getRoute());
+            Optional<StopOver> optionalStopOver = repository.findFirstByAddressAndRoute(stopOver.getAddress(),stopOver.getRoute());
             if (optionalStopOver.isPresent()) {
                 repeated = true;
                 break;
             }
-            stop = new StopOver(stopOver.getLatitude(),stopOver.getLongitude(),stopOver.getSequence(),true,stopOver.getRoute());
+            stop = new StopOver(stopOver.getAddress(),stopOver.getSequence(), stopOver.getMeters(), stopOver.getTime(),true,stopOver.getRoute());
             stop = repository.saveAndFlush(stop);
             stopOversCreated.add(stop);
         }
