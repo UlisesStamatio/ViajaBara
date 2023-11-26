@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:viajabara/domain/entities/response_message.dart';
 
 class NetworkModule {
   static final NetworkModule _singleton = NetworkModule._internal();
@@ -26,7 +28,10 @@ class NetworkModule {
 
   Future<String?> getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getString('token');
+    String? data = prefs.getString('data');
+    Map<String, dynamic> jsonData = json.decode(data!);
+    ResponseMessage responseMessage = ResponseMessage.fromJson(jsonData);
+    return responseMessage.token;
   }
 
   _initializeInterceptors() {

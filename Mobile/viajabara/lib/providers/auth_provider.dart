@@ -89,8 +89,6 @@ class AuthProvider {
       return ResponseMessage(text: data['text'], type: data['type']);
     }
 
-    saveToken(data['token']);
-
     ResponseMessage responseMessage = ResponseMessage(
         token: data['token'],
         email: data['email'],
@@ -99,6 +97,9 @@ class AuthProvider {
             keyRole: data['roles'][0]['keyRole'],
             name: data['roles'][0]['name'],
             status: data['roles'][0]['status']));
+
+    saveData(responseMessage);
+
     return responseMessage;
   }
 
@@ -110,8 +111,9 @@ class AuthProvider {
     throw Exception('Error de inicio de sesión: ${e.message}');
   }
 
-  Future<void> saveToken(String token) async {
+  Future<void> saveData(ResponseMessage responseMessage) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('token', token);
+    String data = json.encode(responseMessage.toJson());
+    await prefs.setString('data', data);
   }
 }

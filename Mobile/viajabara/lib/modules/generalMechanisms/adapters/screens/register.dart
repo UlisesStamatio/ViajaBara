@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:viajabara/domain/entities/response_message.dart';
+import 'package:viajabara/domain/entities/user_data.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
 import 'package:viajabara/kernel/validations/validations.dart';
+import 'package:viajabara/providers/auth_provider.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -20,6 +23,7 @@ class _RegisterState extends State<Register> {
   final TextEditingController _username = TextEditingController(text: '');
   final TextEditingController _pass = TextEditingController(text: '');
   final TextEditingController _repeatPass = TextEditingController(text: '');
+  final TextEditingController _phone = TextEditingController(text: '');
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +52,7 @@ class _RegisterState extends State<Register> {
               SingleChildScrollView(
                 child: Center(
                   child: Column(children: <Widget>[
-                    const SizedBox(height: 120),
+                    const SizedBox(height: 100),
                     SvgPicture.asset(StuffApp.logoViajabara),
                     Card(
                       elevation: 4.0,
@@ -213,7 +217,64 @@ class _RegisterState extends State<Register> {
                                 ),
                               ),
                             ),
-                            //
+                            Container(
+                              padding: const EdgeInsets.only(
+                                bottom: 10,
+                              ),
+                              child: TextFormField(
+                                keyboardType: TextInputType.phone,
+                                controller: _phone,
+                                validator: (value) {
+                                  if (value!.isEmpty) {
+                                    return 'Campo obligatorio';
+                                  } else {
+                                    return null;
+                                  }
+                                },
+                                cursorColor: ColorsApp.primayColor,
+                                style: const TextStyle(
+                                  color: ColorsApp.text,
+                                ),
+                                decoration: InputDecoration(
+                                  labelText: 'Número de teléfono',
+                                  hintText: '777-111-22-33',
+                                  filled: true,
+                                  fillColor: ColorsApp.whiteColor,
+                                  hintStyle: const TextStyle(
+                                    color: ColorsApp.text,
+                                  ),
+                                  labelStyle: const TextStyle(
+                                    color: ColorsApp.text,
+                                  ),
+                                  prefixIcon: const Icon(Icons.phone),
+                                  prefixIconColor: ColorsApp.primayColor,
+                                  enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(4.0),
+                                      borderSide: const BorderSide(
+                                          color: ColorsApp.muted,
+                                          width: 1.0,
+                                          style: BorderStyle.solid)),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(4.0),
+                                      borderSide: const BorderSide(
+                                          color: ColorsApp.primayColor,
+                                          width: 1.0,
+                                          style: BorderStyle.solid)),
+                                  errorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(4.0),
+                                      borderSide: const BorderSide(
+                                          color: ColorsApp.dangerColor,
+                                          width: 1.0,
+                                          style: BorderStyle.solid)),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(4.0),
+                                      borderSide: const BorderSide(
+                                          color: ColorsApp.text,
+                                          width: 1.0,
+                                          style: BorderStyle.solid)),
+                                ),
+                              ),
+                            ),
                             Container(
                               padding: const EdgeInsets.only(
                                 bottom: 10,
@@ -391,13 +452,35 @@ class _RegisterState extends State<Register> {
                             ElevatedButton(
                                 onPressed: _isButtonDisabled
                                     ? null
-                                    : () => Navigator.pushNamed(
-                                            context, '/register2',
-                                            arguments: {
-                                              'email': _email.text,
-                                              'password': _pass.text,
-                                              'username': _username.text,
-                                            }),
+                                    : () async {
+                                        UserData userData = UserData(
+                                            email: _email.text,
+                                            username: _username.text,
+                                            password: _repeatPass.text,
+                                            name: "Esperar a que sean opcionales",
+                                            surname: "Esperar a que sean opcionales",
+                                            birthDate: "2023-03-03",
+                                            state: 5,
+                                            cellphone: _phone.text,
+                                            sex: "M");
+                                        ResponseMessage isRegister =
+                                            await AuthProvider()
+                                                .register(userData);
+
+                                        if (!mounted) {
+                                          return; // Verificar si el widget está aún montado
+                                        }
+
+                                        if (isRegister.type == 'SUCCESS') {
+                                          Navigator.pushReplacementNamed(
+                                              context, '/login');
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                                  content:
+                                                      Text(isRegister.text!)));
+                                        }
+                                      },
                                 style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all(
                                     _isButtonDisabled
@@ -405,7 +488,7 @@ class _RegisterState extends State<Register> {
                                         : ColorsApp.primayColor,
                                   ),
                                 ),
-                                child: const Text('Siguiente')),
+                                child: const Text('Registrar')),
                           ],
                         ),
                       ),
