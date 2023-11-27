@@ -48,21 +48,20 @@ class HistoryStars extends StatelessWidget {
                 children: <Widget>[
                   Card(
                     elevation: 5,
-                    margin: const EdgeInsets.only(top: 20),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 10, horizontal: 20),
-                      height: 80.0,
+                          vertical: 10, horizontal: 40),
+                      height: 90.0,
                       child: const Column(
                         crossAxisAlignment:
                             CrossAxisAlignment.start, // Alinear a la izquierda
                         mainAxisAlignment:
-                            MainAxisAlignment.spaceEvenly, // Espaciado uniforme
+                            MainAxisAlignment.spaceAround, // Espaciado uniforme
                         children: <Widget>[
-                          Text('Salida : Lugar YYYY-mm-dd HH:MM',
-                              style: TextStyle(fontSize: 17.0)),
-                          Text('Llegada : Lugar YYYY-mm-dd HH:MM',
-                              style: TextStyle(fontSize: 17.0)),
+                          Text('Salida : Morelos 09/09/2021 09:00',
+                              style: TextStyle(fontSize: 15.0)),
+                          Text('Llegada : Chihuahua 09/09/2021 12:00',
+                              style: TextStyle(fontSize: 15.0)),
                         ],
                       ),
                     ),
