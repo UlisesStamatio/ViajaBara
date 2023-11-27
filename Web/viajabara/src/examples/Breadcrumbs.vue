@@ -29,9 +29,7 @@
         {{ currentPage }}
       </li>
     </ol>
-    <h6 class="mb-0 font-weight-bolder" :class="textWhite ? 'text-white' : ''">
-      {{ currentPage }}
-    </h6>
+    
   </nav>
 </template>
 

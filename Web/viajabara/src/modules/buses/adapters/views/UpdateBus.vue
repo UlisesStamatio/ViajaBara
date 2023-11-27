@@ -22,7 +22,7 @@
               </div>
               <div class="mt-4 col-12  text-center">
                   <button
-                    class="mb-0 btn bg-gradient-primary btn-sm me-2"
+                    class="mb-0 btn bg-gradient-danger btn-sm me-2"
                     type="button"
                     name="button"
                     title="Editar imagen"
