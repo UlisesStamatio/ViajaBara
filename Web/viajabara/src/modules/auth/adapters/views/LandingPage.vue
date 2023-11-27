@@ -5,7 +5,7 @@
     :dark-mode="true"
   />
   <div
-    class="m-3 page-header bg-gradient-primary position-relative border-radius-xl"
+    class="m-3 page-header bg-gradient-danger position-relative border-radius-xl"
   >
     <!-- <img
       src="../../assets/img/shapes/waves-white.svg"

@@ -22,6 +22,7 @@ Coded by www.creative-tim.com
   <!-- Font Awesome Icons -->
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="<%= BASE_URL %>datatables.min.css">
 
 
   </head>
@@ -34,6 +35,18 @@ Coded by www.creative-tim.com
       >
     </noscript>
     <div id="app" class="g-sidenav-show"></div>
+    <script type="text/javascript">
+      if(document.isLoadingGoogleMapsApi===undefined) {
+        document.isLoadingGoogleMapsApi=true;
+        var script = document.createElement('script');
+        script.src='https://maps.googleapis.com/maps/api/js?key=';
+        script.type='text/javascript';
+        script.defer=true;
+        document.getElementsByTagName('head')[0].appendChild(script);
+      }else{
+          [yourInitMethodName]();
+      }
+    </script>
     <!-- built files will be auto injected -->
   </body>
 </html>

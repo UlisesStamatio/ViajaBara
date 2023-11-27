@@ -15,10 +15,10 @@ public class RouteDto {
 
     @NotNull(groups = {Modify.class,ChangeStatus.class})
     private Long id;
-    @NotBlank(groups = {Register.class,Modify.class})
+    @NotNull(groups = {Register.class,Modify.class})
     private AddressDto startAddress;
-    @NotBlank(groups = {Register.class,Modify.class})
-    private AddressDto endStart;
+    @NotNull(groups = {Register.class,Modify.class})
+    private AddressDto endAddress;
     @Min(value = 0, groups = {Register.class,Modify.class})
     private double meters;
     @Min(value = 0, groups = {Register.class,Modify.class})
@@ -44,12 +44,12 @@ public class RouteDto {
         this.startAddress = startAddress;
     }
 
-    public AddressDto getEndStart() {
-        return endStart;
+    public AddressDto getEndAddress() {
+        return endAddress;
     }
 
-    public void setEndStart(AddressDto endStart) {
-        this.endStart = endStart;
+    public void setEndAddress(AddressDto endStart) {
+        this.endAddress = endStart;
     }
 
     public double getMeters() {

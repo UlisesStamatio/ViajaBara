@@ -16,6 +16,20 @@ public class StopOverDto {
     private double meters;
     private double time;
 
+    public StopOverDto() {
+    }
+
+    public StopOverDto(Long id, String latitude, String longitude, String description, String state, int sequence, double meters, double time) {
+        this.id = id;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.description = description;
+        this.state = state;
+        this.sequence = sequence;
+        this.meters = meters;
+        this.time = time;
+    }
+
     public StopOverDto(String latitude, String longitude, String description, String state, int sequence, double meters, double time) {
         this.latitude = latitude;
         this.longitude = longitude;
@@ -89,4 +103,6 @@ public class StopOverDto {
     public void setState(String state) {
         this.state = state;
     }
+
+
 }

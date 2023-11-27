@@ -3,3 +3,4 @@ Back/target/
 Movil/
 Web/node_modules/
 Back/*.log
+*.log
