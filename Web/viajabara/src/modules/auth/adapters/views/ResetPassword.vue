@@ -4,7 +4,7 @@
       <div class="col-12">
         <navbar
           is-blur="blur blur-rounded my-3 py-2 start-0 end-0 mx-4 shadow"
-          btn-background="bg-gradient-primary"
+          btn-background="bg-gradient-danger"
           :dark-mode="true"
         />
       </div>
@@ -39,7 +39,7 @@
                       <soft-button
                         class="my-4"
                         variant="gradient"
-                        color="primary"
+                        color="danger"
                         full-width
                         size="lg"
                         >Enviar
@@ -53,7 +53,7 @@
               class="top-0 my-auto text-center col-6 d-lg-flex d-none h-100 pe-0 position-absolute end-0 justify-content-center flex-column"
             >
               <div
-                class="m-3 position-relative bg-gradient-primary h-100 px-7 border-radius-lg d-flex flex-column justify-content-center"
+                class="m-3 position-relative bg-gradient-danger h-100 px-7 border-radius-lg d-flex flex-column justify-content-center"
               >
                 <img
                   src="@/assets/img/shapes/pattern-lines.svg"

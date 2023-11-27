@@ -14,8 +14,8 @@
                 <div class="my-auto ms-auto">
                   <router-link
                     :to="{ name: 'Registro Autobus' }"
-                    class="mb-0 btn bg-gradient-primary btn-sm"
-                    >+&nbsp; Nuevo Autobus</router-link
+                    class="mb-0 btn bg-gradient-danger btn-sm"
+                    >+&nbsp; Nuevo Autobús</router-link
                   >
                 </div>
               </div>
@@ -50,26 +50,26 @@
                     <td class="text-sm">
 
                       <router-link
-                        :to="{ name: 'Modificar Autobus', params:{id:id} }"
+                        :to="{ name: 'Modificar Autobús', params:{id:id} }"
 
                         data-bs-toggle="tooltip"
-                        data-bs-original-title="Editar autobus"
+                        data-bs-original-title="Editar autobús"
                       >
                         <i class="fa fa-pencil-square-o text-secondary"></i>
                       </router-link>
                       
                         <router-link
-                        :to="{ name: 'Detalles Autobus', params:{id:id} }"
+                        :to="{ name: 'Detalles Autobús', params:{id:id} }"
                         class="mx-3"
                         data-bs-toggle="tooltip"
-                        data-bs-original-title="Detalles del autobus"
+                        data-bs-original-title="Detalles del autobús"
                       >
                         <i class="fas fa-eye text-secondary"></i>
                       </router-link>
                       <a
                         v-cloak
                         data-bs-toggle="tooltip"
-                        data-bs-original-title="Desactivar autobus"
+                        data-bs-original-title="Desactivar autobús"
                         v-if="status"
                         :id="'times-' + id"
                       >
@@ -78,7 +78,7 @@
                         <a
                         v-cloak
                         data-bs-toggle="tooltip"
-                        data-bs-original-title="Activar autobus"
+                        data-bs-original-title="Activar autobús"
                         v-if="!status"
                         :id="'times-' + id"
                         >
