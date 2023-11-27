@@ -75,6 +75,9 @@ class AuthProvider {
     token: data['token'],
     email: data['email'],
     name: data['name'],
+    cellphone: data['cellphone'],
+    birthDate: data['birthDate'],
+    sex: data['sex'],
     roles: Roles(
         keyRole: data['roles'][0]['keyRole'],
         name: data['roles'][0]['name'],

@@ -4,6 +4,9 @@ class ResponseMessage{
   final String? token;
   final String? email;
   final String? name;
+  final String? cellphone;
+  final String? birthDate;
+  final String? sex;
   final Roles? roles;
   final String? text;
   final String? type;
@@ -12,6 +15,9 @@ class ResponseMessage{
       this.token,
       this.email, 
       this.name, 
+      this.cellphone,
+      this.birthDate,
+      this.sex,
       this.roles,
       this.text,
       this.type
@@ -21,6 +27,9 @@ class ResponseMessage{
     'token': token,
     'email': email,
     'name': name,
+    'cellphone': cellphone,
+    'birthDate': birthDate,
+    'sex':sex,
     'roles': roles,
     'text': text,
     'type': type
@@ -31,6 +40,9 @@ class ResponseMessage{
       token: json['token'],
       email: json['email'],
       name: json['name'],
+      cellphone: json['cellphone'],
+      birthDate: json['birthDate'],
+      sex: json['sex'],
       roles: Roles.fromJson(json['roles']),
       text: json['text'],
       type: json['type']

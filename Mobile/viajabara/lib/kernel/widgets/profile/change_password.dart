@@ -36,9 +36,13 @@ class _ChangePassword extends State<ChangePassword> {
                 style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: ColorsApp.primayColor),
+                    color: ColorsApp.text),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 10),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: const Divider(color: ColorsApp.text)),
+              const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.only(bottom: 20),
                 child: TextFormField(
