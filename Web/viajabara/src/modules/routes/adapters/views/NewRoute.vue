@@ -67,13 +67,13 @@
                     </tr>
                 </thead>
                 <tbody id="tablebody">
-                  <tr  v-for="({description, sequence}, index) in route.stopOvers" :key="index">
+                  <tr  v-for="({description,lat, lng, latLng, sequence}, index) in route.stopOvers" :key="index">
                     <td v-text="index + 1 "></td>
                     <td>{{description}}</td>
                     <td>
                       <a
                         class="me-2"
-                        @click="updateStopover()"
+                        @click="updateStopover({description,lat, lng,latLng, sequence})"
                         >
                         <i class="fa fa-pencil-square-o text-secondary"></i>
                         </a>
@@ -85,8 +85,6 @@
                         </a>
                     </td>
                   </tr>
-                  
-                    
                 </tbody>
               </table>
             </div>
@@ -302,6 +300,70 @@
     </MDBModalFooter>
   </MDBModal>
 
+
+  <MDBModal
+    id="newRouteEndPositionModal"
+    tabindex="-1"
+    labelledby="newRouteEndPositionModalLabel"
+    v-model="exampleModalStopoverUpdate"
+  >
+    <MDBModalHeader>
+      <MDBModalTitle id="exampleModalLabel">Actualizar Parada </MDBModalTitle>
+    </MDBModalHeader>
+    <MDBModalBody>
+            <div class="container-d">
+              <div class="row">
+                <div class="col-12 mb-3">
+                  <label>Dirección</label>
+                    <div class="input-group flex-nowrap">
+                      <input
+                      type="text"
+                      class="form-control" 
+                      placeholder="Ingresa la dirección" 
+                      id="address-input"  
+                      v-model="searchQueryStopoverUpdate"
+                      @input="updateSearchStopoverUpdate()"
+                      />
+                      <span class="input-group-text" id="password-input" style="cursor:pointer;">
+                        <i class="fas fa-search"></i>
+                      </span>
+                  </div>
+                  <ul>
+                    <li v-for="place in placesSearchedStopoverUpdate" :key="place.id" @click="selectPlaceStopoverUpdate(place)">{{ place.description }}</li>
+                  </ul>
+                
+                </div>
+                  <hr class="horizontal dark" />
+                <div class="col-12">
+                  <GMapMap
+                    :center="centerStopoverUpdate"
+                    ref="myMapRef"
+                    :zoom="zoom"
+                    @click="onMapClickStopoverUpdate"
+                    style="height: 20rem"
+                    :options="mapOptions"
+                  >
+                    <GMapMarker
+                      v-if="startPositionStopoverUpdate"
+                      :position="startPositionStopoverUpdate.position"
+                    />
+                  </GMapMap>
+                </div>
+              </div>
+            </div>
+
+    </MDBModalBody>
+    <MDBModalFooter >
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12 text-center">
+            <button  class="btn bg-gradient-secondary me-2" @click="closeModalNewRouteStopoverUpdate()">Cancelar</button>
+            <button  class="btn bg-gradient-dark" @click="selectAddressStopoverUpdate()">Seleccionar</button>
+          </div>
+        </div>
+      </div>
+    </MDBModalFooter>
+  </MDBModal>
 </template>
 
 <script>
@@ -341,22 +403,27 @@ export default {
       centerStart:{},
       centerEnd:{},
       centerStopover:{},
+      centerStopoverUpdate:{},
       zoom: 12,
       startPositionStart: null,
       startPositionEnd: null,
       startPositionStopover: null,
+      startPositionStopoverUpdate: null,
       exampleModal:false,
       exampleModalEnd: false,
       exampleModalStopover: false,
+      exampleModalStopoverUpdate: false,
       mapOptions: {
         disableDefaultUI: true, 
       },
       searchQueryStart:"",
       searchQueryEnd:"",
       searchQueryStopover:"",
+      searchQueryStopoverUpdate:"",
       placesSearchedStart: [],
       placesSearchedEnd: [],
       placesSearchedStopover: [],
+      placesSearchedStopoverUpdate: [],
       geocoder: {},
       isLoading: false,
       route:{
@@ -372,11 +439,15 @@ export default {
       defaultAddressStart: '',
       defaultAddressEnd: '',
       defaultAddressStopover: '',
+      defaultAddressStopoverUpdate: '',
       errors:{
         endPosition: '',
         startPosition: '',
       },
       stopover:{
+
+      },
+      stopoverUpdate:{
 
       },
       datatable:null,
@@ -499,7 +570,28 @@ export default {
 
       this.startPositionStopover= { position: { lat: latLng.lat(), lng: latLng.lng()} };
     },
-     openModalStart(){
+    async onMapClickStopoverUpdate(event) {
+      const latLng = event.latLng; 
+      mapFunctions.getGeocode(latLng).then((response) =>{
+        let isMexico = mapFunctions.isPlaceInMexico(response);
+        if(isMexico){
+          const {formatted_address} = response
+          this.searchQueryStopoverUpdate = formatted_address
+          this.stopoverUpdate.state = mapFunctions.getStateFromResult(response);
+          this.stopoverUpdate.lat = latLng.lat();
+          this.stopoverUpdate.lng = latLng.lng();
+          this.stopoverUpdate.latLng = latLng;
+        }else{
+          this.$swal({icon: "info", title: 'El lugar se encuentra fuera de México', type: "basic" });
+        }
+      }).catch((err)=>{
+        this.$swal({icon: "error", title: err,type: "basic"});
+      })
+      
+
+      this.startPositionStopoverUpdate= { position: { lat: latLng.lat(), lng: latLng.lng()} };
+    },
+    openModalStart(){
       this.isLoading = true;
       if(!(this.route.startPosition.address != '' && this.route.startPosition.address != null)){
             mapFunctions.getCurrentPosition().then( async (response) =>{
@@ -602,6 +694,22 @@ export default {
     })
 
     },
+    updateStopover(stopover){
+      this.openModalStopoverUpdate(stopover);
+    },
+    openModalStopoverUpdate(stopover){
+      this.isLoading = true;
+
+      const {lat, lng, description} = stopover
+      this.searchQueryStopoverUpdate = description
+      this.defaultAddressStopoverUpdate = description
+      this.startPositionStopoverUpdate = {position: {lat, lng}};
+      this.centerStopoverUpdate = {lat, lng}
+      this.stopoverUpdate = {...stopover};
+      this.isLoading = false
+      this.exampleModalStopoverUpdate = true;
+
+    },
     async updateSearchStart() {
        const {AutocompleteService} = await window.google.maps.importLibrary("places")
        const instance = new AutocompleteService();
@@ -633,6 +741,17 @@ export default {
             })
        }else{
         this.placesSearchedStopover = [];
+       }
+    },
+    async updateSearchStopoverUpdate() {
+       const {AutocompleteService} = await window.google.maps.importLibrary("places")
+       const instance = new AutocompleteService();
+       if(this.searchQueryStopoverUpdate && this.searchQueryStopoverUpdate !== '' && this.searchQueryStopoverUpdate != undefined){
+            instance.getQueryPredictions({ input: this.searchQueryStopoverUpdate }, (predictions) =>{
+              this.placesSearchedStopoverUpdate = predictions;
+            })
+       }else{
+        this.placesSearchedStopoverUpdate = [];
        }
     },
     async selectPlaceStart(place){
@@ -716,6 +835,33 @@ export default {
       });
       
     },
+    async selectPlaceStopoverUpdate(place){
+      const {place_id, description} = place
+      this.placesSearchedStopoverUpdate = [];
+      const geocoder = new window.google.maps.Geocoder();
+      geocoder.geocode({ placeId: place_id }, (results, status) => {
+        if (status === "OK") {
+          if (results[0]) {
+            let isMexico = mapFunctions.isPlaceInMexico(results[0])
+            if(isMexico){
+              this.searchQueryStopoverUpdate = description;
+              let address =  results[0].geometry.location;
+              this.centerStopoverUpdate = { lat: address.lat() , lng: address.lng()}
+              this.stopoverUpdate = {...this.centerStopoverUpdate};
+              this.startPositionStopoverUpdate = { position: { lat: address.lat(), lng: address.lng()} };
+            }else{
+                this.searchQueryStopoverUpdate= this.defaultAddressStopoverUpdate;
+                this.$swal({icon: "info", title: 'El lugar se encuentra fuera de México', type: "basic" });
+            }
+          } else {
+            this.$swal({icon: "error", title: 'No se encontraron resultados de geocodificación.', type: "basic" });
+          }
+        } else {
+          this.$swal({icon: "error", title: 'Error en la solicitud de geocodificación', type: "basic" });
+        }
+      });
+      
+    },
     closeModalNewRouteStart(){
       this.exampleModal = false;
       this.searchQueryStart = "";
@@ -733,6 +879,12 @@ export default {
       this.searchQueryStopover= "";
       this.startPositionStopover = {};
       this.centerStopover = {};
+    },
+    closeModalNewRouteStopoverUpdate(){
+      this.exampleModalStopoverUpdate = false;
+      this.searchQueryStopoverUpdate= "";
+      this.startPositionStopoverUpdate = {};
+      this.centerStopoverUpdate = {};
     },
     selectAddressStart(){
       this.route.startPosition.address = this.searchQueryStart;
@@ -754,7 +906,24 @@ export default {
       }
 
     },
-     deleteStopover(sequence){
+    selectAddressStopoverUpdate(){
+      const response = routeValidator.isSameStopOver(this.route.stopOvers, this.stopoverUpdate.lat, this.stopoverUpdate.lng);
+
+      if(response){
+        this.$swal({icon: "info", title:response, type: "basic" });
+      }else{
+           this.route.stopOvers = [... this.route.stopOvers.map((stopover) =>{
+              if(stopover.sequence === this.stopoverUpdate.sequence){
+                stopover = {...this.stopoverUpdate, description: this.searchQueryStopoverUpdate};
+              }
+              return stopover;
+           })]
+          this.initializaDatatable()
+          this.closeModalNewRouteStopoverUpdate();
+      }
+
+    },
+    deleteStopover(sequence){
       this.route.stopOvers = [...this.route.stopOvers.filter(stopover => stopover.sequence !== sequence)]
       if(this.route.stopOvers.length > 0){
         this.route.stopOvers = [...this.route.stopOvers.map((stopover, index)=>{

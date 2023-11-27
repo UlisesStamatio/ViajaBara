@@ -155,6 +155,7 @@ export default {
       const response = {...await getProfile(identKey)};
       const {error, data} = response;
         if(!error){
+          console.log(data);
            const {result:{profile, name, surname, lastname}} = data
            const {result} = data
            document.getElementById("image-profile").src = `data:image/png;base64,${profile}`;

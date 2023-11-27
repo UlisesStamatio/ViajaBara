@@ -59,6 +59,7 @@
     "vue-star-rating": "2.1.0",
     "vue-sweetalert2": "5.0.2",
     "vue-tilt.js": "1.1.1",
+    "vuedraggable": "^4.1.0",
     "vuex": "4.0.2"
   },
   "devDependencies": {
