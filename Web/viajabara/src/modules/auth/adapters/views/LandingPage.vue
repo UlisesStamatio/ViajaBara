@@ -36,9 +36,7 @@
               y de volada
             </div>
             <div class="col-12 text-white mt-4">
-              Para ViajaBara tu salud es lo más importante, por ello tomamos las
-              medidas sanitarias necesarias para brindarte la mayor seguridad en
-              tus viajes. Utiliza tu cubrebocas durante el viaje. ¡cuidémonos¡
+                <button class="btn btn-info justify-content-center"><i class="fab fa-whatsapp text-white me-2" style="font-size: 1.5em;"></i> RESERVACIONES</button>
             </div>
           </div>
         </div>
@@ -48,6 +46,11 @@
             class="img-fluid"
             srcset=""
           />
+        </div>
+        <div class="col-8 offset-2 mt-4">
+          <p class="text-white text-center">Para ViajaBara tu salud es lo más importante, por ello tomamos las
+              medidas sanitarias necesarias para brindarte la mayor seguridad en
+              tus viajes. Utiliza tu cubrebocas durante el viaje. ¡cuidémonos¡</p>
         </div>
       </div>
     </section>
@@ -161,6 +164,94 @@
             </div>
           </div>
 
+        </div>
+      </div>
+    </section>
+    <hr class="mt-5 mb-2 horizontal dark" />
+    <section class="container" id="services">
+      <div class="row">
+        <div class="col-12 text-center"><h2>Servicios adicionales</h2></div>
+        <div class="col-12 mt-5 col-md-3">
+          <div class="card">
+            <div
+              class="py-3 text-center card-header d-flex justify-content-center"
+            >
+              <div
+                class="icon icon-shape icon-lg shadow text-center border-radius-lg bg-gradient-primary"
+              >
+                <i
+                  class="opacity-10 text-white fas fa-bus"
+                  aria-hidden="true"
+                  style="font-size: 32px"
+                ></i>
+              </div>
+            </div>
+            <div class="p-3 pt-0 text-center card-body">
+              <h6 class="mb-0 text-center">Transporte Escolar</h6>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 mt-5 col-md-3">
+          <div class="card">
+            <div
+              class="py-3 text-center card-header d-flex justify-content-center"
+            >
+              <div
+                class="icon icon-shape icon-lg shadow text-center border-radius-lg bg-gradient-primary"
+              >
+                <i
+                  class="opacity-10 text-white fas fa-bus"
+                  aria-hidden="true"
+                  style="font-size: 32px"
+                ></i>
+              </div>
+            </div>
+            <div class="p-3 pt-0 text-center card-body">
+              <h6 class="mb-0 text-center">Transporte Turistico</h6>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 mt-5 col-md-3">
+          <div class="card">
+            <div
+              class="py-3 text-center card-header d-flex justify-content-center"
+            >
+              <div
+                class="icon icon-shape icon-lg shadow text-center border-radius-lg bg-gradient-primary"
+              >
+                <i
+                  class="opacity-10 text-white fas fa-car"
+                  aria-hidden="true"
+                  style="font-size: 32px"
+                ></i>
+              </div>
+            </div>
+            <div class="p-3 pt-0 text-center card-body">
+              <h6 class="mb-0 text-center">
+                Transporte para eventos y empresas
+              </h6>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-3 mt-5">
+          <div class="card">
+            <div
+              class="py-3 text-center card-header d-flex justify-content-center"
+            >
+              <div
+                class="icon icon-shape icon-lg shadow text-center border-radius-lg bg-gradient-primary"
+              >
+                <i
+                  class="opacity-10 text-white fas fa-box"
+                  aria-hidden="true"
+                  style="font-size: 32px"
+                ></i>
+              </div>
+            </div>
+            <div class="p-3 pt-0 text-center card-body">
+              <h6 class="mb-0 text-center">Paquetería</h6>
+            </div>
+          </div>
         </div>
       </div>
     </section>

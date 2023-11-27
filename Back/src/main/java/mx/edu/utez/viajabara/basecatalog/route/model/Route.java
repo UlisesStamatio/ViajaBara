@@ -50,11 +50,12 @@ public class Route {
     public Route() {
     }
 
-    public Route(Address startAddress, Address endAddress, double meters, double time) {
+    public Route(Address startAddress, Address endAddress, double meters, double time, boolean status) {
         this.startAddress = startAddress;
         this.endAddress = endAddress;
         this.meters = meters;
         this.time = time;
+        this.status = status;
     }
 
     public Long getId() {

@@ -75,13 +75,14 @@ public class RouteService {
             return new ResponseEntity<>(new Message("No se registró la ruta, el estado es inexistente", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
         }
 
-        AddressDto endAddressDto = new AddressDto( dto.getEndStart().getLatitude(),  dto.getEndStart().getLongitude(),  dto.getEndStart().getDescription(), dto.getEndStart().getState());
-        Address endAddress = addressService.save(startAddressDto);
+        AddressDto endAddressDto = new AddressDto( dto.getEndAddress().getLatitude(),  dto.getEndAddress().getLongitude(),  dto.getEndAddress().getDescription(), dto.getEndAddress().getState());
+        Address endAddress = addressService.save(endAddressDto);
+
         if(endAddress == null){
             return new ResponseEntity<>(new Message("No se registró la ruta, el estado es inexistente", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
         }
 
-        Route route = new Route( startAddress, endAddress, dto.getMeters(), dto.getTime());
+        Route route = new Route( startAddress, endAddress, dto.getMeters(), dto.getTime(), true );
 
         route = repository.saveAndFlush(route);
         if (route == null) {
@@ -97,6 +98,9 @@ public class RouteService {
                 }else{
                     StopOver stopOver = new StopOver();
                     stopOver.setRoute(route);
+                    stopOver.setSequence(stop.getSequence());
+                    stopOver.setMeters(stop.getMeters());
+                    stopOver.setTime(stop.getTime());
                     stopOver.setAddress(stopAddress);
                     stopOverList.add(stopOver);
                 }
@@ -149,7 +153,7 @@ public class RouteService {
             return new ResponseEntity<>(new Message("No se registró la ruta, el estado es inexistente", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
         }
 
-        AddressDto endAddressDto = new AddressDto( dto.getEndStart().getLatitude(),  dto.getEndStart().getLongitude(),  dto.getEndStart().getDescription(), dto.getEndStart().getState());
+        AddressDto endAddressDto = new AddressDto( dto.getStartAddress().getLatitude(),  dto.getStartAddress().getLongitude(),  dto.getStartAddress().getDescription(), dto.getStartAddress().getState());
         Address endAddress = addressService.save(startAddressDto);
         if(endAddress == null){
             return new ResponseEntity<>(new Message("No se registró la ruta, el estado es inexistente", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
