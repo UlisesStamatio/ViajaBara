@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
@@ -41,39 +42,151 @@ class _HistoryState extends State<History> {
               StuffApp.bgGeneral,
               fit: BoxFit.cover,
             ),
-            SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Card(
+            ListView.builder(
+                itemCount:
+                    6, // Reemplaza con el número de tarjetas que quieres mostrar.
+                itemBuilder: (context, index) {
+                  // Aquí construyes cada elemento de la lista.
+                  // Puedes ajustar los datos con los de tu listaDeViajes.
+                  return Card(
                     elevation: 5,
                     margin: const EdgeInsets.all(10),
                     child: Column(
                       children: <Widget>[
-                        // Segunda fila con lista de textos (2 por fila)
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 20),
-                          child: const Column(
-                            crossAxisAlignment: CrossAxisAlignment
-                                .start, // Alinear a la izquierda
-                            mainAxisAlignment: MainAxisAlignment
-                                .spaceEvenly, // Espaciado uniforme
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: <Widget>[
-                              Text('Salida : Lugar YYYY/mm/dd HH:MM',
-                                  style: TextStyle(
-                                      fontSize: 15.0, color: ColorsApp.text)),
-                              Text(
-                                'Llegada : Lugar YYYY/mm/dd HH:MM',
-                                style: TextStyle(
-                                    fontSize: 15.0, color: ColorsApp.text),
+                              Container(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Icon(Icons.location_on, size: 20.0),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text('Origen',
+                                        style: TextStyle(
+                                            fontSize: 15.0,
+                                            color: ColorsApp.text,
+                                            fontWeight: FontWeight.bold)),
+                                  ],
+                                ),
                               ),
-                            ],
+                              const Padding(
+                                padding: EdgeInsets.only(top: 10),
+                                child: Text("ViajaBara",
+                                    style: TextStyle(
+                                        fontSize: 15.0,
+                                        color: ColorsApp.text,
+                                        fontWeight: FontWeight.bold)),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.only(top: 10),
+                                child: const Row(
+                                  children: [
+                                    Icon(CupertinoIcons.compass_fill,
+                                        size: 20.0),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text('Destino',
+                                        style: TextStyle(
+                                            fontSize: 15.0,
+                                            color: ColorsApp.text,
+                                            fontWeight: FontWeight.bold)),
+                                  ],
+                                ),
+                              ),
+                            ]),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: const Divider(
+                            color: ColorsApp.text,
                           ),
                         ),
                         Container(
-                          padding: const EdgeInsets.only(bottom: 10),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 1, horizontal: 15),
+                            height: 70.0,
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Expanded(
+                                      child: Text(
+                                        'Morelos',
+                                        style: TextStyle(
+                                          fontSize: 15.0,
+                                          color: ColorsApp.text,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                        softWrap: true,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 15),
+                                        child: SvgPicture.asset(
+                                            StuffApp.logoViajabara,
+                                            height: 15,
+                                            width: 15),
+                                      ),
+                                    ),
+                                    const Expanded(
+                                      child: Padding(
+                                        padding: EdgeInsets.only(left: 20),
+                                        child: Text(
+                                          'Guadalajara',
+                                          style: TextStyle(
+                                            fontSize: 15.0,
+                                            color: ColorsApp.text,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                          softWrap: true,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10.0),
+                                const Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Text(
+                                      '8:30 a.m',
+                                      style: TextStyle(
+                                        fontSize: 15.0,
+                                        color: ColorsApp.text,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Text(
+                                        '08/08/2022',
+                                        style: TextStyle(
+                                          fontSize: 15.0,
+                                          color: ColorsApp.text,
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                      '12:30 p.m',
+                                      style: TextStyle(
+                                        fontSize: 15.0,
+                                        color: ColorsApp.text,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            )),
+                        Container(
+                          padding: const EdgeInsets.only(bottom: 5),
                           child: Align(
                             alignment: Alignment.center,
                             child: FractionallySizedBox(
@@ -110,126 +223,8 @@ class _HistoryState extends State<History> {
                         )
                       ],
                     ),
-                  ),
-                  Card(
-                    elevation: 5,
-                    margin: const EdgeInsets.all(10),
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 20),
-                          child: const Column(
-                            crossAxisAlignment: CrossAxisAlignment
-                                .start, // Alinear a la izquierda
-                            mainAxisAlignment: MainAxisAlignment
-                                .spaceEvenly, // Espaciado uniforme
-                            children: <Widget>[
-                              Text('Salida : Lugar YYYY/mm/dd HH:MM',
-                                  style: TextStyle(
-                                      fontSize: 15.0, color: ColorsApp.text)),
-                              Text(
-                                'Llegada : Lugar YYYY/mm/dd HH:MM',
-                                style: TextStyle(
-                                    fontSize: 15.0, color: ColorsApp.text),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: FractionallySizedBox(
-                              widthFactor: 0.75,
-                              child: ElevatedButton(
-                                onPressed: () {},
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      ColorsApp.primayColor),
-                                ),
-                                child: const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.remove_red_eye_outlined,
-                                      size: 20,
-                                    ),
-                                    SizedBox(width: 10),
-                                    Text(
-                                      'Detalles',
-                                      style: TextStyle(fontSize: 14),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Card(
-                    elevation: 5,
-                    margin: const EdgeInsets.all(10),
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 20),
-                          child: const Column(
-                            crossAxisAlignment: CrossAxisAlignment
-                                .start, // Alinear a la izquierda
-                            mainAxisAlignment: MainAxisAlignment
-                                .spaceEvenly, // Espaciado uniforme
-                            children: <Widget>[
-                              Text('Salida : Lugar YYYY/mm/dd HH:MM',
-                                  style: TextStyle(
-                                      fontSize: 15.0, color: ColorsApp.text)),
-                              Text(
-                                'Llegada : Lugar YYYY/mm/dd HH:MM',
-                                style: TextStyle(
-                                    fontSize: 15.0, color: ColorsApp.text),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: FractionallySizedBox(
-                              widthFactor: 0.75,
-                              child: ElevatedButton(
-                                onPressed: () {},
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      ColorsApp.primayColor),
-                                ),
-                                child: const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.remove_red_eye_outlined,
-                                      size: 20,
-                                    ),
-                                    SizedBox(width: 10),
-                                    Text(
-                                      'Detalles',
-                                      style: TextStyle(fontSize: 14),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+                  );
+                })
           ],
         ),
       ),
