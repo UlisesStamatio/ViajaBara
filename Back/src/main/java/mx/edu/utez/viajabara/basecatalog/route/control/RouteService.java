@@ -82,7 +82,7 @@ public class RouteService {
             return new ResponseEntity<>(new Message("No se registró la ruta, el estado es inexistente", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
         }
 
-        Route route = new Route( startAddress, endAddress, dto.getMeters(), dto.getTime(), true);
+        Route route = new Route( startAddress, endAddress, dto.getMeters(), dto.getTime(), true );
 
         route = repository.saveAndFlush(route);
         if (route == null) {

@@ -150,12 +150,10 @@ export default {
       router.push({name: "Signin Illustration"})
     },
     async getProfile(){
-      console.log("Entro en el getProfile");
       let {identKey}  = storeSession.getDataSession()
       const response = {...await getProfile(identKey)};
       const {error, data} = response;
         if(!error){
-          console.log(data);
            const {result:{profile, name, surname, lastname}} = data
            const {result} = data
            document.getElementById("image-profile").src = `data:image/png;base64,${profile}`;
