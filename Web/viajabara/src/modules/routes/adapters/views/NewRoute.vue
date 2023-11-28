@@ -463,11 +463,10 @@ export default {
       }
       this.$nextTick(()=>{
         this.datatable =  new DataTable('#tableStopOvers', {
-          dom: 'Bfrtip',
           searching: true,
           ordering: true,
           pageLength:5,
-          lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "Mostrar todos"]],
+          lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Mostrar todos"]],
           language:{
             infoEmpty: "",
             url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json',
