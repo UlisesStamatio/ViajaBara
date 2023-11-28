@@ -1,10 +1,8 @@
 package mx.edu.utez.viajabara.basecatalog.route.control;
 
-import javafx.scene.paint.Stop;
 import mx.edu.utez.viajabara.basecatalog.address.control.AddressService;
 import mx.edu.utez.viajabara.basecatalog.address.model.Address;
 import mx.edu.utez.viajabara.basecatalog.address.model.AddressDto;
-import mx.edu.utez.viajabara.basecatalog.duty.model.Duty;
 import mx.edu.utez.viajabara.basecatalog.duty.model.DutyRepository;
 import mx.edu.utez.viajabara.basecatalog.route.model.Route;
 import mx.edu.utez.viajabara.basecatalog.route.model.RouteDto;
@@ -25,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 

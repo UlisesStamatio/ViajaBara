@@ -48,13 +48,10 @@ public class Bus {
     public Bus() {
     }
 
-    public Bus(String image, String plaque, String mark, String model, String serial, String fuel, boolean status) {
-        this.image = image;
+    public Bus(String plaque, String mark, String model, boolean status) {
         this.plaque = plaque;
         this.mark = mark;
         this.model = model;
-        this.serial = serial;
-        this.fuel = fuel;
         this.status = status;
     }
 
