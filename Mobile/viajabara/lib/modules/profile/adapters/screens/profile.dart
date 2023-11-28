@@ -26,6 +26,7 @@ class _ProfileState extends State<Profile> {
   String cellphone = '';
   String birthDate = '';
   String sex = '';
+  String state = '';
   bool isAdmin = false;
 
   void initState() {
@@ -35,22 +36,24 @@ class _ProfileState extends State<Profile> {
 
   Future<void> _loadUserRole() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? data = prefs.getString('data');
-    Map<String, dynamic> jsonData = json.decode(data!);
+    Map<String, dynamic> jsonData = json.decode(prefs.getString('data')!);
+    Map<String, dynamic> jsonInfo = json.decode(prefs.getString('info')!);
     ResponseMessage responseMessage = ResponseMessage.fromJson(jsonData);
+    ResponseMessage responseData = ResponseMessage.fromJson(jsonInfo);
+    print(responseData.name);
     String? role = responseMessage.roles?.keyRole;
-    print(prefs.getString('data'));
 
     if (role == null) {
-      Navigator.pushNamed(context, '/login');
+      Navigator.pushReplacementNamed(context, '/login');
     }
 
     setState(() {
-      name = responseMessage.name ?? 'Agrega tu nombre';
-      email = responseMessage.email ?? 'Agrega tu correo';
-      cellphone = responseMessage.cellphone ?? 'Agrega tu celular';
-      birthDate = responseMessage.birthDate ?? 'Agrega tu fecha de nacimiento';
-      sex = responseMessage.sex ?? 'Agrega tu sexo';
+      name = responseData.name ?? 'Agrega tu nombre';
+      email = responseData.email ?? 'Agrega tu correo';
+      cellphone = responseData.cellphone ?? 'Agrega tu celular';
+      birthDate = responseData.birthDate ?? 'Agrega tu fecha de nacimiento';
+      sex = responseData.sex ?? 'Agrega tu sexo';
+      state = responseData.state ?? 'Agrega tu estado';
     });
 
     if (role == "ADMIN") {
@@ -345,7 +348,7 @@ class _ProfileState extends State<Profile> {
                                   width: 10,
                                 ),
                                 Text(
-                                  birthDate,
+                                  state,
                                   style: const TextStyle(color: ColorsApp.text),
                                 ),
                               ],
