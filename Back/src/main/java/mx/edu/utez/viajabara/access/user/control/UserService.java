@@ -166,6 +166,7 @@ public class UserService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public ResponseEntity<Object> save(UserDto dto) throws SQLException {
+        /*
         if (dto.getPerson().getName() == null || dto.getPerson().getSurname() == null
                 || dto.getPerson().getSex() == null || dto.getPerson().getBirthDate() == null
                 || dto.getPerson().getState() == null || dto.getEmail() == null
@@ -173,6 +174,7 @@ public class UserService {
         ) {
             throw new SQLException("Campos vacíos", String.valueOf(TypesResponse.ERROR));
         }
+         */
         if (!emailValidator.isValid(dto.getEmail())) {
             return new ResponseEntity<>(new Message("Email malformado", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
         }
@@ -208,6 +210,7 @@ public class UserService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public ResponseEntity<Object> saveClient(UserDto dto) throws SQLException {
+        /*
         if (dto.getPerson().getName() == null || dto.getPerson().getSurname() == null
                 || dto.getPerson().getSex() == null || dto.getPerson().getBirthDate() == null
                 || dto.getPerson().getState() == null || dto.getEmail() == null
@@ -215,6 +218,8 @@ public class UserService {
         ) {
             throw new SQLException("Campos vacíos", String.valueOf(TypesResponse.ERROR));
         }
+
+         */
         if (!emailValidator.isValid(dto.getEmail())) {
             return new ResponseEntity<>(new Message("Email malformado", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
         }
@@ -230,6 +235,9 @@ public class UserService {
             return new ResponseEntity<>(new Message("No ingresó contraseña", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
         }
         PersonDto personDto = new PersonDto(dto.getPerson());
+
+
+
         ResponseEntity responseEntity = personService.save(personDto);
         Message message = (Message) responseEntity.getBody();
         assert message != null;

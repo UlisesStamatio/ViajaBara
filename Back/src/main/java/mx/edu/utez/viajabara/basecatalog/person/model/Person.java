@@ -14,13 +14,13 @@ public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "name", columnDefinition = "VARCHAR(50) NOT NULL")
+    @Column(name = "name", columnDefinition = "VARCHAR(50)")
     private String name;
-    @Column(name = "surname", columnDefinition = "VARCHAR(50) NOT NULL")
+    @Column(name = "surname", columnDefinition = "VARCHAR(50)")
     private String surname;
     @Column(name = "cellphone", columnDefinition = "VARCHAR(13)")
     private String cellphone;
-    @Column(name = "sex", columnDefinition = "CHAR(1) NOT NULL")
+    @Column(name = "sex", columnDefinition = "CHAR(1)")
     private String sex;
     @Column(name = "birth_date", columnDefinition = "TIMESTAMP NULL")
     @Temporal(TemporalType.TIMESTAMP)
@@ -132,11 +132,21 @@ public class Person {
     }
 
     public void asignValues(PersonDto dto) {
-        this.name = dto.getName();
-        this.surname = dto.getSurname();
-        this.cellphone = dto.getCellphone();
-        this.sex = dto.getSex();
-        this.birthDate = dto.getBirthDate();
+        if(dto.getName()!=null){
+            this.name = dto.getName();
+        }
+        if(dto.getSurname()!=null){
+            this.surname = dto.getSurname();
+        }
+        if(dto.getCellphone()!=null){
+            this.cellphone = dto.getCellphone();
+        }
+        if(dto.getSex()!=null){
+            this.sex = dto.getSex();
+        }
+        if(dto.getBirthDate()!=null){
+            this.birthDate = dto.getBirthDate();
+        }
     }
 
     public void asignValuesRegister(PersonDto dto) {
