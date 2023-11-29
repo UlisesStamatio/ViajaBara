@@ -1,4 +1,5 @@
 <template>
+<Loader :isLoading="isLoading"/>
   <div class="py-4 container-fluid">
     <div class="row">
       <div class="col-12">
@@ -20,380 +21,63 @@
               </div>
             </div>
           </div>
-          <div class="px-0 pb-0 card-body">
+          <div class="px-0 pb-0 card-body mx-3 my-4">
             <div class="table-responsive">
               <table id="products-list" class="table table-flush">
                 <thead class="thead-light">
                   <tr>
-                    <th>#</th>
-                    <th>Punto de inicio</th>
-                    <th>Destino</th>
-                    <th>Servicio</th>
-                    <th>Costo</th>
-                    <th>Estatus</th>
-                    <th>Acciones</th>
+                    <th style="font-size: 0.65em; font-weight: bold; text-align: start">#</th>
+                    <th style="font-size: 0.65em; font-weight: bold">PUNTO DE INICIO</th>
+                    <th style="font-size: 0.65em; font-weight: bold">DESTINO</th>
+                    <th style="font-size: 0.65em; font-weight: bold">NÚMERO DE PARADAS</th>
+                    <th style="font-size: 0.65em; font-weight: bold">ESTATUS</th>
+                    <th style="font-size: 0.65em; font-weight: bold">ACCIONES</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>
-                      1
-                    </td>
-                    <td class="text-sm">Cuernavaca</td>
-                    <td class="text-sm">Jiutepec</td>
-                    <td class="text-sm">Solo ida</td>
-                    <td class="text-sm">$100.0</td>
-                    <td>
-                      <span class="badge badge-success badge-sm"
-                        >Activo</span
-                      >
-                    </td>
-                    <td class="text-sm">
-
-                      <router-link
-                        :to="{ name: 'Modificar Ruta' }"
-
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Editar producto"
-                      >
-                        <i class="fa fa-pencil-square-o text-secondary"></i>
-                      </router-link>
-                      
-                        <a
-                        href="javascript:;"
-                        class="mx-3"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Preview product"
-                      >
-                        <i class="fas fa-eye text-secondary"></i>
-                      </a>
-                      <a
-                        href="javascript:;"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Delete product"
-                      >
-                        <i class="fa fa-times-circle text-secondary"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      2
-                    </td>
-                    <td class="text-sm">Temixco</td>
-                    <td class="text-sm">Toluca</td>
-                    <td class="text-sm">Solo ida</td>
-                    <td class="text-sm">$800.0</td>
-                    <td>
-                      <span class="badge badge-success badge-sm"
-                        >Activo</span
-                      >
-                    </td>
-                     <td class="text-sm">
-
-                      <a
-                        href="javascript:;"
-
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Edit product"
-                      >
-                        <i class="fa fa-pencil-square-o text-secondary"></i>
-                      </a>
-                        <a
-                        href="javascript:;"
-                        class="mx-3"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Preview product"
-                      >
-                        <i class="fas fa-eye text-secondary"></i>
-                      </a>
-                      <a
-                        href="javascript:;"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Delete product"
-                      >
-                        <i class="fa fa-times-circle text-secondary"></i>
-                      </a>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td>
-                      3
-                    </td>
-                    <td class="text-sm">Alpuyeca</td>
-                    <td class="text-sm">Tres Marías</td>
-                    <td class="text-sm">Ida y vuelta</td>
-                    <td class="text-sm">$120.0</td>
-                    <td>
-                      <span class="badge badge-success badge-sm">Activo</span>
-                    </td>
+                  <tr  v-for="(route, index) in routes" :key="index">
+                      <td class="text-center">{{index + 1}}</td>
+                      <td>{{route.startAddress.description}}</td> 
+                      <td>{{route.endAddress.description}}</td> 
+                      <td class="text-center">{{route.stopOvers.length}}</td> 
+                      <td class="text-center">
+                        <span class="badge badge-sm" :class="{'badge-success': route.status, 'badge-danger': !route.status}"
+                          >{{route.status ? 'Activo' : 'Inactivo'}}</span
+                        >
+                      </td>
                       <td class="text-sm">
-
-                      <a
-                        href="javascript:;"
-
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Edit product"
-                      >
-                        <i class="fa fa-pencil-square-o text-secondary"></i>
-                      </a>
-                        <a
-                        href="javascript:;"
-                        class="mx-3"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Preview product"
-                      >
-                        <i class="fas fa-eye text-secondary"></i>
-                      </a>
-                      <a
-                        href="javascript:;"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Delete product"
-                      >
-                        <i class="fa fa-times-circle text-secondary"></i>
-                      </a>
-                    </td>
+                           <a
+                            @click="editRoute(route.id)"
+                          >
+                            <i class="fa fa-pencil-square-o text-secondary"></i>
+                          </a>
+                          <a
+                            class="mx-2"
+                            @click="detailRoute()"
+                          >
+                            <i class="fas fa-eye text-secondary"></i>
+                          </a>
+                          <a
+                          v-cloak
+                          data-bs-toggle="tooltip"
+                          data-bs-original-title="Desactivar ruta"
+                          v-show="route.status"
+                          @click="disableRoute()"
+                        >
+                          <i class="fa fa-times-circle text-secondary" ></i>
+                        </a>
+                          <a
+                          v-cloak
+                          data-bs-toggle="tooltip"
+                          data-bs-original-title="Activar ruta"
+                          v-show="!route.status"
+                          @click="enableRoute()"
+                          >
+                          <i class="fa fa-check-circle text-secondary" ></i>
+                        </a>
+                      </td>
                   </tr>
-                  <tr>
-                    <td>
-                     4
-                    </td>
-                    <td class="text-sm">Ciudad de México</td>
-                    <td class="text-sm"> Cuernavaca</td>
-                    <td class="text-sm">Solo ida</td>
-                    <td class="text-sm">$850.0</td>
-                    <td>
-                      <span class="badge badge-success badge-sm"
-                        >Activo</span
-                      >
-                    </td>
-                    <td class="text-sm">
-
-                      <a
-                        href="javascript:;"
-
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Edit product"
-                      >
-                        <i class="fa fa-pencil-square-o text-secondary"></i>
-                      </a>
-                        <a
-                        href="javascript:;"
-                        class="mx-3"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Preview product"
-                      >
-                        <i class="fas fa-eye text-secondary"></i>
-                      </a>
-                      <a
-                        href="javascript:;"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Delete product"
-                      >
-                        <i class="fa fa-times-circle text-secondary"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                     5
-                    </td>
-                    <td class="text-sm">Monterrey</td>
-                    <td class="text-sm">Querétaro</td>
-                    <td class="text-sm">Solo ida</td>
-                    <td class="text-sm">$1100.0</td>
-                    <td>
-                      <span class="badge badge-success badge-sm">Activo</span>
-                    </td>
-                    <td class="text-sm">
-
-                      <a
-                        href="javascript:;"
-
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Edit product"
-                      >
-                        <i class="fa fa-pencil-square-o text-secondary"></i>
-                      </a>
-                        <a
-                        href="javascript:;"
-                        class="mx-3"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Preview product"
-                      >
-                        <i class="fas fa-eye text-secondary"></i>
-                      </a>
-                      <a
-                        href="javascript:;"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Delete product"
-                      >
-                        <i class="fa fa-times-circle text-secondary"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                     6
-                    </td>
-                    <td class="text-sm">Emiliano Zapata</td>
-                    <td class="text-sm">Tequesquitengo</td>
-                    <td class="text-sm">Ida y vuelta</td>
-                    <td class="text-sm">$500.0</td>
-                    <td>
-                      <span class="badge badge-danger badge-sm">Inactivo</span>
-                    </td>
-                   <td class="text-sm">
-
-                      <a
-                        href="javascript:;"
-
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Edit product"
-                      >
-                        <i class="fa fa-pencil-square-o text-secondary"></i>
-                      </a>
-                        <a
-                        href="javascript:;"
-                        class="mx-3"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Preview product"
-                      >
-                        <i class="fas fa-eye text-secondary"></i>
-                      </a>
-                      <a
-                        href="javascript:;"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Delete product"
-                      >
-                        <i class="fa fa-check-circle text-secondary"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                     7
-                    </td>
-                    <td class="text-sm">Jiutepec</td>
-                    <td class="text-sm">Tetecala</td>
-                    <td class="text-sm">Ida y vuelta</td>
-                    <td class="text-sm">$300.0</td>
-                    <td>
-                      <span class="badge badge-danger badge-sm">Inactivo</span>
-                    </td>
-                    <td class="text-sm">
-
-                      <a
-                        href="javascript:;"
-
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Edit product"
-                      >
-                        <i class="fa fa-pencil-square-o text-secondary"></i>
-                      </a>
-                        <a
-                        href="javascript:;"
-                        class="mx-3"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Preview product"
-                      >
-                        <i class="fas fa-eye text-secondary"></i>
-                      </a>
-                      <a
-                        href="javascript:;"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Delete product"
-                      >
-                        <i class="fa fa-check-circle text-secondary"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                     8
-                    </td>
-                    <td class="text-sm">Clothing</td>
-                    <td class="text-sm">$1,199</td>
-                    <td class="text-sm">00121399</td>
-                    <td class="text-sm">51293</td>
-                    <td>
-                      <span class="badge badge-success badge-sm">in Stock</span>
-                    </td>
-                    <td class="text-sm">
-                      <a
-                        href="javascript:;"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Preview product"
-                      >
-                        <i class="fas fa-eye text-secondary"></i>
-                      </a>
-                      <a
-                        href="javascript:;"
-                        class="mx-3"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Edit product"
-                      >
-                        <i class="fas fa-user-edit text-secondary"></i>
-                      </a>
-                      <a
-                        href="javascript:;"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Delete product"
-                      >
-                        <i class="fas fa-trash text-secondary"></i>
-                      </a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      9
-                    </td>
-                    <td class="text-sm">Furniture</td>
-                    <td class="text-sm">$1,900</td>
-                    <td class="text-sm">434729</td>
-                    <td class="text-sm">1100191321</td>
-                    <td>
-                      <span class="badge badge-success badge-sm">In Stock</span>
-                    </td>
-                    <td class="text-sm">
-                      <a
-                        href="javascript:;"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Preview product"
-                      >
-                        <i class="fas fa-eye text-secondary"></i>
-                      </a>
-                      <a
-                        href="javascript:;"
-                        class="mx-3"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Edit product"
-                      >
-                        <i class="fas fa-user-edit text-secondary"></i>
-                      </a>
-                      <a
-                        href="javascript:;"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Delete product"
-                      >
-                        <i class="fas fa-trash text-secondary"></i>
-                      </a>
-                    </td>
-                  </tr>
-
                 </tbody>
-                 <tfoot>
-                  <tr>
-                    <th>Product</th>
-                    <th>Category</th>
-                    <th>Price</th>
-                    <th>SKU</th>
-                    <th>Quantity</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                  </tr>
-                </tfoot>
               </table>
             </div>
           </div>
@@ -404,45 +88,112 @@
 </template>
 
 <script>
-import { DataTable } from "simple-datatables";
+//import { DataTable } from "simple-datatables";
 import setTooltip from "@/assets/js/tooltip.js";
-
+import listRoutes from '../../use-cases/list.route';
+import DataTable from 'datatables.net-dt';
+import $ from 'jquery';
+import Loader from '../../../../components/Loader.vue'
+import router from '../../../../router/index'
 export default {
   name: "ListRoute",
-  mounted() {
-    if (document.getElementById("products-list")) {
-      const dataTableSearch = new DataTable("#products-list", {
-        searchable: true,
-        fixedHeight: false,
-        perPage: 7,
-        labels: {
-            placeholder: "Buscar...", // The search input placeholder
-            perPage: "{select} Registros por página", // per-page dropdown label
-            noRows: "Ningún dato encontrado", // Message shown when there are no search results
-            info: "Mostrando {start} de {end} de {rows} registros",  //
-            noResults: "No hay resultados que coincidan con su búsqueda"
-        },
-        
-      });
-
-      document.querySelectorAll(".export").forEach(function (el) {
-        el.addEventListener("click", function () {
-          var type = el.dataset.type;
-
-          var data = {
-            type: type,
-            filename: "soft-ui-" + type,
-          };
-
-          if (type === "csv") {
-            data.columnDelimiter = "|";
-          }
-
-          dataTableSearch.export(data);
-        });
-      });
+  components:{
+    Loader,
+  },
+  data(){
+    return{
+      routes:[],
+      datatable: null,
+      isLoading: false
     }
+  },
+  mounted() {
+    this.initializaDatatable()
+    // if (document.getElementById("products-list")) {
+    //   const dataTableSearch = new DataTable("#products-list", {
+    //     searchable: true,
+    //     fixedHeight: false,
+    //     perPage: 7,
+    //     labels: {
+    //         placeholder: "Buscar...", // The search input placeholder
+    //         perPage: "{select} Registros por página", // per-page dropdown label
+    //         noRows: "Ningún dato encontrado", // Message shown when there are no search results
+    //         info: "Mostrando {start} de {end} de {rows} registros",  //
+    //         noResults: "No hay resultados que coincidan con su búsqueda"
+    //     },
+        
+    //   });
+
+    //   document.querySelectorAll(".export").forEach(function (el) {
+    //     el.addEventListener("click", function () {
+    //       var type = el.dataset.type;
+
+    //       var data = {
+    //         type: type,
+    //         filename: "soft-ui-" + type,
+    //       };
+
+    //       if (type === "csv") {
+    //         data.columnDelimiter = "|";
+    //       }
+
+    //       dataTableSearch.export(data);
+    //     });
+    //   });
+    // }
     setTooltip(this.$store.state.bootstrap);
   },
+  methods:{
+    async initializaDatatable(){
+      try{
+        this.isLoading = true;
+         const {data:{result} } = await listRoutes();
+         this.routes = result.map((route) => {
+            route.startAddress.description = `${route.startAddress.description.substring(0, 30)}...`;
+            route.endAddress.description = `${route.endAddress.description.substring(0, 30)}...`;
+            return route;
+         });
+         
+         if(this.datatable){
+          this.datatable.destroy()
+         }
+        this.$nextTick(()=>{
+         this.datatable =  new DataTable('#products-list', {
+          searching: true,
+          ordering: true,
+          pageLength:5,
+          lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Mostrar todos"]],
+          language:{
+            infoEmpty: "",
+            url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json',
+            paginate: {
+                    next: ">"
+                },
+            search: "",
+            searchPlaceholder: "Buscar...",
+            
+          },
+          pagingType: "simple_numbers",
+          drawCallback: ()=>{
+                $('#products-list_previous').addClass('d-none');
+          },
+          columnDefs: [
+                {
+                    targets: [0, 1, 2], // Índices de las columnas que deben ser visibles
+                    visible: true
+                }
+          ]
+          });
+        })
+        this.isLoading = false;
+      }catch(err){
+         this.isLoading = false;
+        this.$swal({icon: "error", title: err, type: "basic" });
+      }
+    },
+    editRoute(id){
+      router.push({name: 'Modificar Ruta', params: {id: id}})
+    }
+  }
 };
 </script>

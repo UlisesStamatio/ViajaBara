@@ -17,6 +17,7 @@ class AuthProvider {
     var dataJson = jsonEncode({'email': email, 'password': password});
     try {
       final response = await dio.post('auth/login', data: dataJson);
+      _getInfoUser(email);
       return _parseLoginResponse(response);
     } on DioException catch (e) {
       return _handleLoginError(e);
@@ -92,15 +93,35 @@ class AuthProvider {
     ResponseMessage responseMessage = ResponseMessage(
         token: data['token'],
         email: data['email'],
-        name: data['name'],
-        roles: Roles(
-            keyRole: data['roles'][0]['keyRole'],
-            name: data['roles'][0]['name'],
-            status: data['roles'][0]['status']));
+        roles: Roles(keyRole: data['roles'][0]['keyRole']));
 
-    saveData(responseMessage);
+    saveData(responseMessage, 'data');
 
     return responseMessage;
+  }
+
+  Future<ResponseMessage> _getInfoUser(email) async {
+    var dataJson = jsonEncode({'email': email});
+
+    final response = await dio.put('logged/get-user', data: dataJson);
+
+    Map<String, dynamic> data = response.data;
+    if (response.statusCode == 200) {
+      Map<String, dynamic> data = response.data['result'];
+      ResponseMessage responseMessage = ResponseMessage(
+          profile: data['profile'],
+          name: data['person']['name'] + ' ' + data['person']['surname'],
+          email: data['email'],
+          cellphone: data['person']['cellphone'],
+          birthDate: data['person']['birthDate'].toString(),
+          sex: data['person']['sex'],
+          state: data['person']?['state']?['name']);
+
+      saveData(responseMessage, 'info');
+      return responseMessage;
+    } else {
+      throw Exception('Fallo al obtener los registros');
+    }
   }
 
   ResponseMessage _handleLoginError(DioException e) {
@@ -111,9 +132,9 @@ class AuthProvider {
     throw Exception('Error de inicio de sesión: ${e.message}');
   }
 
-  Future<void> saveData(ResponseMessage responseMessage) async {
+  Future<void> saveData(ResponseMessage responseMessage, name) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String data = json.encode(responseMessage.toJson());
-    await prefs.setString('data', data);
+    await prefs.setString(name, data);
   }
 }

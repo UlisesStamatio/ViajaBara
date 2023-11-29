@@ -7,7 +7,6 @@ public class BusDto {
 
     @NotNull(groups = {Modify.class,ChangeStatus.class})
     private Long id;
-    @NotBlank(groups = {Register.class,Modify.class})
     private String image;
     @NotBlank(groups = {Register.class,Modify.class})
     private String plaque;
@@ -15,9 +14,7 @@ public class BusDto {
     private String mark;
     @NotBlank(groups = {Register.class,Modify.class})
     private String model;
-    @NotBlank(groups = {Register.class,Modify.class})
     private String serial;
-    @NotBlank(groups = {Register.class,Modify.class})
     private String fuel;
 
     public BusDto() {

@@ -1,10 +1,8 @@
 package mx.edu.utez.viajabara.basecatalog.route.control;
 
-import javafx.scene.paint.Stop;
 import mx.edu.utez.viajabara.basecatalog.address.control.AddressService;
 import mx.edu.utez.viajabara.basecatalog.address.model.Address;
 import mx.edu.utez.viajabara.basecatalog.address.model.AddressDto;
-import mx.edu.utez.viajabara.basecatalog.duty.model.Duty;
 import mx.edu.utez.viajabara.basecatalog.duty.model.DutyRepository;
 import mx.edu.utez.viajabara.basecatalog.route.model.Route;
 import mx.edu.utez.viajabara.basecatalog.route.model.RouteDto;
@@ -25,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,13 +72,14 @@ public class RouteService {
             return new ResponseEntity<>(new Message("No se registró la ruta, el estado es inexistente", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
         }
 
-        AddressDto endAddressDto = new AddressDto( dto.getEndStart().getLatitude(),  dto.getEndStart().getLongitude(),  dto.getEndStart().getDescription(), dto.getEndStart().getState());
-        Address endAddress = addressService.save(startAddressDto);
+        AddressDto endAddressDto = new AddressDto( dto.getEndAddress().getLatitude(),  dto.getEndAddress().getLongitude(),  dto.getEndAddress().getDescription(), dto.getEndAddress().getState());
+        Address endAddress = addressService.save(endAddressDto);
+
         if(endAddress == null){
             return new ResponseEntity<>(new Message("No se registró la ruta, el estado es inexistente", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
         }
 
-        Route route = new Route( startAddress, endAddress, dto.getMeters(), dto.getTime());
+        Route route = new Route( startAddress, endAddress, dto.getMeters(), dto.getTime(), true );
 
         route = repository.saveAndFlush(route);
         if (route == null) {
@@ -97,6 +95,9 @@ public class RouteService {
                 }else{
                     StopOver stopOver = new StopOver();
                     stopOver.setRoute(route);
+                    stopOver.setSequence(stop.getSequence());
+                    stopOver.setMeters(stop.getMeters());
+                    stopOver.setTime(stop.getTime());
                     stopOver.setAddress(stopAddress);
                     stopOverList.add(stopOver);
                 }
@@ -137,6 +138,10 @@ public class RouteService {
                     StopOver stopOver = new StopOver();
                     stopOver.setRoute(route);
                     stopOver.setAddress(stopAddress);
+                    stopOver.setTime(stop.getTime());
+                    stopOver.setMeters(stop.getMeters());
+                    stopOver.setSequence(stop.getSequence());
+                    stopOver.setAddress(stopAddress);
                     stopOverList.add(stopOver);
                 }
             }
@@ -148,18 +153,17 @@ public class RouteService {
         if(startAddress == null){
             return new ResponseEntity<>(new Message("No se registró la ruta, el estado es inexistente", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
         }
-
-        AddressDto endAddressDto = new AddressDto( dto.getEndStart().getLatitude(),  dto.getEndStart().getLongitude(),  dto.getEndStart().getDescription(), dto.getEndStart().getState());
-        Address endAddress = addressService.save(startAddressDto);
+        AddressDto endAddressDto = new AddressDto( dto.getEndAddress().getLatitude(),  dto.getEndAddress().getLongitude(),  dto.getEndAddress().getDescription(), dto.getEndAddress().getState());
+        Address endAddress = addressService.save(endAddressDto);
         if(endAddress == null){
             return new ResponseEntity<>(new Message("No se registró la ruta, el estado es inexistente", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
         }
+
 
         route.setStartAddress(startAddress);
         route.setEndAddress(endAddress);
         route.setMeters(dto.getMeters());
         route.setTime(dto.getTime());
-
 
         route = repository.saveAndFlush(route);
         if (route == null) {

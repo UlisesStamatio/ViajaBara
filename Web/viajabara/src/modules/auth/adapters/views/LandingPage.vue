@@ -1,11 +1,11 @@
 <template>
   <navbar
     is-blur="blur blur-rounded my-3 py-2 start-0 end-0 mx-4 shadow"
-    btn-background="bg-gradient-primary"
+    btn-background="bg-gradient-danger"
     :dark-mode="true"
   />
   <div
-    class="m-3 page-header bg-gradient-primary position-relative border-radius-xl"
+    class="m-3 page-header bg-gradient-danger position-relative border-radius-xl"
   >
     <!-- <img
       src="../../assets/img/shapes/waves-white.svg"
@@ -36,9 +36,7 @@
               y de volada
             </div>
             <div class="col-12 text-white mt-4">
-              Para ViajaBara tu salud es lo más importante, por ello tomamos las
-              medidas sanitarias necesarias para brindarte la mayor seguridad en
-              tus viajes. Utiliza tu cubrebocas durante el viaje. ¡cuidémonos¡
+                <button class="btn btn-info justify-content-center"><i class="fab fa-whatsapp text-white me-2" style="font-size: 1.5em;"></i> RESERVACIONES</button>
             </div>
           </div>
         </div>
@@ -48,6 +46,11 @@
             class="img-fluid"
             srcset=""
           />
+        </div>
+        <div class="col-8 offset-2 mt-4">
+          <p class="text-white text-center">Para ViajaBara tu salud es lo más importante, por ello tomamos las
+              medidas sanitarias necesarias para brindarte la mayor seguridad en
+              tus viajes. Utiliza tu cubrebocas durante el viaje. ¡cuidémonos¡</p>
         </div>
       </div>
     </section>
@@ -164,7 +167,6 @@
         </div>
       </div>
     </section>
-
     <hr class="mt-5 mb-2 horizontal dark" />
     <section class="container" id="services">
       <div class="row">
@@ -255,155 +257,98 @@
     </section>
 
     <hr class="mt-5 mb-2 horizontal dark" />
-    <section class="container pb-5" id="quotes">
+    <section class="container" id="services">
       <div class="row">
-        <div class="col-12 text-center"><h2>Cotiza tu viaje</h2></div>
-        <div class="col-12 mt-5">
+        <div class="col-12 text-center"><h2>Servicios adicionales</h2></div>
+        <div class="col-12 mt-5 col-md-3">
           <div class="card">
-            <div class="card-body">
-              <h5 class="font-weight-bolder">Información del viaje</h5>
-              <div class="row mt-3">
-                <div class="col-12 col-sm-6 mb-3">
-                  <label
-                    >Nombre completo(<span class="text-danger">*</span>)</label
-                  >
-                  <input
-                    id="plaque"
-                    type="text"
-                    placeholder="e.g. Luis Smith"
-                    name="plaque"
-                    class="form-control"
-                  />
-                </div>
-                <div class="col-12 col-sm-6 mb-3 ">
-                  <label
-                    >Correo electrónico(<span class="text-danger">*</span
-                    >)</label
-                  >
-                  <input
-                    id="mark"
-                    type="email"
-                    placeholder="e.g. luis@gmail.com"
-                    name="mark"
-                    class="form-control"
-                  />
-                </div>
+            <div
+              class="py-3 text-center card-header d-flex justify-content-center"
+            >
+              <div
+                class="icon icon-shape icon-lg shadow text-center border-radius-lg bg-gradient-danger"
+              >
+                <i
+                  class="opacity-10 text-white fas fa-bus"
+                  aria-hidden="true"
+                  style="font-size: 32px"
+                ></i>
               </div>
-              <div class="row">
-                <div class="col-12 col-sm-6 mb-3">
-                  <label
-                    >Punto de inicio(<span class="text-danger">*</span>)</label
-                  >
-                  <select
-                    id="state-select"
-                    class="form-control"
-                    name="state-select"
-                  >
-                    <option value="" selected disabled>
-                      Selecciona una opción...
-                    </option>
-                    <option value="1">Cuernavaca - Morelos</option>
-                    <option value="2">Jiutepec - Morelos</option>
-                  </select>
-                </div>
-
-                <div class="col-12 col-sm-6 mb-3">
-                  <label>Destino(<span class="text-danger">*</span>)</label>
-                  <select
-                    id="state-select"
-                    class="form-control"
-                    name="state-select"
-                  >
-                    <option value="" selected disabled>
-                      Selecciona una opción...
-                    </option>
-                    <option value="1">Polanco - CDMX</option>
-                    <option value="2">Acapulco - Guerrero</option>
-                  </select>
-                </div>
-
-                <div class="col-12 col-sm-6 mb-3">
-                  <label
-                    >Cantidad de personas(<span class="text-danger">*</span
-                    >)</label
-                  >
-                  <input
-                    id="serial"
-                    type="number"
-                    placeholder="eg. 10"
-                    name="serial"
-                    class="form-control"
-                  />
-                </div>
-
-                <div class="col-12 col-sm-6 mb-3">
-                  <label
-                    >Tipo de servicio(<span class="text-danger">*</span>)</label
-                  >
-                  <select
-                    id="state-select"
-                    class="form-control"
-                    name="state-select"
-                  >
-                    <option value="" selected disabled>
-                      Selecciona una opción...
-                    </option>
-                    <option value="1">Ida y vuelta</option>
-                    <option value="2">Solo ida</option>
-                  </select>
-                </div>
-
-                <div class="col-12 col-sm-6 mb-3">
-                  <label
-                    >Fecha de Inicio(<span class="text-danger">*</span>)</label
-                  >
-                  <input
-                    id="serial"
-                    type="date"
-                    name="serial"
-                    class="form-control"
-                  />
-                </div>
-
-                <div class="col-12 col-sm-6 mb-3">
-                  <label
-                    >Fecha de Fin(<span class="text-danger">*</span>)</label
-                  >
-                  <input
-                    id="serial"
-                    type="date"
-                    name="serial"
-                    class="form-control"
-                  />
-                </div>
+            </div>
+            <div class="p-3 pt-0 text-center card-body">
+              <h6 class="mb-0 text-center">Transporte Escolar</h6>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 mt-5 col-md-3">
+          <div class="card">
+            <div
+              class="py-3 text-center card-header d-flex justify-content-center"
+            >
+              <div
+                class="icon icon-shape icon-lg shadow text-center border-radius-lg bg-gradient-danger"
+              >
+                <i
+                  class="opacity-10 text-white fas fa-bus"
+                  aria-hidden="true"
+                  style="font-size: 32px"
+                ></i>
               </div>
-
-              <div class="row mt-5">
-                <div class="col-12 text-center">
-                  <button
-                    type="button"
-                    class="mb-2 me-2 ms-auto btn js-btn-next bg-gradient-secondary"
-                    title="Cancelar"
-                  >
-                    Cancelar
-                  </button>
-
-                  <button
-                    type="submit"
-                    class="mb-2 ms-auto btn js-btn-next bg-gradient-dark"
-                    title="Guardar"
-                  >
-                    Guardar
-                  </button>
-                </div>
+            </div>
+            <div class="p-3 pt-0 text-center card-body">
+              <h6 class="mb-0 text-center">Transporte Turistico</h6>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 mt-5 col-md-3">
+          <div class="card">
+            <div
+              class="py-3 text-center card-header d-flex justify-content-center"
+            >
+              <div
+                class="icon icon-shape icon-lg shadow text-center border-radius-lg bg-gradient-danger"
+              >
+                <i
+                  class="opacity-10 text-white fas fa-car"
+                  aria-hidden="true"
+                  style="font-size: 32px"
+                ></i>
               </div>
+            </div>
+            <div class="p-3 pt-0 text-center card-body">
+              <h6 class="mb-0 text-center">
+                Transporte para eventos y empresas
+              </h6>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-3 mt-5">
+          <div class="card">
+            <div
+              class="py-3 text-center card-header d-flex justify-content-center"
+            >
+              <div
+                class="icon icon-shape icon-lg shadow text-center border-radius-lg bg-gradient-danger"
+              >
+                <i
+                  class="opacity-10 text-white fas fa-box"
+                  aria-hidden="true"
+                  style="font-size: 32px"
+                ></i>
+              </div>
+            </div>
+            <div class="p-3 pt-0 text-center card-body">
+              <h6 class="mb-0 text-center">Paquetería</h6>
             </div>
           </div>
         </div>
       </div>
     </section>
+
+    <hr class="mt-5 mb-2 horizontal dark" />
+    
   </div>
-  <footer class="container-fluid bg-gradient-primary" id="contact">
+  <footer class="container-fluid bg-gradient-danger" id="contact">
     <div class="row py-2">
       <div class="col-12 text-center text-white">
         <span class="fw-bold" style="font-size: 1.5em">

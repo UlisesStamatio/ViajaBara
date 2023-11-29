@@ -7,7 +7,7 @@
           <div class="card-body">
             <div class="row">
               <div class="col-12 text-center">
-                <label>Imagen del autobus(<span class="text-danger">*</span>)</label>
+                <label>Imagen del autobús(<span class="text-danger">*</span>)</label>
                 <img
                   id="image-bus"
                   class="mt-3 shadow-lg w-100 border-radius-lg"
@@ -22,7 +22,7 @@
               </div>
               <div class="mt-4 col-12  text-center">
                   <button
-                    class="mb-0 btn bg-gradient-primary btn-sm me-2"
+                    class="mb-0 btn bg-gradient-danger btn-sm me-2"
                     type="button"
                     name="button"
                     title="Editar imagen"
@@ -38,7 +38,7 @@
       <div class="mt-4 col-lg-8 mt-lg-0">
         <div class="card">
           <div class="card-body">
-            <h5 class="font-weight-bolder">Información del autobus</h5>
+            <h5 class="font-weight-bolder">Información del autobús</h5>
             <div class="row mt-3">
               <div class="col-12 col-sm-6 mb-3">
                 <label>Placa(<span class="text-danger">*</span>)</label>
@@ -136,9 +136,9 @@
                 <button 
                 type="submit"
                 class="mb-0 ms-auto btn js-btn-next bg-gradient-dark"
-                title="Crear autobus"
+                title="Crear autobús"
                 >
-                  Crear autobus
+                  Crear autobús
                 </button>
                 </div>
             </div>

@@ -131,7 +131,10 @@ export default {
     this.minNav;
   },
   async mounted(){
-   await this.getProfile()
+    const token = storeSession.getToken();
+    if(token){
+      await this.getProfile()
+    }
   },
   methods: {
     ...mapMutations(["navbarMinimize", "toggleConfigurator"]),

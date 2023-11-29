@@ -21,6 +21,12 @@ class _ProfileState extends State<Profile> {
   final double topWidgetHeight = 10.0;
   final double avatarRadius = 20.0;
   String userRole = '';
+  String email = '';
+  String name = '';
+  String cellphone = '';
+  String birthDate = '';
+  String sex = '';
+  String state = '';
   bool isAdmin = false;
 
   void initState() {
@@ -30,14 +36,25 @@ class _ProfileState extends State<Profile> {
 
   Future<void> _loadUserRole() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? data = prefs.getString('data');
-    Map<String, dynamic> jsonData = json.decode(data!);
+    Map<String, dynamic> jsonData = json.decode(prefs.getString('data')!);
+    Map<String, dynamic> jsonInfo = json.decode(prefs.getString('info')!);
     ResponseMessage responseMessage = ResponseMessage.fromJson(jsonData);
+    ResponseMessage responseData = ResponseMessage.fromJson(jsonInfo);
+    print(responseData.name);
     String? role = responseMessage.roles?.keyRole;
 
-    if(role == null) {
-      Navigator.pushNamed(context, '/login');
+    if (role == null) {
+      Navigator.pushReplacementNamed(context, '/login');
     }
+
+    setState(() {
+      name = responseData.name ?? 'Agrega tu nombre';
+      email = responseData.email ?? 'Agrega tu correo';
+      cellphone = responseData.cellphone ?? 'Agrega tu celular';
+      birthDate = responseData.birthDate ?? 'Agrega tu fecha de nacimiento';
+      sex = responseData.sex ?? 'Agrega tu sexo';
+      state = responseData.state ?? 'Agrega tu estado';
+    });
 
     if (role == "ADMIN") {
       setState(() {
@@ -80,21 +97,25 @@ class _ProfileState extends State<Profile> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  const SizedBox(height: 70),
+                  const SizedBox(height: 10),
                   Card(
                     margin: const EdgeInsets.all(16),
                     elevation: 5,
                     color: ColorsApp.transparentColor,
                     child: Column(
                       children: [
-                        const SizedBox(height: 70),
+                        const SizedBox(height: 10),
+                        const CircleAvatar(
+                          radius: 60,
+                          backgroundImage: AssetImage('assets/images/Girl.png'),
+                        ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Title(
                             color: ColorsApp.primayColor,
-                            child: const Text(
-                              'Vanessa',
-                              style: TextStyle(
+                            child: Text(
+                              name,
+                              style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -183,8 +204,7 @@ class _ProfileState extends State<Profile> {
                             child: const Text(
                               'Cambiar contraseña',
                               style: TextStyle(
-                                  color: ColorsApp
-                                      .primayColor, 
+                                  color: ColorsApp.primayColor,
                                   fontWeight: FontWeight.bold),
                             ),
                           ),
@@ -228,18 +248,18 @@ class _ProfileState extends State<Profile> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 10, horizontal: 15),
                             alignment: Alignment.centerLeft,
-                            child: const Row(
+                            child: Row(
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.email,
                                   color: ColorsApp.text,
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 10,
                                 ),
                                 Text(
-                                  'vanessa987@gmail.com',
-                                  style: TextStyle(color: ColorsApp.text),
+                                  email,
+                                  style: const TextStyle(color: ColorsApp.text),
                                 ),
                               ],
                             )),
@@ -247,18 +267,18 @@ class _ProfileState extends State<Profile> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 10, horizontal: 15),
                             alignment: Alignment.centerLeft,
-                            child: const Row(
+                            child: Row(
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.phone,
                                   color: ColorsApp.text,
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 10,
                                 ),
                                 Text(
-                                  '7776788767',
-                                  style: TextStyle(color: ColorsApp.text),
+                                  cellphone,
+                                  style: const TextStyle(color: ColorsApp.text),
                                 ),
                               ],
                             )),
@@ -266,18 +286,18 @@ class _ProfileState extends State<Profile> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 10, horizontal: 15),
                             alignment: Alignment.centerLeft,
-                            child: const Row(
+                            child: Row(
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.cake,
                                   color: ColorsApp.text,
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 10,
                                 ),
                                 Text(
-                                  '1996-06-08',
-                                  style: TextStyle(color: ColorsApp.text),
+                                  birthDate,
+                                  style: const TextStyle(color: ColorsApp.text),
                                 ),
                               ],
                             )),
@@ -285,18 +305,51 @@ class _ProfileState extends State<Profile> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 10, horizontal: 15),
                             alignment: Alignment.centerLeft,
-                            child: const Row(
+                            child: Row(
                               children: [
-                                Icon(
-                                  Icons.female,
-                                  color: ColorsApp.text,
-                                ),
-                                SizedBox(
+                                if (sex == 'M') ...{
+                                  const Icon(
+                                    Icons.female,
+                                    color: ColorsApp.text,
+                                  ),
+                                },
+                                if (sex == 'H') ...{
+                                  const Icon(
+                                    Icons.male,
+                                    color: ColorsApp.text,
+                                  ),
+                                },
+                                if (sex == 'Agrega tu sexo') ...{
+                                  const Icon(
+                                    Icons.person,
+                                    color: ColorsApp.text,
+                                  ),
+                                },
+                                const SizedBox(
                                   width: 10,
                                 ),
                                 Text(
-                                  'Mujer',
-                                  style: TextStyle(color: ColorsApp.text),
+                                  sex,
+                                  style: const TextStyle(color: ColorsApp.text),
+                                ),
+                              ],
+                            )),
+                        Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 15),
+                            alignment: Alignment.centerLeft,
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.location_city,
+                                  color: ColorsApp.text,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  state,
+                                  style: const TextStyle(color: ColorsApp.text),
                                 ),
                               ],
                             )),
@@ -307,14 +360,6 @@ class _ProfileState extends State<Profile> {
                     ),
                   ),
                 ],
-              ),
-            ),
-            Positioned(
-              left: (MediaQuery.of(context).size.width / 3),
-              top: avatarRadius,
-              child: const CircleAvatar(
-                radius: 60,
-                backgroundImage: AssetImage('assets/images/Girl.png'),
               ),
             ),
           ],

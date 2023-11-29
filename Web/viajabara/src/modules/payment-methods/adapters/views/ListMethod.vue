@@ -14,7 +14,7 @@
                 <div class="my-auto ms-auto">
                   <router-link
                     :to="{ name: 'Registro Método' }"
-                    class="mb-0 btn bg-gradient-primary btn-sm"
+                    class="mb-0 btn bg-gradient-danger btn-sm"
                     >+&nbsp; Nuevo Método</router-link
                   >
                 </div>

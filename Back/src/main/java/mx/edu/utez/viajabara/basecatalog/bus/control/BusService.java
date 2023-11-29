@@ -1,6 +1,5 @@
 package mx.edu.utez.viajabara.basecatalog.bus.control;
 
-import mx.edu.utez.viajabara.access.user.model.User;
 import mx.edu.utez.viajabara.basecatalog.bus.model.Bus;
 import mx.edu.utez.viajabara.basecatalog.bus.model.BusDto;
 import mx.edu.utez.viajabara.basecatalog.bus.model.BusRepository;
@@ -64,12 +63,23 @@ public class BusService {
         if (optional.isPresent()) {
             return new ResponseEntity<>(new Message("La placa del autobús ya existe", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
         }
-        Optional<Bus> optional2 = repository.searchBySerialAndId(dto.getSerial(), 0L);
-        if (optional2.isPresent()) {
-            return new ResponseEntity<>(new Message("El serial del autobús ya existe", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
+
+        Bus bus = new Bus(dto.getPlaque(),dto.getMark(),dto.getModel(),true);
+
+        if(dto.getImage() != null){
+            bus.setImage(dto.getImage());
+        }
+        if(dto.getFuel() != null){
+            bus.setFuel(dto.getFuel());
+        }
+        if(dto.getSerial() != null){
+            Optional<Bus> optional2 = repository.searchBySerialAndId(dto.getSerial(), 0L);
+            if (optional2.isPresent()) {
+                return new ResponseEntity<>(new Message("El serial del autobús ya existe", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
+            }
+            bus.setSerial(dto.getSerial());
         }
 
-        Bus bus = new Bus(dto.getImage(),dto.getPlaque(),dto.getMark(),dto.getModel(),dto.getSerial(),dto.getFuel(),true);
         bus = repository.saveAndFlush(bus);
         if (bus == null) {
             return new ResponseEntity<>(new Message("No se registró el autobús", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
@@ -87,18 +97,27 @@ public class BusService {
         if (optional.isPresent()) {
             return new ResponseEntity<>(new Message("La placa del autobús ya existe", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
         }
-        Optional<Bus> optional2 = repository.searchBySerialAndId(dto.getSerial(), dto.getId());
-        if (optional2.isPresent()) {
-            return new ResponseEntity<>(new Message("El serial del autobús ya existe", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
-        }
+
 
         Bus bus = busOptional.get();
-        bus.setImage(dto.getImage());
         bus.setPlaque(dto.getPlaque());
         bus.setMark(dto.getMark());
         bus.setModel(dto.getModel());
-        bus.setSerial(dto.getSerial());
-        bus.setFuel(dto.getFuel());
+
+        if(dto.getImage() != null){
+            bus.setImage(dto.getImage());
+        }
+        if(dto.getFuel() != null){
+            bus.setFuel(dto.getFuel());
+        }
+        if(dto.getSerial() != null){
+            Optional<Bus> optional2 = repository.searchBySerialAndId(dto.getSerial(), dto.getId());
+            if (optional2.isPresent()) {
+                return new ResponseEntity<>(new Message("El serial del autobús ya existe", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
+            }
+            bus.setSerial(dto.getSerial());
+        }
+
 
         bus = repository.saveAndFlush(bus);
         if (bus == null) {
