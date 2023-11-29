@@ -62,7 +62,7 @@
                           data-bs-toggle="tooltip"
                           data-bs-original-title="Desactivar ruta"
                           v-show="route.status"
-                          @click="disableRoute()"
+                          @click="changeStatusRoute({id: route.id})"
                         >
                           <i class="fa fa-times-circle text-secondary" ></i>
                         </a>
@@ -71,7 +71,7 @@
                           data-bs-toggle="tooltip"
                           data-bs-original-title="Activar ruta"
                           v-show="!route.status"
-                          @click="enableRoute()"
+                          @click="changeStatusRoute({id: route.id})"
                           >
                           <i class="fa fa-check-circle text-secondary" ></i>
                         </a>
@@ -91,10 +91,13 @@
 //import { DataTable } from "simple-datatables";
 import setTooltip from "@/assets/js/tooltip.js";
 import listRoutes from '../../use-cases/list.route';
+import changeStatusRoute from '../../use-cases/change.status.route';
 import DataTable from 'datatables.net-dt';
 import $ from 'jquery';
 import Loader from '../../../../components/Loader.vue'
 import router from '../../../../router/index'
+
+
 export default {
   name: "ListRoute",
   components:{
@@ -193,6 +196,48 @@ export default {
     },
     editRoute(id){
       router.push({name: 'Modificar Ruta', params: {id: id}})
+    },
+    async changeStatusRoute(payload){
+      console.log(payload);
+      this.$swal({
+            title: "¿Estás segura(a) de realizar la acción?",
+            text: "¡No podrás revertir esto.!",
+            icon: "warning",
+            showCancelButton: true,
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Confirmar",
+            customClass: {
+              confirmButton: "btn bg-gradient-success",
+              cancelButton: "btn bg-gradient-secondary",
+            },
+            buttonsStyling: false,
+          }).then(async(result) => {
+            if (result.isConfirmed) {
+                this.isLoading = true;
+                const response = {...await changeStatusRoute(payload)};
+                const {error, data, message} = response;
+                this.isLoading = false;
+                if(!error){
+                    const {result:{text}} =data
+                    this.$swal({
+                      icon: "success",
+                      title: message,
+                      text: text,
+                      type: 'success-message',
+                    });
+                   await this.initializaDatatable()
+                }else{
+                  const {text} = data;
+                    this.$swal({
+                      icon: "error", 
+                      title: text,
+                      type: "basic",
+                  });
+                }
+            } else if (result.dismiss === this.$swal.DismissReason.cancel) {
+              this.$swal.dismiss;
+            }
+          })
     }
   }
 };
