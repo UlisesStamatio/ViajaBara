@@ -11,6 +11,8 @@ import mx.edu.utez.viajabara.basecatalog.stopover.control.StopOverService;
 import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOver;
 import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOverDto;
 import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOverRepository;
+import mx.edu.utez.viajabara.basecatalog.trip.model.Trip;
+import mx.edu.utez.viajabara.basecatalog.trip.model.TripRepository;
 import mx.edu.utez.viajabara.utils.entity.Message;
 import mx.edu.utez.viajabara.utils.entity.TypesResponse;
 import org.slf4j.Logger;
@@ -38,19 +40,24 @@ public class RouteService {
     private final AddressService addressService;
     private final StopOverRepository stopOverRepository;
 
+    private TripRepository tripRepository;
+
 
     @Autowired
-    public RouteService(RouteRepository repository, DutyRepository dutyRepository, StopOverService stopOverService, StopOverRepository stopOverRepository, AddressService addressService) {
+    public RouteService(RouteRepository repository, DutyRepository dutyRepository,
+                        StopOverService stopOverService, StopOverRepository stopOverRepository, AddressService addressService,
+                        TripRepository tripRepository) {
         this.repository = repository;
         this.dutyRepository = dutyRepository;
         this.stopOverService = stopOverService;
         this.stopOverRepository = stopOverRepository;
         this.addressService = addressService;
+        this.tripRepository = tripRepository;
     }
 
     @Transactional(readOnly = true)
     public ResponseEntity<Object> findAll() {
-        return new ResponseEntity<>(new Message(repository.findAll(), "Listado de rutas", TypesResponse.SUCCESS), HttpStatus.OK);
+        return new ResponseEntity<>(new Message(repository.findAllByOrderByStatusDesc(), "Listado de rutas", TypesResponse.SUCCESS), HttpStatus.OK);
     }
 
     @Transactional(readOnly = true)
@@ -181,6 +188,12 @@ public class RouteService {
             return new ResponseEntity<>(new Message("No se encontró la ruta", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
         Route route = optional.get();
+
+        Optional<Trip> optionalTrip = tripRepository.findByRouteIdAndStatusTrue(route.getId());
+        if(optionalTrip.isPresent() && route.isStatus()){
+            return new ResponseEntity<>(new Message("La ruta se encuentra en un viaje, no puedes deshabilitarla", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
+        }
+
         route.setStatus(!route.isStatus());
         route = repository.saveAndFlush(route);
 
