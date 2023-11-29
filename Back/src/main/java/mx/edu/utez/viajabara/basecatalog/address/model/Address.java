@@ -1,13 +1,16 @@
 package mx.edu.utez.viajabara.basecatalog.address.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import mx.edu.utez.viajabara.basecatalog.route.model.Route;
+import mx.edu.utez.viajabara.basecatalog.seatingSales.model.SeatingSales;
 import mx.edu.utez.viajabara.basecatalog.state.model.State;
 import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOver;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 
 @Entity
@@ -29,6 +32,7 @@ public class Address {
 
     @ManyToOne
     @JoinColumn(name = "id_state")
+    @JsonBackReference
     private State state;
 
     @Column(name = "create_at", insertable = false, columnDefinition = "TIMESTAMP DEFAULT NOW()")
@@ -44,6 +48,14 @@ public class Address {
     @JsonIgnore
     private List<Route> routesEnd;
 
+    @OneToMany(mappedBy = "startAddress")
+    @JsonIgnore
+    private List<SeatingSales> seatingSalesStart;
+
+    @OneToMany(mappedBy = "endAddress")
+    @JsonIgnore
+    private List<SeatingSales> seatingSalesEnd;
+
     @OneToMany(mappedBy = "address")
     @JsonIgnore
     private List<StopOver> stopOvers;
@@ -52,11 +64,36 @@ public class Address {
     public Address() {
     }
 
+    public Address(Long id) {
+        this.id = id;
+    }
+
+    public Address(Long id, String description) {
+        this.id = id;
+        this.description = description;
+    }
+
+    public Address(Long id, String latitude, String longitude, String description, State state) {
+        this.id = id;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.description = description;
+        this.state = state;
+    }
+
     public Address(String latitude, String longitude, String description, State state) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.description = description;
         this.state = state;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getLatitude() {
@@ -97,5 +134,28 @@ public class Address {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    @Override
+    public String toString() {
+        return "Address{" +
+                "id=" + id +
+                ", latitude='" + latitude + '\'' +
+                ", longitude='" + longitude + '\'' +
+                ", description='" + description + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Address address = (Address) o;
+        return id.equals(address.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

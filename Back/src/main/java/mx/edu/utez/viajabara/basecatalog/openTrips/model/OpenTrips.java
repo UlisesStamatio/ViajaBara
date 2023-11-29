@@ -1,8 +1,11 @@
 package mx.edu.utez.viajabara.basecatalog.openTrips.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vladmihalcea.hibernate.type.json.JsonType;
 import mx.edu.utez.viajabara.basecatalog.seatingSales.model.SeatingSales;
 import mx.edu.utez.viajabara.basecatalog.trip.model.Trip;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -18,7 +21,7 @@ public class OpenTrips {
     @ManyToOne
     private Trip trip;
 
-    @Column(columnDefinition = "datetime", name = "start_date")
+    @Column(columnDefinition = "date", name = "start_date")
     private Date startDate;
 
     @Column(name = "create_at", insertable = false, columnDefinition = "TIMESTAMP DEFAULT NOW()")
@@ -33,6 +36,9 @@ public class OpenTrips {
     @OneToMany(mappedBy = "openTrips")
     @JsonIgnore
     private List<SeatingSales> seatingSales;
+
+    @Column(name = "enable_seats", columnDefinition = "INT(2) DEFAULT 20")
+    private int enableSeats;
 
     public OpenTrips() {
     }
@@ -83,6 +89,14 @@ public class OpenTrips {
         this.status = status;
     }
 
+    public int getEnableSeats() {
+        return enableSeats;
+    }
+
+    public void setEnableSeats(int enableSeats) {
+        this.enableSeats = enableSeats;
+    }
+
     public List<SeatingSales> getSeatingSales() {
         return seatingSales;
     }
@@ -90,4 +104,5 @@ public class OpenTrips {
     public void setSeatingSales(List<SeatingSales> seatingSales) {
         this.seatingSales = seatingSales;
     }
+
 }

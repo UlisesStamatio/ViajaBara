@@ -1,12 +1,15 @@
 package mx.edu.utez.viajabara.basecatalog.state.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import mx.edu.utez.viajabara.basecatalog.address.model.Address;
 import mx.edu.utez.viajabara.basecatalog.person.model.Person;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "states")
@@ -27,10 +30,17 @@ public class State {
     private List<Person> people;
 
     @OneToMany(mappedBy = "state")
-    @JsonIgnore
+    @JsonManagedReference
     private List<Address> addresses;
 
     public State() {
+    }
+
+    public State(Long id, String name, Long addressId, String addressDescription) {
+        this.id = id;
+        this.name = name;
+        this.addresses = new ArrayList<>();
+        this.addresses.add(new Address(addressId, addressDescription));
     }
 
     public State(String name, boolean status) {
@@ -70,12 +80,36 @@ public class State {
         this.createdAt = createdAt;
     }
 
+    public List<Address> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<Address> addresses) {
+        this.addresses = addresses;
+    }
+
     @Override
     public String toString() {
-        return "{" +
+        return "State{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", status=" + status +
+                ", createdAt=" + createdAt +
+                ", addresses=" + addresses +
                 '}';
+    }
+
+    // En la clase State
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        State state = (State) o;
+        return id.equals(state.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

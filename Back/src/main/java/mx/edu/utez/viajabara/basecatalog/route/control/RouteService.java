@@ -95,7 +95,7 @@ public class RouteService {
         if (dto.getStopOvers() != null) {
             List<StopOver> stopOverList = new ArrayList<>();
             for (StopOverDto stop : dto.getStopOvers()) {
-                AddressDto stopAdressDto = new AddressDto( stop.getLatitude(),  stop.getLongitude(), stop.getDescription(), stop.getState());
+                AddressDto stopAdressDto = new AddressDto( stop.getAddressDto().getLatitude(),  stop.getAddressDto().getLongitude(), stop.getDescription(), stop.getState());
                 Address stopAddress = addressService.save(stopAdressDto);
                 if(stopAddress == null){
                     return new ResponseEntity<>(new Message("No se registró la parada, el estado es inexistente", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
@@ -137,7 +137,7 @@ public class RouteService {
         if (dto.getStopOvers() != null) {
             List<StopOver> stopOverList = new ArrayList<>();
             for (StopOverDto stop : dto.getStopOvers()) {
-                AddressDto stopAdressDto = new AddressDto( stop.getLatitude(),  stop.getLongitude(), stop.getDescription(), stop.getState());
+                AddressDto stopAdressDto = new AddressDto( stop.getAddressDto().getLatitude(),  stop.getAddressDto().getLongitude(), stop.getDescription(), stop.getState());
                 Address stopAddress = addressService.save(stopAdressDto);
                 if(stopAddress == null){
                     return new ResponseEntity<>(new Message("No se registró la parada, el estado es inexistente", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);

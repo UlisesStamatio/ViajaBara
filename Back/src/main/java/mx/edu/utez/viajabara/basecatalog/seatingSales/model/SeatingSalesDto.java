@@ -1,7 +1,9 @@
 package mx.edu.utez.viajabara.basecatalog.seatingSales.model;
 
 import mx.edu.utez.viajabara.access.user.model.User;
+import mx.edu.utez.viajabara.basecatalog.address.model.AddressDto;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTrips;
+import mx.edu.utez.viajabara.basecatalog.route.model.RouteDto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -11,22 +13,20 @@ public class SeatingSalesDto {
 
     @NotNull(groups = {Modify.class})
     private Long id;
-    @NotBlank(groups = {Register.class,Modify.class})
-    private String start_latitude;
-    @NotBlank(groups = {Register.class,Modify.class})
-    private String start_longitude;
-    @NotBlank(groups = {Register.class,Modify.class})
-    private String end_latitude;
-    @NotBlank(groups = {Register.class,Modify.class})
-    private String end_longitude;
+    @NotBlank(groups = {RouteDto.Register.class, RouteDto.Modify.class})
+    private AddressDto startAddress;
+    @NotBlank(groups = {RouteDto.Register.class, RouteDto.Modify.class})
+    private AddressDto endAddress;
     @PositiveOrZero(groups = {Register.class,Modify.class})
     private double cost;
-    @PositiveOrZero(groups = {Register.class,Modify.class})
-    private int seating;
+    @NotNull(groups = {Register.class,Modify.class})
+    private String seatsSelected;
     @NotNull(groups = {Register.class,Modify.class,FindByClient.class})
     private User client;
     @NotNull(groups = {Register.class,Modify.class,FindByOpenTrip.class})
     private OpenTrips openTrips;
+    @NotNull(groups = {Register.class,Modify.class})
+    private int wholeTrip;
 
     public SeatingSalesDto() {
     }
@@ -39,36 +39,20 @@ public class SeatingSalesDto {
         this.id = id;
     }
 
-    public String getStart_latitude() {
-        return start_latitude;
+    public AddressDto getStartAddress() {
+        return startAddress;
     }
 
-    public void setStart_latitude(String start_latitude) {
-        this.start_latitude = start_latitude;
+    public void setStartAddress(AddressDto startAddress) {
+        this.startAddress = startAddress;
     }
 
-    public String getStart_longitude() {
-        return start_longitude;
+    public AddressDto getEndAddress() {
+        return endAddress;
     }
 
-    public void setStart_longitude(String start_longitude) {
-        this.start_longitude = start_longitude;
-    }
-
-    public String getEnd_latitude() {
-        return end_latitude;
-    }
-
-    public void setEnd_latitude(String end_latitude) {
-        this.end_latitude = end_latitude;
-    }
-
-    public String getEnd_longitude() {
-        return end_longitude;
-    }
-
-    public void setEnd_longitude(String end_longitude) {
-        this.end_longitude = end_longitude;
+    public void setEndAddress(AddressDto endAddress) {
+        this.endAddress = endAddress;
     }
 
     public double getCost() {
@@ -79,13 +63,6 @@ public class SeatingSalesDto {
         this.cost = cost;
     }
 
-    public int getSeating() {
-        return seating;
-    }
-
-    public void setSeating(int seating) {
-        this.seating = seating;
-    }
 
     public User getClient() {
         return client;
@@ -103,8 +80,38 @@ public class SeatingSalesDto {
         this.openTrips = openTrips;
     }
 
+    public String getSeatsSelected() {
+        return seatsSelected;
+    }
+
+    public void setSeatsSelected(String seatsSelected) {
+        this.seatsSelected = seatsSelected;
+    }
+
+    public int getWholeTrip() {
+        return wholeTrip;
+    }
+
+    public void setWholeTrip(int wholeTrip) {
+        this.wholeTrip = wholeTrip;
+    }
+
     public interface Register{}
     public interface Modify{}
     public interface FindByClient{}
     public interface FindByOpenTrip{}
+
+    @Override
+    public String toString() {
+        return "SeatingSalesDto{" +
+                "id=" + id +
+                ", startAddress=" + startAddress +
+                ", endAddress=" + endAddress +
+                ", cost=" + cost +
+                ", seating='" + seatsSelected + '\'' +
+                ", client=" + client +
+                ", openTrips=" + openTrips +
+                ", wholeTrip=" + wholeTrip +
+                '}';
+    }
 }

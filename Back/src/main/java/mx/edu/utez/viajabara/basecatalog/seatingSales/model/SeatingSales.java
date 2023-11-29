@@ -3,8 +3,10 @@ package mx.edu.utez.viajabara.basecatalog.seatingSales.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import mx.edu.utez.viajabara.access.user.model.User;
+import mx.edu.utez.viajabara.basecatalog.address.model.Address;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTrips;
 import mx.edu.utez.viajabara.basecatalog.qualifications.model.Qualifications;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.List;
@@ -15,18 +17,13 @@ public class SeatingSales {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @ManyToOne
+    @JoinColumn(name = "id_start_address")
+    private Address startAddress;
 
-    @Column(name = "start_latitude", columnDefinition = "VARCHAR(30)")
-    private String start_latitude;
-
-    @Column(name = "start_longitude", columnDefinition = "VARCHAR(30)")
-    private String start_longitude;
-
-    @Column(name = "end_latitude", columnDefinition = "VARCHAR(30)")
-    private String end_latitude;
-
-    @Column(name = "end_longitude", columnDefinition = "VARCHAR(30)")
-    private String end_longitude;
+    @ManyToOne
+    @JoinColumn(name = "id_end_address")
+    private Address endAddress;
 
     @Column(name = "cost", columnDefinition = "FLOAT(5,2)")
     private double cost;
@@ -34,9 +31,9 @@ public class SeatingSales {
     @ManyToOne
     private User client;
 
-    @Column(name = "seating", columnDefinition = "INT(1)")
-    private int seating;
-
+    @Column(name = "seats_selected", columnDefinition = "json")
+    @Type(type = "json")
+    private String seatsSelected;
     @ManyToOne
     private OpenTrips openTrips;
 
@@ -44,29 +41,27 @@ public class SeatingSales {
     @JsonIgnore
     private List<Qualifications> qualifications;
 
+    @Column(name = "wholeTrip", columnDefinition = "INT(1)")
+    private int wholeTrip;
 
     public SeatingSales() {
     }
 
-    public SeatingSales(String start_latitude, String start_longitude, String end_latitude, String end_longitude, double cost) {
-        this.start_latitude = start_latitude;
-        this.start_longitude = start_longitude;
-        this.end_latitude = end_latitude;
-        this.end_longitude = end_longitude;
+    public SeatingSales(Address startAddress, Address endAddress, double cost) {
+        this.startAddress = startAddress;
+        this.endAddress = endAddress;
         this.cost = cost;
     }
 
-    public SeatingSales(String start_latitude, String start_longitude, String end_latitude, String end_longitude, double cost, User client, int seating, OpenTrips openTrips) {
-        this.start_latitude = start_latitude;
-        this.start_longitude = start_longitude;
-        this.end_latitude = end_latitude;
-        this.end_longitude = end_longitude;
+    public SeatingSales(Address startAddress, Address endAddress, double cost, User client, String seatsSelected, int wholeTrip, OpenTrips openTrips ) {
+        this.startAddress = startAddress;
+        this.endAddress = endAddress;
         this.cost = cost;
         this.client = client;
-        this.seating = seating;
+        this.seatsSelected = seatsSelected;
+        this.wholeTrip = wholeTrip;
         this.openTrips = openTrips;
     }
-
     public Long getId() {
         return id;
     }
@@ -75,36 +70,20 @@ public class SeatingSales {
         this.id = id;
     }
 
-    public String getStart_latitude() {
-        return start_latitude;
+    public Address getStartAddress() {
+        return startAddress;
     }
 
-    public void setStart_latitude(String start_latitude) {
-        this.start_latitude = start_latitude;
+    public void setStartAddress(Address startAddress) {
+        this.startAddress = startAddress;
     }
 
-    public String getStart_longitude() {
-        return start_longitude;
+    public Address getEndAddress() {
+        return endAddress;
     }
 
-    public void setStart_longitude(String start_longitude) {
-        this.start_longitude = start_longitude;
-    }
-
-    public String getEnd_latitude() {
-        return end_latitude;
-    }
-
-    public void setEnd_latitude(String end_latitude) {
-        this.end_latitude = end_latitude;
-    }
-
-    public String getEnd_longitude() {
-        return end_longitude;
-    }
-
-    public void setEnd_longitude(String end_longitude) {
-        this.end_longitude = end_longitude;
+    public void setEndAddress(Address endAddress) {
+        this.endAddress = endAddress;
     }
 
     public double getCost() {
@@ -131,11 +110,19 @@ public class SeatingSales {
         this.openTrips = openTrips;
     }
 
-    public int getSeating() {
-        return seating;
+    public String getSeatsSelected() {
+        return seatsSelected;
     }
 
-    public void setSeating(int seating) {
-        this.seating = seating;
+    public void setSeatsSelected(String seatsSelected) {
+        this.seatsSelected = seatsSelected;
+    }
+
+    public int getWholeTrip() {
+        return wholeTrip;
+    }
+
+    public void setWholeTrip(int wholeTrip) {
+        this.wholeTrip = wholeTrip;
     }
 }

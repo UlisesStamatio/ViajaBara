@@ -5,6 +5,7 @@ import mx.edu.utez.viajabara.access.user.model.User;
 import mx.edu.utez.viajabara.basecatalog.bus.model.Bus;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTrips;
 import mx.edu.utez.viajabara.basecatalog.route.model.Route;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -16,6 +17,7 @@ public class Trip {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
 
     @ManyToOne
     private User driver;
@@ -37,6 +39,12 @@ public class Trip {
     @Column(name = "status", columnDefinition = "BOOL DEFAULT TRUE")
     private boolean status;
 
+    @Column(columnDefinition = "time", name = "start_time")
+    private Date startTime;
+    @Column(name = "work_days", columnDefinition = "json")
+    @Type(type = "json")
+    private String workDays;
+
     public Trip() {
     }
 
@@ -45,6 +53,15 @@ public class Trip {
         this.bus = bus;
         this.route = route;
         this.status = status;
+    }
+
+    public Trip(User driver, Bus bus, Route route, boolean status, Date startTime, String workDays) {
+        this.driver = driver;
+        this.bus = bus;
+        this.route = route;
+        this.status = status;
+        this.startTime = startTime;
+        this.workDays = workDays;
     }
 
     public Long getId() {
@@ -85,6 +102,22 @@ public class Trip {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getWorkDays() {
+        return workDays;
+    }
+
+    public void setWorkDays(String workDays) {
+        this.workDays = workDays;
     }
 
     public boolean isStatus() {

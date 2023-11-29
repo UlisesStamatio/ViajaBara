@@ -702,19 +702,22 @@ class _TripState extends State<Trip> {
                                                       ),
                                                     ],
                                                     validator: (value) {
-                                                      if (value == null ||
-                                                          value.isEmpty) {
-                                                        return 'Campo obligatorio';
-                                                      } else if (int.parse(
-                                                                  value) <
-                                                              0 ||
-                                                          int.parse(value) >
-                                                              20) {
-                                                        print(
-                                                            "Asientos ${int.parse(value)}");
-                                                        return 'Coloca un valor entre 1-20';
+                                                      if (destinyController
+                                                          .text.isNotEmpty) {
+                                                        if ((value == null ||
+                                                            value.isEmpty)) {
+                                                          return 'Campo obligatorio';
+                                                        }
+                                                        if (int.parse(value) <
+                                                                0 ||
+                                                            int.parse(value) >
+                                                                20) {
+                                                          print(
+                                                              "Asientos ${int.parse(value)}");
+                                                          return 'Coloca un valor entre 1-20';
+                                                        }
+                                                        return null;
                                                       }
-                                                      return null;
                                                     },
                                                     cursorColor:
                                                         ColorsApp.primayColor,
