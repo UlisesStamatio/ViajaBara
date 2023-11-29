@@ -37,8 +37,8 @@
                 <tbody>
                   <tr  v-for="(route, index) in routes" :key="index">
                       <td class="text-center">{{index + 1}}</td>
-                      <td>{{route.endAddress.description}}</td> 
                       <td>{{route.startAddress.description}}</td> 
+                      <td>{{route.endAddress.description}}</td> 
                       <td class="text-center">{{route.stopOvers.length}}</td> 
                       <td class="text-center">
                         <span class="badge badge-sm" :class="{'badge-success': route.status, 'badge-danger': !route.status}"
@@ -47,7 +47,7 @@
                       </td>
                       <td class="text-sm">
                            <a
-                            @click="editRoute()"
+                            @click="editRoute(route.id)"
                           >
                             <i class="fa fa-pencil-square-o text-secondary"></i>
                           </a>
@@ -94,7 +94,7 @@ import listRoutes from '../../use-cases/list.route';
 import DataTable from 'datatables.net-dt';
 import $ from 'jquery';
 import Loader from '../../../../components/Loader.vue'
-
+import router from '../../../../router/index'
 export default {
   name: "ListRoute",
   components:{
@@ -149,7 +149,6 @@ export default {
         this.isLoading = true;
          const {data:{result} } = await listRoutes();
          this.routes = result.map((route) => {
-          console.log(route);
             route.startAddress.description = `${route.startAddress.description.substring(0, 30)}...`;
             route.endAddress.description = `${route.endAddress.description.substring(0, 30)}...`;
             return route;
@@ -191,6 +190,9 @@ export default {
          this.isLoading = false;
         this.$swal({icon: "error", title: err, type: "basic" });
       }
+    },
+    editRoute(id){
+      router.push({name: 'Modificar Ruta', params: {id: id}})
     }
   }
 };

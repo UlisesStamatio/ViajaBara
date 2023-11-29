@@ -49,34 +49,34 @@ const Operations = {
     //   }
     //   return response;
     // },
-    // async getUser(url, data){
-    //   let response;
-    //   try {
-    //     response= await axiosInstance.put(`${BASE_URL_USER}${url}`, JSON.stringify(data));
-    //     response = statusValidator(response);
-    //   } catch (error) {
-    //     if(error.response){
-    //       response = statusValidator(error.response);
-    //     }else{
-    //       router.push({name: 'Error Error403'})
-    //     }
-    //   }
-    //   return response;
-    // },
-    // async updateUser(url, data){
-    //   let response;
-    //   try {
-    //     response= await axiosInstance.put(`${BASE_URL_USER}${url}`, JSON.stringify(data));
-    //     response = statusValidator(response);
-    //   } catch (error) {
-    //     if(error.response){
-    //       response = statusValidator(error.response);
-    //     }else{
-    //       router.push({name: 'Error Error403'})
-    //     }
-    //   }
-    //   return response;
-    // },
+    async getRoute(url, data){
+      let response;
+      try {
+        response= await axiosInstance.put(`${BASE_URL_ROUTE}${url}`, JSON.stringify(data));
+        response = statusValidator(response);
+      } catch (error) {
+        if(error.response){
+          response = statusValidator(error.response);
+        }else{
+          router.push({name: 'Error Error403'})
+        }
+      }
+      return response;
+    },
+    async updateRoute(url, data){
+      let response;
+      try {
+        response= await axiosInstance.put(`${BASE_URL_ROUTE}${url}`, JSON.stringify(data));
+        response = statusValidator(response);
+      } catch (error) {
+        if(error.response){
+          response = statusValidator(error.response);
+        }else{
+          router.push({name: 'Error Error403'})
+        }
+      }
+      return response;
+    },
     // async changeStatusUser(url, data){
     //   let response;
     //   try {
