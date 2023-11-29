@@ -94,10 +94,10 @@ class AuthProvider {
         profile: data['profile'],
         name: data['person']['name'] + ' ' + data['person']['surname'],
         email: data['email'],
-        cellphone: data['person']['cellphone'], // Ahora esto debería funcionar
+        cellphone: data['person']['cellphone'], 
         birthDate: data['person']['birthDate'].toString(),
         sex: data['person']['sex'],
-        state: data['person']['state']['name']);
+        state: data['person']?['state']?['name']);
 
       saveData(responseMessage, 'info');
       return responseMessage;

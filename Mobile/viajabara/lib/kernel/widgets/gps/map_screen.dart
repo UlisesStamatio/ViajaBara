@@ -83,7 +83,9 @@ class _MapScreenState extends State<MapScreen> {
                       ],
                     ),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/passengers');
+                      },
                       style: ButtonStyle(
                           backgroundColor:
                               MaterialStateProperty.all(ColorsApp.primayColor)),
