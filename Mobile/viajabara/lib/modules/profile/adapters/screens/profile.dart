@@ -35,31 +35,36 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<void> _loadUserRole() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    Map<String, dynamic> jsonData = json.decode(prefs.getString('data')!);
-    Map<String, dynamic> jsonInfo = json.decode(prefs.getString('info')!);
-    ResponseMessage responseMessage = ResponseMessage.fromJson(jsonData);
-    ResponseMessage responseData = ResponseMessage.fromJson(jsonInfo);
-    print(responseData.name);
-    String? role = responseMessage.roles?.keyRole;
+    if (mounted) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      if (prefs.containsKey('info') && prefs.containsKey('data')) {
+        Map<String, dynamic> jsonData = json.decode(prefs.getString('data')!);
 
-    if (role == null) {
-      Navigator.pushReplacementNamed(context, '/login');
-    }
+        Map<String, dynamic> jsonInfo = json.decode(prefs.getString('info')!);
+        ResponseMessage responseMessage = ResponseMessage.fromJson(jsonData);
+        ResponseMessage responseData = ResponseMessage.fromJson(jsonInfo);
+        print(responseData.name);
+        String? role = responseMessage.roles?.keyRole;
 
-    setState(() {
-      name = responseData.name ?? 'Agrega tu nombre';
-      email = responseData.email ?? 'Agrega tu correo';
-      cellphone = responseData.cellphone ?? 'Agrega tu celular';
-      birthDate = responseData.birthDate ?? 'Agrega tu fecha de nacimiento';
-      sex = responseData.sex ?? 'Agrega tu sexo';
-      state = responseData.state ?? 'Agrega tu estado';
-    });
+        if (role == null) {
+          Navigator.pushReplacementNamed(context, '/login');
+        }
 
-    if (role == "ADMIN") {
-      setState(() {
-        isAdmin = true;
-      });
+        setState(() {
+          name = responseData.name ?? 'Agrega tu nombre';
+          email = responseData.email ?? 'Agrega tu correo';
+          cellphone = responseData.cellphone ?? 'Agrega tu celular';
+          birthDate = responseData.birthDate ?? 'Agrega tu fecha de nacimiento';
+          sex = responseData.sex ?? 'Agrega tu sexo';
+          state = responseData.state ?? 'Agrega tu estado';
+        });
+
+        if (role == "ADMIN") {
+          setState(() {
+            isAdmin = true;
+          });
+        }
+      }
     }
   }
 
