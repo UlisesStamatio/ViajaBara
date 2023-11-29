@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 public class TripDto {
     @NotNull(groups = {Modify.class,ChangeStatus.class})
     private Long id;
-    @NotNull(groups = {Register.class,Modify.class})
+    @NotNull(groups = {Register.class,Modify.class,FindByDriver.class})
     private User driver;
     @NotNull(groups = {Register.class,Modify.class})
     private Bus bus;
@@ -54,4 +54,5 @@ public class TripDto {
     public interface Register{}
     public interface Modify{}
     public interface ChangeStatus{}
+    public interface FindByDriver{}
 }
