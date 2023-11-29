@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:viajabara/domain/entities/address.dart';
 import 'package:viajabara/domain/entities/book_trip.dart';
 import 'package:viajabara/domain/entities/state/state_list.dart';
+import 'package:viajabara/domain/entities/trip/trip.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
 import 'package:viajabara/kernel/widgets/custom_progress_indicator.dart';
@@ -37,12 +38,28 @@ class _TripState extends State<Trip> {
   BookTrip bookTrip = BookTrip();
   List<DutyItem> duties = [];
   List<StateList> states = [];
+  List<TripDto> trips = [];
   List<StateList> filteredStates = [];
   List<StateList> filteredStatesDestiny = [];
+  List<StateList> filteredStatesDestinyRes = [];
   DateTime fecha = DateTime.now();
 
   Future<void> _initializeSearch() async {
-    // await loadTripsByFiltersClient();
+    await loadTripsByFiltersClient();
+  }
+
+  Future<void> loadTripsByFiltersClient() async {
+    if (mounted) {
+      Completer<void> completer = Completer<void>();
+      try {
+        trips = await AuthProvider().getTripsByFiltersClient(bookTrip);
+        completer.complete();
+      } catch (e) {
+        print('Error loadTripsByFiltersClient: $e');
+        completer.completeError(e);
+      }
+      return completer.future;
+    }
   }
 
   void initializeSearch() {
@@ -68,11 +85,9 @@ class _TripState extends State<Trip> {
     Future.delayed(const Duration(seconds: 3), () {
       _formKey.currentState?.validate();
     });
-    await 
   }
 
   Future<void> loadBookTrip() async {
-    if (mounted) {
     Completer<void> completer = Completer<void>();
 
     try {
@@ -91,8 +106,6 @@ class _TripState extends State<Trip> {
     }
 
     return completer.future;
-      
-    }
   }
 
   // Future<void> loadDuties() async {
@@ -115,24 +128,27 @@ class _TripState extends State<Trip> {
   Future<void> loadStatesForTrip() async {
     Completer<void> completer = Completer<void>();
     try {
-      // List<StateList> statesList =
-      //     await AuthProvider().getStatesForTrip(dateController.text);
-      // setState(() {
-      //   states = statesList;
-      //   if (statesList.isNotEmpty) {
-      //     originController.text = statesList[0].addresses[0].description;
-      //     bookTrip.stateOriginId = statesList[0].id;
-      //     bookTrip.originId = statesList[0].addresses[0].id;
-      //   }
-      //   filteredStates = statesList;
-      //   if (filteredStates.isNotEmpty) {
-      //     filterStatesDestiny(filteredStates[0].id,
-      //         filteredStates[0].addresses[0].id, setState);
-      //   }
-      //   print("filteredStates.isEmpty ");
-      //   print(filteredStates.isEmpty);
-      // });
-      // completer.complete();
+      List<StateList> statesList =
+          await AuthProvider().getStatesForTrip(dateController.text);
+      if (mounted) {
+        setState(() {
+          states = statesList;
+          if (statesList.isNotEmpty) {
+            originController.text = statesList[0].addresses[0].description;
+            bookTrip.stateOriginId = statesList[0].id;
+            bookTrip.originId = statesList[0].addresses[0].id;
+          }
+          filteredStates = statesList;
+          if (filteredStates.isNotEmpty) {
+            filterStatesDestiny(filteredStates[0].id,
+                filteredStates[0].addresses[0].id, setState);
+          }
+          print("filteredStates.isEmpty ");
+          print(filteredStates.isEmpty);
+        });
+      }
+
+      completer.complete();
     } catch (e) {
       print('Error loadStatesForTrip: $e');
       completer.completeError(e);
@@ -184,42 +200,75 @@ class _TripState extends State<Trip> {
     }
   }
 
-  void filterStates(String query, StateSetter setter,
-      List<StateList> statesToFilter, bool isOrigin) {
+  void filterStates(String query, StateSetter setter) {
     print("filterStates $query");
     setter(() {
-      if (isOrigin) {
-        if (query == '') {
-          statesToFilter = List<StateList>.from(states);
-        } else {
-          statesToFilter = states
-              .map((state) {
-                bool stateNameMatches =
-                    state.name.toLowerCase().contains(query.toLowerCase());
-                if (stateNameMatches) {
-                  return state;
+      if (query == '') {
+        filteredStates = List<StateList>.from(states);
+      } else {
+        filteredStates = states
+            .map((state) {
+              bool stateNameMatches =
+                  state.name.toLowerCase().contains(query.toLowerCase());
+              if (stateNameMatches) {
+                return state;
+              }
+              if (!stateNameMatches) {
+                List<Address> matchingAddresses = state.addresses
+                    .where((address) => address.description
+                        .toLowerCase()
+                        .contains(query.toLowerCase()))
+                    .toList();
+                if (matchingAddresses.isNotEmpty) {
+                  return StateList(
+                    id: state.id,
+                    name: state.name,
+                    addresses: matchingAddresses,
+                  );
                 }
-                if (!stateNameMatches) {
-                  List<Address> matchingAddresses = state.addresses
-                      .where((address) => address.description
-                          .toLowerCase()
-                          .contains(query.toLowerCase()))
-                      .toList();
-                  if (matchingAddresses.isNotEmpty) {
-                    return StateList(
-                      id: state.id,
-                      name: state.name,
-                      addresses: matchingAddresses,
-                    );
-                  }
-                }
+              }
 
-                return null;
-              })
-              .whereType<StateList>()
-              .toList();
-        }
-      } else {}
+              return null;
+            })
+            .whereType<StateList>()
+            .toList();
+      }
+    });
+  }
+
+  void filterStatesDestinySelect(String query, StateSetter setter) {
+    print("filteredStatesDestiny $query");
+    setter(() {
+      if (query == '') {
+        filteredStatesDestiny = List<StateList>.from(filteredStatesDestinyRes);
+      } else {
+        filteredStatesDestiny = filteredStatesDestinyRes
+            .map((state) {
+              bool stateNameMatches =
+                  state.name.toLowerCase().contains(query.toLowerCase());
+              if (stateNameMatches) {
+                return state;
+              }
+              if (!stateNameMatches) {
+                List<Address> matchingAddresses = state.addresses
+                    .where((address) => address.description
+                        .toLowerCase()
+                        .contains(query.toLowerCase()))
+                    .toList();
+                if (matchingAddresses.isNotEmpty) {
+                  return StateList(
+                    id: state.id,
+                    name: state.name,
+                    addresses: matchingAddresses,
+                  );
+                }
+              }
+
+              return null;
+            })
+            .whereType<StateList>()
+            .toList();
+      }
     });
   }
 
@@ -250,6 +299,7 @@ class _TripState extends State<Trip> {
           .whereType<StateList>()
           .toList();
     });
+    filteredStatesDestinyRes = filteredStatesDestiny;
   }
 
   void reloadStates() {
@@ -334,7 +384,7 @@ class _TripState extends State<Trip> {
                                                 SizedBox(
                                                   width: 160,
                                                   child: TextFormField(
-                                                    controller: seatController,
+                                                    controller: dateController,
                                                     onTap: () {
                                                       _selectDate(context);
                                                     },
@@ -343,6 +393,107 @@ class _TripState extends State<Trip> {
                                                         TextInputType.text,
                                                     validator: (value) {
                                                       if (value == null ||
+                                                          value.isEmpty) {
+                                                        return 'Campo obligatorio';
+                                                      }
+                                                      return null;
+                                                    },
+                                                    cursorColor:
+                                                        ColorsApp.primayColor,
+                                                    style: const TextStyle(
+                                                      color: ColorsApp.text,
+                                                    ),
+                                                    decoration: InputDecoration(
+                                                      labelText: 'Ida*',
+                                                      filled: true,
+                                                      fillColor:
+                                                          ColorsApp.whiteColor,
+                                                      hintStyle:
+                                                          const TextStyle(
+                                                        color: ColorsApp.text,
+                                                      ),
+                                                      labelStyle:
+                                                          const TextStyle(
+                                                        color: ColorsApp.text,
+                                                      ),
+                                                      errorMaxLines: 2,
+                                                      enabledBorder: OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      4.0),
+                                                          borderSide: const BorderSide(
+                                                              color: ColorsApp
+                                                                  .primayColor,
+                                                              width: 1.0,
+                                                              style: BorderStyle
+                                                                  .solid)),
+                                                      focusedBorder: OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      4.0),
+                                                          borderSide: const BorderSide(
+                                                              color: ColorsApp
+                                                                  .primayColor,
+                                                              width: 1.0,
+                                                              style: BorderStyle
+                                                                  .solid)),
+                                                      errorBorder: OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      4.0),
+                                                          borderSide: const BorderSide(
+                                                              color: ColorsApp
+                                                                  .dangerColor,
+                                                              width: 1.0,
+                                                              style: BorderStyle
+                                                                  .solid)),
+                                                      focusedErrorBorder:
+                                                          OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          4.0),
+                                                              borderSide: const BorderSide(
+                                                                  color:
+                                                                      ColorsApp
+                                                                          .text,
+                                                                  width: 1.0,
+                                                                  style: BorderStyle
+                                                                      .solid)),
+                                                    ),
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  width: 160,
+                                                ),
+                                              ]),
+                                          const SizedBox(
+                                            height: 20,
+                                          ),
+                                          Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: <Widget>[
+                                                SizedBox(
+                                                  width: 160,
+                                                  child: TextFormField(
+                                                    controller:
+                                                        originController,
+                                                    onTap: () {
+                                                      _showModalSelectAddress(
+                                                          context);
+                                                    },
+                                                    readOnly: true,
+                                                    keyboardType:
+                                                        TextInputType.text,
+                                                    validator: (value) {
+                                                      if (states.isEmpty) {
+                                                        return 'Elige otra fecha';
+                                                      } else if (value ==
+                                                              null ||
                                                           value.isEmpty) {
                                                         return 'Campo obligatorio';
                                                       }
@@ -418,40 +569,106 @@ class _TripState extends State<Trip> {
                                                 ),
                                                 SizedBox(
                                                   width: 160,
-                                                  child: ElevatedButton(
-                                                    onPressed: () {
-                                                      if (!_isButtonDisabled) {
-                                                        initializeSearch();
-                                                      }
+                                                  child: TextFormField(
+                                                    enabled: originController
+                                                        .text.isNotEmpty,
+                                                    controller:
+                                                        destinyController,
+                                                    onTap: () {
+                                                      _showModalSelectAddressDestiny(
+                                                          context);
                                                     },
-                                                    style: ButtonStyle(
-                                                      backgroundColor:
-                                                          MaterialStateProperty
-                                                              .all(
-                                                        _isButtonDisabled
-                                                            ? ColorsApp.muted
-                                                            : ColorsApp
-                                                                .primayColor,
-                                                      ),
+                                                    readOnly: true,
+                                                    keyboardType:
+                                                        TextInputType.text,
+                                                    validator: (value) {
+                                                      if (originController.text
+                                                              .isNotEmpty &&
+                                                          value == "") {
+                                                        return 'Campo obligatorio';
+                                                      }
+                                                      return null;
+                                                    },
+                                                    cursorColor:
+                                                        ColorsApp.primayColor,
+                                                    style: TextStyle(
+                                                      color: originController
+                                                              .text.isEmpty
+                                                          ? ColorsApp.whiteColor
+                                                          : ColorsApp.text,
                                                     ),
-                                                    child: const Row(children: [
-                                                      Icon(
-                                                        Icons.search,
-                                                        size: 20,
+                                                    decoration: InputDecoration(
+                                                      labelText: 'Destino*',
+                                                      filled: true,
+                                                      fillColor:
+                                                          originController
+                                                                  .text.isEmpty
+                                                              ? ColorsApp.text
+                                                              : ColorsApp
+                                                                  .whiteColor,
+                                                      hintStyle:
+                                                          const TextStyle(
+                                                        color: ColorsApp.text,
                                                       ),
-                                                      SizedBox(
-                                                        width: 10,
+                                                      labelStyle: TextStyle(
+                                                        color: originController
+                                                                .text.isEmpty
+                                                            ? ColorsApp
+                                                                .whiteColor
+                                                            : ColorsApp.text,
                                                       ),
-                                                      Text(
-                                                        'Buscar',
-                                                        style: TextStyle(
-                                                            fontSize: 15),
-                                                      )
-                                                    ]),
+                                                      errorMaxLines: 2,
+                                                      enabledBorder: OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      4.0),
+                                                          borderSide: const BorderSide(
+                                                              color: ColorsApp
+                                                                  .primayColor,
+                                                              width: 1.0,
+                                                              style: BorderStyle
+                                                                  .solid)),
+                                                      focusedBorder: OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      4.0),
+                                                          borderSide: const BorderSide(
+                                                              color: ColorsApp
+                                                                  .primayColor,
+                                                              width: 1.0,
+                                                              style: BorderStyle
+                                                                  .solid)),
+                                                      errorBorder: OutlineInputBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      4.0),
+                                                          borderSide: const BorderSide(
+                                                              color: ColorsApp
+                                                                  .dangerColor,
+                                                              width: 1.0,
+                                                              style: BorderStyle
+                                                                  .solid)),
+                                                      focusedErrorBorder:
+                                                          OutlineInputBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          4.0),
+                                                              borderSide: const BorderSide(
+                                                                  color:
+                                                                      ColorsApp
+                                                                          .text,
+                                                                  width: 1.0,
+                                                                  style: BorderStyle
+                                                                      .solid)),
+                                                    ),
                                                   ),
                                                 ),
                                               ]),
-                                          SizedBox(
+                                          const SizedBox(
                                             height: 20,
                                           ),
                                           Row(
@@ -505,18 +722,29 @@ class _TripState extends State<Trip> {
                                                       color: ColorsApp.text,
                                                     ),
                                                     decoration: InputDecoration(
+                                                      enabled: destinyController
+                                                          .text.isNotEmpty,
                                                       labelText: 'Asientos*',
-                                                      hintText: "1",
                                                       filled: true,
                                                       fillColor:
-                                                          ColorsApp.whiteColor,
-                                                      hintStyle:
-                                                          const TextStyle(
-                                                        color: ColorsApp.text,
+                                                          destinyController
+                                                                  .text.isEmpty
+                                                              ? ColorsApp.text
+                                                              : ColorsApp
+                                                                  .whiteColor,
+                                                      hintStyle: TextStyle(
+                                                        color: destinyController
+                                                                .text.isEmpty
+                                                            ? ColorsApp
+                                                                .whiteColor
+                                                            : ColorsApp.text,
                                                       ),
-                                                      labelStyle:
-                                                          const TextStyle(
-                                                        color: ColorsApp.text,
+                                                      labelStyle: TextStyle(
+                                                        color: destinyController
+                                                                .text.isEmpty
+                                                            ? ColorsApp
+                                                                .whiteColor
+                                                            : ColorsApp.text,
                                                       ),
                                                       errorMaxLines: 2,
                                                       enabledBorder: OutlineInputBorder(
@@ -614,101 +842,128 @@ class _TripState extends State<Trip> {
                               builder: (context, snapshot2) {
                                 if (snapshot2.connectionState ==
                                     ConnectionState.done) {
-                                  return Card(
-                                    elevation: 5,
-                                    margin: const EdgeInsets.symmetric(
-                                        vertical: 20.0, horizontal: 16.0),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(20.0),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                          const Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              CircleAvatar(
-                                                radius: 45,
-                                                backgroundImage: AssetImage(
-                                                    'assets/images/perfilGirl.avif'),
-                                              ),
-                                              SizedBox(width: 20.0),
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: <Widget>[
-                                                    Text(
-                                                      'Salida: Lugar HH:MM',
-                                                      style: TextStyle(
-                                                        fontSize: 18.0,
+                                  return SizedBox(
+                                    height: 360,
+                                    child: ListView.builder(
+                                        itemCount: trips.length,
+                                        itemBuilder: (context, index) {
+                                          return Card(
+                                            elevation: 5,
+                                            margin: const EdgeInsets.symmetric(
+                                                vertical: 20.0,
+                                                horizontal: 16.0),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(20.0),
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: <Widget>[
+                                                  Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: <Widget>[
+                                                      ImageFromBase64(
+                                                          base64String:
+                                                              trips[index]
+                                                                  .driver!
+                                                                  .profile!),
+                                                      const SizedBox(
+                                                          width: 20.0),
+                                                      const Expanded(
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: <Widget>[
+                                                            Text(
+                                                              'Salida: Lugar HH:MM',
+                                                              style: TextStyle(
+                                                                fontSize: 18.0,
+                                                              ),
+                                                            ),
+                                                            SizedBox(
+                                                                height: 10.0),
+                                                            Text(
+                                                              'Llegada: Lugar HH:MM',
+                                                              style: TextStyle(
+                                                                fontSize: 18.0,
+                                                              ),
+                                                            ),
+                                                            SizedBox(
+                                                                height: 10.0),
+                                                            Text(
+                                                              'Pagado: \$100.0',
+                                                              style: TextStyle(
+                                                                fontSize: 18.0,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
-                                                    ),
-                                                    SizedBox(height: 10.0),
-                                                    Text(
-                                                      'Llegada: Lugar HH:MM',
-                                                      style: TextStyle(
-                                                        fontSize: 18.0,
-                                                      ),
-                                                    ),
-                                                    SizedBox(height: 10.0),
-                                                    Text(
-                                                      'Pagado: \$100.0',
-                                                      style: TextStyle(
-                                                        fontSize: 18.0,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                top: 15.0),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              children: <Widget>[
-                                                TextButton.icon(
-                                                  icon: const Icon(Icons
-                                                      .remove_red_eye_outlined),
-                                                  label: const Text('Detalles'),
-                                                  onPressed: () {
-                                                    _showModalSelectAddress(
-                                                        context);
-                                                  },
-                                                  style: TextButton.styleFrom(
-                                                    foregroundColor:
-                                                        ColorsApp.whiteColor,
-                                                    backgroundColor:
-                                                        ColorsApp.primayColor,
+                                                    ],
                                                   ),
-                                                ),
-                                                TextButton.icon(
-                                                  icon: const Icon(
-                                                      CupertinoIcons.cart_fill),
-                                                  label: const Text('Reservar'),
-                                                  onPressed: () {
-                                                    // saveBookTripOnSharedPreferences();
-                                                    Navigator.pushNamed(
-                                                        context, '/booking');
-                                                  },
-                                                  style: TextButton.styleFrom(
-                                                    foregroundColor:
-                                                        ColorsApp.whiteColor,
-                                                    backgroundColor:
-                                                        ColorsApp.primayColor,
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            top: 15.0),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceEvenly,
+                                                      children: <Widget>[
+                                                        TextButton.icon(
+                                                          icon: const Icon(Icons
+                                                              .remove_red_eye_outlined),
+                                                          label: const Text(
+                                                              'Detalles'),
+                                                          onPressed: () {
+                                                            _showModalSelectAddress(
+                                                                context);
+                                                          },
+                                                          style: TextButton
+                                                              .styleFrom(
+                                                            foregroundColor:
+                                                                ColorsApp
+                                                                    .whiteColor,
+                                                            backgroundColor:
+                                                                ColorsApp
+                                                                    .primayColor,
+                                                          ),
+                                                        ),
+                                                        TextButton.icon(
+                                                          icon: const Icon(
+                                                              CupertinoIcons
+                                                                  .cart_fill),
+                                                          label: const Text(
+                                                              'Reservar'),
+                                                          onPressed: () {
+                                                            // saveBookTripOnSharedPreferences();
+                                                            Navigator.pushNamed(
+                                                                context,
+                                                                '/booking');
+                                                          },
+                                                          style: TextButton
+                                                              .styleFrom(
+                                                            foregroundColor:
+                                                                ColorsApp
+                                                                    .whiteColor,
+                                                            backgroundColor:
+                                                                ColorsApp
+                                                                    .primayColor,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                          );
+                                        }),
                                   );
                                 } else {
                                   return CustomCircularProgressIndicator();
@@ -761,7 +1016,7 @@ class _TripState extends State<Trip> {
                     padding: const EdgeInsets.all(8.0),
                     child: TextField(
                       onChanged: (query) {
-                        filterStates(query, setState, states, true);
+                        filterStates(query, setState);
                       },
                       decoration: InputDecoration(
                         labelText: 'Filtrar',
@@ -805,21 +1060,22 @@ class _TripState extends State<Trip> {
                   SizedBox(
                     height: 300,
                     child: ListView.builder(
-                      itemCount: states.length,
+                      itemCount: filteredStates.length,
                       itemBuilder: (context, index) {
                         return ExpansionTile(
                           iconColor: ColorsApp.secondaryColor,
                           textColor: ColorsApp.secondaryColor,
                           collapsedBackgroundColor: ColorsApp.muted,
-                          title: Text(states[index].name),
-                          children: states[index].addresses.map((address) {
+                          title: Text(filteredStates[index].name),
+                          children:
+                              filteredStates[index].addresses.map((address) {
                             return ListTile(
                               title: Text(address.description),
                               onTap: () {
-                                filterStatesDestiny(
-                                    states[index].id, address.id, setState);
+                                filterStatesDestiny(filteredStates[index].id,
+                                    address.id, setState);
                                 originController.text = address.description;
-
+                                destinyController.text = "";
                                 print('Selected Address: ${address.id}');
                               },
                             );
@@ -839,8 +1095,7 @@ class _TripState extends State<Trip> {
     });
   }
 
-  void _showModalSelectAddressDestiny(
-      BuildContext context, List<StateList> states) {
+  void _showModalSelectAddressDestiny(BuildContext context) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -874,7 +1129,7 @@ class _TripState extends State<Trip> {
                     padding: const EdgeInsets.all(8.0),
                     child: TextField(
                       onChanged: (query) {
-                        filterStates(query, setState, states, false);
+                        filterStatesDestinySelect(query, setState);
                       },
                       decoration: InputDecoration(
                         labelText: 'Filtrar',
@@ -918,14 +1173,16 @@ class _TripState extends State<Trip> {
                   SizedBox(
                     height: 300,
                     child: ListView.builder(
-                      itemCount: states.length,
+                      itemCount: filteredStatesDestiny.length,
                       itemBuilder: (context, index) {
                         return ExpansionTile(
                           iconColor: ColorsApp.secondaryColor,
                           textColor: ColorsApp.secondaryColor,
                           collapsedBackgroundColor: ColorsApp.muted,
-                          title: Text(states[index].name),
-                          children: states[index].addresses.map((address) {
+                          title: Text(filteredStatesDestiny[index].name),
+                          children: filteredStatesDestiny[index]
+                              .addresses
+                              .map((address) {
                             return ListTile(
                               title: Text(address.description),
                               onTap: () {
@@ -933,7 +1190,8 @@ class _TripState extends State<Trip> {
                                   () {
                                     destinyController.text =
                                         address.description;
-                                    bookTrip.stateDestinyId = states[index].id;
+                                    bookTrip.stateDestinyId =
+                                        filteredStatesDestiny[index].id;
                                     bookTrip.destinyId = address.id;
                                   },
                                 );
@@ -955,5 +1213,27 @@ class _TripState extends State<Trip> {
     ).then((value) {
       reloadStates();
     });
+  }
+}
+
+class ImageFromBase64 extends StatelessWidget {
+  final String base64String;
+
+  const ImageFromBase64({super.key, required this.base64String});
+
+  @override
+  Widget build(BuildContext context) {
+    if (base64String != null && base64String != "") {
+      Uint8List bytes = base64.decode(base64String);
+      return CircleAvatar(
+        radius: 50,
+        backgroundImage: MemoryImage(bytes, scale: 0.1),
+      );
+    } else {
+      return const CircleAvatar(
+        radius: 50,
+        backgroundColor: ColorsApp.secondaryColor,
+      );
+    }
   }
 }

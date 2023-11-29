@@ -2,9 +2,13 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:viajabara/config/dio/module_network.dart';
+import 'package:viajabara/domain/entities/address.dart';
+import 'package:viajabara/domain/entities/book_trip.dart';
 import 'package:viajabara/domain/entities/list_states.dart';
 import 'package:viajabara/domain/entities/response_message.dart';
 import 'package:viajabara/domain/entities/roles/roles.dart';
+import 'package:viajabara/domain/entities/state/state_list.dart';
+import 'package:viajabara/domain/entities/trip/trip.dart';
 import 'package:viajabara/domain/entities/user_data.dart';
 import 'package:viajabara/modules/tripsUser/adapters/entities/list_drivers.dart';
 
@@ -64,6 +68,69 @@ class AuthProvider {
     } else {
       throw Exception('Fallo al obtener los registros');
     }
+  }
+
+  Future<List<StateList>> getStatesForTrip(String date) async {
+    final response =
+        await dio.post('trips/states-for-filters-by-date', data: date);
+
+    if (response.statusCode == 200) {
+      data = response.data;
+      List<dynamic> statesJson = data['result'];
+
+      List<StateList> states = statesJson.map((state) {
+        List<dynamic> addressesJson = state['addresses'];
+        List<Address> addresses = addressesJson
+            .map((address) => Address(
+                  description: address['description'],
+                  id: address['id'],
+                ) as Address) // Conversión explícita
+            .toList();
+
+        return StateList(
+          name: state['name'],
+          id: state['id'],
+          addresses: addresses,
+        );
+      }).toList();
+
+      return states;
+    } else {
+      throw Exception('Fallo al obtener los estados de origen');
+    }
+  }
+
+  Future<List<TripDto>> getTripsByFiltersClient(BookTrip bookTrip) async {
+    try {
+      final response = await dio.post(
+        'trips/find-by-filters-client',
+        data: jsonEncode(bookTrip),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody =
+            response.data as Map<String, dynamic>;
+
+        if (responseBody.containsKey('result')) {
+          final List<Map<String, dynamic>> tripsJson =
+              List<Map<String, dynamic>>.from(responseBody['result']);
+
+          List<TripDto> trips = tripsJson.map((tripJson) {
+            return TripDto.fromJson(tripJson);
+          }).toList();
+
+          print(trips);
+          return trips;
+        } else {
+          throw Exception('La respuesta no contiene la clave "result".');
+        }
+      } else {
+        throw Exception('Fallo al obtener los estados de origen');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+    return List.empty();
   }
 
   Future<List<DriverItem>> getDriversEnabled() async {
