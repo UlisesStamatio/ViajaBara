@@ -66,24 +66,32 @@ public class PersonService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public ResponseEntity save(PersonDto dto) throws SQLException {
-        dto.setSex(dto.getSex().toUpperCase());
+        if(dto.getSex() != null){
+            dto.setSex(dto.getSex().toUpperCase());
+        }
 
         if (dto.getCellphone() != null) {
             if (!phoneValidator.isValid(dto.getCellphone())) {
                 return new ResponseEntity<>(new Message("Celular malformado", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
             }
         }
-        Optional<State> optionalState = stateService.findById(dto.getState().getId());
-        if (!optionalState.isPresent()) {
-            return new ResponseEntity<>(new Message("Estado de residencia no encontrado", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
-        }
-        if (!optionalState.get().isStatus()) {
-            return new ResponseEntity<>(new Message("Estado de residencia inactivo", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
-        }
+
         Person person = new Person();
         person.asignValuesRegister(dto);
+
+
+        if(dto.getState() != null){
+            Optional<State> optionalState = stateService.findById(dto.getState().getId());
+            if (!optionalState.isPresent()) {
+                return new ResponseEntity<>(new Message("Estado de residencia no encontrado", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
+            }
+            if (!optionalState.get().isStatus()) {
+                return new ResponseEntity<>(new Message("Estado de residencia inactivo", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
+            }
+            person.setState(optionalState.get());
+        }
+
         person.setStatus(true);
-        person.setState(optionalState.get());
         person = repository.saveAndFlush(person);
         if (person == null) {
             return new ResponseEntity<>(new Message("Persona no registrada", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
@@ -97,7 +105,12 @@ public class PersonService {
         if (!optionalPerson.isPresent()) {
             return new ResponseEntity<>(new Message("Persona no encontrada", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
-        dto.setSex(dto.getSex().toUpperCase());
+
+        if(dto.getSex() != null){
+            dto.setSex(dto.getSex().toUpperCase());
+        }
+
+
         Person person = optionalPerson.get();
 
         if (dto.getCellphone() != null) {

@@ -3,10 +3,12 @@ import 'package:viajabara/domain/entities/roles/roles.dart';
 class ResponseMessage{
   final String? token;
   final String? email;
+  final String? profile;
   final String? name;
   final String? cellphone;
   final String? birthDate;
   final String? sex;
+  final String? state;
   final Roles? roles;
   final String? text;
   final String? type;
@@ -14,10 +16,12 @@ class ResponseMessage{
   ResponseMessage({
       this.token,
       this.email, 
+      this.profile,
       this.name, 
       this.cellphone,
       this.birthDate,
       this.sex,
+      this.state,
       this.roles,
       this.text,
       this.type
@@ -30,6 +34,7 @@ class ResponseMessage{
     'cellphone': cellphone,
     'birthDate': birthDate,
     'sex':sex,
+    'state': state,
     'roles': roles,
     'text': text,
     'type': type
@@ -43,7 +48,8 @@ class ResponseMessage{
       cellphone: json['cellphone'],
       birthDate: json['birthDate'],
       sex: json['sex'],
-      roles: Roles.fromJson(json['roles']),
+      state: json['state'],
+      roles: json['roles'] != null ? Roles.fromJson(json['roles']) : null,
       text: json['text'],
       type: json['type']
     );

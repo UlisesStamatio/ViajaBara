@@ -7,10 +7,10 @@ class Roles {
   final bool? status; 
 
   Roles({
-    required this.keyRole,
-    required this.name,
+    this.keyRole,
+    this.name,
     this.privileges,
-    required this.status,
+    this.status,
   });
 
   Map<String, dynamic> toJson() => {
