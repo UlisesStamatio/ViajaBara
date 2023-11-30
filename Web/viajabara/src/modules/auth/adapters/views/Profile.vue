@@ -453,7 +453,6 @@ export default {
   },
   async mounted() {
     let {identKey}  = storeSession.getDataSession()
-    console.log(identKey);
     await this.getProfile(identKey);
     if (document.getElementById("edit-description")) {
       // eslint-disable-next-line no-unused-vars
@@ -499,7 +498,6 @@ export default {
         if(!error){
           const {result:{profile}} = data
           const {result} = data
-          console.log(result);
           document.getElementById("image_profile").src = `data:image/png;base64,${profile}`;
           document.getElementById("image-profile-edit").src = `data:image/png;base64,${profile}`;
           this.user = result;
