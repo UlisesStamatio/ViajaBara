@@ -15,7 +15,7 @@ RUN mvn clean package
 FROM openjdk:18-ea-8-jdk
 
 # Copia el archivo JAR generado desde el contenedor de compilación
-COPY --from=builder /target/viajabara-1.jar /app.jar
+COPY --from=builder /app/target/viajabara-1.jar /app.jar
 
 # Expone el puerto en el que se ejecuta tu aplicación
 EXPOSE 8084
