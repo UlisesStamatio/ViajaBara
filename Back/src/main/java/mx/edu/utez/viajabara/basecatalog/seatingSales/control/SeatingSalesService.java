@@ -78,9 +78,9 @@ public class SeatingSalesService {
         List<SeatingSales> seatingSalesList = repository.findAllByOpenTrips(optional.get());
         List<SeatingSales> response = new ArrayList<>();
         for (SeatingSales seatingSales:seatingSalesList) {
-            seatingSales.getOpenTrips().getTrip().getDriver().setProfile(null);
-            seatingSales.getOpenTrips().getTrip().getBus().setImage(null);
-            seatingSales.getClient().setProfile(null);
+            seatingSales.getOpenTrips().getTrip().setDriver(null);
+            seatingSales.getOpenTrips().getTrip().setBus(null);
+            //seatingSales.getClient().setProfile(null);
             response.add(seatingSales);
         }
         return new ResponseEntity<>(new Message(response, "Listado de compra de asientos por viaje", TypesResponse.SUCCESS), HttpStatus.OK);
@@ -97,7 +97,7 @@ public class SeatingSalesService {
             return new ResponseEntity<>(new Message("No se encontró el viaje abierto", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
         SeatingSales seatingSales = new SeatingSales(dto.getStart_latitude(),dto.getStart_longitude(), dto.getEnd_latitude(), dto.getEnd_longitude(), dto.getCost(),userOptional.get(), dto.getSeating(), openTripsOptional.get());
-
+        seatingSales.setChecked(0);
         seatingSales = repository.saveAndFlush(seatingSales);
 
         if (seatingSales == null) {
@@ -112,7 +112,7 @@ public class SeatingSalesService {
     public ResponseEntity<Object> update(SeatingSalesDto dto) throws SQLException {
         Optional<SeatingSales> optionalSeatingSales = repository.findById(dto.getId());
         if(!optionalSeatingSales.isPresent()){
-            return new ResponseEntity<>(new Message("No se encontró el viaje abierto", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new Message("No se encontró el asiento vendido", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
         Optional<User> userOptional = userRepository.findById(dto.getClient().getId());
         if(!userOptional.isPresent()){
@@ -140,6 +140,29 @@ public class SeatingSalesService {
         }
 
         return new ResponseEntity<>(new Message(seatingSales, "Se modificó la venta de lugar", TypesResponse.SUCCESS), HttpStatus.OK);
+    }
+
+    @Transactional(rollbackFor = {SQLException.class})
+    public ResponseEntity<Object> checkAssist(SeatingSalesDto dto) throws SQLException {
+
+        if(dto.getChecked()<0 && dto.getChecked()>2){
+            return new ResponseEntity<>(new Message("El estado de la asistencia no existe", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
+        }
+
+        Optional<SeatingSales> optionalSeatingSales = repository.findById(dto.getId());
+        if(!optionalSeatingSales.isPresent()){
+            return new ResponseEntity<>(new Message("No se encontró el asiento vendido", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
+        }
+        SeatingSales seatingSales = optionalSeatingSales.get();
+        seatingSales.setChecked(dto.getChecked());
+
+        seatingSales = repository.saveAndFlush(seatingSales);
+
+        if (seatingSales == null) {
+            return new ResponseEntity<>(new Message("No se registró el estado de la asistencia", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(new Message( "Se registró el estado de la asistencia", TypesResponse.SUCCESS), HttpStatus.OK);
     }
 
 

@@ -9,7 +9,7 @@ import javax.validation.constraints.PositiveOrZero;
 
 public class SeatingSalesDto {
 
-    @NotNull(groups = {Modify.class})
+    @NotNull(groups = {Modify.class,Check.class})
     private Long id;
     @NotBlank(groups = {Register.class,Modify.class})
     private String start_latitude;
@@ -27,6 +27,9 @@ public class SeatingSalesDto {
     private User client;
     @NotNull(groups = {Register.class,Modify.class,FindByOpenTrip.class})
     private OpenTrips openTrips;
+
+    @PositiveOrZero(groups = {Check.class})
+    private int checked;
 
     public SeatingSalesDto() {
     }
@@ -103,8 +106,17 @@ public class SeatingSalesDto {
         this.openTrips = openTrips;
     }
 
+    public int getChecked() {
+        return checked;
+    }
+
+    public void setChecked(int checked) {
+        this.checked = checked;
+    }
+
     public interface Register{}
     public interface Modify{}
     public interface FindByClient{}
     public interface FindByOpenTrip{}
+    public interface Check{}
 }

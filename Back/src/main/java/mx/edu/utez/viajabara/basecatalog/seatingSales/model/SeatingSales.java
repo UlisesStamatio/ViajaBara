@@ -34,8 +34,12 @@ public class SeatingSales {
     @ManyToOne
     private User client;
 
-    @Column(name = "seating", columnDefinition = "INT(1)")
+    @Column(name = "seating", columnDefinition = "INT(2)")
     private int seating;
+
+    //0.- No checado 1.- Asistió 2.- No asistió
+    @Column(name = "checked", columnDefinition = "INT(1)")
+    private int checked;
 
     @ManyToOne
     private OpenTrips openTrips;
@@ -137,5 +141,13 @@ public class SeatingSales {
 
     public void setSeating(int seating) {
         this.seating = seating;
+    }
+
+    public int getChecked() {
+        return checked;
+    }
+
+    public void setChecked(int checked) {
+        this.checked = checked;
     }
 }
