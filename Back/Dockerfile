@@ -18,7 +18,7 @@ FROM openjdk:18-ea-8-jdk
 COPY --from=builder /app/target/viajabara-1.jar /app.jar
 
 # Expone el puerto en el que se ejecuta tu aplicación
-EXPOSE 8084
+EXPOSE 8090
 
 # Comando para ejecutar la aplicación cuando se inicie el contenedor
 CMD ["java", "-jar", "/app.jar"]
