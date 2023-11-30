@@ -61,6 +61,18 @@ public class OpenTripsService {
     }
 
     @Transactional(readOnly = true)
+    public ResponseEntity<Object> findAllTripsHistory(Long driver_id){
+        List<OpenTrips> openTripsList = repository.searchAllTripsHistory(driver_id);
+        List<OpenTrips> response = new ArrayList<>();
+        for (OpenTrips openTrips:openTripsList) {
+            openTrips.getTrip().getDriver().setProfile(null);
+            openTrips.getTrip().getBus().setImage(null);
+            response.add(openTrips);
+        }
+        return new ResponseEntity<>(new Message(response, "Listado de historial de viajes", TypesResponse.SUCCESS), HttpStatus.OK);
+    }
+
+    @Transactional(readOnly = true)
     public ResponseEntity<Object> findAllEnabled(){
         List<OpenTrips> openTripsList = repository.searchAllByStatusActive(1);
         List<OpenTrips> response = new ArrayList<>();

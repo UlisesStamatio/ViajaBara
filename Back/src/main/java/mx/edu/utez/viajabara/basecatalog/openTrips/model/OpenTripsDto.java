@@ -18,7 +18,7 @@ public class OpenTripsDto {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private String startDate;
 
-    @PositiveOrZero(groups = {Modify.class,ChangeStatus.class})
+    @PositiveOrZero(groups = {ChangeStatus.class})
     private int status;
 
     public OpenTripsDto() {

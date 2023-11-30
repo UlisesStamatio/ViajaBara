@@ -3,6 +3,7 @@ package mx.edu.utez.viajabara.generalmethods.control;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import mx.edu.utez.viajabara.basecatalog.openTrips.control.OpenTripsService;
+import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTripsDto;
 import mx.edu.utez.viajabara.basecatalog.seatingSales.control.SeatingSalesService;
 import mx.edu.utez.viajabara.basecatalog.seatingSales.model.SeatingSalesDto;
 import mx.edu.utez.viajabara.basecatalog.trip.model.TripDto;
@@ -69,5 +70,27 @@ public class DriverController {
     )
     public ResponseEntity<Object> checkAssist(@Validated(SeatingSalesDto.Check.class) @RequestBody SeatingSalesDto dto) throws SQLException {
         return seatingSalesService.checkAssist(dto);
+    }
+
+    @PutMapping("/tripChangeStatus")
+    @ApiOperation(
+            value = "Cambia el estado de un viaje abierto",
+            notes = "{ \"id\": 2 }"
+    )
+    public ResponseEntity<Object> changeStatus(@Validated(OpenTripsDto.ChangeStatus.class) @RequestBody OpenTripsDto dto) throws SQLException {
+        return openTripsService.changeStatus(dto);
+    }
+
+    @PutMapping("/tripHistory")
+    @ApiOperation(
+            value = "Obtiene todos los viajes de hoy",
+            notes = "{\n" +
+                    "    \"driver\":{\n" +
+                    "        \"id\":1\n" +
+                    "    }\n" +
+                    "}"
+    )
+    public ResponseEntity<Object> tripHistory(@Validated(TripDto.FindByDriver.class) @RequestBody TripDto dto) {
+        return openTripsService.findAllTripsHistory(dto.getDriver().getId());
     }
 }
