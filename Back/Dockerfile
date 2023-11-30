@@ -1,5 +1,5 @@
 # Utiliza una imagen de Maven como base para la etapa de compilación
-FROM maven:3.8.4-openjdk-17 AS builder
+FROM maven:3.9.5-amazoncorretto-8 AS builder
 
 # Establece el directorio de trabajo en /app
 WORKDIR /app
