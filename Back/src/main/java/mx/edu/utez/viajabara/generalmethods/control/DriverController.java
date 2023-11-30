@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import mx.edu.utez.viajabara.basecatalog.openTrips.control.OpenTripsService;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTripsDto;
+import mx.edu.utez.viajabara.basecatalog.qualifications.control.QualificationsService;
 import mx.edu.utez.viajabara.basecatalog.seatingSales.control.SeatingSalesService;
 import mx.edu.utez.viajabara.basecatalog.seatingSales.model.SeatingSalesDto;
 import mx.edu.utez.viajabara.basecatalog.trip.model.TripDto;
@@ -22,11 +23,12 @@ public class DriverController {
 
     private final OpenTripsService openTripsService;
     private final SeatingSalesService seatingSalesService;
-
+    private final QualificationsService qualificationsService;
     @Autowired
-    public DriverController(OpenTripsService openTripsService, SeatingSalesService seatingSalesService) {
+    public DriverController(OpenTripsService openTripsService, SeatingSalesService seatingSalesService, QualificationsService qualificationsService) {
         this.openTripsService = openTripsService;
         this.seatingSalesService = seatingSalesService;
+        this.qualificationsService = qualificationsService;
     }
 
     @PutMapping("/findAllToday")
@@ -92,5 +94,14 @@ public class DriverController {
     )
     public ResponseEntity<Object> tripHistory(@Validated(TripDto.FindByDriver.class) @RequestBody TripDto dto) {
         return openTripsService.findAllTripsHistory(dto.getDriver().getId());
+    }
+
+    @PutMapping("/findQualifications")
+    @ApiOperation(
+            value = "Obtiene todas las calificaciones por viaje",
+            notes = "{ \"id\": 2 }"
+    )
+    public ResponseEntity<Object> findQualifications(@Validated(TripDto.ChangeStatus.class) @RequestBody TripDto dto) {
+        return qualificationsService.findAll(dto.getId());
     }
 }

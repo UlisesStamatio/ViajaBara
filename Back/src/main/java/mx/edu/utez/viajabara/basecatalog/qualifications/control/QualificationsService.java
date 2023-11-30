@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Transactional
@@ -26,6 +28,18 @@ public class QualificationsService {
     public QualificationsService(QualificationsRepository repository, SeatingSalesRepository seatingSalesRepository) {
         this.repository = repository;
         this.seatingSalesRepository = seatingSalesRepository;
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseEntity<Object> findAll(long idOpenTrip) {
+        List<Qualifications> qualifications = repository.searchAllByOpenTrip(idOpenTrip);
+        List<Qualifications> response = new ArrayList<>();
+
+        for (Qualifications qualification:qualifications) {
+            qualification.getSeatingSales().setOpenTrips(null);
+            response.add(qualification);
+        }
+        return new ResponseEntity<>(new Message(response, "Listado de calificaciones por viaje", TypesResponse.SUCCESS), HttpStatus.OK);
     }
 
     @Transactional(rollbackFor = {SQLException.class})
