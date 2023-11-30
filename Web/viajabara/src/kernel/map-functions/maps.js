@@ -1,5 +1,6 @@
 
 
+
 const mapFunctions = {
     async getAddressByLatLng(latLng){
       let geocoder = new window.google.maps.Geocoder();
@@ -123,6 +124,26 @@ const mapFunctions = {
         if (status == 'OK') {
             const duration = Math.round((response.rows[0].elements[0].duration.value / 60));
             resolve(duration)
+        } else {
+            reject('No se pudo calcular la distancia debido a: ' + status)
+        }
+      });
+    })
+
+  },
+  async getRouteWithPaths(waypoints, addressStart, addressEnd ){
+    let directionsService = new window.google.maps.DirectionsService();
+    var request = {
+        origin: addressStart,
+        destination: addressEnd,
+        waypoints: waypoints,
+        travelMode: 'DRIVING'
+    };
+    const {route} = directionsService
+    return new Promise((resolve, reject)=>{
+      route(request, (response, status) => {
+        if (status == 'OK') {
+            resolve(response)
         } else {
             reject('No se pudo calcular la distancia debido a: ' + status)
         }
