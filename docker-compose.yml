@@ -1,0 +1,26 @@
+version: '2'
+
+services:
+  api:
+    build:
+      context: ./Back
+      dockerfile: Dockerfile
+    ports:
+      - "3090:3090"
+    networks:
+      - viajabaranet
+    depends_on:
+      - mysql8
+  mysql8:
+    image: mysql:8.0
+    networks:
+      - viajabaranet
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./mysql-8:/var/lib/mysql
+    ports:
+      - "3306:3306"
+networks:
+  viajabaranet:
+    driver: bridge
