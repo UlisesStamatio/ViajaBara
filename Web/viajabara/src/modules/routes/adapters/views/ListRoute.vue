@@ -53,7 +53,7 @@
                           </a>
                           <a
                             class="mx-2"
-                            @click="detailRoute()"
+                            @click="detailRoute(route.id)"
                           >
                             <i class="fas fa-eye text-secondary"></i>
                           </a>
@@ -197,8 +197,10 @@ export default {
     editRoute(id){
       router.push({name: 'Modificar Ruta', params: {id: id}})
     },
+    detailRoute(id){
+      router.push({name: 'Detalles Ruta', params: {id: id}})
+    },
     async changeStatusRoute(payload){
-      console.log(payload);
       this.$swal({
             title: "¿Estás segura(a) de realizar la acción?",
             text: "¡No podrás revertir esto.!",

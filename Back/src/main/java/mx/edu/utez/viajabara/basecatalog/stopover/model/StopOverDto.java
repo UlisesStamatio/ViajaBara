@@ -1,38 +1,32 @@
 package mx.edu.utez.viajabara.basecatalog.stopover.model;
 
 import mx.edu.utez.viajabara.basecatalog.address.model.Address;
+import mx.edu.utez.viajabara.basecatalog.address.model.AddressDto;
+import mx.edu.utez.viajabara.basecatalog.state.model.StateDto;
 
 import javax.persistence.*;
+import java.sql.Time;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class StopOverDto {
 
     private Long id;
-    private String latitude;
-    private String longitude;
+    private AddressDto addressDto;
     private String description;
-    private String state;
+    private StateDto state;
     private int sequence;
     private double meters;
     private double time;
+    private Date timeAccordingStart;
 
     public StopOverDto() {
     }
 
-    public StopOverDto(Long id, String latitude, String longitude, String description, String state, int sequence, double meters, double time) {
-        this.id = id;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.description = description;
-        this.state = state;
-        this.sequence = sequence;
-        this.meters = meters;
-        this.time = time;
-    }
-
-    public StopOverDto(String latitude, String longitude, String description, String state, int sequence, double meters, double time) {
-        this.latitude = latitude;
-        this.longitude = longitude;
+    public StopOverDto(AddressDto addressDto, String description, StateDto state, int sequence, double meters, double time) {
+        this.addressDto = addressDto;
         this.description = description;
         this.sequence = sequence;
         this.meters = meters;
@@ -48,20 +42,12 @@ public class StopOverDto {
         this.id = id;
     }
 
-    public String getLatitude() {
-        return latitude;
+    public AddressDto getAddressDto() {
+        return addressDto;
     }
 
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
-    }
-
-    public String getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
+    public void setAddressDto(AddressDto addressDto) {
+        this.addressDto = addressDto;
     }
 
     public int getSequence() {
@@ -96,13 +82,41 @@ public class StopOverDto {
         this.description = description;
     }
 
-    public String getState() {
+    public StateDto getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(StateDto state) {
         this.state = state;
     }
 
+    public Date getTimeAccordingStart() {
+        return timeAccordingStart;
+    }
 
+    public void setTimeAccordingStart(Date timeAccordingStart) {
+        this.timeAccordingStart = timeAccordingStart;
+    }
+
+    public static List<StopOverDto> fromList(List<StopOver> stopOvers, Date initialTimeRoute) {
+        return stopOvers.stream()
+                .map(stopOver -> from(stopOver, initialTimeRoute))
+                .collect(Collectors.toList());
+    }
+
+    public static StopOverDto from(StopOver stopOver, Date initialTime) {
+        StopOverDto stopOverDto = new StopOverDto();
+        stopOverDto.setId(stopOver.getId());
+        stopOverDto.setAddressDto(AddressDto.from(stopOver.getAddress()));
+        stopOverDto.setDescription(stopOver.getAddress().getDescription());
+        stopOverDto.setState(StateDto.from(stopOver.getAddress().getState()));
+        stopOverDto.setSequence(stopOver.getSequence());
+        stopOverDto.setMeters(stopOver.getMeters());
+        stopOverDto.setTime(stopOver.getTime());
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(initialTime);
+        calendar.add(Calendar.MINUTE, (int) stopOver.getTime());
+        stopOverDto.setTimeAccordingStart(calendar.getTime());
+        return stopOverDto;
+    }
 }

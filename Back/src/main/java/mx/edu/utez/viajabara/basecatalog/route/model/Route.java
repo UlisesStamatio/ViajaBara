@@ -44,10 +44,19 @@ public class Route {
     @Column(name = "status", columnDefinition = "BOOL DEFAULT TRUE")
     private boolean status;
 
-    @OneToMany(mappedBy = "route", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "route")
     private List<StopOver> stopOvers;
 
     public Route() {
+    }
+
+
+    public Route(Long id, Address startAddress, Address endAddress, double meters, double time) {
+        this.id = id;
+        this.startAddress = startAddress;
+        this.endAddress = endAddress;
+        this.meters = meters;
+        this.time = time;
     }
 
     public Route(Address startAddress, Address endAddress, double meters, double time, boolean status) {
@@ -56,6 +65,13 @@ public class Route {
         this.meters = meters;
         this.time = time;
         this.status = status;
+    }
+
+    public Route(Address startAddress, Address endAddress, double meters, double time) {
+        this.startAddress = startAddress;
+        this.endAddress = endAddress;
+        this.meters = meters;
+        this.time = time;
     }
 
     public Long getId() {

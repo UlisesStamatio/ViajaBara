@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:viajabara/domain/entities/response_message.dart';
+import 'package:viajabara/domain/entities/resMsg.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
 import 'package:viajabara/kernel/widgets/profile/change_information.dart';
 import 'package:viajabara/kernel/widgets/profile/change_password.dart';
 import 'package:viajabara/kernel/widgets/profile/change_photo.dart';
+import 'package:viajabara/providers/auth_provider.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -27,6 +28,7 @@ class _ProfileState extends State<Profile> {
   String birthDate = '';
   String sex = '';
   String state = '';
+  String profile = '';
   bool isAdmin = false;
 
   void initState() {
@@ -37,13 +39,10 @@ class _ProfileState extends State<Profile> {
   Future<void> _loadUserRole() async {
     if (mounted) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      if (prefs.containsKey('info') && prefs.containsKey('data')) {
+      if (prefs.containsKey('data')) {
         Map<String, dynamic> jsonData = json.decode(prefs.getString('data')!);
-
-        Map<String, dynamic> jsonInfo = json.decode(prefs.getString('info')!);
-        ResponseMessage responseMessage = ResponseMessage.fromJson(jsonData);
-        ResponseMessage responseData = ResponseMessage.fromJson(jsonInfo);
-        print(responseData.name);
+        ResMsg responseMessage = ResMsg.fromJson(jsonData);
+        ResMsg dataUser = await AuthProvider().getInfoUser(responseMessage.email);
         String? role = responseMessage.roles?.keyRole;
 
         if (role == null) {
@@ -51,12 +50,13 @@ class _ProfileState extends State<Profile> {
         }
 
         setState(() {
-          name = responseData.name ?? 'Agrega tu nombre';
-          email = responseData.email ?? 'Agrega tu correo';
-          cellphone = responseData.cellphone ?? 'Agrega tu celular';
-          birthDate = responseData.birthDate ?? 'Agrega tu fecha de nacimiento';
-          sex = responseData.sex ?? 'Agrega tu sexo';
-          state = responseData.state ?? 'Agrega tu estado';
+          profile = dataUser.profile ?? '';
+          name =  dataUser.name ?? 'Agrega tu nombre';
+          email =  dataUser.email ?? 'Agrega tu correo';
+          cellphone = dataUser.cellphone ?? 'Agrega tu celular';
+          birthDate = dataUser.birthDate ?? 'Agrega tu fecha de nacimiento';
+          sex =  dataUser.sex ?? 'Agrega tu sexo';
+          state =  dataUser.state?? 'Agrega tu estado';
         });
 
         if (role == "ADMIN") {

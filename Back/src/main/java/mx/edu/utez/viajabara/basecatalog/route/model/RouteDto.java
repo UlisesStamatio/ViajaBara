@@ -9,15 +9,16 @@ import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOverDto;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.List;
 
 public class RouteDto {
 
     @NotNull(groups = {Modify.class,ChangeStatus.class})
     private Long id;
-    @NotNull(groups = {Register.class,Modify.class})
+    @NotBlank(groups = {Register.class,Modify.class})
     private AddressDto startAddress;
-    @NotNull(groups = {Register.class,Modify.class})
+    @NotBlank(groups = {Register.class,Modify.class})
     private AddressDto endAddress;
     @Min(value = 0, groups = {Register.class,Modify.class})
     private double meters;
@@ -79,4 +80,15 @@ public class RouteDto {
     public interface Register{}
     public interface Modify{}
     public interface ChangeStatus{}
+
+    public static RouteDto from(Route route, Date initialTimeRoute) {
+        RouteDto routeDto = new RouteDto();
+        routeDto.setId(route.getId());
+        routeDto.setStartAddress(AddressDto.from(route.getStartAddress()));
+        routeDto.setEndAddress(AddressDto.from(route.getEndAddress()));
+        routeDto.setMeters(route.getMeters());
+        routeDto.setTime(route.getTime());
+        routeDto.setStopOvers(StopOverDto.fromList(route.getStopOvers(), initialTimeRoute));
+        return routeDto;
+    }
 }

@@ -2,6 +2,7 @@ package mx.edu.utez.viajabara.basecatalog.seatingSales.control;
 
 import mx.edu.utez.viajabara.access.user.model.User;
 import mx.edu.utez.viajabara.access.user.model.UserRepository;
+import mx.edu.utez.viajabara.basecatalog.address.model.Address;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTrips;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTripsRepository;
 import mx.edu.utez.viajabara.basecatalog.seatingSales.model.SeatingSales;
@@ -96,7 +97,7 @@ public class SeatingSalesService {
         if(!openTripsOptional.isPresent()){
             return new ResponseEntity<>(new Message("No se encontró el viaje abierto", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
-        SeatingSales seatingSales = new SeatingSales(dto.getStart_latitude(),dto.getStart_longitude(), dto.getEnd_latitude(), dto.getEnd_longitude(), dto.getCost(),userOptional.get(), dto.getSeating(), openTripsOptional.get());
+        SeatingSales seatingSales = new SeatingSales(new Address(dto.getStartAddress().getId()),new Address(dto.getEndAddress().getId()), dto.getCost(),userOptional.get(), dto.getSeatsSelected(), dto.getWholeTrip(),openTripsOptional.get());
         seatingSales.setChecked(0);
         seatingSales = repository.saveAndFlush(seatingSales);
 
@@ -124,12 +125,10 @@ public class SeatingSalesService {
         }
         SeatingSales seatingSales = optionalSeatingSales.get();
 
-        seatingSales.setStart_latitude(dto.getStart_latitude());
-        seatingSales.setStart_longitude(dto.getStart_longitude());
-        seatingSales.setEnd_latitude(dto.getEnd_latitude());
-        seatingSales.setEnd_longitude(dto.getEnd_longitude());
+        seatingSales.setStartAddress(new Address(dto.getStartAddress().getId()));
+        seatingSales.setEndAddress(new Address(dto.getEndAddress().getId()));
         seatingSales.setCost(dto.getCost());
-        seatingSales.setSeating(dto.getSeating());
+        seatingSales.setSeatsSelected(dto.getSeatsSelected());
         seatingSales.setClient(userOptional.get());
         seatingSales.setOpenTrips(openTripsOptional.get());
 

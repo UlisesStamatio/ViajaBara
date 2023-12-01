@@ -2,14 +2,18 @@ package mx.edu.utez.viajabara.basecatalog.trip.control;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import mx.edu.utez.viajabara.basecatalog.trip.model.BookTripDto;
 import mx.edu.utez.viajabara.basecatalog.trip.model.TripDto;
+import mx.edu.utez.viajabara.utils.entity.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotNull;
 import java.sql.SQLException;
+import java.text.ParseException;
 
 @RestController
 @RequestMapping("/api/trips")
@@ -47,6 +51,27 @@ public class TripController {
     public ResponseEntity<Object> findAllEnabled() throws SQLException {
         return service.findAllEnabled();
     }
+
+    @PostMapping("/states-for-filters-by-date")
+    @Secured({VIAJES})
+    @ApiOperation(
+            value = "Busca los estados y direcciones disponibles en una fecha estimada",
+            notes = "{ \"date\": 2 }"
+    )
+    public ResponseEntity<Object> getStatesForFiltersByDate(@RequestBody String date) throws ParseException {
+        return service.getStatesForFiltersByDate(date,true);
+    }
+
+    @PostMapping("/find-by-filters-client")
+    @Secured({VIAJES})
+    @ApiOperation(
+            value = "Busca los viajes en base a los filtros",
+            notes = "{ \"date\": 2 }"
+    )
+    public ResponseEntity<Object> findByFiltersClient(@RequestBody BookTripDto bookTripDto) throws ParseException {
+        return service.findByFiltersClient(bookTripDto);
+    }
+
 
     @PostMapping("")
     @Secured({VIAJES})

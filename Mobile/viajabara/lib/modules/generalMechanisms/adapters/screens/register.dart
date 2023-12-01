@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:viajabara/domain/entities/response_message.dart';
+import 'package:viajabara/domain/entities/resMsg.dart';
 import 'package:viajabara/domain/entities/user_data.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
@@ -457,13 +457,8 @@ class _RegisterState extends State<Register> {
                                             email: _email.text,
                                             username: _username.text,
                                             password: _repeatPass.text,
-                                            name: "Esperar a que sean opcionales",
-                                            surname: "Esperar a que sean opcionales",
-                                            birthDate: "2023-03-03",
-                                            state: 5,
-                                            cellphone: _phone.text,
                                             sex: "M");
-                                        ResponseMessage isRegister =
+                                        ResMsg isRegister =
                                             await AuthProvider()
                                                 .register(userData);
 

@@ -3,8 +3,15 @@ package mx.edu.utez.viajabara.basecatalog.trip.model;
 import mx.edu.utez.viajabara.access.user.model.User;
 import mx.edu.utez.viajabara.basecatalog.bus.model.Bus;
 import mx.edu.utez.viajabara.basecatalog.route.model.Route;
+import mx.edu.utez.viajabara.basecatalog.route.model.RouteDto;
 
 import javax.validation.constraints.NotNull;
+import java.sql.Time;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 public class TripDto {
     @NotNull(groups = {Modify.class,ChangeStatus.class})
@@ -13,8 +20,17 @@ public class TripDto {
     private User driver;
     @NotNull(groups = {Register.class,Modify.class})
     private Bus bus;
+    @NotNull(groups = {Register.class,Modify.class,GetByDate.class})
+    private Date startTime;
+    @NotNull(groups = {Register.class,Modify.class,GetByDate.class})
+    private Date endTime;
     @NotNull(groups = {Register.class,Modify.class})
-    private Route route;
+    private String workDays;
+    @NotNull(groups = {Register.class,Modify.class})
+    private RouteDto route;
+    private FilterType filterType;
+
+    private int enabledSeats;
 
     public TripDto() {
     }
@@ -43,16 +59,78 @@ public class TripDto {
         this.bus = bus;
     }
 
-    public Route getRoute() {
+    public RouteDto getRoute() {
         return route;
     }
 
-    public void setRoute(Route route) {
+    public void setRoute(RouteDto route) {
         this.route = route;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getWorkDays() {
+        return workDays;
+    }
+
+    public void setWorkDays(String workDays) {
+        this.workDays = workDays;
+    }
+
+    public FilterType getFilterType() {
+        return filterType;
+    }
+
+    public int getEnabledSeats() {
+        return enabledSeats;
+    }
+
+    public void setEnabledSeats(int enabledSeats) {
+        this.enabledSeats = enabledSeats;
+    }
+
+    public void setFilterType(FilterType filterType) {
+        this.filterType = filterType;
+    }
+    public static List<TripDto> fromList(List<Trip> trips) {
+        return trips.stream()
+                .map(TripDto::from)
+                .collect(Collectors.toList());
+    }
+
+    public static TripDto from(Trip trip) {
+        TripDto tripDto = new TripDto();
+        tripDto.setId(trip.getId());
+        tripDto.setDriver(trip.getDriver());
+        tripDto.setBus(trip.getBus());
+        tripDto.setStartTime(trip.getStartTime());
+        tripDto.setRoute(RouteDto.from(trip.getRoute(), trip.getStartTime()));
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(trip.getStartTime());
+        calendar.add(Calendar.MINUTE, (int) tripDto.getRoute().getTime());
+        tripDto.setEndTime(calendar.getTime());
+        tripDto.setWorkDays(trip.getWorkDays());
+        return tripDto;
     }
 
     public interface Register{}
     public interface Modify{}
     public interface ChangeStatus{}
     public interface FindByDriver{}
+    public interface GetByDate{}
+
 }

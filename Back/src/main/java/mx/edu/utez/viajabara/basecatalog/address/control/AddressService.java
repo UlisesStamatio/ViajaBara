@@ -59,7 +59,7 @@ public class AddressService {
         if (optional.isPresent()) {
             return optional.get();
         }else{
-            Optional<State> state = serviceState.findByName(dto.getState().toLowerCase());
+            Optional<State> state = serviceState.findByName(dto.getState().getName().toLowerCase());
             if(state.isPresent()){
                 Address address = new Address(dto.getLatitude(), dto.getLongitude(),dto.getDescription(), state.get());
                 address = repository.saveAndFlush(address);
