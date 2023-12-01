@@ -1,12 +1,22 @@
 version: '2'
 
 services:
+  client:
+    build:
+      context: ./Web/viajabara
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    networks:
+      - viajabaranet
+    depends_on:
+      - api
   api:
     build:
       context: ./Back
       dockerfile: Dockerfile
     ports:
-      - "8083:8083"
+      - "3090:8083"
     networks:
       - viajabaranet
     depends_on:
