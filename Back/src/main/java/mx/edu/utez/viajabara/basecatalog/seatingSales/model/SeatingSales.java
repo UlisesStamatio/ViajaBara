@@ -31,9 +31,17 @@ public class SeatingSales {
     @ManyToOne
     private User client;
 
+    @Column(name = "seating", columnDefinition = "INT(2)")
+    private int seating;
+
+    //0.- No checado 1.- Asistió 2.- No asistió
+    @Column(name = "checked", columnDefinition = "INT(1)")
+    private int checked;
+
     @Column(name = "seats_selected", columnDefinition = "json")
     @Type(type = "json")
     private String seatsSelected;
+
     @ManyToOne
     private OpenTrips openTrips;
 
@@ -124,5 +132,13 @@ public class SeatingSales {
 
     public void setWholeTrip(int wholeTrip) {
         this.wholeTrip = wholeTrip;
+    }
+
+    public int getChecked() {
+        return checked;
+    }
+
+    public void setChecked(int checked) {
+        this.checked = checked;
     }
 }
