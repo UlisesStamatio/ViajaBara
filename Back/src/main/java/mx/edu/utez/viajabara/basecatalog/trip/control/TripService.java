@@ -254,7 +254,7 @@ public class TripService {
     public ResponseEntity<Object> save(TripDto dto) throws SQLException {
         Optional<Bus> bus = busRepository.findById(dto.getBus().getId());
         if(!bus.isPresent()){
-            return new ResponseEntity<>(new Message("No se encontró el autobús", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new Message("No se encontró la unidad", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
         Optional<User> driver = userRepository.findById(dto.getDriver().getId());
         if(!driver.isPresent()){
@@ -264,7 +264,7 @@ public class TripService {
         if(!route.isPresent()){
             return new ResponseEntity<>(new Message("No se encontró la ruta", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
-        Trip trip = new Trip(driver.get(),bus.get(),route.get(),true);
+        Trip trip = new Trip(driver.get(),bus.get(),route.get(),true, dto.getStartTime(), dto.getWorkDays());
         trip = repository.saveAndFlush(trip);
         if (trip == null) {
             return new ResponseEntity<>(new Message("No se registró el viaje", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);

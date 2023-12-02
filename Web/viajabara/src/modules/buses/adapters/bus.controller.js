@@ -13,6 +13,10 @@ const OperationsController = {
         const response = await Operations.listBuses('/all')
         return response;
     },
+    async listBusesEnabled(){
+        const response = await Operations.listBuses('/all-buses-enabled')
+        return response;
+    },
     async getBus(payload){
         const response = await Operations.getBus('/getOne', payload)
         return response;

@@ -40,6 +40,7 @@ public class BusService {
         return new ResponseEntity<>(new Message(buses, "Listado de autobuses", TypesResponse.SUCCESS), HttpStatus.OK);
     }
 
+
     @Transactional(readOnly = true)
     public ResponseEntity<Object> findAllEnabled() {
         List<Bus> busList =  repository.findAllByStatusIsTrue();

@@ -13,6 +13,10 @@ const OperationsController = {
         const response = await Operations.listRoutes('/all')
         return response;
     },
+    async listRoutesEnabled(){
+        const response = await Operations.listRoutes('/enabled')
+        return response;
+    },
     // async listConsumers(){
     //     const response = await Operations.listConsumers('/all-consumers')
     //     return response;
