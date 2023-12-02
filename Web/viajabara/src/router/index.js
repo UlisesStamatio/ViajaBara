@@ -20,6 +20,7 @@ import DetailBus from "../modules/buses/adapters/views/DetailBus.vue";
 import ListRoute from "../modules/routes/adapters/views/ListRoute.vue";
 import NewRoute from "../modules/routes/adapters/views/NewRoute.vue";
 import UpdateRoute from "../modules/routes/adapters/views/UpdateRoute.vue";
+import DetailRoute from "../modules/routes/adapters/views/DetailRoute.vue";
 import ListTravel from "../modules/travels/adapters/views/ListTravel.vue";
 import NewTravel from "../modules/travels/adapters/views/NewTravel.vue";
 import UpdateTravel from "../modules/travels/adapters/views/UpdateTravel.vue";
@@ -150,9 +151,15 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: "/ruta/consultar/modificar",
+    path: "/ruta/consultar/modificar/:id",
     name: "Modificar Ruta",
     component: UpdateRoute,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: "/ruta/consultar/detalles/:id",
+    name: "Detalles Ruta",
+    component: DetailRoute,
     meta: { requiresAuth: true }
   },
   {

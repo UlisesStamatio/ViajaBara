@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:viajabara/domain/entities/response_message.dart';
+import 'package:viajabara/domain/entities/resMsg.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
 import 'package:viajabara/kernel/validations/validations.dart';
@@ -19,8 +19,8 @@ class _LoginState extends State<Login> {
   bool _passwordVisible = false;
   bool _islogged = false;
   final TextEditingController _email =
-      TextEditingController(text: '20203tn063@utez.edu.mx');
-  final TextEditingController _pass = TextEditingController(text: 'Admin12');
+      TextEditingController(text: '20203tn159@utez.edu.mx');
+  final TextEditingController _pass = TextEditingController(text: 'Admin123');
 
   @override
   Widget build(BuildContext context) {
@@ -288,9 +288,8 @@ class _LoginState extends State<Login> {
                                       _isButtonDisabled = true;
                                     });
 
-                                    ResponseMessage isLogged =
-                                        await AuthProvider()
-                                            .login(_email.text, _pass.text);
+                                    ResMsg isLogged = await AuthProvider()
+                                        .login(_email.text, _pass.text);
 
                                     if (!mounted) {
                                       return;

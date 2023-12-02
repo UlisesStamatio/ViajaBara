@@ -11,7 +11,7 @@ import javax.validation.constraints.PositiveOrZero;
 
 public class SeatingSalesDto {
 
-    @NotNull(groups = {Modify.class})
+    @NotNull(groups = {Modify.class,Check.class})
     private Long id;
     @NotBlank(groups = {RouteDto.Register.class, RouteDto.Modify.class})
     private AddressDto startAddress;
@@ -27,6 +27,9 @@ public class SeatingSalesDto {
     private OpenTrips openTrips;
     @NotNull(groups = {Register.class,Modify.class})
     private int wholeTrip;
+
+    @PositiveOrZero(groups = {Check.class})
+    private int checked;
 
     public SeatingSalesDto() {
     }
@@ -80,6 +83,13 @@ public class SeatingSalesDto {
         this.openTrips = openTrips;
     }
 
+    public int getChecked() {
+        return checked;
+    }
+
+    public void setChecked(int checked) {
+        this.checked = checked;
+    }
     public String getSeatsSelected() {
         return seatsSelected;
     }
@@ -100,6 +110,8 @@ public class SeatingSalesDto {
     public interface Modify{}
     public interface FindByClient{}
     public interface FindByOpenTrip{}
+    public interface Check{}
+
 
     @Override
     public String toString() {

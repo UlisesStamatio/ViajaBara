@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:viajabara/domain/entities/list_states.dart';
-import 'package:viajabara/domain/entities/response_message.dart';
+import 'package:viajabara/domain/entities/resMsg.dart';
 import 'package:viajabara/domain/entities/user_data.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
@@ -17,7 +17,6 @@ class Register2 extends StatefulWidget {
 class _Register2State extends State<Register2> {
   final _formKey = GlobalKey<FormState>();
   bool _isButtonDisabled = true;
-  bool _switchValueOne = false;
   bool _switchValue = false;
   String _sex = 'M';
   String email = '';
@@ -540,7 +539,7 @@ class _Register2State extends State<Register2> {
                                                 cellphone: _phone.text,
                                                 sex: _sex);
 
-                                            ResponseMessage isRegister =
+                                            ResMsg isRegister =
                                                 await AuthProvider()
                                                     .register(userData);
 

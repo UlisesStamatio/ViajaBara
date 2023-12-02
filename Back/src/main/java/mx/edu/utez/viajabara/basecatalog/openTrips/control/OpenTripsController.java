@@ -115,7 +115,7 @@ public class OpenTripsController {
     @PutMapping("/change-status")
     @Secured({VIAJES_ABIERTOS})
     @ApiOperation(
-            value = "Cambia el estado de una ruta",
+            value = "Cambia el estado de un viaje abierto",
             notes = "{ \"id\": 2 }"
     )
     public ResponseEntity<Object> changeStatus(@Validated(OpenTripsDto.ChangeStatus.class) @RequestBody OpenTripsDto dto) throws SQLException {

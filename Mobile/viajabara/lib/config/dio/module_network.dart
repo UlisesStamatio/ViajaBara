@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:viajabara/domain/entities/response_message.dart';
+import 'package:viajabara/domain/entities/resMsg.dart';
 
 class NetworkModule {
   static final NetworkModule _singleton = NetworkModule._internal();
@@ -35,7 +35,7 @@ class NetworkModule {
     }
 
     Map<String, dynamic> jsonData = json.decode(data);
-    ResponseMessage responseMessage = ResponseMessage.fromJson(jsonData);
+    ResMsg responseMessage = ResMsg.fromJson(jsonData);
     return responseMessage.token;
   }
 

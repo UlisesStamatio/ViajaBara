@@ -50,6 +50,30 @@ public class OpenTripsService {
     }
 
     @Transactional(readOnly = true)
+    public ResponseEntity<Object> findAllTripsToday(Long driver_id){
+        List<OpenTrips> openTripsList = repository.searchAllTripsToday(driver_id);
+        List<OpenTrips> response = new ArrayList<>();
+        for (OpenTrips openTrips:openTripsList) {
+            openTrips.getTrip().getDriver().setProfile(null);
+            openTrips.getTrip().getBus().setImage(null);
+            response.add(openTrips);
+        }
+        return new ResponseEntity<>(new Message(response, "Listado de viajes abiertos para hoy por conductor", TypesResponse.SUCCESS), HttpStatus.OK);
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseEntity<Object> findAllTripsHistory(Long driver_id){
+        List<OpenTrips> openTripsList = repository.searchAllTripsHistory(driver_id);
+        List<OpenTrips> response = new ArrayList<>();
+        for (OpenTrips openTrips:openTripsList) {
+            openTrips.getTrip().getDriver().setProfile(null);
+            openTrips.getTrip().getBus().setImage(null);
+            response.add(openTrips);
+        }
+        return new ResponseEntity<>(new Message(response, "Listado de historial de viajes", TypesResponse.SUCCESS), HttpStatus.OK);
+    }
+
+    @Transactional(readOnly = true)
     public ResponseEntity<Object> findAllEnabled(){
         List<OpenTrips> openTripsList = repository.searchAllByStatusActive(1);
         List<OpenTrips> response = new ArrayList<>();
@@ -64,6 +88,7 @@ public class OpenTripsService {
     @Transactional(readOnly = true)
     public ResponseEntity<Object> getOne(Long id) {
         Optional<OpenTrips> optional = repository.findById(id);
+        optional.get().getTrip().getDriver().setProfile(null);
         return optional.<ResponseEntity<Object>>map(route -> new ResponseEntity<>(new Message(route, "Viaje abierto encontrado", TypesResponse.SUCCESS), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(new Message("Viaje abierto no encontrado", TypesResponse.WARNING), HttpStatus.NOT_FOUND));
     }
 
