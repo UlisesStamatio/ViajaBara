@@ -288,36 +288,54 @@ class _LoginState extends State<Login> {
                                       _isButtonDisabled = true;
                                     });
 
-                                    ResMsg isLogged = await AuthProvider()
-                                        .login(_email.text, _pass.text);
+                                    try {
+                                      ResMsg isLogged = await AuthProvider()
+                                          .login(_email.text, _pass.text);
+                                      if (!mounted) {
+                                        return;
+                                      }
 
-                                    if (!mounted) {
-                                      return;
-                                    }
+                                      if (isLogged.token != null) {
+                                        setState(() {
+                                          _islogged = true;
+                                        });
+                                      } else {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                              content: Text(
+                                                  'Usuario o contraseña incorrectos')),
+                                        );
+                                      }
 
-                                    if (isLogged.token != null) {
-                                      setState(() {
-                                        _islogged = true;
-                                      });
-                                    } else {
+                                      if (_islogged) {
+                                        Navigator.pushNamed(context, '/menu',
+                                            arguments: {
+                                              'rol': isLogged.roles?.keyRole,
+                                            });
+                                      }
+                                    } catch (e) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(
-                                        const SnackBar(
-                                            content: Text(
-                                                'Usuario o contraseña incorrectos')),
+                                        SnackBar(
+                                          content: Text('$e'),
+                                          duration: const Duration(seconds: 5),
+                                          backgroundColor:
+                                              ColorsApp.dangerColor,
+                                          elevation: 5,
+                                          padding: const EdgeInsets.all(8),
+                                          behavior: SnackBarBehavior.floating,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
+                                          ),
+                                        ),
                                       );
+                                    } finally {
+                                      setState(() {
+                                        _isButtonDisabled = false;
+                                      });
                                     }
-
-                                    if (_islogged) {
-                                      Navigator.pushNamed(context, '/menu',
-                                          arguments: {
-                                            'rol': isLogged.roles?.keyRole,
-                                          });
-                                    }
-
-                                    setState(() {
-                                      _isButtonDisabled = false;
-                                    });
                                   },
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(

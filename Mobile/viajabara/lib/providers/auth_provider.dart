@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:viajabara/config/dio/module_network.dart';
 import 'package:viajabara/domain/entities/address.dart';
@@ -11,6 +12,7 @@ import 'package:viajabara/domain/entities/state/state_list.dart';
 import 'package:viajabara/domain/entities/trip/trip.dart';
 import 'package:viajabara/domain/entities/user_data.dart';
 import 'package:viajabara/domain/entities/visual_config/visual_config.dart';
+import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/modules/tripsUser/adapters/entities/list_drivers.dart';
 
 class AuthProvider {
@@ -243,7 +245,8 @@ class AuthProvider {
       var data = e.response!.data;
       return ResMsg(text: data['text'], type: data['type']);
     }
-    throw Exception('Error de inicio de sesión: ${e.message}');
+    throw Exception(
+        'Error de inicio de sesión: surgió un error al conectar con el servidor, contacta a los administradores');
   }
 
   Future<void> saveData(ResMsg responseMessage, name) async {

@@ -18,7 +18,7 @@ class NetworkModule {
   }
 
   final BaseOptions _options = BaseOptions(
-    baseUrl: 'http://192.168.108.127:8083/api/',
+    baseUrl: 'http://192.168.0.7:8083/api/',
     connectTimeout: const Duration(seconds: 15),
     receiveTimeout: const Duration(seconds: 15),
     headers: {
