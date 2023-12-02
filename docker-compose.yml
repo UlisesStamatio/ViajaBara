@@ -16,7 +16,7 @@ services:
       context: ./Back
       dockerfile: Dockerfile
     ports:
-      - "3090:8083"
+      - "8083:8083"
     networks:
       - viajabaranet
     depends_on:
