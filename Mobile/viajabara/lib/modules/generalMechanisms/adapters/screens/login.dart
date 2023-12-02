@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:viajabara/domain/entities/response_message.dart';
-import 'package:viajabara/kernel/cubits/login/login_form_cubit.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
 import 'package:viajabara/kernel/validations/validations.dart';
@@ -26,7 +24,6 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    final loginFormCubit = context.watch<LoginFormCubit>();
     return Scaffold(
       body: Form(
         key: _formKey,
@@ -52,7 +49,7 @@ class _LoginState extends State<Login> {
               child: Center(
                 child: Column(children: <Widget>[
                   const SizedBox(height: 120),
-                  SvgPicture.asset(StuffApp.logoViajabara),
+                  SvgPicture.asset(StuffApp.logoViajabara, height: 60),
                   Card(
                     elevation: 4.0,
                     margin: const EdgeInsets.all(16.0),
@@ -84,10 +81,6 @@ class _LoginState extends State<Login> {
                             ),
                             child: TextFormField(
                               keyboardType: TextInputType.emailAddress,
-                              // onChanged: (value) {
-                              //   loginFormCubit.usernameChanged(value);
-                              //   _formKey.currentState?.validate();
-                              // },
                               controller: _email,
                               validator: (value) {
                                 RegExp regex = RegExp(Validations.email);
@@ -148,10 +141,6 @@ class _LoginState extends State<Login> {
                             ),
                             child: TextFormField(
                               keyboardType: TextInputType.text,
-                              // onChanged: (value) {
-                              //   loginFormCubit.passwordChanged(value);
-                              //   _formKey.currentState?.validate();
-                              // },
                               controller: _pass,
                               validator: (value) {
                                 if (value!.isEmpty) {
@@ -304,7 +293,7 @@ class _LoginState extends State<Login> {
                                             .login(_email.text, _pass.text);
 
                                     if (!mounted) {
-                                      return; // Verificar si el widget está aún montado
+                                      return;
                                     }
 
                                     if (isLogged.token != null) {

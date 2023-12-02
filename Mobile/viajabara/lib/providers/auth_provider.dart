@@ -10,10 +10,12 @@ import 'package:viajabara/domain/entities/roles/roles.dart';
 import 'package:viajabara/domain/entities/state/state_list.dart';
 import 'package:viajabara/domain/entities/trip/trip.dart';
 import 'package:viajabara/domain/entities/user_data.dart';
+import 'package:viajabara/domain/entities/visual_config/visual_config.dart';
 import 'package:viajabara/modules/tripsUser/adapters/entities/list_drivers.dart';
 
 class AuthProvider {
   Dio dio = NetworkModule().instance;
+  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   Map<String, dynamic> data = {};
 
@@ -21,7 +23,8 @@ class AuthProvider {
     var dataJson = jsonEncode({'email': email, 'password': password});
     try {
       final response = await dio.post('auth/login', data: dataJson);
-      _getInfoUser(email);
+      await _getInfoUser(email);
+      await getVisualConfigurations();
       return _parseLoginResponse(response);
     } on DioException catch (e) {
       return _handleLoginError(e);
@@ -131,6 +134,56 @@ class AuthProvider {
       print(e.toString());
     }
     return List.empty();
+  }
+
+  Future<void> getVisualConfigurations() async {
+    try {
+      SharedPreferences prefs = await _prefs;
+
+      final response = await dio.get('visual-config');
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody =
+            response.data as Map<String, dynamic>;
+        print("response");
+        print(responseBody);
+
+        if (responseBody.containsKey('result')) {
+          final Map<String, dynamic> result =
+              responseBody['result'] as Map<String, dynamic>;
+          print("result");
+          print(result);
+
+          if (result.containsKey('content')) {
+            final List<dynamic> contentList =
+                result['content'] as List<dynamic>;
+
+            if (contentList.isNotEmpty) {
+              final Map<String, dynamic> tripsJson =
+                  Map<String, dynamic>.from(contentList[0]);
+              print("content");
+              print(tripsJson);
+
+              VisualConfigDto visualConfigDto =
+                  VisualConfigDto.fromJson(tripsJson);
+              prefs.setString(
+                  "visualConfig", jsonEncode(visualConfigDto.toJson()));
+              print(visualConfigDto);
+            } else {
+              throw Exception('La lista "content" está vacía.');
+            }
+          } else {
+            throw Exception('La respuesta no contiene la clave "content".');
+          }
+        } else {
+          throw Exception('La respuesta no contiene la clave "result".');
+        }
+      } else {
+        throw Exception('Fallo al obtener las configuraciones visuales');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   Future<List<DriverItem>> getDriversEnabled() async {

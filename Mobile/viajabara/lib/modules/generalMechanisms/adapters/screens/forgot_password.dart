@@ -46,7 +46,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 child: Center(
                   child: Column(children: <Widget>[
                     const SizedBox(height: 120),
-                    SvgPicture.asset(StuffApp.logoViajabara),
+                    SvgPicture.asset(StuffApp.logoViajabara, height: 60),
                     Card(
                       elevation: 4.0,
                       margin: const EdgeInsets.all(16.0),

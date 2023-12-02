@@ -9,11 +9,11 @@ extension FilterTypeExtension on FilterType {
   String get value {
     switch (this) {
       case FilterType.START_ADDRESS:
-        return 'START_ADDRESS';
+        return 'Viaje completo';
       case FilterType.END_ADDRESS:
-        return 'END_ADDRESS';
+        return 'Viaje completo';
       case FilterType.STOP_OVER:
-        return 'STOP_OVER';
+        return 'Parada';
     }
   }
 

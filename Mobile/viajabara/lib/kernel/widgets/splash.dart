@@ -40,7 +40,7 @@ class _SplashState extends State<Splash> {
             ),
           ),
           Center(
-            child: SvgPicture.asset(StuffApp.logoViajabara),
+            child: SvgPicture.asset(StuffApp.logoViajabara, height: 80),
           ),
         ],
       ),

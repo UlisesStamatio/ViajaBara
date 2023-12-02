@@ -53,7 +53,7 @@ class _RegisterState extends State<Register> {
                 child: Center(
                   child: Column(children: <Widget>[
                     const SizedBox(height: 100),
-                    SvgPicture.asset(StuffApp.logoViajabara),
+                    SvgPicture.asset(StuffApp.logoViajabara, height: 60),
                     Card(
                       elevation: 4.0,
                       margin: const EdgeInsets.all(16.0),
@@ -457,8 +457,10 @@ class _RegisterState extends State<Register> {
                                             email: _email.text,
                                             username: _username.text,
                                             password: _repeatPass.text,
-                                            name: "Esperar a que sean opcionales",
-                                            surname: "Esperar a que sean opcionales",
+                                            name:
+                                                "Esperar a que sean opcionales",
+                                            surname:
+                                                "Esperar a que sean opcionales",
                                             birthDate: "2023-03-03",
                                             state: 5,
                                             cellphone: _phone.text,

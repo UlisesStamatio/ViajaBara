@@ -5,6 +5,7 @@ import mx.edu.utez.viajabara.basecatalog.bus.model.BusRepository;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTrips;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTripsDto;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTripsRepository;
+import mx.edu.utez.viajabara.basecatalog.trip.model.BookTripDto;
 import mx.edu.utez.viajabara.basecatalog.trip.model.Trip;
 import mx.edu.utez.viajabara.basecatalog.trip.model.TripRepository;
 import mx.edu.utez.viajabara.utils.entity.Message;
@@ -64,6 +65,12 @@ public class OpenTripsService {
     public ResponseEntity<Object> getOne(Long id) {
         Optional<OpenTrips> optional = repository.findById(id);
         return optional.<ResponseEntity<Object>>map(route -> new ResponseEntity<>(new Message(route, "Viaje abierto encontrado", TypesResponse.SUCCESS), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(new Message("Viaje abierto no encontrado", TypesResponse.WARNING), HttpStatus.NOT_FOUND));
+    }
+
+    @Transactional(readOnly = true)
+    public ResponseEntity<Object> getOpenTripByTripIdAndStartDate(int tripId, String date) {
+        OpenTripsDto openTripsDto = repository.findByTripIdAndDate((long) tripId, date);
+        return new ResponseEntity<>(new Message(openTripsDto, "Viaje abierto encontrado", TypesResponse.SUCCESS), HttpStatus.OK);
     }
 
     @Transactional(rollbackFor = {SQLException.class})

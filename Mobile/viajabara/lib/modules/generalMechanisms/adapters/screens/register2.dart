@@ -117,7 +117,7 @@ class _Register2State extends State<Register2> {
                     child: Center(
                       child: Column(children: <Widget>[
                         const SizedBox(height: 50),
-                        SvgPicture.asset(StuffApp.logoViajabara),
+                        SvgPicture.asset(StuffApp.logoViajabara, height: 60),
                         Card(
                           elevation: 4.0,
                           margin: const EdgeInsets.all(16.0),
@@ -351,26 +351,26 @@ class _Register2State extends State<Register2> {
                                     bottom: 10,
                                   ),
                                   child: TextFormField(
-                                      controller: _dateController,
-                                      onTap: () => _selectDate(context),
-                                      keyboardType: TextInputType.emailAddress,
-                                      cursorColor: Colors.blue,
-                                      style: const TextStyle(
-                                        color: Color.fromRGBO(93, 50, 86, 1),
-                                      ),
-                                      readOnly: true,
-                                      validator: (value) {
-                                        RegExp regex = RegExp(
-                                            r"^(?:\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$");
-                                        if (_dateController.text == "") {
-                                          return 'Campo obligatorio';
-                                        } else if (!regex
-                                            .hasMatch(_dateController.text)) {
-                                          return "Formato no valido";
-                                        }
-                                        return null;
-                                      },
-                                      decoration: InputDecoration(
+                                    controller: _dateController,
+                                    onTap: () => _selectDate(context),
+                                    keyboardType: TextInputType.emailAddress,
+                                    cursorColor: Colors.blue,
+                                    style: const TextStyle(
+                                      color: Color.fromRGBO(93, 50, 86, 1),
+                                    ),
+                                    readOnly: true,
+                                    validator: (value) {
+                                      RegExp regex = RegExp(
+                                          r"^(?:\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$");
+                                      if (_dateController.text == "") {
+                                        return 'Campo obligatorio';
+                                      } else if (!regex
+                                          .hasMatch(_dateController.text)) {
+                                        return "Formato no valido";
+                                      }
+                                      return null;
+                                    },
+                                    decoration: InputDecoration(
                                       labelText: 'Fecha de nacimiento*',
                                       filled: true,
                                       fillColor: ColorsApp.whiteColor,
@@ -539,8 +539,10 @@ class _Register2State extends State<Register2> {
                                                 state: selectedState!,
                                                 cellphone: _phone.text,
                                                 sex: _sex);
-  
-                                            ResponseMessage isRegister = await AuthProvider().register(userData);
+
+                                            ResponseMessage isRegister =
+                                                await AuthProvider()
+                                                    .register(userData);
 
                                             if (!mounted) {
                                               return; // Verificar si el widget está aún montado
@@ -551,7 +553,9 @@ class _Register2State extends State<Register2> {
                                                   context, '/login');
                                             } else {
                                               ScaffoldMessenger.of(context)
-                                                  .showSnackBar(SnackBar(content: Text(isRegister.text!)));
+                                                  .showSnackBar(SnackBar(
+                                                      content: Text(
+                                                          isRegister.text!)));
                                             }
                                           },
                                     style: ButtonStyle(

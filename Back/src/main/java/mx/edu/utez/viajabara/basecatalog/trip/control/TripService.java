@@ -11,6 +11,9 @@ import mx.edu.utez.viajabara.basecatalog.address.model.Address;
 import mx.edu.utez.viajabara.basecatalog.bus.model.Bus;
 import mx.edu.utez.viajabara.basecatalog.bus.model.BusDto;
 import mx.edu.utez.viajabara.basecatalog.bus.model.BusRepository;
+import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTrips;
+import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTripsDto;
+import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTripsRepository;
 import mx.edu.utez.viajabara.basecatalog.route.control.RouteService;
 import mx.edu.utez.viajabara.basecatalog.route.model.Route;
 import mx.edu.utez.viajabara.basecatalog.route.model.RouteRepository;
@@ -45,12 +48,15 @@ public class TripService {
     private final BusRepository busRepository;
     private final RouteRepository routeRepository;
 
+    private final OpenTripsRepository openTripsRepository;
+
     @Autowired
-    public TripService(TripRepository repository, UserRepository userRepository, BusRepository busRepository, RouteRepository routeRepository) {
+    public TripService(TripRepository repository, UserRepository userRepository, BusRepository busRepository, RouteRepository routeRepository, OpenTripsRepository openTripsRepository) {
         this.repository = repository;
         this.userRepository = userRepository;
         this.busRepository = busRepository;
         this.routeRepository = routeRepository;
+        this.openTripsRepository = openTripsRepository;
     }
 
 
@@ -101,9 +107,14 @@ public class TripService {
     public ResponseEntity<Object> findByFiltersClient(BookTripDto bookTripDto) throws ParseException {
         Message msg =  (Message) getStatesForFiltersByDate(bookTripDto.getDate(), false).getBody() ;
         List<Trip> trips = (List<Trip>) msg.getResult();
+        System.out.println("trips "+trips.size());
         List<TripDto> tripsProcessed = TripDto.fromList(trips);
         List<TripDto> filteredTrips = tripsProcessed.stream()
                 .filter(trip -> {
+                    System.out.println("trip "+trip.getId());
+                    OpenTripsDto openTripsDto = openTripsRepository.findByTripIdAndDate(trip.getId(), bookTripDto.getDate());
+                    System.out.println("openTripsDto "+openTripsDto);
+                    trip.setEnabledSeats(openTripsDto != null ? openTripsDto.getEnableSeats() : 20);
                     trip.getDriver().setRoles("[]");
                     trip.setBus(new Bus());
                     boolean isStartAddressMatch = trip.getRoute().getStartAddress().getId() == bookTripDto.getOriginId()
@@ -161,13 +172,14 @@ public class TripService {
     }
     private boolean isTripAvailable(Trip trip, Integer dayOfYearSelected) {
         Date now = new Date();
+
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         sdf.setTimeZone(TimeZone.getTimeZone("America/Mexico_City"));
         Date tripStartTime = parseDate(sdf.format(now));
 
-        TimeZone timeZone = TimeZone.getTimeZone("UTC-6");
+        TimeZone timeZone = TimeZone.getTimeZone("America/Mexico_City");
         Calendar calendar = Calendar.getInstance(timeZone);
-        Integer dayOfYearToday = calendar.get(Calendar.DAY_OF_YEAR);  // Cambiado a DAY_OF_YEAR
+        Integer dayOfYearToday = calendar.get(Calendar.DAY_OF_YEAR);
 
         System.out.println("tripStartTime " + tripStartTime.getTime());
         System.out.println("currentFormattedTime " + trip.getStartTime().getTime());

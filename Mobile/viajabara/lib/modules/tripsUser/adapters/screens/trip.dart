@@ -5,11 +5,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:viajabara/domain/entities/address.dart';
 import 'package:viajabara/domain/entities/book_trip.dart';
 import 'package:viajabara/domain/entities/state/state_list.dart';
+import 'package:viajabara/domain/entities/trip/filterType.dart';
 import 'package:viajabara/domain/entities/trip/trip.dart';
+import 'package:viajabara/domain/entities/visual_config/visual_config.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
 import 'package:viajabara/kernel/widgets/custom_progress_indicator.dart';
@@ -23,10 +26,8 @@ class Trip extends StatefulWidget {
   State<Trip> createState() => _TripState();
 }
 
-const List<String> list = <String>['One', 'Two', 'Three', 'Four'];
-
 class _TripState extends State<Trip> {
-  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
   final _formKey = GlobalKey<FormState>();
   bool _isButtonDisabled = true;
   TextEditingController originController = TextEditingController();
@@ -43,6 +44,8 @@ class _TripState extends State<Trip> {
   List<StateList> filteredStatesDestiny = [];
   List<StateList> filteredStatesDestinyRes = [];
   DateTime fecha = DateTime.now();
+  VisualConfigDto visualConfigDto = VisualConfigDto.empty();
+  bool searched = false;
 
   Future<void> _initializeSearch() async {
     await loadTripsByFiltersClient();
@@ -66,6 +69,7 @@ class _TripState extends State<Trip> {
     if (mounted) {
       setState(() {
         _search = _initializeSearch();
+        searched = true;
       });
     }
   }
@@ -77,6 +81,7 @@ class _TripState extends State<Trip> {
   }
 
   Future<void> _initializeData() async {
+    await loadVisualConfig();
     await loadBookTrip();
     // await loadDuties();
     dateController.text = "${DateTime.now().toLocal()}".split(' ')[0];
@@ -85,6 +90,30 @@ class _TripState extends State<Trip> {
     Future.delayed(const Duration(seconds: 3), () {
       _formKey.currentState?.validate();
     });
+  }
+
+  Future<void> loadVisualConfig() async {
+    Completer<void> completer = Completer<void>();
+
+    try {
+      SharedPreferences prefs = await _prefs;
+      if (prefs.containsKey("visualConfig")) {
+        Map<String, dynamic> jsonMap =
+            jsonDecode(prefs.getString("visualConfig")!);
+        visualConfigDto = VisualConfigDto.fromJson(jsonMap);
+        print("visualConfigDto ");
+        print(visualConfigDto);
+      } else {
+        visualConfigDto = VisualConfigDto.empty();
+        prefs.setString("visualConfig", jsonEncode(visualConfigDto));
+      }
+      completer.complete();
+    } catch (e) {
+      print('Error loadVisualConfig: $e');
+      completer.completeError(e);
+    }
+
+    return completer.future;
   }
 
   Future<void> loadBookTrip() async {
@@ -845,129 +874,299 @@ class _TripState extends State<Trip> {
                               builder: (context, snapshot2) {
                                 if (snapshot2.connectionState ==
                                     ConnectionState.done) {
-                                  return SizedBox(
-                                    height: 360,
-                                    child: ListView.builder(
-                                        itemCount: trips.length,
-                                        itemBuilder: (context, index) {
-                                          return Card(
-                                            elevation: 5,
-                                            margin: const EdgeInsets.symmetric(
+                                  return !searched && trips.isEmpty
+                                      ? Card(
+                                          elevation: 5,
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
                                                 vertical: 20.0,
-                                                horizontal: 16.0),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(20.0),
-                                              child: Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: <Widget>[
-                                                  Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: <Widget>[
-                                                      ImageFromBase64(
-                                                          base64String:
-                                                              trips[index]
-                                                                  .driver!
-                                                                  .profile!),
-                                                      const SizedBox(
-                                                          width: 20.0),
-                                                      const Expanded(
-                                                        child: Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                          children: <Widget>[
-                                                            Text(
-                                                              'Salida: Lugar HH:MM',
-                                                              style: TextStyle(
-                                                                fontSize: 18.0,
+                                                horizontal: 40.0),
+                                            child: Column(
+                                              children: [
+                                                SvgPicture.asset(
+                                                    StuffApp.waitingData,
+                                                    height: 100),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                const Text(
+                                                    "Llena los campos y empieza a viajar",
+                                                    style: TextStyle(
+                                                        fontSize: 18.0,
+                                                        fontFamily: "Tahoma"))
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                      : searched && trips.isEmpty
+                                          ? Card(
+                                              elevation: 5,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 20.0,
+                                                        horizontal: 40.0),
+                                                child: Column(
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                        StuffApp.dataNotFound,
+                                                        height: 100),
+                                                    const SizedBox(
+                                                      height: 10,
+                                                    ),
+                                                    const Text(
+                                                        "No hay viajes disponibles con los datos ingresados",
+                                                        style: TextStyle(
+                                                            fontSize: 13.0,
+                                                            fontFamily:
+                                                                "Tahoma"))
+                                                  ],
+                                                ),
+                                              ),
+                                            )
+                                          : SizedBox(
+                                              height: 360,
+                                              child: ListView.builder(
+                                                  itemCount: trips.length,
+                                                  itemBuilder:
+                                                      (context, index) {
+                                                    return Stack(children: [
+                                                      Card(
+                                                        elevation: 5,
+                                                        margin: const EdgeInsets
+                                                            .symmetric(
+                                                            vertical: 20.0,
+                                                            horizontal: 16.0),
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(20),
+                                                          child: Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: <Widget>[
+                                                              Row(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                children: <Widget>[
+                                                                  Expanded(
+                                                                    child:
+                                                                        Column(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: <Widget>[
+                                                                        Padding(
+                                                                          padding:
+                                                                              const EdgeInsets.only(
+                                                                            right:
+                                                                                26.0,
+                                                                          ),
+                                                                          child:
+                                                                              Row(
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment.spaceBetween,
+                                                                            crossAxisAlignment:
+                                                                                CrossAxisAlignment.center,
+                                                                            children: [
+                                                                              ImageFromBase64(base64String: trips[index].driver!.profile!),
+                                                                              Column(
+                                                                                children: [
+                                                                                  Text(
+                                                                                    '${formatTime(trips[index].startTime!)} hrs',
+                                                                                    style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                                                                                  ),
+                                                                                  const Text(
+                                                                                    'Salida',
+                                                                                    style: TextStyle(
+                                                                                      fontSize: 14.0,
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                              const Icon(CupertinoIcons.arrow_right, size: 20),
+                                                                              Column(
+                                                                                children: [
+                                                                                  Text(
+                                                                                    '${formatTime(trips[index].endTime!)} hrs',
+                                                                                    style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                                                                                  ),
+                                                                                  const Text(
+                                                                                    'Llegada estimada',
+                                                                                    style: TextStyle(
+                                                                                      fontSize: 14.0,
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                        const SizedBox(
+                                                                            height:
+                                                                                12.0),
+                                                                        Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.spaceBetween,
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.center,
+                                                                          children: [
+                                                                            Column(
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              children: [
+                                                                                Row(
+                                                                                  children: [
+                                                                                    const Icon(
+                                                                                      Icons.airline_seat_recline_extra, // Puedes cambiar este icono según tus necesidades
+                                                                                      color: ColorsApp.text,
+                                                                                    ),
+                                                                                    Padding(
+                                                                                      padding: const EdgeInsets.only(left: 4.0),
+                                                                                      child: Text(
+                                                                                        '${trips[index].enabledSeats} disponible(s)',
+                                                                                        style: const TextStyle(
+                                                                                          fontSize: 14.0,
+                                                                                          fontWeight: FontWeight.bold,
+                                                                                          color: ColorsApp.text,
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ],
+                                                                                ),
+                                                                                Row(
+                                                                                  children: [
+                                                                                    const Icon(
+                                                                                      Icons.timeline, // Puedes cambiar este icono según tus necesidades
+                                                                                      color: ColorsApp.text,
+                                                                                    ),
+                                                                                    Padding(
+                                                                                      padding: const EdgeInsets.only(left: 4.0),
+                                                                                      child: Text(
+                                                                                        '${trips[index].route!.stopOvers!.length} escala(s)',
+                                                                                        style: const TextStyle(
+                                                                                          fontSize: 14.0,
+                                                                                          fontWeight: FontWeight.bold,
+                                                                                          color: ColorsApp.text,
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ],
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                            Text(
+                                                                              '\$ ${((trips[index].route!.meters! * 0.001) * visualConfigDto.kilometerPrice!).toStringAsFixed(2)} MXN',
+                                                                              style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: ColorsApp.successColor),
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+                                                                ],
                                                               ),
-                                                            ),
-                                                            SizedBox(
-                                                                height: 10.0),
-                                                            Text(
-                                                              'Llegada: Lugar HH:MM',
-                                                              style: TextStyle(
-                                                                fontSize: 18.0,
+                                                              Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                        .only(
+                                                                        top:
+                                                                            15.0),
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .spaceEvenly,
+                                                                  children: <Widget>[
+                                                                    TextButton
+                                                                        .icon(
+                                                                      icon: const Icon(
+                                                                          Icons
+                                                                              .remove_red_eye_outlined),
+                                                                      label: const Text(
+                                                                          'Detalles'),
+                                                                      onPressed:
+                                                                          () {
+                                                                        _showModalInfo(
+                                                                            context,
+                                                                            trips[index]);
+                                                                      },
+                                                                      style: TextButton
+                                                                          .styleFrom(
+                                                                        foregroundColor:
+                                                                            ColorsApp.whiteColor,
+                                                                        backgroundColor:
+                                                                            ColorsApp.primayColor,
+                                                                      ),
+                                                                    ),
+                                                                    TextButton
+                                                                        .icon(
+                                                                      icon: const Icon(
+                                                                          CupertinoIcons
+                                                                              .cart_fill),
+                                                                      label: const Text(
+                                                                          'Reservar'),
+                                                                      onPressed:
+                                                                          () {
+                                                                        // saveBookTripOnSharedPreferences();
+                                                                        Navigator.pushNamed(
+                                                                            context,
+                                                                            '/booking');
+                                                                      },
+                                                                      style: TextButton
+                                                                          .styleFrom(
+                                                                        foregroundColor:
+                                                                            ColorsApp.whiteColor,
+                                                                        backgroundColor:
+                                                                            ColorsApp.primayColor,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
                                                               ),
-                                                            ),
-                                                            SizedBox(
-                                                                height: 10.0),
-                                                            Text(
-                                                              'Pagado: \$100.0',
-                                                              style: TextStyle(
-                                                                fontSize: 18.0,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                              ),
-                                                            ),
-                                                          ],
+                                                            ],
+                                                          ),
                                                         ),
                                                       ),
-                                                    ],
-                                                  ),
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            top: 15.0),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceEvenly,
-                                                      children: <Widget>[
-                                                        TextButton.icon(
-                                                          icon: const Icon(Icons
-                                                              .remove_red_eye_outlined),
-                                                          label: const Text(
-                                                              'Detalles'),
-                                                          onPressed: () {
-                                                            _showModalSelectAddress(
-                                                                context);
-                                                          },
-                                                          style: TextButton
-                                                              .styleFrom(
-                                                            foregroundColor:
-                                                                ColorsApp
-                                                                    .whiteColor,
-                                                            backgroundColor:
-                                                                ColorsApp
-                                                                    .primayColor,
-                                                          ),
-                                                        ),
-                                                        TextButton.icon(
-                                                          icon: const Icon(
+                                                      Positioned(
+                                                        top:
+                                                            0.0, // Ajusta según sea necesario
+                                                        right:
+                                                            5.0, // Ajusta según sea necesario
+                                                        child: Chip(
+                                                          avatar: Icon(
                                                               CupertinoIcons
-                                                                  .cart_fill),
-                                                          label: const Text(
-                                                              'Reservar'),
-                                                          onPressed: () {
-                                                            // saveBookTripOnSharedPreferences();
-                                                            Navigator.pushNamed(
-                                                                context,
-                                                                '/booking');
-                                                          },
-                                                          style: TextButton
-                                                              .styleFrom(
-                                                            foregroundColor:
-                                                                ColorsApp
-                                                                    .whiteColor,
-                                                            backgroundColor:
-                                                                ColorsApp
-                                                                    .primayColor,
+                                                                  .bus,
+                                                              color: trips[index]
+                                                                          .filterType!
+                                                                          .value ==
+                                                                      "Parada"
+                                                                  ? ColorsApp
+                                                                      .secondaryColor
+                                                                  : ColorsApp
+                                                                      .whiteColor),
+                                                          label: Text(
+                                                            trips[index]
+                                                                .filterType!
+                                                                .value,
+                                                            style: TextStyle(
+                                                                color: trips[index]
+                                                                            .filterType!
+                                                                            .value ==
+                                                                        "Parada"
+                                                                    ? ColorsApp
+                                                                        .secondaryColor
+                                                                    : ColorsApp
+                                                                        .whiteColor),
                                                           ),
+                                                          backgroundColor:
+                                                              ColorsApp.text,
+                                                          elevation: 5,
                                                         ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        }),
-                                  );
+                                                      ),
+                                                    ]);
+                                                  }),
+                                            );
                                 } else {
                                   return CustomCircularProgressIndicator();
                                 }
@@ -1217,6 +1416,200 @@ class _TripState extends State<Trip> {
       reloadStates();
     });
   }
+
+  void _showModalInfo(BuildContext context, TripDto tripDto) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(25.0),
+        ),
+      ),
+      builder: (BuildContext context) {
+        return SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Container(
+                  padding:
+                      const EdgeInsets.only(bottom: 20, left: 20, right: 20),
+                  child: Column(mainAxisSize: MainAxisSize.min, children: [
+                    const Padding(
+                      padding: EdgeInsets.only(top: 10, bottom: 5),
+                      child: Text(
+                        'Detalles',
+                        style: TextStyle(
+                          color: ColorsApp.primayColor,
+                          fontSize: 22.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const Divider(color: ColorsApp.text),
+                    Container(
+                      padding: const EdgeInsets.only(
+                          bottom: 20, left: 20, right: 20),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.location_on,
+                                color: ColorsApp.text,
+                                size: 35,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                'Origen: ${tripDto.route!.startAddress!.state!.name}, ${tripDto.route!.startAddress!.description}',
+                                style: const TextStyle(
+                                  color: ColorsApp.text,
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 15),
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.flight_land,
+                                color: ColorsApp.text,
+                                size: 35,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                'Destino: ${tripDto.route!.endAddress!.state!.name}, ${tripDto.route!.endAddress!.description}',
+                                style: const TextStyle(
+                                  color: ColorsApp.text,
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 15),
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.date_range,
+                                color: ColorsApp.text,
+                                size: 35,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                'Hora: ${formatTime(tripDto.startTime!)} hrs - ${formatTime(tripDto.endTime!)} hrs',
+                                style: const TextStyle(
+                                  color: ColorsApp.text,
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 15),
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.timeline,
+                                color: ColorsApp.text,
+                                size: 35,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                'Escala(s): ${tripDto.route!.stopOvers!.length}',
+                                style: const TextStyle(
+                                  color: ColorsApp.text,
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                              height: tripDto.route!.stopOvers!.length * 25,
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 20),
+                                child: ListView.builder(
+                                    itemCount: tripDto.route!.stopOvers!.length,
+                                    itemBuilder: (context, index) {
+                                      return Row(
+                                        children: [
+                                          Stack(children: [
+                                            const Icon(
+                                                CupertinoIcons.circle_fill),
+                                            Positioned(
+                                                top: 5,
+                                                right: 8,
+                                                child: Text(
+                                                  tripDto
+                                                      .route!
+                                                      .stopOvers![index]
+                                                      .sequence
+                                                      .toString(),
+                                                  style: const TextStyle(
+                                                      color:
+                                                          ColorsApp.whiteColor),
+                                                )),
+                                          ]),
+                                          Text(
+                                            '${tripDto.route!.stopOvers![index].description}',
+                                            style: const TextStyle(
+                                              color: ColorsApp.text,
+                                              fontSize: 16.0,
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    }),
+                              )),
+                          const SizedBox(height: 15),
+                          const Row(
+                            children: [
+                              Icon(
+                                Icons.timer,
+                                color: ColorsApp.text,
+                                size: 35,
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'Tiempo estimado: 4:20 hrs.',
+                                style: TextStyle(
+                                  color: ColorsApp.text,
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 15),
+                          const Row(
+                            children: [
+                              Icon(
+                                Icons.person,
+                                color: ColorsApp.text,
+                                size: 35,
+                              ),
+                              SizedBox(width: 10),
+                              Text(
+                                'Número de pasajeros: 22',
+                                style: TextStyle(
+                                  color: ColorsApp.text,
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ])),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+String formatTime(DateTime dateTime) {
+  return DateFormat('HH:mm').format(dateTime);
 }
 
 class ImageFromBase64 extends StatelessWidget {
@@ -1229,12 +1622,12 @@ class ImageFromBase64 extends StatelessWidget {
     if (base64String != null && base64String != "") {
       Uint8List bytes = base64.decode(base64String);
       return CircleAvatar(
-        radius: 50,
+        radius: 30,
         backgroundImage: MemoryImage(bytes, scale: 0.1),
       );
     } else {
       return const CircleAvatar(
-        radius: 50,
+        radius: 30,
         backgroundColor: ColorsApp.secondaryColor,
       );
     }

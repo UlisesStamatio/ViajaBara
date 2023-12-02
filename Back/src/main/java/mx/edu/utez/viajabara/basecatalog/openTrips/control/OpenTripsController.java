@@ -3,6 +3,7 @@ package mx.edu.utez.viajabara.basecatalog.openTrips.control;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTripsDto;
+import mx.edu.utez.viajabara.basecatalog.trip.model.BookTripDto;
 import mx.edu.utez.viajabara.basecatalog.trip.model.TripDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,16 @@ public class OpenTripsController {
     )
     public ResponseEntity<Object> getOne(@Validated(TripDto.ChangeStatus.class) @RequestBody TripDto dto) {
         return service.getOne(dto.getId());
+    }
+
+    @PostMapping("/find-open-trip-by-trip")
+    @Secured({VIAJES_ABIERTOS})
+    @ApiOperation(
+            value = "Obtiene un registro por trip_id y fecha",
+            notes = "{ \"id\": 2 }"
+    )
+    public ResponseEntity<Object> getOpenTripByTripIdAndStartDate( @RequestBody int tripId, String date) {
+        return service.getOpenTripByTripIdAndStartDate(tripId, date);
     }
 
     @GetMapping("/all")

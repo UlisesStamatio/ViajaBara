@@ -12,4 +12,8 @@ class StuffApp {
   static const String blueSeat = '${routeImages}blue_seat.svg';
   static const String blackSeat = '${routeImages}black_seat.svg';
   static const String whiteSeat = '${routeImages}white_seat.svg';
+
+  static const String waitingData = '${routeImages}img_waiting_action.svg';
+  static const String dataNotFound =
+      '${routeImages}img_registers_not_found.svg';
 }

@@ -32,6 +32,14 @@ public class OpenTripsDto {
     public OpenTripsDto() {
     }
 
+    public OpenTripsDto(Long id, Trip trip, String startDate, int status, int enableSeats) {
+        this.id = id;
+        this.trip = trip;
+        this.startDate = startDate;
+        this.status = status;
+        this.enableSeats = enableSeats;
+    }
+
     public Long getId() {
         return id;
     }
