@@ -3,14 +3,17 @@ package mx.edu.utez.viajabara.basecatalog.route.control;
 import mx.edu.utez.viajabara.basecatalog.address.control.AddressService;
 import mx.edu.utez.viajabara.basecatalog.address.model.Address;
 import mx.edu.utez.viajabara.basecatalog.address.model.AddressDto;
+import mx.edu.utez.viajabara.basecatalog.address.model.AddressSaveDto;
 import mx.edu.utez.viajabara.basecatalog.duty.model.DutyRepository;
 import mx.edu.utez.viajabara.basecatalog.route.model.Route;
 import mx.edu.utez.viajabara.basecatalog.route.model.RouteDto;
 import mx.edu.utez.viajabara.basecatalog.route.model.RouteRepository;
+import mx.edu.utez.viajabara.basecatalog.route.model.RouteSaveDto;
 import mx.edu.utez.viajabara.basecatalog.stopover.control.StopOverService;
 import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOver;
 import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOverDto;
 import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOverRepository;
+import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOverSaveDto;
 import mx.edu.utez.viajabara.basecatalog.trip.model.Trip;
 import mx.edu.utez.viajabara.basecatalog.trip.model.TripRepository;
 import mx.edu.utez.viajabara.utils.entity.Message;
@@ -72,14 +75,14 @@ public class RouteService {
     }
 
     @Transactional(rollbackFor = {SQLException.class})
-    public ResponseEntity<Object> save(RouteDto dto) throws SQLException {
-        AddressDto startAddressDto = new AddressDto( dto.getStartAddress().getLatitude(),  dto.getStartAddress().getLongitude(),  dto.getStartAddress().getDescription(), dto.getStartAddress().getState());
+    public ResponseEntity<Object> save(RouteSaveDto dto) throws SQLException {
+        AddressSaveDto startAddressDto = new AddressSaveDto( dto.getStartAddress().getLatitude(),  dto.getStartAddress().getLongitude(),  dto.getStartAddress().getDescription(), dto.getStartAddress().getState());
         Address startAddress = addressService.save(startAddressDto);
         if(startAddress == null){
             return new ResponseEntity<>(new Message("No se registró la ruta, el estado es inexistente", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
         }
 
-        AddressDto endAddressDto = new AddressDto( dto.getEndAddress().getLatitude(),  dto.getEndAddress().getLongitude(),  dto.getEndAddress().getDescription(), dto.getEndAddress().getState());
+        AddressSaveDto endAddressDto = new AddressSaveDto( dto.getEndAddress().getLatitude(),  dto.getEndAddress().getLongitude(),  dto.getEndAddress().getDescription(), dto.getEndAddress().getState());
         Address endAddress = addressService.save(endAddressDto);
 
         if(endAddress == null){
@@ -94,8 +97,9 @@ public class RouteService {
         }
         if (dto.getStopOvers() != null) {
             List<StopOver> stopOverList = new ArrayList<>();
-            for (StopOverDto stop : dto.getStopOvers()) {
-                AddressDto stopAdressDto = new AddressDto( stop.getAddressDto().getLatitude(),  stop.getAddressDto().getLongitude(), stop.getDescription(), stop.getState());
+            for (StopOverSaveDto stop : dto.getStopOvers()) {
+                System.out.println(stop.toString());
+                AddressSaveDto stopAdressDto = new AddressSaveDto( stop.getLatitude(),  stop.getLongitude(), stop.getDescription(), stop.getState());
                 Address stopAddress = addressService.save(stopAdressDto);
                 if(stopAddress == null){
                     return new ResponseEntity<>(new Message("No se registró la parada, el estado es inexistente", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
@@ -118,7 +122,7 @@ public class RouteService {
     }
 
     @Transactional(rollbackFor = {SQLException.class})
-    public ResponseEntity<Object> update(RouteDto dto) throws SQLException {
+    public ResponseEntity<Object> update(RouteSaveDto dto) throws SQLException {
         Optional<Route> optional = repository.findById(dto.getId());
         if (!optional.isPresent()) {
             return new ResponseEntity<>(new Message("No se encontró la ruta", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
@@ -136,8 +140,8 @@ public class RouteService {
 
         if (dto.getStopOvers() != null) {
             List<StopOver> stopOverList = new ArrayList<>();
-            for (StopOverDto stop : dto.getStopOvers()) {
-                AddressDto stopAdressDto = new AddressDto( stop.getAddressDto().getLatitude(),  stop.getAddressDto().getLongitude(), stop.getDescription(), stop.getState());
+            for (StopOverSaveDto stop : dto.getStopOvers()) {
+                AddressSaveDto stopAdressDto = new AddressSaveDto( stop.getLatitude(),  stop.getLongitude(), stop.getDescription(), stop.getState());
                 Address stopAddress = addressService.save(stopAdressDto);
                 if(stopAddress == null){
                     return new ResponseEntity<>(new Message("No se registró la parada, el estado es inexistente", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
@@ -155,12 +159,12 @@ public class RouteService {
             stopOverService.save(stopOverList);
         }
 
-        AddressDto startAddressDto = new AddressDto( dto.getStartAddress().getLatitude(),  dto.getStartAddress().getLongitude(),  dto.getStartAddress().getDescription(), dto.getStartAddress().getState());
+        AddressSaveDto startAddressDto = new AddressSaveDto( dto.getStartAddress().getLatitude(),  dto.getStartAddress().getLongitude(),  dto.getStartAddress().getDescription(), dto.getStartAddress().getState());
         Address startAddress = addressService.save(startAddressDto);
         if(startAddress == null){
             return new ResponseEntity<>(new Message("No se registró la ruta, el estado es inexistente", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
         }
-        AddressDto endAddressDto = new AddressDto( dto.getEndAddress().getLatitude(),  dto.getEndAddress().getLongitude(),  dto.getEndAddress().getDescription(), dto.getEndAddress().getState());
+        AddressSaveDto endAddressDto = new AddressSaveDto( dto.getEndAddress().getLatitude(),  dto.getEndAddress().getLongitude(),  dto.getEndAddress().getDescription(), dto.getEndAddress().getState());
         Address endAddress = addressService.save(endAddressDto);
         if(endAddress == null){
             return new ResponseEntity<>(new Message("No se registró la ruta, el estado es inexistente", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);

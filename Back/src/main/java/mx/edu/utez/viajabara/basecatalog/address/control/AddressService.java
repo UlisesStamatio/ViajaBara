@@ -3,6 +3,7 @@ package mx.edu.utez.viajabara.basecatalog.address.control;
 import mx.edu.utez.viajabara.basecatalog.address.model.Address;
 import mx.edu.utez.viajabara.basecatalog.address.model.AddressDto;
 import mx.edu.utez.viajabara.basecatalog.address.model.AddressRepository;
+import mx.edu.utez.viajabara.basecatalog.address.model.AddressSaveDto;
 import mx.edu.utez.viajabara.basecatalog.paymentMethod.model.PaymentMethod;
 import mx.edu.utez.viajabara.basecatalog.paymentMethod.model.PaymentMethodDto;
 import mx.edu.utez.viajabara.basecatalog.state.control.StateService;
@@ -54,12 +55,12 @@ public class AddressService {
     }
 
     @Transactional(rollbackFor = {SQLException.class})
-    public Address save(AddressDto dto) throws SQLException {
+    public Address save(AddressSaveDto dto) throws SQLException {
         Optional<Address> optional = repository.findByLatitudeAndLongitude(dto.getLatitude(), dto.getLongitude());
         if (optional.isPresent()) {
             return optional.get();
         }else{
-            Optional<State> state = serviceState.findByName(dto.getState().getName().toLowerCase());
+            Optional<State> state = serviceState.findByName(dto.getState().toLowerCase());
             if(state.isPresent()){
                 Address address = new Address(dto.getLatitude(), dto.getLongitude(),dto.getDescription(), state.get());
                 address = repository.saveAndFlush(address);

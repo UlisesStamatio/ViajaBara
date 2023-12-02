@@ -4,6 +4,7 @@ package mx.edu.utez.viajabara.basecatalog.route.control;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import mx.edu.utez.viajabara.basecatalog.route.model.RouteDto;
+import mx.edu.utez.viajabara.basecatalog.route.model.RouteSaveDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -60,7 +61,7 @@ public class RouteController {
                     "  ]\n" +
                     "}"
     )
-    public ResponseEntity<Object> save(@Validated(RouteDto.Register.class) @RequestBody RouteDto dto) throws SQLException {
+    public ResponseEntity<Object> save(@Validated(RouteSaveDto.Register.class) @RequestBody RouteSaveDto dto) throws SQLException {
         return service.save(dto);
     }
 
@@ -86,7 +87,7 @@ public class RouteController {
                     "  ]\n" +
                     "}"
     )
-    public ResponseEntity<Object> update(@Validated(RouteDto.Modify.class) @RequestBody RouteDto dto) throws SQLException {
+    public ResponseEntity<Object> update(@Validated(RouteSaveDto.Modify.class) @RequestBody RouteSaveDto dto) throws SQLException {
         return service.update(dto);
     }
 

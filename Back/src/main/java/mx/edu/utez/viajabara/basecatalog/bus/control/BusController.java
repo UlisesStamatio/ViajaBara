@@ -31,6 +31,13 @@ public class BusController {
         return service.findAll();
     }
 
+
+    @GetMapping("/all-buses-enabled")
+    @Secured({AUTOBUSES})
+    public ResponseEntity<Object> findAllBusesEnabled() throws SQLException {
+        return service.findAllEnabled();
+    }
+
     @PostMapping("")
     @Secured({AUTOBUSES})
     @ApiOperation(

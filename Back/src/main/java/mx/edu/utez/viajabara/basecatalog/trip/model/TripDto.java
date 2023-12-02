@@ -7,9 +7,12 @@ import mx.edu.utez.viajabara.basecatalog.route.model.RouteDto;
 
 import javax.validation.constraints.NotNull;
 import java.sql.Time;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 
@@ -22,7 +25,7 @@ public class TripDto {
     private Bus bus;
     @NotNull(groups = {Register.class,Modify.class,GetByDate.class})
     private Date startTime;
-    @NotNull(groups = {Register.class,Modify.class,GetByDate.class})
+
     private Date endTime;
     @NotNull(groups = {Register.class,Modify.class})
     private String workDays;
@@ -68,11 +71,11 @@ public class TripDto {
     }
 
     public Date getStartTime() {
-        return startTime;
+        return parseDate(startTime);
     }
 
     public void setStartTime(Date startTime) {
-        this.startTime = startTime;
+        this.startTime = parseDate(startTime);
     }
 
     public Date getEndTime() {
@@ -132,5 +135,16 @@ public class TripDto {
     public interface ChangeStatus{}
     public interface FindByDriver{}
     public interface GetByDate{}
+
+    private Date parseDate(Date date) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+            sdf.setTimeZone(TimeZone.getTimeZone("America/Mexico_City"));
+            return sdf.parse(sdf.format(date));
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 }

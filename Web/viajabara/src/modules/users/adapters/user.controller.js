@@ -23,7 +23,7 @@ const OperationsController = {
 
         }
 
-      const response = await Operations.newUser('/register', lastData)
+      const response = await Operations.newUser('/', lastData)
       return response;
     },
     async updateUser(data){
@@ -54,6 +54,10 @@ const OperationsController = {
     },
     async listUsers(){
         const response = await Operations.lisUsers('/all-drivers')
+        return response;
+    },
+    async listDriversEnabled(){
+        const response = await Operations.lisUsers('/all-drivers-enabled')
         return response;
     },
     async listConsumers(){
