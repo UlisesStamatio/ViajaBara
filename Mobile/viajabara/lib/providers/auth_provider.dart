@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:viajabara/config/dio/module_network.dart';
 import 'package:viajabara/domain/entities/address.dart';
@@ -12,7 +11,6 @@ import 'package:viajabara/domain/entities/state/state_list.dart';
 import 'package:viajabara/domain/entities/trip/trip.dart';
 import 'package:viajabara/domain/entities/user_data.dart';
 import 'package:viajabara/domain/entities/visual_config/visual_config.dart';
-import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/modules/tripsUser/adapters/entities/list_drivers.dart';
 
 class AuthProvider {
@@ -225,15 +223,14 @@ class AuthProvider {
     if (response.statusCode == 200) {
       Map<String, dynamic> data = response.data['result'];
       ResMsg responseMessage = ResMsg(
-          profile: data['profile'],
-          name: data['person']['name'] + ' ' + data['person']['surname'],
+          profile: data['profile'] ?? '',
+          name: data['person']['name'] + ' ' + data['person']['surname'] ?? '',
           email: data['email'],
-          cellphone: data['person']['cellphone'],
+          cellphone: data['person']['cellphone'] ?? '',
           birthDate: data['person']['birthDate'].toString(),
-          sex: data['person']['sex'],
+          sex: data['person']['sex'] ?? '',
           state: data['person']?['state']?['name']);
 
-      saveData(responseMessage, 'info');
       return responseMessage;
     } else {
       throw Exception('Fallo al obtener los registros');

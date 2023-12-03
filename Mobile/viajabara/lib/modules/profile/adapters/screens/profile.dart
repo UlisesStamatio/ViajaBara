@@ -9,6 +9,7 @@ import 'package:viajabara/kernel/themes/stuff.dart';
 import 'package:viajabara/kernel/widgets/profile/change_information.dart';
 import 'package:viajabara/kernel/widgets/profile/change_password.dart';
 import 'package:viajabara/kernel/widgets/profile/change_photo.dart';
+import 'package:viajabara/modules/generalMechanisms/adapters/screens/login.dart';
 import 'package:viajabara/providers/auth_provider.dart';
 
 class Profile extends StatefulWidget {
@@ -51,12 +52,12 @@ class _ProfileState extends State<Profile> {
 
         setState(() {
           profile = dataUser.profile ?? '';
-          name =  dataUser.name ?? 'Agrega tu nombre';
-          email =  dataUser.email ?? 'Agrega tu correo';
+          name = dataUser.name ?? 'Agrega tu nombre';
+          email = dataUser.email ?? 'Agrega tu correo';
           cellphone = dataUser.cellphone ?? 'Agrega tu celular';
           birthDate = dataUser.birthDate ?? 'Agrega tu fecha de nacimiento';
-          sex =  dataUser.sex ?? 'Agrega tu sexo';
-          state =  dataUser.state?? 'Agrega tu estado';
+          sex = dataUser.sex ?? 'Agrega tu sexo';
+          state = dataUser.state ?? 'Agrega tu estado';
         });
 
         if (role == "ADMIN") {
@@ -358,9 +359,34 @@ class _ProfileState extends State<Profile> {
                                 ),
                               ],
                             )),
-                        const SizedBox(
-                            height:
-                                20), // Espacio en la parte inferior de la Card
+                        const SizedBox(height: 20),
+                        SizedBox(
+                          width: 150,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.pushReplacementNamed(context, '/login');
+                            },
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                  ColorsApp.primayColor),
+                            ),
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.logout,
+                                  size: 20,
+                                ),
+                                SizedBox(width: 10),
+                                Text(
+                                  'Cerrar sesión',
+                                  style: TextStyle(fontSize: 14),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
                       ],
                     ),
                   ),

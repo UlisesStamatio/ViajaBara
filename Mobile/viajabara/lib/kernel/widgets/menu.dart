@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:viajabara/config/navigation/driver/history_navigation_driver.dart';
 import 'package:viajabara/config/navigation/driver/trips_navigation_driver.dart';
-import 'package:viajabara/config/navigation/profile_navigation.dart';
 import 'package:viajabara/config/navigation/user/history_navigation.dart';
 import 'package:viajabara/config/navigation/user/trips_navigation.dart';
 import 'package:viajabara/kernel/widgets/custom_bottom_navigation_tab.dart';
 import 'package:viajabara/kernel/widgets/custom_bottom_navigation_tab_driver.dart';
+import 'package:viajabara/modules/profile/adapters/screens/profile.dart';
 
 class Menu extends StatefulWidget {
   const Menu({super.key});
@@ -20,17 +20,15 @@ class _MenuState extends State<Menu> {
   String rol = '';
 
   @override
-  void initState() {
-    super.initState();
-    Future.delayed(Duration.zero, () {
-      final arguments = ModalRoute.of(context)?.settings.arguments as Map;
-      if (arguments != null) {
-        setState(() {
-          rol = arguments['rol'];
-        });
-      }
-      print(rol);
-    });
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final arguments = ModalRoute.of(context)?.settings.arguments as Map?;
+    if (arguments != null) {
+      setState(() {
+        rol = arguments['rol'];
+      });
+    }
+    print(rol);
   }
 
   // final homeNavigatorKey = GlobalKey<NavigatorState>();
@@ -38,12 +36,6 @@ class _MenuState extends State<Menu> {
   void _onItemTapped(int index) {
     setState(() {
       _selectIndex = index;
-      if (index == 3) {
-        _showIndexedStack = false;
-        Navigator.pushReplacementNamed(context, "/login");
-      }
-      print(_selectIndex);
-      print(_showIndexedStack);
     });
   }
 
@@ -57,7 +49,7 @@ class _MenuState extends State<Menu> {
                   children: [
                     const TripsNavigationDriver(),
                     const HistoryNavigationDriver(),
-                    const ProfileNavigation(),
+                    const Profile(),
                     Container(),
                   ],
                 )
@@ -66,7 +58,7 @@ class _MenuState extends State<Menu> {
                   children: [
                     const TripsNavigation(),
                     const HistoryNavigation(),
-                    const ProfileNavigation(),
+                    const Profile(),
                     Container(),
                   ],
                 )

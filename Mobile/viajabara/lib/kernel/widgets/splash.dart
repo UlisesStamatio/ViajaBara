@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:viajabara/config/navigation/general_mechanisms_navigation.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
 
@@ -16,11 +15,10 @@ class _SplashState extends State<Splash> {
   void initState() {
     super.initState();
     Future.delayed(
-        const Duration(seconds: 2),
-        () => Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const GeneralMechanismsNavigation())));
+      const Duration(seconds: 2),
+      () => Navigator.pushReplacementNamed(
+          context, '/login'),
+    );
   }
 
   @override

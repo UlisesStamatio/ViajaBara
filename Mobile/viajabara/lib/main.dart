@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:viajabara/config/navigation/general_mechanisms_navigation.dart';
 import 'package:viajabara/kernel/blocs/blocs.dart';
+import 'package:viajabara/kernel/cubits/login/login_form_cubit.dart';
 import 'package:viajabara/kernel/widgets/Splash.dart';
+import 'package:viajabara/kernel/widgets/menu.dart';
+import 'package:viajabara/modules/generalMechanisms/adapters/screens/forgot_password.dart';
+import 'package:viajabara/modules/generalMechanisms/adapters/screens/login.dart';
+import 'package:viajabara/modules/generalMechanisms/adapters/screens/register.dart';
 
 void main() {
   runApp(MultiBlocProvider(
@@ -42,7 +46,13 @@ class MainApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => Splash(),
-        '/login': (context) => const GeneralMechanismsNavigation(),
+        '/login': (context) => BlocProvider(
+              create: (context) => LoginFormCubit(),
+              child: const Login(),
+            ),
+        '/menu': (context) => const Menu(),
+        '/register': (context) => const Register(),
+        '/forgotPassword': (context) => const ForgotPassword()
       },
     );
   }
