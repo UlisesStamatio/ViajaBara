@@ -144,7 +144,6 @@ export default {
             startTime: new Date(result.startTime).toTimeString().split(' ')[0],
             workDays: JSON.parse(result.workDays).map((day) => ({value: parseInt(day), label: this.getDay(day) }))
           };
-          console.log(this.searchedTrip);
           this.tripOriginal =  {...result, driver: {id: result.driver.id, name: `${result.driver.person.name} ${result.driver.person.surname}` }};
       }else{
            this.$swal({
