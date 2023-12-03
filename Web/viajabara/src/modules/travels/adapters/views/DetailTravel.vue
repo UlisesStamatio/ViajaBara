@@ -8,71 +8,31 @@
           <div class="row">
             <div class="col-12 col-lg-6 mb-3 ">
               <label>Conductor(<span class="text-danger">*</span>)</label>
-                  <VueMultiselect
-                    v-model="searchedTrip.driver"
-                    :options="drivers"
-                    selectLabel="Presiona para seleccionar"
-                    selectedLabel="Seleccionado"
-                    deselectLabel="Presiona para remover"
-                    placeholder="Buscar.."
-                    label="name"
-                    :class="{'isInvalid': errors.driver, 'isValid': errors.driver === null}"
+                  <input
+                    :value="searchedTrip.driver?.name"
+                    class="form-control"
+                    disabled
                     >
-                    <template #noResult>
-                      Elemento no encontrado.
-                    </template>
-                  </VueMultiselect>
-              <div v-if="errors.driver" style="color: red">
-                      {{ errors.driver }}
-              </div>
             </div>
             <div class="col-12 col-lg-6 mb-3">
               <label>Unidad(<span class="text-danger">*</span>)</label>
-                <VueMultiselect
-                    v-model="searchedTrip.bus"
-                    :options="buses"
-                    selectLabel="Presiona para seleccionar"
-                    selectedLabel="Seleccionado"
-                    deselectLabel="Presiona para remover"
-                    placeholder="Buscar.."
-                    label="plaque"
-                    :class="{'isInvalid': errors.bus, 'isValid': errors.bus === null}"
-                    >
-                     <template #noResult>
-                      Elemento no encontrado.
-                    </template>
-                  </VueMultiselect>
-              <div v-if="errors.bus" style="color: red">
-                    {{ errors.bus }}
-              </div>
+                <input
+                    :value="searchedTrip.bus?.plaque"
+                    class="form-control"
+                    disabled
+                    />
             </div>
             <div class="col-12 col-lg-6 mb-3">
               <label>Ruta(<span class="text-danger">*</span>)</label>
-              <VueMultiselect
-                    v-model="searchedTrip.route"
-                    :options="routes"
-                    selectLabel="Presiona para seleccionar"
-                    selectedLabel="Seleccionado"
-                    deselectLabel="Presiona para remover"
-                    placeholder="Buscar.."
-                    label="name"
-                    :class="{'isInvalid': errors.route, 'isValid': errors.route === null}"
-                    >
-                     <template #noResult>
-                      Elemento no encontrado.
-                    </template>
-                  </VueMultiselect>
-               <div v-if="errors.route" style="color: red">
-                    {{ errors.route }}
-              </div>
+              <input
+                    :value="searchedTrip.route?.name"
+                    class="form-control"
+                    disabled/>
             </div>
 
             <div class="col-12 col-lg-6 mb-3">
               <label>Hora(<span class="text-danger">*</span>)</label>
-              <input type="time" class="form-control" id="date" name="date" v-model="searchedTrip.startTime" :class="{ 'is-invalid': errors.date, 'is-valid': errors.date === null }">
-              <div v-if="errors.date" style="color: red">
-                    {{ errors.date }}
-              </div>
+              <input type="time" class="form-control" id="date" name="date" :value="searchedTrip?.startTime" disabled>
             </div>
 
 
@@ -82,17 +42,10 @@
                     v-model="searchedTrip.workDays"
                     :options="days" 
                     :multiple="true" 
-                    :close-on-select="false" 
-                    :clear-on-select="false" 
-                    :preserve-search="true" 
+                    :disabled="true"
                     label="label" 
                     track-by="value" 
                     :preselect-first="false"
-                    selectLabel="Presiona para seleccionar"
-                    selectedLabel="Seleccionado"
-                    deselectLabel="Presiona para remover"
-                    placeholder="Buscar.."
-                    :class="{'isInvalid': errors.day, 'isValid': errors.day === null}"
                     >
                      <template #noResult>
                       Elemento no encontrado.
@@ -107,8 +60,7 @@
           </div>
           <div class="row mt-4">
             <div class="col-12 text-end ">
-                <button type="button" class="btn bg-gradient-secondary mb-0 me-2 ms-auto js-btn-next" @click="cancelar()" title="Cancelar">Cancelar</button>
-                <button type="button" class="btn bg-gradient-dark mb-0 ms-auto js-btn-next" title="Guardar Viaje" @click="preUpdateTrip()">Guardar</button>
+                <button type="button" class="btn bg-gradient-secondary mb-0 me-2 ms-auto js-btn-next" @click="cancelar()" title="Regresar">Regresar</button>
             </div>
           </div>
       </div>
@@ -122,13 +74,11 @@ import VueMultiselect from 'vue-multiselect'
 import listDriversEnabled from '../../../../modules/users/use-cases/list.drivers.enabled'
 import listBusesEnabled from '../../../../modules/buses/use-cases/list.bus.enabled'
 import listRoutesEnabled from '../../../../modules/routes/use-cases/list.route.enabled'
-import tripValidator from '../../../../kernel/validators/trip.validator'
 import getTrip from '../../use-cases/get.trip'
 import router from '../../../../router/index'
-import updateRoute from '../../use-cases/update.trip';
 
 export default {
-  name: "UpdateTravel",
+  name: "DetailTravel",
   components: {
     VueMultiselect,
   },
@@ -194,6 +144,7 @@ export default {
             startTime: new Date(result.startTime).toTimeString().split(' ')[0],
             workDays: JSON.parse(result.workDays).map((day) => ({value: parseInt(day), label: this.getDay(day) }))
           };
+          console.log(this.searchedTrip);
           this.tripOriginal =  {...result, driver: {id: result.driver.id, name: `${result.driver.person.name} ${result.driver.person.surname}` }};
       }else{
            this.$swal({
@@ -268,70 +219,6 @@ export default {
             title: 'Ocurrio un error durante la consultar. Inténtalo de nuevo.',
             type: "basic",
           });
-      }
-    },
-    preUpdateTrip(){
-      this.errors.bus = tripValidator.validateSelect(this.searchedTrip.bus);
-      this.errors.driver = tripValidator.validateSelect(this.searchedTrip.driver);
-      this.errors.route = tripValidator.validateSelect(this.searchedTrip.route);
-      this.errors.day = tripValidator.validateMultiSelect(this.searchedTrip.workDays);
-      this.errors.date = tripValidator.validateDate(this.searchedTrip.startTime);
-
-        if(!this.errors.bus && !this.errors.driver && !this.errors.route && !this.errors.day && !this.errors.date){
-        const {driver, bus, workDays, startTime, route} = this.searchedTrip;
-        const today = new Date();
-        const hour = startTime.split(':');
-
-        today.setHours(parseInt(hour[0])-6, parseInt(hour[1]), 0, 0);
-
-        const tripPayload = {
-          id: this.searchedTrip.id,
-          driver: {id: driver.id},
-          bus: {id: bus.id},
-          startTime: today.toISOString(),
-          workDays: JSON.stringify(workDays.map((day) => (day.value.toString()))),
-          route: {id: route.id}
-        }
-
-        this.$swal({
-          title: "¿Estás segura(a) de guardar los cambios?",
-          text: "¡No podrás revertir esto.!",
-          icon: "warning",
-          showCancelButton: true,
-          cancelButtonText: "Cancelar",
-          confirmButtonText: "Confirmar",
-          customClass: {
-            confirmButton: "btn bg-gradient-success",
-            cancelButton: "btn bg-gradient-secondary",
-          },
-          buttonsStyling: false,
-        }).then(async(result) => {
-          if (result.isConfirmed) {
-              this.isLoading = true;
-              const {message, error, data} = await updateRoute(tripPayload)
-              this.isLoading = false;
-              if(!error){
-                const {result:{text}} = data
-                this.$swal({
-                  icon: "success",
-                  title: message,
-                  text: text,
-                  type: 'success-message',
-                });
-                router.push({name: 'Consultar Viajes'})
-              }else{
-                const {text} = data
-                this.$swal({
-                    icon: "error", 
-                    title: message,
-                    text: text,
-                    type: "basic",
-                  });
-              }
-          } else if (result.dismiss === this.$swal.DismissReason.cancel) {
-            this.$swal.dismiss;
-          }
-        });
       }
     },
     cancelar(){

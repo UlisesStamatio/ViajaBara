@@ -24,6 +24,7 @@ import DetailRoute from "../modules/routes/adapters/views/DetailRoute.vue";
 import ListTravel from "../modules/travels/adapters/views/ListTravel.vue";
 import NewTravel from "../modules/travels/adapters/views/NewTravel.vue";
 import UpdateTravel from "../modules/travels/adapters/views/UpdateTravel.vue";
+import DetailTravel from "../modules/travels/adapters/views/DetailTravel.vue";
 import LandingPage from "../modules/auth/adapters/views/LandingPage.vue";
 import Login from "../modules/auth/adapters/views/Login.vue"
 import ResetPassword from "../modules/auth/adapters/views/ResetPassword.vue"
@@ -178,6 +179,12 @@ const routes = [
     path: "/viaje/consultar/modificar/:id",
     name: "Modificar Viaje",
     component: UpdateTravel,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: "/viaje/consultar/detalles/:id",
+    name: "Detalles Viaje",
+    component: DetailTravel,
     meta: { requiresAuth: true }
   },
   {
