@@ -90,7 +90,7 @@
 <script>
 //import { DataTable } from "simple-datatables";
 import setTooltip from "@/assets/js/tooltip.js";
-import listRoutes from '../../use-cases/list.route';
+import listRoutes from '../../use-cases/list.route'
 import changeStatusRoute from '../../use-cases/change.status.route';
 import DataTable from 'datatables.net-dt';
 import $ from 'jquery';
