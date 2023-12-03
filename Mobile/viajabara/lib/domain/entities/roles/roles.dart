@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 class Roles {
   final String? keyRole;
   final String? name;

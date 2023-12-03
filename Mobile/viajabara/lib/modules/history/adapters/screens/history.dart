@@ -44,10 +44,8 @@ class _HistoryState extends State<History> {
             ),
             ListView.builder(
                 itemCount:
-                    6, // Reemplaza con el número de tarjetas que quieres mostrar.
+                    6, 
                 itemBuilder: (context, index) {
-                  // Aquí construyes cada elemento de la lista.
-                  // Puedes ajustar los datos con los de tu listaDeViajes.
                   return Card(
                     elevation: 5,
                     margin: const EdgeInsets.all(10),

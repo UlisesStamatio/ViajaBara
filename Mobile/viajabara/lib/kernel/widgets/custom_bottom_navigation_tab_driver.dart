@@ -25,10 +25,6 @@ class CustomBottomNavigationTabDriver extends StatelessWidget {
             icon: Icon(CupertinoIcons.person_crop_circle_fill),
             label: 'Perfil',
             backgroundColor: ColorsApp.whiteColor),
-        BottomNavigationBarItem(
-            icon: Icon(Icons.logout),
-            label: 'Cerrar sesión',
-            backgroundColor: ColorsApp.whiteColor),
       ],
       currentIndex: selectedIndex,
       selectedItemColor: ColorsApp.dangerColor,
