@@ -102,6 +102,8 @@ import DataTable from 'datatables.net-dt';
 import $ from 'jquery';
 import listTrips from '../../use-cases/list.trips';
 import changeStatusTrip from '../../use-cases/change.status.trip';
+import router from '../../../../router/index'
+
 
 export default {
   name: "ListTravel",
@@ -122,7 +124,7 @@ export default {
          const {data:{result} } = await listTrips();
          this.trips = result.map((trip) =>{
           trip.route.startAddress.description.split(',')[0] + ' - ' + trip.route.endAddress.description.split(',')[0]
-          return {...trip, route: trip.route.startAddress.description.split(',')[0] + ' - ' + trip.route.endAddress.description.split(',')[0], startTime: new Date(trip.startTime).toISOString().split('T')[1].split('.')[0]}
+          return {...trip, route: trip.route.startAddress.description.split(',')[0] + ' - ' + trip.route.endAddress.description.split(',')[0], startTime: new Date(trip.startTime).toTimeString().split(' ')[0]}
          })
          if(this.datatable){
           this.datatable.destroy()
@@ -201,7 +203,10 @@ export default {
               this.$swal.dismiss;
             }
           })
-    }
+    },
+     editTrip(id){
+      router.push({name: 'Modificar Viaje', params: {id: id}})
+    },
   }
 };
 </script>

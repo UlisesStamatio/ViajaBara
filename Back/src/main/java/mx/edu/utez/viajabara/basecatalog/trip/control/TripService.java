@@ -278,6 +278,12 @@ public class TripService {
         if(!optionalTrip.isPresent()){
             return new ResponseEntity<>(new Message("No se encontró el viaje", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
+
+        List<OpenTrips> optionalOpenTrips = openTripsRepository.findOpenTripsByTripIdNotInProgress(optionalTrip.get().getId());
+        if(optionalOpenTrips.size() > 0){
+            return new ResponseEntity<>(new Message("El viaje esta en progreso, no puedes modificarlo", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
+        }
+
         Optional<Bus> bus = busRepository.findById(dto.getBus().getId());
         if(!bus.isPresent()){
             return new ResponseEntity<>(new Message("No se encontró el autobús", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
@@ -295,6 +301,8 @@ public class TripService {
         trip.setBus(bus.get());
         trip.setDriver(driver.get());
         trip.setRoute(route.get());
+        trip.setStartTime(dto.getStartTime());
+        trip.setWorkDays(dto.getWorkDays());
 
         trip = repository.saveAndFlush(trip);
         if (trip == null) {

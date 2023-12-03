@@ -7,7 +7,7 @@ const tripValidator = {
         return null
     },
     validateMultiSelect(value){
-        if(!value || value === undefined || value === null) return 'Campo obligatorio.'
+        if( value === undefined || value === null) return 'Campo obligatorio.'
         if(value.length === 0) return 'Campo obligatorio.'
         return null
     },

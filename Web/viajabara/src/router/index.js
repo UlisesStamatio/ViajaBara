@@ -175,7 +175,7 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: "/viaje/consultar/modificar",
+    path: "/viaje/consultar/modificar/:id",
     name: "Modificar Viaje",
     component: UpdateTravel,
     meta: { requiresAuth: true }

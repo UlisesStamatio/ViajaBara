@@ -5,10 +5,10 @@ const OperationsController = {
       const response = await Operations.newTrip('/', data)
       return response;
     },
-    // async updateRoute(data){
-    //   const response = await Operations.updateRoute('/', data)
-    //   return response;
-    // },
+    async updateTrip(data){
+      const response = await Operations.updateTrip('/', data)
+      return response;
+    },
     async listTrips(){
         const response = await Operations.listTrips('/all')
         return response;
@@ -25,10 +25,10 @@ const OperationsController = {
     //     const response = await Operations.getRoute('/getOne', payload)
     //     return response;
     // },
-    // async getProfile(payload){
-    //     const response = await Operations.getUser('/one', payload)
-    //     return response;
-    // },
+    async getTrip(payload){
+        const response = await Operations.getTrip('/getOne', payload)
+        return response;
+    },
     async changeStatusTrip(payload){
         const response = await Operations.changeStatusTrip('/change-status', payload)
         return response;
