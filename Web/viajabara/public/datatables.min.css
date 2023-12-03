@@ -640,12 +640,12 @@ table.dataTable td {
 .dataTables_wrapper .dataTables_paginate .paginate_button.current,
 .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
     color: white !important;
-    background: -webkit-gradient(linear, left top, left bottom,  color-stop(0%, #7928CA), color-stop(100%, #FF0080));
-    background: -webkit-linear-gradient(top, #7928CA 0%, #FF0080 100%);
-    background: -moz-linear-gradient(top, #7928CA 0%, #FF0080 100%);
-    background: -ms-linear-gradient(top, #7928CA 0%, #FF0080 100%);
-    background: -o-linear-gradient(top, #7928CA 0%, #FF0080 100%);
-    background: linear-gradient(to bottom, #7928CA 0%, #FF0080 100%)
+    background: -webkit-gradient(linear, left top, left bottom,  color-stop(0%, #ea0606 ), color-stop(100%, #ff667c));
+    background: -webkit-linear-gradient(top, #ea0606 0%, #ff667c 100%);
+    background: -moz-linear-gradient(top, #ea0606 0%, #ff667c 100%);
+    background: -ms-linear-gradient(top, #ea0606 0%, #ff667c 100%);
+    background: -o-linear-gradient(top, #ea0606 0%, #ff667c 100%);
+    background: linear-gradient(to bottom, #ea0606 0%, #ff667c 100%)
 }
 
 .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
@@ -653,7 +653,7 @@ table.dataTable td {
 .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:active {
     cursor: default;
     color: #8392AB !important;
-    background-color: linear-gradient(310deg, #7928CA 0%, #FF0080 100%);
+    background-color: linear-gradient(310deg, #ea0606 0%, #ff667c 100%);
     box-shadow: none
 }
 
@@ -669,12 +669,12 @@ table.dataTable td {
 
 .dataTables_wrapper .dataTables_paginate .paginate_button:active {
     outline: none;
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #7928CA), color-stop(100%, #FF0080));
-    background: -webkit-linear-gradient(top, #7928CA 0%, #FF0080 100%);
-    background: -moz-linear-gradient(top, #7928CA 0%, #FF0080 100%);
-    background: -ms-linear-gradient(top, #7928CA 0%, #FF0080 100%);
-    background: -o-linear-gradient(top, #7928CA 0%, #FF0080 100%);
-    background: linear-gradient(to bottom, #7928CA 0%, #FF0080 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #7928CA), color-stop(100%, #ff667c));
+    background: -webkit-linear-gradient(top, #ea0606 0%, #ff667c 100%);
+    background: -moz-linear-gradient(top, #ea0606 0%, #ff667c 100%);
+    background: -ms-linear-gradient(top, #ea0606 0%, #ff667c 100%);
+    background: -o-linear-gradient(top, #ea0606 0%, #ff667c 100%);
+    background: linear-gradient(to bottom, #ea0606 0%, #ff667c 100%);
 }
 
 .dataTables_wrapper .dataTables_paginate .ellipsis {

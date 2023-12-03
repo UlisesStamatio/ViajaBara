@@ -13,7 +13,7 @@
                 <div class="my-auto ms-auto">
                   <router-link
                     :to="{ name: 'Registro Viaje' }"
-                    class="mb-0 btn bg-gradient-primary btn-sm"
+                    class="mb-0 btn bg-gradient-danger btn-sm"
                     >+&nbsp; Nuevo Viaje</router-link
                   >
                 </div>
@@ -51,24 +51,18 @@
                     <td class="text-sm">
                          <a
                             class="clickeable"
-                            data-bs-toggle="tooltip"
-                            data-bs-original-title="Modificar viaje"
                             @click="editTrip(trip.id)"
                           >
                             <i class="fa fa-pencil-square-o text-secondary"></i>
                           </a>
                           <a
                             class="mx-2 clickeable"
-                            data-bs-toggle="tooltip"
-                            data-bs-original-title="Visualizar viaje"
                             @click="detailTrip(trip.id)"
                           >
                             <i class="fas fa-eye text-secondary"></i>
                           </a>
                           <a
                           class="clickeable"
-                          data-bs-toggle="tooltip"
-                          data-bs-original-title="Desactivar viaje"
                           v-show="trip.status"
                           @click="changeStatusTrip({id: trip.id})"
                         >
@@ -76,8 +70,6 @@
                         </a>
                           <a
                           class="clickeable"
-                          data-bs-toggle="tooltip"
-                          data-bs-original-title="Activar viaje"
                           v-show="!trip.status"
                           @click="changeStatusTrip({id: trip.id})"
                           >
@@ -206,6 +198,9 @@ export default {
     },
      editTrip(id){
       router.push({name: 'Modificar Viaje', params: {id: id}})
+    },
+     detailTrip(id){
+      router.push({name: 'Detalles Viaje', params: {id: id}})
     },
   }
 };
