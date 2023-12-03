@@ -194,7 +194,6 @@ export default {
             startTime: new Date(result.startTime).toTimeString().split(' ')[0],
             workDays: JSON.parse(result.workDays).map((day) => ({value: parseInt(day), label: this.getDay(day) }))
           };
-          console.log(this.searchedTrip);
           this.tripOriginal =  {...result, driver: {id: result.driver.id, name: `${result.driver.person.name} ${result.driver.person.surname}` }};
       }else{
            this.$swal({
@@ -272,7 +271,6 @@ export default {
       }
     },
     preUpdateTrip(){
-      console.log(this.searchedTrip);
       this.errors.bus = tripValidator.validateSelect(this.searchedTrip.bus);
       this.errors.driver = tripValidator.validateSelect(this.searchedTrip.driver);
       this.errors.route = tripValidator.validateSelect(this.searchedTrip.route);
@@ -294,7 +292,7 @@ export default {
           workDays: JSON.stringify(workDays.map((day) => (day.value.toString()))),
           route: {id: route.id}
         }
-        console.log(tripPayload);
+
         this.$swal({
           title: "¿Estás segura(a) de guardar los cambios?",
           text: "¡No podrás revertir esto.!",
