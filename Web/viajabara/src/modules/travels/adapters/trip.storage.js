@@ -20,20 +20,20 @@ const Operations = {
       return response;
     },
 
-    // async listRoutes(url){
-    //   let response;
-    //   try {
-    //     response= await axiosInstance.get(`${BASE_URL_ROUTE}${url}`);
-    //     response = statusValidator(response);
-    //   } catch (error) {
-    //     if(error.response){
-    //       response = statusValidator(error.response);
-    //     }else{
-    //       router.push({name: 'Error Error403'})
-    //     }
-    //   }
-    //   return response;
-    // },
+    async listTrips(url){
+      let response;
+      try {
+        response= await axiosInstance.get(`${BASE_URL_TRIP}${url}`);
+        response = statusValidator(response);
+      } catch (error) {
+        if(error.response){
+          response = statusValidator(error.response);
+        }else{
+          router.push({name: 'Error Error403'})
+        }
+      }
+      return response;
+    },
 
     // async listConsumers(url){
     //   let response;

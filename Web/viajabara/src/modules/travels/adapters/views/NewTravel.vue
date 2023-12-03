@@ -69,7 +69,7 @@
             </div>
 
             <div class="col-12 col-lg-6 mb-3">
-              <label>Fecha(<span class="text-danger">*</span>)</label>
+              <label>Hora(<span class="text-danger">*</span>)</label>
               <input type="time" class="form-control" id="date" name="date" v-model="trip.date" :class="{ 'is-invalid': errors.date, 'is-valid': errors.date === null }">
               <div v-if="errors.date" style="color: red">
                     {{ errors.date }}
@@ -318,4 +318,4 @@ export default {
     border-radius: 5px !important;
     border: 1px solid #66d432 !important;
 }
-</style>
+</style>  
