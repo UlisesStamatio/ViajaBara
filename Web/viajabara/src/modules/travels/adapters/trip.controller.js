@@ -29,10 +29,10 @@ const OperationsController = {
     //     const response = await Operations.getUser('/one', payload)
     //     return response;
     // },
-    // async changeStatusRoute(payload){
-    //     const response = await Operations.changeStatusRoute('/change-status', payload)
-    //     return response;
-    // }
+    async changeStatusTrip(payload){
+        const response = await Operations.changeStatusTrip('/change-status', payload)
+        return response;
+    }
 }
 
 export default OperationsController;

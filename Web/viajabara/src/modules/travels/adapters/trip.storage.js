@@ -77,20 +77,20 @@ const Operations = {
     //   }
     //   return response;
     // },
-    // async changeStatusRoute(url, data){
-    //   let response;
-    //   try {
-    //     response= await axiosInstance.put(`${BASE_URL_ROUTE}${url}`, JSON.stringify(data));
-    //     response = statusValidator(response);
-    //   } catch (error) {
-    //     if(error.response){
-    //       response = statusValidator(error.response);
-    //     }else{
-    //       router.push({name: 'Error Error403'})
-    //     }
-    //   }
-    //   return response;
-    // },
+    async changeStatusTrip(url, data){
+      let response;
+      try {
+        response= await axiosInstance.put(`${BASE_URL_TRIP}${url}`, JSON.stringify(data));
+        response = statusValidator(response);
+      } catch (error) {
+        if(error.response){
+          response = statusValidator(error.response);
+        }else{
+          router.push({name: 'Error Error403'})
+        }
+      }
+      return response;
+    },
 }
 
 export default Operations;

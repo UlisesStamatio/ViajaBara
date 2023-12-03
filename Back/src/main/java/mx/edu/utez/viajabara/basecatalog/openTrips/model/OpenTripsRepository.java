@@ -21,6 +21,6 @@ public interface OpenTripsRepository extends JpaRepository<OpenTrips,Long> {
     List<OpenTrips> searchAllTripsHistory(long driver_id);
 
 
-    @Query(value = "SELECT * FROM open_trips WHERE trip_id = :tripId AND status is true AND start_date < CURDATE()", nativeQuery = true)
+    @Query(value = "SELECT * FROM open_trips WHERE trip_id = 1 AND status is true AND start_date <= CURDATE()", nativeQuery = true)
     List<OpenTrips> findOpenTripsByTripIdNotInProgress(@Param("tripId") Long tripId);
 }
