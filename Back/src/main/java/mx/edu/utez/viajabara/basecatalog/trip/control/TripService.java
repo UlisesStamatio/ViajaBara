@@ -311,8 +311,8 @@ public class TripService {
         }
 
         List<OpenTrips> optionalOpenTrips = openTripsRepository.findOpenTripsByTripIdNotInProgress(optional.get().getId());
-        if(optionalOpenTrips.size() > 0){
-            return new ResponseEntity<>(new Message("El viaje esta en progreso, no puedes desactivarlo", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
+        if(optionalOpenTrips.size() > 0 && optional.get().isStatus()){
+            return new ResponseEntity<>(new Message("El viaje esta en progreso, no puedes desactivarlo", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
         }
 
 

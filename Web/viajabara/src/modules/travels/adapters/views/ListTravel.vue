@@ -101,6 +101,7 @@ import setTooltip from "@/assets/js/tooltip.js";
 import DataTable from 'datatables.net-dt';
 import $ from 'jquery';
 import listTrips from '../../use-cases/list.trips';
+import changeStatusTrip from '../../use-cases/change.status.trip';
 
 export default {
   name: "ListTravel",
@@ -160,6 +161,47 @@ export default {
         this.$swal({icon: "error", title: err, type: "basic" });
       }
     },
+    async changeStatusTrip(payload){
+      this.$swal({
+            title: "¿Estás segura(a) de realizar la acción?",
+            text: "¡No podrás revertir esto.!",
+            icon: "warning",
+            showCancelButton: true,
+            cancelButtonText: "Cancelar",
+            confirmButtonText: "Confirmar",
+            customClass: {
+              confirmButton: "btn bg-gradient-success",
+              cancelButton: "btn bg-gradient-secondary",
+            },
+            buttonsStyling: false,
+          }).then(async(result) => {
+            if (result.isConfirmed) {
+                this.isLoading = true;
+                const response = {...await changeStatusTrip(payload)};
+                const {error, data, message} = response;
+                this.isLoading = false;
+                if(!error){
+                    const {result:{text}} =data
+                    this.$swal({
+                      icon: "success",
+                      title: message,
+                      text: text,
+                      type: 'success-message',
+                    });
+                   await this.initializaDatatable()
+                }else{
+                  const {text} = data;
+                    this.$swal({
+                      icon: "error", 
+                      title: text,
+                      type: "basic",
+                  });
+                }
+            } else if (result.dismiss === this.$swal.DismissReason.cancel) {
+              this.$swal.dismiss;
+            }
+          })
+    }
   }
 };
 </script>
