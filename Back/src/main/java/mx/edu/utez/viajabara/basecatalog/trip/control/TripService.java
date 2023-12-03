@@ -309,6 +309,14 @@ public class TripService {
         if (!optional.isPresent()) {
             return new ResponseEntity<>(new Message("No se encontró el viaje", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
+
+        List<OpenTrips> optionalOpenTrips = openTripsRepository.findOpenTripsByTripIdNotInProgress(optional.get().getId());
+        if(optionalOpenTrips.size() > 0){
+            return new ResponseEntity<>(new Message("El viaje esta en progreso, no puedes desactivarlo", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
+        }
+
+
+
         Trip trip = optional.get();
         trip.setStatus(!trip.isStatus());
         trip = repository.saveAndFlush(trip);

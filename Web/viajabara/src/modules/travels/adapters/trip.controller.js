@@ -9,10 +9,10 @@ const OperationsController = {
     //   const response = await Operations.updateRoute('/', data)
     //   return response;
     // },
-    // async listRoutes(){
-    //     const response = await Operations.listRoutes('/all')
-    //     return response;
-    // },
+    async listTrips(){
+        const response = await Operations.listTrips('/all')
+        return response;
+    },
     // async listRoutesEnabled(){
     //     const response = await Operations.listRoutes('/enabled')
     //     return response;

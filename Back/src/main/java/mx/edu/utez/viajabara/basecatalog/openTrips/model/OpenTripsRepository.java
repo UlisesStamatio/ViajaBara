@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface OpenTripsRepository extends JpaRepository<OpenTrips,Long> {
     @Query(value = "SELECT * from open_trips where status=?1",nativeQuery = true)
@@ -18,4 +19,8 @@ public interface OpenTripsRepository extends JpaRepository<OpenTrips,Long> {
 
     @Query(value = "SELECT op.* FROM open_trips op inner join trips t on op.trip_id = t.id where op.status = 3 AND t.driver_id = ?1",nativeQuery = true)
     List<OpenTrips> searchAllTripsHistory(long driver_id);
+
+
+    @Query(value = "SELECT * FROM open_trips WHERE trip_id = :tripId AND status is true AND start_date < CURDATE()", nativeQuery = true)
+    List<OpenTrips> findOpenTripsByTripIdNotInProgress(@Param("tripId") Long tripId);
 }
