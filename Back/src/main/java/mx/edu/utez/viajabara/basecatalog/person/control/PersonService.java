@@ -118,15 +118,19 @@ public class PersonService {
                 return new ResponseEntity<>(new Message("Celular malformado", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
             }
         }
-        Optional<State> optionalState = stateService.findById(dto.getState().getId());
-        if (!optionalState.isPresent()) {
-            return new ResponseEntity<>(new Message("Estado de residencia no encontrado", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
+
+        if(dto.getState() != null){
+            Optional<State> optionalState = stateService.findById(dto.getState().getId());
+            if (!optionalState.isPresent()) {
+                return new ResponseEntity<>(new Message("Estado de residencia no encontrado", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
+            }
+            if (!optionalState.get().isStatus()) {
+                return new ResponseEntity<>(new Message("Estado de residencia inactivo", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
+            }
+            person.setState(optionalState.get());
         }
-        if (!optionalState.get().isStatus()) {
-            return new ResponseEntity<>(new Message("Estado de residencia inactivo", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
-        }
+
         person.asignValuesModify(dto);
-        person.setState(optionalState.get());
         person = repository.saveAndFlush(person);
         if (person == null) {
             return new ResponseEntity<>(new Message("Persona no modificada", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);

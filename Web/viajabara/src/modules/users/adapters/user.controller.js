@@ -12,10 +12,8 @@ const OperationsController = {
                 surname: `${lastname} ${surname === '' ? '': surname}`,
                 cellphone: cellphone,
                 birthDate: birthday,
-                sex: `${parseInt(sex) === 1 ? 'h' : 'm'}`,
-                state:{
-                    id: parseInt(state)
-                }
+                sex: `${parseInt(sex) === 1 ? 'h' : parseInt(sex) === 2 ? 'm' : ''}`,
+                state:  state ? { id: parseInt(state)} : null
             },
             roles:[{
                 id: 2
@@ -28,6 +26,7 @@ const OperationsController = {
     },
     async updateUser(data){
         const {profile, username, email, name, lastname, surname, cellphone, birthday, sex, state, id } = data
+        console.log(state);
         const lastData = {
             id: id,
             profile: profile,
@@ -38,16 +37,15 @@ const OperationsController = {
                 surname: `${lastname} ${surname === '' ? '': surname}`,
                 cellphone: cellphone,
                 birthDate: birthday,
-                sex: `${parseInt(sex) === 1 ? 'h' : 'm'}`,
-                state:{
-                    id: parseInt(state)
-                }
+                sex: `${parseInt(sex) === 1 ? 'h' : parseInt(sex) === 2 ? 'm' : ''}`,
+                state: state ? { id: parseInt(state)} : null
             },
             roles:[{
                 id: 2
             }] ,
 
         }
+        console.log(lastData);
 
       const response = await Operations.updateUser('/', lastData)
       return response;
