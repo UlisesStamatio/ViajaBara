@@ -39,7 +39,7 @@
                     <td class="text-center">
                       {{index + 1}}
                     </td> 
-                    <td class="text-sm">{{trip.driver.person.name + ' ' + trip.driver.person.surname}}</td>
+                    <td class="text-sm">{{trip.driver.username}}</td>
                     <td class="text-sm">{{trip.bus.serial}}</td>
                     <td class="text-sm">{{trip.route}}</td>
                     <td class="text-sm">{{trip.startTime}}</td>

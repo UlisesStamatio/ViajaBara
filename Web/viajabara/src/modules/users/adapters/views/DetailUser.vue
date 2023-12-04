@@ -8,7 +8,7 @@
             <div class="col">
               <label>Imagen de perfil</label>
             </div>
-           <div class="col-12 mb-3">
+           <div class="col-12 mb-4">
                 <img
                   class="mt-3 shadow-lg img-fluid border-radius-lg w-80 h-100"
                   id="image_profile"
@@ -29,8 +29,8 @@
               <input
                 id="name"
                 type="text"
-                v-model.trim="user.name"
-                placeholder="eg. Michael"
+                :value="user.name ? user.name : 'Sin nombre'"
+                placeholder="Sin nombre"
                 name="name"
                 class="form-control"
                 disabled
@@ -41,9 +41,9 @@
               <input
                 id="lastname"
                 type="text"
-                placeholder="eg. Jackson"
+                placeholder="Sin apellido"
                 name="lastname"
-                v-model.trim="user.lastname"
+                :value="user.lastname ? user.lastname : 'Sin apellido'"
                 class="form-control"
                 disabled
               />
@@ -53,9 +53,9 @@
               <input
                 id="surname"
                 type="text"
-                placeholder="eg. Smith"
+                placeholder="Sin apellido"
                 name="surname"
-                v-model.trim="user.surname"
+                :value="user.surname ? user.surname : 'Sin apellido'"
                 class="form-control"
                 disabled
               />
@@ -67,10 +67,10 @@
                 id="sex-select"
                 class="form-control"
                 name="sex-select"
-                v-model.trim="user.sex"
+                :value="user.sex"
                 disabled
               >
-                <option value="" selected disabled>Selecciona una opción...</option>
+                <option value="" selected disabled>Sin sexo</option>
                 <option value="1" >Masculino</option>
                 <option value="2">Femenino</option>
               </select>
@@ -80,9 +80,9 @@
               <label>Fecha de nacimiento:</label>
              <input
                 id="birthday"
-                type="date"
+                :type="user.birthday ? 'date' : 'text'"
                 name="birthday"
-                v-model.trim="user.birthday"
+                :value="user.birthday ? user.birthday : 'Sin fecha de nacimiento'"
                 class="form-control"
                 disabled
               />
@@ -94,10 +94,10 @@
                 id="state-select"
                 class="form-control"
                 name="state-select"
-                v-model.trim="user.state"
+                :value="user.state"
                 disabled
               >
-                <option value="" selected disabled>Selecciona una opción...</option>
+                <option value="" selected disabled>Sin residencia</option>
                 <option v-for="({id, name}, index) in states" :key="index" :value="id" >{{name}}</option>
               </select>
             </div>
@@ -176,7 +176,6 @@
 </template>
 
 <script>
-import Quill from "quill";
 import router from '../../../../router/index'
 import listStates from '../../../state/use-cases/list.state'
 import getUser from '../../use-cases/get.user'
@@ -216,12 +215,6 @@ export default {
   async mounted() {
      this.idUser = this.$route.params.id;
     await this.getUser( this.idUser);
-    if (document.getElementById("edit-description")) {
-      // eslint-disable-next-line no-unused-vars
-      var quill = new Quill("#edit-description", {
-        theme: "snow", // Specify theme in configuration
-      });
-    }
     await this.listStates();
   },
   methods: {

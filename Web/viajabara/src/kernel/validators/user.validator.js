@@ -1,7 +1,7 @@
 
 const REGEX_INJECTION_HTML = new RegExp('<[^>]*>')
 const REGEX_CELLPHONE = new RegExp('[0-9]{1,12}')
-const REGEX_EMAIL = new RegExp('[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}');
+const REGEX_EMAIL = new RegExp('[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}');
 //const REGEX_BIRTHDAY = new RegExp('/^(?:19|20)\d\d-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$/')
 
 
@@ -19,36 +19,35 @@ const userValidator = {
         }
     },
     validateName(name){
-        if(!name) return "El campo es obligatorio.";
-        else if(REGEX_INJECTION_HTML.test(name)) return "El nombre es inválido."
+        if(!name) return null
+        if(REGEX_INJECTION_HTML.test(name)) return "El nombre es inválido."
         return null;
     },
     validateLastname(lastname){
-        if(!lastname) return "El campo es obligatorio.";
-        else if(REGEX_INJECTION_HTML.test(lastname)) return "El apellido paterno es inválido."
+        if(!lastname) return null
+        if(REGEX_INJECTION_HTML.test(lastname)) return "El apellido paterno es inválido."
         return null;
     },
     validateSurname(surname){
+        if(!surname) return null
         if(REGEX_INJECTION_HTML.test(surname)) return "El apellido materno es inválido."
         return null;
     },
     validateSex(option){
-        option = parseInt(option)
-        if(!option || option === '') return "El campo es obligatorio.";
-        else if(option !== 2 && option !== 1) return "La opción es incorrecta."
-        else if(REGEX_INJECTION_HTML.test(option)) return "El sexo es inválido."
+        if(!option || option === '') return null;
+        else if(parseInt(option) !== 2 && parseInt(option) !== 1) return "La opción es incorrecta."
+        else if(REGEX_INJECTION_HTML.test(parseInt(option))) return "El sexo es inválido."
         return null;
     },
     validateBirthday(birthday){
-        if(!birthday) return "El campo es obligatorio.";
+        if(!birthday) return null;
         else if(REGEX_INJECTION_HTML.test(birthday)) return "La fecha de nacimiento es inválida."
         return null;
     },
     validateState(option, states){
-        option = parseInt(option)
-        if(!option || option === '') return "El campo es obligatorio.";
-        else if(option < 1 || option > (states.length + 1) ) return "La opción es incorrecta."
-        else if(REGEX_INJECTION_HTML.test(option)) return "El estado de residencia es inválido."
+        if(!option || option === '') return null;
+        else if(parseInt(option) < 1 || parseInt(option) > (states.length + 1) ) return "La opción es incorrecta."
+        else if(REGEX_INJECTION_HTML.test(parseInt(option))) return "El estado de residencia es inválido."
         return null;
     },
     validateCellphone(cellphone){

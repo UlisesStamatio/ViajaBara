@@ -31,7 +31,7 @@
                 text="Consultar"
               />
               <sidenav-item
-                :to="{ name: 'Registro Usuario' }"
+                :to="{ name: 'Registrar Usuario' }"
                 mini-icon="N"
                 text="Registrar"
               />

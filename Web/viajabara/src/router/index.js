@@ -69,7 +69,7 @@ const routes = [
   },
   {
     path: "/usuario/registrar",
-    name: "Registro Usuario",
+    name: "Registrar Usuario",
     component: NewUser,
     meta: { requiresAuth: true }
   },
@@ -80,8 +80,8 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: "/usuario/consultar/detalles/:id",
-    name: "Detalles Usuario",
+    path: "/usuario/consultar/visualizar/:id",
+    name: "Visualizar Usuario",
     component: DetailUser,
     meta: { requiresAuth: true }
   },

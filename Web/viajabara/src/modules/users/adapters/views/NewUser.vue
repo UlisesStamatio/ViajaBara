@@ -35,122 +35,11 @@
       </div>
       <div class="mx-auto col-sm-8 col-12">
         <div class="mt-4 card card-body">
-          <h6 class="mb-0">Información básica</h6>
+          <h6 class="mb-0">Datos de identificación</h6>
           <hr class="my-3 horizontal dark" />
           <div class="row">
-            <div class="col-12 col-sm-6 col-lg-4 mb-3">
-              <label>Nombre(<span class="text-danger">*</span>)</label>
-              <input
-                id="name"
-                type="text"
-                v-model.trim="user.name"
-                placeholder="eg. Michael"
-                name="name"
-                class="form-control"
-                :class="{ 'is-invalid': errors.name, 'is-valid': errors.name === null }"
-              />
-              <div class="invalid-feedback" v-if="errors.name">
-                  {{ errors.name }}
-              </div>
-            </div>
-            <div class="col-12 col-sm-6 col-lg-4  mb-3">
-              <label>Apellido Paterno(<span class="text-danger">*</span>)</label>
-              <input
-                id="lastname"
-                type="text"
-                placeholder="eg. Jackson"
-                name="lastname"
-                v-model.trim="user.lastname"
-                class="form-control"
-               :class="{ 'is-invalid': errors.lastname, 'is-valid': errors.lastname === null }"
-              />
-              <div class="invalid-feedback" v-if="errors.lastname">
-                  {{ errors.lastname }}
-              </div>
-            </div>
-            <div class="col-12 col-sm-6 col-lg-4  mb-3">
-              <label>Apellido Materno</label>
-              <input
-                id="surname"
-                type="text"
-                placeholder="eg. Smith"
-                name="surname"
-                v-model.trim="user.surname"
-                class="form-control"
-              :class="{ 'is-invalid': errors.surname, 'is-valid': errors.surname === null }"
-              />
-              <div class="invalid-feedback" v-if="errors.surname">
-                  {{ errors.surname }}
-              </div>
-            </div>
 
-            <div class="col-12 col-sm-6 col-lg-4 mb-3">
-              <label>Sexo(<span class="text-danger">*</span>)</label>
-              <select
-                id="sex-select"
-                class="form-control"
-                name="sex-select"
-                v-model.trim="user.sex"
-                :class="{ 'is-invalid': errors.sex, 'is-valid': errors.sex === null }"
-              >
-                <option value="" selected disabled>Selecciona una opción...</option>
-                <option value="1" >Masculino</option>
-                <option value="2">Femenino</option>
-              </select>
-              <div class="invalid-feedback" v-if="errors.sex">
-                  {{ errors.sex }}
-              </div>
-            </div>
-
-            <div class="col-12 col-sm-6 col-lg-4 mb-3">
-              <label>Fecha de nacimiento(<span class="text-danger">*</span>)</label>
-             <input
-                id="birthday"
-                type="date"
-                name="birthday"
-                v-model.trim="user.birthday"
-                class="form-control"
-              :class="{ 'is-invalid': errors.birthday, 'is-valid': errors.birthday === null }"
-              />
-              <div class="invalid-feedback" v-if="errors.birthday">
-                  {{ errors.birthday }}
-              </div>
-            </div>
-
-            <div class="col-12 col-sm-6 col-lg-4 mb-3">
-              <label>Estado de residencia(<span class="text-danger">*</span>)</label>
-              <select
-                id="state-select"
-                class="form-control"
-                name="state-select"
-                v-model.trim="user.state"
-                :class="{ 'is-invalid': errors.state, 'is-valid': errors.state === null }"
-              >
-                <option value="" selected disabled>Selecciona una opción...</option>
-                <option v-for="({id, name}, index) in states" :key="index" :value="id" >{{name}}</option>
-              </select>
-              <div class="invalid-feedback" v-if="errors.state">
-                  {{ errors.state }}
-              </div>
-            </div>
-
-              <div class="col-12 col-sm-6 col-lg-4 mb-3">
-              <label>Télefono(<span class="text-danger">*</span>)</label>
-             <input
-                id="cellphone"
-                type="number"
-                placeholder="eg. 76568788787"
-                name="cellphone"
-                v-model.trim="user.cellphone"
-                class="form-control"
-               :class="{ 'is-invalid': errors.cellphone, 'is-valid': errors.cellphone === null }"
-              />
-              <div class="invalid-feedback" v-if="errors.cellphone">
-                  {{ errors.cellphone }}
-              </div>
-            </div>
-
-              <div class="col-12 col-sm-6 col-lg-4 mb-3">
+             <div class="col-12 col-sm-6 col-lg-4 mb-3">
                 <label>Usuario(<span class="text-danger">*</span>)</label>
                 <input
                   id="username"
@@ -166,7 +55,7 @@
                 </div>
               </div>
 
-              <div class="col-12 col-sm-6 col-lg-4 mb-3">
+               <div class="col-12 col-sm-6 col-lg-4 mb-3">
               <label>Correo(<span class="text-danger">*</span>)</label>
               <input
                 id="email"
@@ -198,6 +87,123 @@
               </div>
             </div>
 
+            <div class="col-12 col-sm-6 col-lg-4 mb-3">
+              <label>Télefono(<span class="text-danger">*</span>)</label>
+             <input
+                id="cellphone"
+                type="number"
+                placeholder="eg. 76568788787"
+                name="cellphone"
+                v-model.trim="user.cellphone"
+                class="form-control"
+               :class="{ 'is-invalid': errors.cellphone, 'is-valid': errors.cellphone === null }"
+              />
+              <div class="invalid-feedback" v-if="errors.cellphone">
+                  {{ errors.cellphone }}
+              </div>
+            </div>
+
+          </div>
+
+          <h6 class="mb-0 mt-3">Información básica</h6>
+          <hr class="my-3 horizontal dark" />
+
+          <div class="row">
+            <div class="col-12 col-sm-6 col-lg-4 mb-3">
+              <label>Nombre</label>
+              <input
+                id="name"
+                type="text"
+                v-model.trim="user.name"
+                placeholder="eg. Michael"
+                name="name"
+                class="form-control"
+                :class="{ 'is-invalid': errors.name, 'is-valid': errors.name === null }"
+              />
+              <div class="invalid-feedback" v-if="errors.name">
+                  {{ errors.name }}
+              </div>
+            </div>
+            <div class="col-12 col-sm-6 col-lg-4  mb-3">
+              <label>Apellido Paterno</label>
+              <input
+                id="lastname"
+                type="text"
+                placeholder="eg. Jackson"
+                name="lastname"
+                v-model.trim="user.lastname"
+                class="form-control"
+               :class="{ 'is-invalid': errors.lastname, 'is-valid': errors.lastname === null }"
+              />
+              <div class="invalid-feedback" v-if="errors.lastname">
+                  {{ errors.lastname }}
+              </div>
+            </div>
+            <div class="col-12 col-sm-6 col-lg-4  mb-3">
+              <label>Apellido Materno</label>
+              <input
+                id="surname"
+                type="text"
+                placeholder="eg. Smith"
+                name="surname"
+                v-model.trim="user.surname"
+                class="form-control"
+              :class="{ 'is-invalid': errors.surname, 'is-valid': errors.surname === null }"
+              />
+              <div class="invalid-feedback" v-if="errors.surname">
+                  {{ errors.surname }}
+              </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-lg-4 mb-3">
+              <label>Sexo</label>
+              <select
+                id="sex-select"
+                class="form-control"
+                name="sex-select"
+                v-model.trim="user.sex"
+                :class="{ 'is-invalid': errors.sex, 'is-valid': errors.sex === null }"
+              >
+                <option value="" selected disabled>Selecciona una opción...</option>
+                <option value="1" >Masculino</option>
+                <option value="2">Femenino</option>
+              </select>
+              <div class="invalid-feedback" v-if="errors.sex">
+                  {{ errors.sex }}
+              </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-lg-4 mb-3">
+              <label>Fecha de nacimiento</label>
+             <input
+                id="birthday"
+                type="date"
+                name="birthday"
+                v-model.trim="user.birthday"
+                class="form-control"
+              :class="{ 'is-invalid': errors.birthday, 'is-valid': errors.birthday === null }"
+              />
+              <div class="invalid-feedback" v-if="errors.birthday">
+                  {{ errors.birthday }}
+              </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-lg-4 mb-3">
+              <label>Estado de residencia</label>
+              <select
+                id="state-select"
+                class="form-control"
+                name="state-select"
+                v-model.trim="user.state"
+                :class="{ 'is-invalid': errors.state, 'is-valid': errors.state === null }"
+              >
+                <option value="" selected disabled>Selecciona una opción...</option>
+                <option v-for="({id, name}, index) in states" :key="index" :value="id" >{{name}}</option>
+              </select>
+              <div class="invalid-feedback" v-if="errors.state">
+                  {{ errors.state }}
+              </div>
+            </div>
 
           </div>
           <div class="row mt-4">
@@ -228,7 +234,6 @@
 </template>
 
 <script>
-import Quill from "quill";
 import Identicon from 'identicon';
 import blobToBase64 from '../../../../kernel/translate/blobToBase64'
 import userValidator from '../../../../kernel/validators/user.validator'
@@ -281,12 +286,6 @@ export default {
     };
   },
   async mounted() {
-    if (document.getElementById("edit-description")) {
-      // eslint-disable-next-line no-unused-vars
-      var quill = new Quill("#edit-description", {
-        theme: "snow", // Specify theme in configuration
-      });
-    }
     await this.listStates();
     this.generateImg();
   },
@@ -383,6 +382,7 @@ export default {
         }).then(async(result) => {
           if (result.isConfirmed) {
               user.profile = document.getElementById('image_profile').src.split('base64,')[1]
+              console.log(user);
               this.isLoading = true;
               const {message, error, data} = await newUser(user)
               this.isLoading = false;

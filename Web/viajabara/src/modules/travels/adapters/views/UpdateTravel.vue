@@ -188,7 +188,7 @@ export default {
       if(!error){
           const {result} = data
           this.searchedTrip = {...result, 
-            driver: {id: result.driver.id, name: `${result.driver.person.name} ${result.driver.person.surname}`},
+            driver: {id: result.driver.id, name: `${result.driver.username}`},
             bus: {id: result.bus.id, plaque: result.bus.plaque},
             route: {id: result.route.id, name: `${result.route.endAddress.description.split(',')[0]} - ${result.route.startAddress.description.split(',')[0]}`},
             startTime: new Date(result.startTime).toTimeString().split(' ')[0],
@@ -223,7 +223,7 @@ export default {
       if(!error){
           const {result} = data
           this.drivers = result.map((item) =>{
-            return {id: item.id, name: `${item.person.name} ${item.person.surname}` }
+            return {id: item.id, name: `${item.username}` }
           })
 
       }else{
