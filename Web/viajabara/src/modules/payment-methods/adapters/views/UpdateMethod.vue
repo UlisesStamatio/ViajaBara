@@ -70,8 +70,6 @@
 </template>
 
 <script>
-import Quill from "quill";
-import Choices from "choices.js";
 import methodValidator from '../../../../kernel/validators/method.validator'
 import router from '../../../../router/index'
 import updateMethod from '../../use-cases/update.method'
@@ -79,7 +77,7 @@ import getMethod from '../../use-cases/get.method'
 import Loader from '../../../../components/Loader.vue'
 
 export default {
-  name: "NewMethod",
+  name: "UpdateMethod",
   components: {
     Loader
   },
@@ -106,26 +104,6 @@ export default {
   async mounted() {
     this.idMethod = this.$route.params.id;
     await this.getMethod(this.idMethod);
-
-    if (document.getElementById("edit-description")) {
-      // eslint-disable-next-line no-unused-vars
-      var quill = new Quill("#edit-description", {
-        theme: "snow", // Specify theme in configuration
-      });
-    }
-    if (document.getElementById("choices-category")) {
-      var element = document.getElementById("choices-category");
-      new Choices(element, {
-        searchEnabled: false,
-      });
-    }
-
-    if (document.getElementById("choices-sizes")) {
-      let element = document.getElementById("choices-sizes");
-      new Choices(element, {
-        searchEnabled: false,
-      });
-    }
   },
    computed:{
     isFormModified(){
