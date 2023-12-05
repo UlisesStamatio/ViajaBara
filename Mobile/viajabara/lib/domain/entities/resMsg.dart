@@ -1,6 +1,7 @@
 import 'package:viajabara/domain/entities/roles/roles.dart';
 
 class ResMsg{
+  final int? id;
   final String? token;
   final String? email;
   final String? profile;
@@ -14,6 +15,7 @@ class ResMsg{
   final String? type;
 
   ResMsg({
+      this.id,
       this.token,
       this.email, 
       this.profile,
@@ -28,6 +30,7 @@ class ResMsg{
     });
 
   Map<String, dynamic> toJson() => {
+    'id': id,
     'token': token,
     'email': email,
     'name': name,
@@ -42,6 +45,7 @@ class ResMsg{
 
   factory ResMsg.fromJson(Map<String, dynamic> json) {
     return ResMsg(
+      id: json['id'],
       token: json['token'],
       email: json['email'],
       name: json['name'],

@@ -329,7 +329,9 @@ class _HistoryUserState extends State<HistoryUser> {
         ),
       ),
       builder: (BuildContext context) {
-        return const DetailsOfTravels();
+        // return const DetailsOfTravels();
+        //Recordar cambiar esto por el modal que es, se comenta por que se desarrolla otra pantalla
+        return const QualifyDriver();
       },
     );
   }

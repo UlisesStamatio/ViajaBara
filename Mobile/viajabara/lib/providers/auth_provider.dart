@@ -206,9 +206,11 @@ class AuthProvider {
     }
 
     ResMsg responseMessage = ResMsg(
-        token: data['token'],
-        email: data['email'],
-        roles: Roles(keyRole: data['roles'][0]['keyRole']));
+      id: data['identKey'],
+      token: data['token'],
+      email: data['email'],
+      roles: Roles(keyRole: data['roles'][0]['keyRole']),
+    );
 
     saveData(responseMessage, 'data');
 
@@ -224,7 +226,7 @@ class AuthProvider {
       Map<String, dynamic> data = response.data['result'];
       ResMsg responseMessage = ResMsg(
           profile: data['profile'] ?? '',
-          name: data['person']['name'] + ' ' + data['person']['surname'] ?? '',
+          name: (data['person']['name'] ?? '') + ' ' + (data['person']['surname'] ?? ''),
           email: data['email'],
           cellphone: data['person']['cellphone'] ?? '',
           birthDate: data['person']['birthDate'].toString(),
