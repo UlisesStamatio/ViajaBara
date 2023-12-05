@@ -59,7 +59,7 @@
                 text="Consultar"
               />
               <sidenav-item
-                :to="{ name: 'Registro Método' }"
+                :to="{ name: 'Registrar Método' }"
                 mini-icon="W"
                 text="Registrar"
               />
