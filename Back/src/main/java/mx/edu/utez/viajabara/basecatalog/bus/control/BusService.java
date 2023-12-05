@@ -31,7 +31,7 @@ public class BusService {
 
     @Transactional(readOnly = true)
     public ResponseEntity<Object> findAll() {
-       List<Bus> busList =  repository.findAll();
+       List<Bus> busList =  repository.findAllByOrderByStatusDesc();
        List<Bus> buses =  new ArrayList<>();
         for (Bus bus: busList) {
             bus.setImage(null);
@@ -104,6 +104,9 @@ public class BusService {
         bus.setPlaque(dto.getPlaque());
         bus.setMark(dto.getMark());
         bus.setModel(dto.getModel());
+        bus.setFuel(null);
+        bus.setImage(null);
+        bus.setSerial(null);
 
         if(dto.getImage() != null){
             bus.setImage(dto.getImage());

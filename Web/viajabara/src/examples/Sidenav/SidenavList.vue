@@ -15,7 +15,7 @@
       </li>
       <li class="nav-item">
         <sidenav-collapse
-          collapse-ref="pagesExamples"
+          collapse-ref="userExamples"
           nav-text="Usuarios"
           :class="getRoute() === 'usuario' ? 'active' : ''"
         >
@@ -42,7 +42,7 @@
 
       <li class="nav-item">
         <sidenav-collapse
-          collapse-ref="applicationsExamples"
+          collapse-ref="methodsExamples"
           nav-text="Métodos de pago"
           :class="getRoute() === 'metodo' ? 'active' : ''"
         >
@@ -70,9 +70,9 @@
 
       <li class="nav-item">
         <sidenav-collapse
-          collapse-ref="ecommerceExamples"
-          nav-text="Autobuses"
-          :class="getRoute() === 'autobus' ? 'active' : ''"
+          collapse-ref="unitsExamples"
+          nav-text="Unidades"
+          :class="getRoute() === 'unidad' ? 'active' : ''"
         >
           <template #icon>
             <Bus />
@@ -80,13 +80,14 @@
           <template #list>
             <ul class="nav ms-4 ps-3">
               <!-- nav links -->
-               <sidenav-item
-                :to="{ name: 'Consultar Autobuses' }"
+
+              <sidenav-item
+                :to="{ name: 'Consultar Unidades' }"
                 mini-icon="P"
                 text="Consultar"
               />
               <sidenav-item
-                :to="{ name: 'Registro Autobus' }"
+                :to="{ name: 'Registrar Unidad' }"
                 mini-icon="W"
                 text="Registrar"
               />
@@ -97,7 +98,7 @@
 
       <li class="nav-item">
         <sidenav-collapse
-          collapse-ref="authExamples"
+          collapse-ref="routeExamples"
           nav-text="Rutas"
           :class="getRoute() === 'ruta' ? 'active' : ''"
         >
@@ -125,7 +126,7 @@
 
       <li class="nav-item">
         <sidenav-collapse
-          collapse-ref="viajeExamples"
+          collapse-ref="travelExamples"
           nav-text="Viajes"
           :class="getRoute() === 'viaje' ? 'active' : ''"
         >

@@ -8,38 +8,38 @@
           <div class="pb-0 card-header">
             <div class="d-lg-flex">
               <div>
-                <h5 class="mb-0">Lista de autobuses</h5>
+                <h5 class="mb-0">Lista de unidades</h5>
               </div>
               <div class="my-auto mt-4 ms-auto mt-lg-0">
                 <div class="my-auto ms-auto">
                   <router-link
-                    :to="{ name: 'Registro Autobus' }"
+                    :to="{ name: 'Registrar Unidad' }"
                     class="mb-0 btn bg-gradient-danger btn-sm"
-                    >+&nbsp; Nuevo Autobús</router-link
+                    >+&nbsp; Nueva unidad</router-link
                   >
                 </div>
               </div>
             </div>
           </div>
-          <div class="px-0 pb-0 card-body">
+          <div class="px-0 pb-0 card-body mx-4 my-3">
             <div class="table-responsive">
-              <table id="products-list" class="table table-flush">
+              <table id="units-list" class="table table-flush">
                 <thead class="thead-light">
                   <tr>
-                    <th>#</th>
-                    <th>Número de serie</th>
-                    <th>Marca</th>
-                    <th>Modelo</th>
-                    <th>Estatus</th>
-                    <th>Acciones</th>
+                    <th style="font-size: 0.65em; font-weight: bold; text-align: start">#</th>
+                    <th style="font-size: 0.65em; font-weight: bold">Placa</th>
+                    <th style="font-size: 0.65em; font-weight: bold">Marca</th>
+                    <th style="font-size: 0.65em; font-weight: bold">Modelo</th>
+                    <th style="font-size: 0.65em; font-weight: bold">Estatus</th>
+                    <th style="font-size: 0.65em; font-weight: bold">Acciones</th>
                   </tr>
                 </thead>
-                <tbody v-if="buses.length !== 0">
-                  <tr v-for="({serial, mark, model, status, id}, index) in buses" :key="index">
+                <tbody>
+                  <tr v-for="({plaque, mark, model, status, id}, index) in buses" :key="index">
                     <td>
                       {{index + 1}}
                     </td>
-                    <td class="text-sm">{{serial}}</td>
+                    <td class="text-sm">{{plaque}}</td>
                     <td class="text-sm">{{mark}}</td>
                     <td class="text-sm">{{model}}</td>
                     <td>
@@ -49,48 +49,40 @@
                     </td>
                     <td class="text-sm">
 
-                      <router-link
-                        :to="{ name: 'Modificar Autobús', params:{id:id} }"
-
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Editar autobús"
+                      <a
+                        title="Actualizar unidad"
+                        @click="updateUnit(id)"
+                        class="clickeable"
                       >
                         <i class="fa fa-pencil-square-o text-secondary"></i>
-                      </router-link>
+                      </a>
                       
-                        <router-link
-                        :to="{ name: 'Detalles Autobús', params:{id:id} }"
-                        class="mx-3"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Detalles del autobús"
+                        <a
+                        title="Visualizar unidad"
+                        @click="detailUnit(id)"
+                        class="mx-3 clickeable"
                       >
                         <i class="fas fa-eye text-secondary"></i>
-                      </router-link>
+                      </a>
                       <a
-                        v-cloak
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Desactivar autobús"
+                        title="Desactivar unidad"
+                        @click="changeStatusUnit(id, plaque)"
+                        class="clickeable"
                         v-if="status"
-                        :id="'times-' + id"
                       >
                         <i class="fa fa-times-circle text-secondary" ></i>
                       </a>
                         <a
-                        v-cloak
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Activar autobús"
+                        title="Activar unidad"
+                        @click="changeStatusUnit(id, plaque)"
+                        class="clickeable"
                         v-if="!status"
-                        :id="'times-' + id"
                         >
                         <i class="fa fa-check-circle text-secondary" ></i>
                       </a>
                     </td>
                   </tr>
-
-
                 </tbody>
-                 <tfoot>
-                </tfoot>
               </table>
             </div>
           </div>
@@ -101,11 +93,13 @@
 </template>
 
 <script>
-import { DataTable } from "simple-datatables";
+import DataTable from 'datatables.net-dt';
 import setTooltip from "@/assets/js/tooltip.js";
 import listBuses from '../../use-cases/list.bus'
 import changeStatusBus from '../../use-cases/change.status.bus'
 import Loader from '../../../../components/Loader.vue'
+import $ from 'jquery';
+import router from '../../../../router/index'
 
 export default {
   name: "ListBus",
@@ -115,7 +109,7 @@ export default {
   data(){
     return{
       buses: [],
-      datatable: {},
+      datatable: null,
       isLoading: false,
     }
   },
@@ -142,32 +136,43 @@ export default {
     },
     async datatableBuses(){
         await this.listBuses()
-        if (document.getElementById("products-list")) {
-      this.datatable =  new DataTable("#products-list", {
-        searchable: true,
-        fixedHeight: false,
-        perPage: 5,
-        labels: {
-            placeholder: "Buscar...", // The search input placeholder
-            perPage: "{select} Registros por página", // per-page dropdown label
-            noRows: "Ningún dato encontrado", // Message shown when there are no search results
-            info: "Mostrando {start} de {end} de {rows} registros",  //
-            noResults: "No hay resultados que coincidan con su búsqueda"
-        },
-        
-      });
-      this.eventListeners()
-      this.datatable.on('datatable.page', () =>{
-              this.eventListeners()
-      })
-
-    }
+        if(this.datatable){
+            this.datatable.destroy()
+          }
+          this.$nextTick(()=>{
+            this.datatable =  new DataTable('#units-list', {
+            searching: true,
+            ordering: true,
+            pageLength:5,
+            lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Mostrar todos"]],
+            language:{
+              infoEmpty: "",
+              url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json',
+              paginate: {
+                      next: ">"
+                  },
+              search: "",
+              searchPlaceholder: "Buscar...",
+              
+            },
+            pagingType: "simple_numbers",
+            drawCallback: ()=>{
+                  $('#units-list_previous').addClass('d-none');
+            },
+            columnDefs: [
+                  {
+                      targets: [0, 1, 2], // Índices de las columnas que deben ser visibles
+                      visible: true
+                  }
+            ]
+            });
+        })
     },
-    async changeStatus(id){
+    async changeStatusUnit(id, plaque){
        this.$swal({
-            title: "¿Estás segura(a) de realizar la acción?",
-            text: "¡No podrás revertir esto.!",
+            title: `¿Estás segura(a) de cambiar el estatus <strong>${plaque}</strong>?`,
             icon: "warning",
+            type: "custom-html",
             showCancelButton: true,
             cancelButtonText: "Cancelar",
             confirmButtonText: "Confirmar",
@@ -213,7 +218,20 @@ export default {
                   await method(id)
               });
           });
+    },
+    detailUnit(id){
+      router.push({name: 'Visualizar Unidad', params: {id: id}})
+    },
+    updateUnit(id){
+      router.push({name: 'Modificar Unidad', params: {id: id}})
     }
   }
 };
 </script>
+
+
+<style scoped>
+  .clickeable{
+    cursor: pointer;
+  }
+</style>
