@@ -32,7 +32,7 @@ public class PaymentMethodService {
 
     @Transactional(readOnly = true)
     public ResponseEntity<Object> findAll() {
-        return new ResponseEntity<>(new Message(repository.findAll(), "Listado de metodos de pago", TypesResponse.SUCCESS), HttpStatus.OK);
+        return new ResponseEntity<>(new Message(repository.findAllByOrderByStatusDesc(), "Listado de metodos de pago", TypesResponse.SUCCESS), HttpStatus.OK);
     }
 
     @Transactional(readOnly = true)

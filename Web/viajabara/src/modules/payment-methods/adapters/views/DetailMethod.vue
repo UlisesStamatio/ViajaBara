@@ -13,21 +13,25 @@
                 type="text"
                 placeholder="eg. SeguridadEnLineaTotal"
                 id="name"
-                v-model="method.name"
+                :value="method.name"
                 disabled
                 class="form-control"
               >
             </div>
             <div class="col-12 mb-4">
               <label>API KEY:</label>
-              <input 
-                type="text"
-                placeholder="eg. SeguridadEnLineaTotal"
-                id="name"
-                v-model="method.apikey"
-                class="form-control"
-                disabled
-              >
+              <div class="input-group flex-nowrap">
+                  <input
+                  :type="showPassword ? 'text' : 'password'" 
+                  class="form-control" 
+                  id="apikey-input"  
+                  :value="method.apikey"
+                  disabled
+                  />
+                  <span class="input-group-text" id="apikey-input" @click="togglePasswordVisibility" style="cursor:pointer;">
+                    <i class="fas" :class="showPassword ?  'fa-eye' : 'fa-eye-slash' "></i>
+                  </span>
+              </div>
             </div>
         </div>
           <div class="row mt-4">
@@ -49,8 +53,6 @@
 </template>
 
 <script>
-import Quill from "quill";
-import Choices from "choices.js";
 import router from '../../../../router/index'
 import getMethod from '../../use-cases/get.method'
 import Loader from '../../../../components/Loader.vue'
@@ -72,33 +74,17 @@ export default {
       },
       idMethod:0,
       isLoading: false,
+      showPassword: false,
     };
   },
   async mounted() {
     this.idMethod = this.$route.params.id;
     await this.getMethod(this.idMethod);
-
-    if (document.getElementById("edit-description")) {
-      // eslint-disable-next-line no-unused-vars
-      var quill = new Quill("#edit-description", {
-        theme: "snow", // Specify theme in configuration
-      });
-    }
-    if (document.getElementById("choices-category")) {
-      var element = document.getElementById("choices-category");
-      new Choices(element, {
-        searchEnabled: false,
-      });
-    }
-
-    if (document.getElementById("choices-sizes")) {
-      let element = document.getElementById("choices-sizes");
-      new Choices(element, {
-        searchEnabled: false,
-      });
-    }
   },
   methods: {
+      togglePasswordVisibility() {
+      this.showPassword = !this.showPassword;
+    },
     nextStep() {
       if (this.activeStep < this.formSteps) {
         this.activeStep += 1;
