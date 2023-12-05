@@ -116,26 +116,26 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: "/autobus/consultar",
-    name: "Consultar Autobuses",
+    path: "/unidad/consultar",
+    name: "Consultar Unidades",
     component: ListBus,
     meta: { requiresAuth: true }
   },
   {
-    path: "/autobus/registrar",
-    name: "Registro Autobus",
+    path: "/unidad/registrar",
+    name: "Registrar Unidad",
     component: NewBus,
     meta: { requiresAuth: true }
   },
   {
-    path: "/autobus/consultar/modificar/:id",
-    name: "Modificar Autobus",
+    path: "/unidad/consultar/modificar/:id",
+    name: "Modificar Unidad",
     component: UpdateBus,
     meta: { requiresAuth: true }
   },
   {
-    path: "/autobus/consultar/detalles/:id",
-    name: "Detalles Autobus",
+    path: "/unidad/consultar/visualizar/:id",
+    name: "Visualizar Unidad",
     component: DetailBus,
     meta: { requiresAuth: true }
   },

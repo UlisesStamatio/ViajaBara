@@ -243,7 +243,6 @@ export default {
       if(!error){
           const {result} = data
           this.users = result.map(user => ({...user, name: user.person.name === '' && (user.person.surname === ' ' ||  user.person.surname === '')? 'Sin nombre' : `${user.person.name} ${user.person.surname}`}))
-          console.log(this.users);
 
       }else{
           this.$swal({

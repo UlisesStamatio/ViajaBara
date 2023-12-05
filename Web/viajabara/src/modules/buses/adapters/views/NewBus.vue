@@ -7,7 +7,7 @@
           <div class="card-body">
             <div class="row">
               <div class="col-12 text-center">
-                <label>Imagen del autobús(<span class="text-danger">*</span>)</label>
+                <label>Imagen de la unidad</label>
                 <img
                   id="image-bus"
                   class="mt-3 shadow-lg w-100 border-radius-lg"
@@ -38,7 +38,7 @@
       <div class="mt-4 col-lg-8 mt-lg-0">
         <div class="card">
           <div class="card-body">
-            <h5 class="font-weight-bolder">Información del autobús</h5>
+            <h5 class="font-weight-bolder">Información de la unidad</h5>
             <div class="row mt-3">
               <div class="col-12 col-sm-6 mb-3">
                 <label>Placa(<span class="text-danger">*</span>)</label>
@@ -88,7 +88,7 @@
               </div>
               </div>
               <div class="mt-3 col-12 col-sm-6 mb-3 mt-sm-0">
-               <label>Número de serie(<span class="text-danger">*</span>)</label>
+               <label>Número de serie</label>
                 <input
                     id="serial"
                     type="text"
@@ -105,7 +105,7 @@
             </div>
             <div class="row">
               <div class="mt-3 col-12 col-sm-6 mb-3 mt-sm-0">
-               <label>Combustible(<span class="text-danger">*</span>)</label>
+               <label>Combustible</label>
                 <input
                     id="name"
                     type="text"
@@ -151,7 +151,6 @@
 </template>
 
 <script>
-import Quill from "quill";
 import blobToBase64 from '../../../../kernel/translate/blobToBase64'
 import Choices from "choices.js";
 import imagesEmpty from '../../../../assets/img/errorImagen.png'
@@ -168,12 +167,12 @@ export default {
   data(){
      return{
       bus:{
-        plaque: "",
-        image: "",
-        mark: "",
-        model: "",
-        serial: "",
-        fuel: ""
+        plaque: null,
+        image: null,
+        mark: null,
+        model: null,
+        serial: null,
+        fuel: null
       },
       errors:{
         plaque: "",
@@ -189,40 +188,6 @@ export default {
   },
   mounted() {
     this.setImage()
-    if (document.getElementById("edit-description-edit")) {
-      new Quill("#edit-description-edit", {
-        theme: "snow", // Specify theme in configuration
-      });
-    }
-    this.getChoices("choices-category-edit");
-    this.getChoices("choices-color-edit");
-    this.getChoices("choices-currency-edit");
-
-    if (document.getElementById("choices-tags-edit")) {
-      var tags = document.getElementById("choices-tags-edit");
-      const examples = new Choices(tags, {
-        removeItemButton: true,
-      });
-
-      examples.setChoices(
-        [
-          {
-            value: "One",
-            label: "Expired",
-            disabled: true,
-          },
-          {
-            value: "Two",
-            label: "Out of Stock",
-            selected: true,
-          },
-        ],
-        "value",
-        "label",
-        false
-      );
-    }
-    
   },
   methods: {
     setImage(){
@@ -239,7 +204,7 @@ export default {
     goBackPage(){
       this.user = {}
       this.errors = {}
-       router.push({name: 'Consultar Autobuses'})
+       router.push({name: 'Consultar Unidades'})
     },
      async handleFileChange(e){
       this.errors.image = null
@@ -271,11 +236,15 @@ export default {
       this.errors.mark = busValidator.validateMark(bus.mark);
       this.errors.model = busValidator.validateModel(bus.model);
       this.errors.serial = busValidator.validateSerial(bus.serial);
-      this.errors.fuel = busValidator.validatePlaque(bus.fuel);
+      this.errors.fuel = busValidator.validateFuel(bus.fuel);
       this.errors.image = busValidator.validateImage(bus.image);
 
       if(!this.errors.plaque && !this.errors.mark && !this.errors.model &&
           !this.errors.serial && !this.errors.fuel && !this.errors.image){
+
+          bus.fuel = bus.fuel === '' ? null : bus.fuel 
+          bus.serial = bus.serial === '' ? null : bus.serial 
+
           this.$swal({
           title: "¿Estás segura(a) de guardar los cambios?",
           text: "¡No podrás revertir esto.!",
@@ -302,7 +271,7 @@ export default {
                   text: text,
                   type: 'success-message',
                 });
-                router.push({name: 'Consultar Autobuses'})
+                router.push({name: 'Consultar Unidades'})
               }else{
                 const {text} = data
                 this.$swal({

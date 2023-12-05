@@ -7,7 +7,6 @@ const getUser = async(id) =>{
     const response = await OperationsController.getUser(payload)
     const {error} = response
     if(!error){
-        console.log(response);
         const {data:{result:{profile, person:{name, surname, sex, birthDate, cellphone, state}, username, email}}} = response;
         response.data.result = {
             profile: profile,

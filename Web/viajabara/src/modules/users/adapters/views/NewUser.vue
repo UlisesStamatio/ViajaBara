@@ -382,7 +382,6 @@ export default {
         }).then(async(result) => {
           if (result.isConfirmed) {
               user.profile = document.getElementById('image_profile').src.split('base64,')[1]
-              console.log(user);
               this.isLoading = true;
               const {message, error, data} = await newUser(user)
               this.isLoading = false;
