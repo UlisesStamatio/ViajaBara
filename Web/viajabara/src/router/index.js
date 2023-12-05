@@ -99,7 +99,7 @@ const routes = [
   },
   {
     path: "/metodo/registrar",
-    name: "Registro Método",
+    name: "Registrar Método",
     component: NewMethod,
     meta: { requiresAuth: true }
   },
@@ -110,8 +110,8 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: "/metodo/consultar/detalles/:id",
-    name: "Detalles Método",
+    path: "/metodo/consultar/visualizar/:id",
+    name: "Visualizar Método",
     component: DetailMethod,
     meta: { requiresAuth: true }
   },

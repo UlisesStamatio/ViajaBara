@@ -24,17 +24,22 @@
             </div>
             <div class="col-12 mb-4">
               <label>API KEY(<span class="text-danger">*</span>)</label>
-              <input 
-                type="text"
-                placeholder="eg. SeguridadEnLineaTotal"
-                id="name"
-                v-model="method.apikey"
-                class="form-control"
-                :class="{ 'is-invalid': errors.apikey, 'is-valid': errors.apikey === null }"
-                 maxlength="256"
-              >
-              <div class="invalid-feedback" v-if="errors.apikey">
-                  {{ errors.apikey }}
+
+               <div class="input-group flex-nowrap">
+                  <input
+                  :type="showPassword ? 'text' : 'password'" 
+                  class="form-control" 
+                  id="apikey-input"  
+                  v-model="method.apikey"
+                  maxlength="256"
+                  :class="{ 'is-invalid': errors.apikey, 'is-valid': errors.apikey === null }"
+                  />
+                  <span class="input-group-text" id="apikey-input" @click="togglePasswordVisibility" style="cursor:pointer;">
+                    <i class="fas" :class="showPassword ?  'fa-eye' : 'fa-eye-slash' "></i>
+                  </span>
+              </div>
+                <div style="font-size: 0.875em; color: #fd5c70;" v-if="errors.apikey">
+                {{ errors.apikey }}
               </div>
             </div>
         </div>
@@ -95,6 +100,7 @@ export default {
       idMethod:0,
       methodOriginal: {},
       isLoading: false,
+      showPassword: false,
     };
   },
   async mounted() {
@@ -165,6 +171,9 @@ export default {
             type: "basic",
           });
       }
+    },
+    togglePasswordVisibility() {
+      this.showPassword = !this.showPassword;
     },
     async preUpdateMethod(){
         let method = {...this.method};

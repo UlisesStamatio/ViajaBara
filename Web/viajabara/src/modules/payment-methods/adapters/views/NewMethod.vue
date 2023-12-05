@@ -11,7 +11,7 @@
               <label>Nombre(<span class="text-danger">*</span>)</label>
               <input 
                 type="text"
-                placeholder="eg. SeguridadEnLineaTotal"
+                placeholder="eg. crédito"
                 id="name"
                 v-model="method.name"
                 class="form-control"
@@ -26,7 +26,7 @@
               <label>API KEY(<span class="text-danger">*</span>)</label>
               <input 
                 type="text"
-                placeholder="eg. SeguridadEnLineaTotal"
+                placeholder="eg. zaxhsgatwafshsfghafghagsagsfaf"
                 id="name"
                 v-model="method.apikey"
                 class="form-control"
@@ -65,8 +65,6 @@
 </template>
 
 <script>
-import Quill from "quill";
-import Choices from "choices.js";
 import methodValidator from '../../../../kernel/validators/method.validator'
 import router from '../../../../router/index'
 import newMethod from '../../use-cases/new.method'
@@ -95,25 +93,7 @@ export default {
     };
   },
   mounted() {
-    if (document.getElementById("edit-description")) {
-      // eslint-disable-next-line no-unused-vars
-      var quill = new Quill("#edit-description", {
-        theme: "snow", // Specify theme in configuration
-      });
-    }
-    if (document.getElementById("choices-category")) {
-      var element = document.getElementById("choices-category");
-      new Choices(element, {
-        searchEnabled: false,
-      });
-    }
-
-    if (document.getElementById("choices-sizes")) {
-      let element = document.getElementById("choices-sizes");
-      new Choices(element, {
-        searchEnabled: false,
-      });
-    }
+    
   },
   methods: {
     nextStep() {

@@ -13,21 +13,25 @@
                 type="text"
                 placeholder="eg. SeguridadEnLineaTotal"
                 id="name"
-                v-model="method.name"
+                :value="method.name"
                 disabled
                 class="form-control"
               >
             </div>
             <div class="col-12 mb-4">
               <label>API KEY:</label>
-              <input 
-                type="text"
-                placeholder="eg. SeguridadEnLineaTotal"
-                id="name"
-                v-model="method.apikey"
-                class="form-control"
-                disabled
-              >
+              <div class="input-group flex-nowrap">
+                  <input
+                  :type="showPassword ? 'text' : 'password'" 
+                  class="form-control" 
+                  id="apikey-input"  
+                  :value="method.apikey"
+                  disabled
+                  />
+                  <span class="input-group-text" id="apikey-input" @click="togglePasswordVisibility" style="cursor:pointer;">
+                    <i class="fas" :class="showPassword ?  'fa-eye' : 'fa-eye-slash' "></i>
+                  </span>
+              </div>
             </div>
         </div>
           <div class="row mt-4">
@@ -72,6 +76,7 @@ export default {
       },
       idMethod:0,
       isLoading: false,
+      showPassword: false,
     };
   },
   async mounted() {
@@ -99,6 +104,9 @@ export default {
     }
   },
   methods: {
+      togglePasswordVisibility() {
+      this.showPassword = !this.showPassword;
+    },
     nextStep() {
       if (this.activeStep < this.formSteps) {
         this.activeStep += 1;
