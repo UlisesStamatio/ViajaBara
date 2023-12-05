@@ -9,7 +9,6 @@ import 'package:viajabara/kernel/themes/stuff.dart';
 import 'package:viajabara/kernel/widgets/profile/change_information.dart';
 import 'package:viajabara/kernel/widgets/profile/change_password.dart';
 import 'package:viajabara/kernel/widgets/profile/change_photo.dart';
-import 'package:viajabara/modules/generalMechanisms/adapters/screens/login.dart';
 import 'package:viajabara/providers/auth_provider.dart';
 import 'package:viajabara/providers/session_manager.dart';
 
@@ -81,6 +80,7 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false, 
         title: Container(
             alignment: Alignment.centerLeft,
             child: const Text(

@@ -24,4 +24,17 @@ class DriverProvider {
       throw Exception('Fallo al obtener los registros $e');
     }
   }
+
+  Future<bool> updateTripStatus(int id, int status) async {
+    try {
+      final response = await dio.put('driver/tripChangeStatus', data: {'id': id, 'status': status});
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        throw Exception('Fallo al actualizar el registro');
+      }
+    } on DioException catch (e) {
+      throw Exception('Fallo al actualizar el registro $e');
+    }
+  }
 }
