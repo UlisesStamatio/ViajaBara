@@ -10,7 +10,7 @@ const MAX_MARK = 50;
 const busValidator = {
     validateImage(file){
         if (!file) {
-            return "El valor es inválido" // No se seleccionó ningún archivo
+            return null // No se seleccionó ningún archivo
         }
 
         const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
@@ -39,13 +39,13 @@ const busValidator = {
         return null;
     },
     validateSerial(serial){
-        if(!serial) return "El campo es obligatorio.";
+        if(!serial) return null;
         if(serial.length > MAX_PLAQUE) return `El serial debe ser menor a ${MAX_PLAQUE} caracteres.`;
         else if(REGEX_INJECTION_HTML.test(serial)) return "El serial es inválido."
         return null;
     },
     validateFuel(fuel){
-        if(!fuel) return "El campo es obligatorio.";
+        if(!fuel) return null;
         if(fuel.length > MAX_PLAQUE) return `El combustible debe ser menor a ${MAX_PLAQUE} caracteres.`;
         else if(REGEX_INJECTION_HTML.test(fuel)) return "El combustible es inválido."
         return null;

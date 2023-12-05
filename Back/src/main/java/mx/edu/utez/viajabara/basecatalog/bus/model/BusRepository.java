@@ -9,6 +9,8 @@ import java.util.Optional;
 public interface BusRepository extends JpaRepository<Bus,Long> {
     List<Bus> findAllByStatusIsTrue();
 
+    List<Bus> findAllByOrderByStatusDesc();
+
     @Query(value = "SELECT * " + "FROM  buses " + "WHERE plaque LIKE ?1 " + "AND id != ?2 " + "LIMIT 1", nativeQuery = true)
     Optional<Bus> searchByPlaqueAndId(String name, Long id);
 
