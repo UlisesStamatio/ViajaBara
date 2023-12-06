@@ -215,7 +215,7 @@ class _TripsState extends State<Trips> {
                     if (trip.status == 2) {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                            builder: (context) => const Traveling()),
+                            builder: (context) => Traveling(trip: trip )),
                       );
                     }
                   },

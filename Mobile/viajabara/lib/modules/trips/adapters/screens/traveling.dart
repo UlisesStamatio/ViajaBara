@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:viajabara/domain/entities/trip/driver_trip.dart';
 import 'package:viajabara/kernel/blocs/gps/gps_bloc.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
@@ -8,7 +9,8 @@ import 'package:viajabara/kernel/widgets/gps/gps_access_screen.dart';
 import 'package:viajabara/kernel/widgets/gps/map_screen.dart';
 
 class Traveling extends StatefulWidget {
-  const Traveling({super.key});
+  final DriverTrip trip;
+  const Traveling({Key? key, required this.trip}) : super(key: key);
 
   @override
   State<Traveling> createState() => _TravelingState();
@@ -55,7 +57,7 @@ class _TravelingState extends State<Traveling> {
                 print('state $state');
 
                 return state.isAllGranted
-                    ? const MapScreen()
+                    ? MapScreen(trip: widget.trip)
                     : const GpsAccessScreen();
               },
             )
