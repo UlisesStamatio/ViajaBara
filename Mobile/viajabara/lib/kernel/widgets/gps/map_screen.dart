@@ -50,7 +50,7 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   LatLngBounds boundsFromLatLngList(List<LatLng> list,
-      {double padding = 0.10}) {
+      {double padding = 0.14}) {
     assert(list.isNotEmpty);
     double x0, x1, y0, y1;
     x0 = list.first.longitude - padding;
