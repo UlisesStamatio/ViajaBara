@@ -9,7 +9,6 @@ import 'package:viajabara/kernel/themes/stuff.dart';
 import 'package:viajabara/kernel/widgets/profile/change_information.dart';
 import 'package:viajabara/kernel/widgets/profile/change_password.dart';
 import 'package:viajabara/kernel/widgets/profile/change_photo.dart';
-import 'package:viajabara/modules/generalMechanisms/adapters/screens/login.dart';
 import 'package:viajabara/providers/auth_provider.dart';
 import 'package:viajabara/providers/session_manager.dart';
 
@@ -43,7 +42,8 @@ class _ProfileState extends State<Profile> {
       if (prefs.containsKey('data')) {
         Map<String, dynamic> jsonData = json.decode(prefs.getString('data')!);
         ResMsg responseMessage = ResMsg.fromJson(jsonData);
-        ResMsg dataUser = await AuthProvider().getInfoUser(responseMessage.email);
+        ResMsg dataUser =
+            await AuthProvider().getInfoUser(responseMessage.email);
         String? role = responseMessage.roles?.keyRole;
         _updateUserProfile(dataUser);
         _setRole(role);
@@ -63,13 +63,13 @@ class _ProfileState extends State<Profile> {
 
   void _updateUserProfile(ResMsg dataUser) {
     setState(() {
-      profile = dataUser.profile ?? '';
-      name = dataUser.name ?? 'Agrega tu nombre';
-      email = dataUser.email ?? 'Agrega tu correo';
-      cellphone = dataUser.cellphone ?? 'Agrega tu celular';
-      birthDate = dataUser.birthDate ?? 'Agrega tu fecha de nacimiento';
-      sex = dataUser.sex ?? 'Agrega tu sexo';
-      state = dataUser.state ?? 'Agrega tu estado';
+      profile = dataUser.profile!;
+      name = dataUser.name!;
+      email = dataUser.email!;
+      cellphone = dataUser.cellphone!;
+      birthDate = dataUser.birthDate!;
+      sex = dataUser.sex!;
+      state = dataUser.state!;
     });
   }
 
@@ -81,6 +81,7 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Container(
             alignment: Alignment.centerLeft,
             child: const Text(
@@ -119,9 +120,18 @@ class _ProfileState extends State<Profile> {
                     child: Column(
                       children: [
                         const SizedBox(height: 10),
-                        const CircleAvatar(
+                        CircleAvatar(
                           radius: 60,
-                          backgroundImage: AssetImage('assets/images/Girl.png'),
+                          backgroundColor: Colors.transparent,
+                          child: SizedBox(
+                            height: 120,
+                            width: 120,
+                            child: SvgPicture.string(
+                              profile,
+                              fit: BoxFit
+                                  .contain, // Asegúrate de que el SVG se ajusta dentro del contenedor
+                            ),
+                          ),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -225,7 +235,7 @@ class _ProfileState extends State<Profile> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            _showModalChangeProfile(context);
+                            _showModalChangeProfile(context, profile);
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(
@@ -416,7 +426,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  void _showModalChangeProfile(BuildContext context) {
+  void _showModalChangeProfile(BuildContext context, String photo) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -426,7 +436,7 @@ class _ProfileState extends State<Profile> {
         ),
       ),
       builder: (BuildContext context) {
-        return const ChangePhotoModal();
+        return ChangePhotoModal(photo: photo);
       },
     );
   }
@@ -445,4 +455,5 @@ class _ProfileState extends State<Profile> {
       },
     );
   }
+
 }

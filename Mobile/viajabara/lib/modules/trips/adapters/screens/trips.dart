@@ -17,12 +17,18 @@ class Trips extends StatefulWidget {
 
 class _TripsState extends State<Trips> {
   Future<List<DriverTrip>> data = Future.value([]);
-  bool isAnyButtonActive = false;
-  
+
   @override
   void initState() {
     super.initState();
-    data = DriverProvider().getTripsForDriver();
+    loadData();
+  }
+
+  void loadData() async {
+    var tripsData = await DriverProvider().getTripsForDriver();
+    setState(() {
+      data = Future.value(tripsData);
+    });
   }
 
   @override
@@ -58,11 +64,11 @@ class _TripsState extends State<Trips> {
               future: data,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text('No hay viajes disponibles'));
+                  return const Center(child: Text('No hay viajes disponibles'));
                 }
 
                 return SingleChildScrollView(
@@ -197,30 +203,38 @@ class _TripsState extends State<Trips> {
                     )
                   ]),
                 ),
-                if (trip.status != 3)
-                  ElevatedButton(
-                    onPressed: trip.status == 3
-                        ? null 
-                        : () => Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (context) => const Traveling()),
-                            ),
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all(ColorsApp.primayColor),
-                    ),
-                    child: Row(children: [
-                      Icon(
-                        _getButtonIcon(trip.status!), 
-                        size: 18,
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        _getButtonText(trip.status!),
-                        style: const TextStyle(fontSize: 15),
-                      ),
-                    ]),
+                ElevatedButton(
+                  onPressed: () async {
+                    bool success =
+                        await DriverProvider().updateTripStatus(trip.id!, 2);
+
+                    if (success) {
+                      loadData();
+                    }
+
+                    if (trip.status == 2) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) => Traveling(trip: trip )),
+                      );
+                    }
+                  },
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all(ColorsApp.primayColor),
                   ),
+                  child: Row(children: [
+                    Icon(
+                      _getButtonIcon(trip.status!),
+                      size: 18,
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      _getButtonText(trip.status!),
+                      style: const TextStyle(fontSize: 15),
+                    ),
+                  ]),
+                ),
               ],
             ),
           ),

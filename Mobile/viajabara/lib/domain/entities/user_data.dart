@@ -1,4 +1,5 @@
 class UserData {
+  final String? profile;
   final String? email;
   final String? username;
   final String? password;
@@ -10,6 +11,7 @@ class UserData {
   final String? sex;
 
   UserData({
+    this.profile,
     this.email,
     this.username,
     this.password,

@@ -8,32 +8,32 @@ class CheckPermissionLocalization extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
+    return Center(
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text("Es necesario el acceso a GPS"),
-            IntrinsicWidth(
+            const SizedBox(height: 20),
+            SizedBox(
+              width: 200, // Ancho del botón
+              height: 50, // Altura del botón
               child: ElevatedButton(
                 onPressed: () {
                   final gpsBloc = BlocProvider.of<GpsBloc>(context);
                   gpsBloc.askGpsAccess();
                 },
                 style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all(ColorsApp.primayColor),
+                  backgroundColor: MaterialStateProperty.all(ColorsApp.primayColor),
                 ),
-                child: const InkWell(
-                  child: Row(children: [
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
                     Icon(Icons.play_arrow),
-                    SizedBox(
-                      width: 10,
-                    ),
+                    SizedBox(width: 10),
                     Text('Solicitar acceso')
-                  ]),
+                  ],
                 ),
               ),
             ),

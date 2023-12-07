@@ -12,6 +12,8 @@ import 'package:viajabara/domain/entities/trip/trip.dart';
 import 'package:viajabara/domain/entities/user_data.dart';
 import 'package:viajabara/domain/entities/visual_config/visual_config.dart';
 import 'package:viajabara/modules/tripsUser/adapters/entities/list_drivers.dart';
+import 'package:crypto/crypto.dart';
+import 'package:jdenticon_dart/jdenticon_dart.dart';
 
 class AuthProvider {
   Dio dio = NetworkModule().instance;
@@ -31,9 +33,12 @@ class AuthProvider {
   }
 
   Future<ResMsg> register(UserData userData) async {
+    String svgValueWithouQuotes  = Jdenticon.toSvg(userData.profile!);
+    String svgValue = svgValueWithouQuotes.replaceAll('"', "'");
+
     var dataJson = jsonEncode({
       'username': userData.username,
-      'profile': "Pruebaaaa",
+      'profile': svgValue,
       'email': userData.email,
       'password': userData.password,
       'person': {
@@ -224,16 +229,7 @@ class AuthProvider {
 
     if (response.statusCode == 200) {
       Map<String, dynamic> data = response.data['result'];
-      ResMsg responseMessage = ResMsg(
-          profile: data['profile'] ?? '',
-          name: (data['person']['name'] ?? '') + ' ' + (data['person']['surname'] ?? ''),
-          email: data['email'],
-          cellphone: data['person']['cellphone'] ?? '',
-          birthDate: data['person']['birthDate'].toString(),
-          sex: data['person']['sex'] ?? '',
-          state: data['person']?['state']?['name']);
-
-      return responseMessage;
+      return ResMsg.fromJsonInfoUser(data);
     } else {
       throw Exception('Fallo al obtener los registros');
     }
