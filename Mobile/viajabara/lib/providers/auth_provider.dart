@@ -12,7 +12,6 @@ import 'package:viajabara/domain/entities/trip/trip.dart';
 import 'package:viajabara/domain/entities/user_data.dart';
 import 'package:viajabara/domain/entities/visual_config/visual_config.dart';
 import 'package:viajabara/modules/tripsUser/adapters/entities/list_drivers.dart';
-import 'package:crypto/crypto.dart';
 import 'package:jdenticon_dart/jdenticon_dart.dart';
 
 class AuthProvider {

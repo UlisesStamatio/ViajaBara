@@ -1,10 +1,12 @@
 import 'dart:convert';
 
+import 'package:intl/intl.dart';
+
 class DriverTrip {
   final int? id;
   final TripDetail? trip;
-  final DateTime? startDate;
-  final DateTime? createdAt;
+  final String? startDate;
+  final String? createdAt;
   final int? status;
   final int? enableSeats;
 
@@ -21,8 +23,8 @@ class DriverTrip {
     return DriverTrip(
       id: json['id'],
       trip: TripDetail.fromJson(json['trip']),
-      startDate: DateTime.fromMillisecondsSinceEpoch(json['startDate']),
-      createdAt: DateTime.fromMillisecondsSinceEpoch(json['createdAt']),
+      startDate: formatDate(DateTime.fromMillisecondsSinceEpoch(json['startDate'])),
+      createdAt: formatDate(DateTime.fromMillisecondsSinceEpoch(json['createdAt'])),
       status: json['status'],
       enableSeats: json['enableSeats'],
     );
@@ -36,7 +38,7 @@ class TripDetail {
   final Route? route;
   final DateTime? createdAt;
   final bool? status;
-  final int? startTime;
+  final String? startTime;
   final List<String>? workDays;
 
   TripDetail({
@@ -58,7 +60,7 @@ class TripDetail {
       route: Route.fromJson(json['route']),
       createdAt: DateTime.fromMillisecondsSinceEpoch(json['createdAt']),
       status: json['status'],
-      startTime: json['startTime'],
+      startTime: formatTime(DateTime.fromMillisecondsSinceEpoch((json['startTime']))),
       workDays: json['workDays'] != null
           ? List<String>.from(jsonDecode(json['workDays']))
           : [],
@@ -154,4 +156,12 @@ class Address {
       description: json['description'],
     );
   }
+}
+
+String formatDate(DateTime date) {
+  return DateFormat('yyyy-MM-dd').format(date);
+}
+
+String formatTime(DateTime dateTime) {
+  return DateFormat('HH:mm').format(dateTime);
 }
