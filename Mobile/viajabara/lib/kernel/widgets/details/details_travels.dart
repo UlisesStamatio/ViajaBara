@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:viajabara/domain/entities/trip/driver_trip.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
+import 'package:viajabara/providers/utils/utils.dart';
 
 class DetailsOfTravels extends StatefulWidget {
   final DriverTrip trip;
@@ -138,7 +139,7 @@ class _DetailsOfTravels extends State<DetailsOfTravels> {
                           ),
                           const SizedBox(width: 10),
                           Text(
-                              'Hora de llegada: ${widget.trip.trip?.startTime} + ${widget.trip.trip?.route?.time}',
+                              'Hora de llegada: ${Utils().sumarTiempo(widget.trip.trip!.startTime!, widget.trip.trip!.route!.time!)}',
                               style: const TextStyle(
                                 color: ColorsApp.text,
                                 fontSize: 16.0,
@@ -155,7 +156,7 @@ class _DetailsOfTravels extends State<DetailsOfTravels> {
                           ),
                           const SizedBox(width: 10),
                           Text(
-                            'Duración: ${widget.trip.trip?.route?.time}',
+                            'Duración: ${Utils().formatTime(widget.trip.trip!.route!.time!)}',
                             style: const TextStyle(
                               color: ColorsApp.text,
                               fontSize: 16.0,

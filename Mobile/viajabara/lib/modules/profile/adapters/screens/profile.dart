@@ -21,6 +21,7 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   final double topWidgetHeight = 10.0;
+  Future? _futureUserInfo;
   final double avatarRadius = 20.0;
   String email = '';
   String name = '';
@@ -33,7 +34,7 @@ class _ProfileState extends State<Profile> {
 
   void initState() {
     super.initState();
-    _loadUserInfo();
+    _futureUserInfo = _loadUserInfo();
   }
 
   Future<void> _loadUserInfo() async {
@@ -63,7 +64,7 @@ class _ProfileState extends State<Profile> {
 
   void _updateUserProfile(ResMsg dataUser) {
     setState(() {
-      profile = dataUser.profile!;
+      profile = utf8.decode(base64.decode(dataUser.profile!));
       name = dataUser.name!;
       email = dataUser.email!;
       cellphone = dataUser.cellphone!;
@@ -79,6 +80,21 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _futureUserInfo,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: const CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          return profileCard();
+        }
+      },
+    );
+  }
+
+  Widget profileCard() {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
