@@ -8,16 +8,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.edu.utez.viajabara.access.user.model.User;
 import mx.edu.utez.viajabara.access.user.model.UserRepository;
 import mx.edu.utez.viajabara.basecatalog.address.model.Address;
+import mx.edu.utez.viajabara.basecatalog.address.model.AddressDto;
 import mx.edu.utez.viajabara.basecatalog.bus.model.Bus;
 import mx.edu.utez.viajabara.basecatalog.bus.model.BusDto;
 import mx.edu.utez.viajabara.basecatalog.bus.model.BusRepository;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTrips;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTripsDto;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTripsRepository;
+import mx.edu.utez.viajabara.basecatalog.person.model.Person;
 import mx.edu.utez.viajabara.basecatalog.route.control.RouteService;
 import mx.edu.utez.viajabara.basecatalog.route.model.Route;
 import mx.edu.utez.viajabara.basecatalog.route.model.RouteRepository;
 import mx.edu.utez.viajabara.basecatalog.state.model.State;
+import mx.edu.utez.viajabara.basecatalog.state.model.StateBookTripDto;
+import mx.edu.utez.viajabara.basecatalog.state.model.StateDto;
 import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOver;
 import mx.edu.utez.viajabara.basecatalog.trip.model.*;
 import mx.edu.utez.viajabara.utils.entity.Message;
@@ -95,9 +99,10 @@ public class TripService {
 
         // Combinar ambas listas sin duplicados
         List<State> allUniqueStates = combineUniqueLists(uniqueStates, statesWithoutStopOvers);
-
-        System.out.println(allUniqueStates);
-        return new ResponseEntity<>(new Message(allUniqueStates, "Listado de viajes activos", TypesResponse.SUCCESS), HttpStatus.OK);
+        List<StateBookTripDto> statesProcessed = StateBookTripDto.fromList(allUniqueStates);
+            System.out.println("statesProcessed");
+        System.out.println(statesProcessed);
+        return new ResponseEntity<>(new Message(statesProcessed, "Listado de viajes activos", TypesResponse.SUCCESS), HttpStatus.OK);
 
         }
         return new ResponseEntity<>(new Message(filteredTrips, "Listado de viajes activos", TypesResponse.SUCCESS), HttpStatus.OK);
@@ -116,6 +121,7 @@ public class TripService {
                     System.out.println("openTripsDto "+openTripsDto);
                     trip.setEnabledSeats(openTripsDto != null ? openTripsDto.getEnableSeats() : 20);
                     trip.getDriver().setRoles("[]");
+                    trip.getDriver().setPerson(null);
                     trip.setBus(new Bus());
                     boolean isStartAddressMatch = trip.getRoute().getStartAddress().getId() == bookTripDto.getOriginId()
                             && trip.getRoute().getEndAddress().getId() == bookTripDto.getDestinyId();

@@ -81,12 +81,12 @@ class AuthProvider {
       List<dynamic> statesJson = data['result'];
 
       List<StateList> states = statesJson.map((state) {
-        List<dynamic> addressesJson = state['addresses'];
+        List<dynamic> addressesJson = state['addressDtos'];
         List<Address> addresses = addressesJson
             .map((address) => Address(
                   description: address['description'],
                   id: address['id'],
-                ) as Address) // Conversión explícita
+                ))
             .toList();
 
         return StateList(
@@ -95,7 +95,6 @@ class AuthProvider {
           addresses: addresses,
         );
       }).toList();
-
       return states;
     } else {
       throw Exception('Fallo al obtener los estados de origen');

@@ -20,6 +20,7 @@ import 'package:viajabara/kernel/widgets/custom_progress_indicator.dart';
 import 'package:viajabara/modules/tripsUser/adapters/entities/duty.dart';
 import 'package:viajabara/modules/tripsUser/adapters/methods/show_modal_info.dart';
 import 'package:viajabara/providers/auth_provider.dart';
+import 'package:viajabara/providers/session_manager.dart';
 
 class Trip extends StatefulWidget {
   const Trip({super.key});
@@ -85,7 +86,6 @@ class _TripState extends State<Trip> {
   Future<void> _initializeData() async {
     await loadVisualConfig();
     await loadBookTrip();
-    // await loadDuties();
     dateController.text = "${DateTime.now().toLocal()}".split(' ')[0];
     bookTrip.date = dateController.text;
     await loadStatesForTrip();
@@ -137,23 +137,6 @@ class _TripState extends State<Trip> {
     return completer.future;
   }
 
-  // Future<void> loadDuties() async {
-  //   Completer<void> completer = Completer<void>();
-  //   try {
-  //     List<DutyItem> dutyList = await AuthProvider().getDutiesEnabled();
-  //     setState(() {
-  //       duties = dutyList;
-  //       dutyController.text = dutyList[0].name;
-  //       bookTrip.dutyid = dutyList[0].id;
-  //     });
-  //     completer.complete();
-  //   } catch (e) {
-  //     print('Error loadDuties: $e');
-  //     completer.completeError(e);
-  //   }
-  //   return completer.future;
-  // }
-
   Future<void> loadStatesForTrip() async {
     Completer<void> completer = Completer<void>();
     try {
@@ -177,10 +160,25 @@ class _TripState extends State<Trip> {
 
       completer.complete();
     } catch (e) {
-      print('Error loadStatesForTrip: $e');
+      // ignore: use_build_context_synchronously
+      showErrorSnackBar(context, "Error al cargar los estados");
       completer.completeError(e);
     }
     return completer.future;
+  }
+
+  Future<void> showErrorSnackBar(
+      BuildContext context, String errorMessage) async {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(errorMessage),
+        duration: const Duration(seconds: 3),
+      ),
+    );
+    await Future.delayed(const Duration(seconds: 3));
+    await SessionManager.logOut();
+    // ignore: use_build_context_synchronously
+    Navigator.pushReplacementNamed(context, '/login');
   }
 
 // Methods
