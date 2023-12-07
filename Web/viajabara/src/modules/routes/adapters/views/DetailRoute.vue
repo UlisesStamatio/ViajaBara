@@ -6,18 +6,30 @@
         <div class="card">
           <!-- Card header -->
           <div class="pb-0 card-header">
-            <h5>Flujo de la ruta</h5>
+            <h5>Detalle de la ruta</h5>
           </div>
           <div class="px-0 pb-0 card-body mx-4 my-2">
-
-             <GMapMap
+            <div class="row">
+              <div class="col">
+               <GMapMap
               :center="center"
               ref="myMapRef"
               :zoom="zoom"
               style="height: 40rem"
                :options="mapOptions" 
-             >
-            </GMapMap>
+               >
+              </GMapMap>
+              </div>
+              <div class="col-12 text-start text-lg-end mt-4">
+                <button
+                class="btn bg-gradient-dark"
+                title="Regresar"
+                @click="regresar()"
+                >Regresar</button>
+              </div>
+            </div>
+
+
           </div>
         </div>
       </div>
@@ -31,6 +43,8 @@ import setTooltip from "@/assets/js/tooltip.js";
 import Loader from '../../../../components/Loader.vue'
 import getRoute from '../../use-cases/get.route'
 import mapFunctions from '../../../../kernel/map-functions/maps'
+import router from '../../../../router/index'
+
 export default {
   name: "DetailRoute",
   components:{
@@ -88,6 +102,9 @@ export default {
         directionsRenderer.setMap(mapObject);
         directionsRenderer.setDirections(response);
       });
+    },
+    regresar(){
+      router.push({name: 'Consultar Rutas'})
     }
   }
 };

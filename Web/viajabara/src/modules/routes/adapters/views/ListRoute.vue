@@ -13,7 +13,7 @@
               <div class="my-auto mt-4 ms-auto mt-lg-0">
                 <div class="my-auto ms-auto">
                   <router-link
-                    :to="{ name: 'Registro Ruta' }"
+                    :to="{ name: 'Registrar Ruta' }"
                     class="mb-0 btn bg-gradient-danger btn-sm"
                     >+&nbsp; Nueva ruta</router-link
                   >
@@ -21,17 +21,17 @@
               </div>
             </div>
           </div>
-          <div class="px-0 pb-0 card-body mx-3 my-4">
+          <div class="px-0 pb-0 card-body mx-4 my-4">
             <div class="table-responsive">
               <table id="products-list" class="table table-flush">
                 <thead class="thead-light">
                   <tr>
                     <th style="font-size: 0.65em; font-weight: bold; text-align: start">#</th>
-                    <th style="font-size: 0.65em; font-weight: bold">PUNTO DE INICIO</th>
-                    <th style="font-size: 0.65em; font-weight: bold">DESTINO</th>
-                    <th style="font-size: 0.65em; font-weight: bold">NÚMERO DE PARADAS</th>
-                    <th style="font-size: 0.65em; font-weight: bold">ESTATUS</th>
-                    <th style="font-size: 0.65em; font-weight: bold">ACCIONES</th>
+                    <th style="font-size: 0.65em; font-weight: bold">Punto de inicio</th>
+                    <th style="font-size: 0.65em; font-weight: bold">Destino</th>
+                    <th style="font-size: 0.65em; font-weight: bold">No. de paradas</th>
+                    <th style="font-size: 0.65em; font-weight: bold">Estatus</th>
+                    <th style="font-size: 0.65em; font-weight: bold">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -47,29 +47,30 @@
                       </td>
                       <td class="text-sm">
                            <a
+                            class="clickeable"
+                            title="Actualizar ruta"
                             @click="editRoute(route.id)"
                           >
                             <i class="fa fa-pencil-square-o text-secondary"></i>
                           </a>
                           <a
-                            class="mx-2"
+                            title="Visualizar ruta"
+                            class="mx-3 clickeable"
                             @click="detailRoute(route.id)"
                           >
                             <i class="fas fa-eye text-secondary"></i>
                           </a>
                           <a
-                          v-cloak
-                          data-bs-toggle="tooltip"
-                          data-bs-original-title="Desactivar ruta"
+                          class="clickeable"
+                          title="Desactivar ruta"
                           v-show="route.status"
                           @click="changeStatusRoute({id: route.id})"
                         >
                           <i class="fa fa-times-circle text-secondary" ></i>
                         </a>
                           <a
-                          v-cloak
-                          data-bs-toggle="tooltip"
-                          data-bs-original-title="Activar ruta"
+                          class="clickeable"
+                          title="Activar ruta"
                           v-show="!route.status"
                           @click="changeStatusRoute({id: route.id})"
                           >
@@ -198,12 +199,11 @@ export default {
       router.push({name: 'Modificar Ruta', params: {id: id}})
     },
     detailRoute(id){
-      router.push({name: 'Detalles Ruta', params: {id: id}})
+      router.push({name: 'Visualizar Ruta', params: {id: id}})
     },
     async changeStatusRoute(payload){
       this.$swal({
-            title: "¿Estás segura(a) de realizar la acción?",
-            text: "¡No podrás revertir esto.!",
+            title: "¿Estás segura(a) de cambiar el estatus?",
             icon: "warning",
             showCancelButton: true,
             cancelButtonText: "Cancelar",
@@ -244,3 +244,8 @@ export default {
   }
 };
 </script>
+<style scoped>
+  .clickeable{
+    cursor: pointer;
+  }
+</style>
