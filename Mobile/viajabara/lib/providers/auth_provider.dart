@@ -32,12 +32,12 @@ class AuthProvider {
   }
 
   Future<ResMsg> register(UserData userData) async {
-    String svgValueWithouQuotes  = Jdenticon.toSvg(userData.profile!);
-    String svgValue = svgValueWithouQuotes.replaceAll('"', "'");
+    String svgValue  = Jdenticon.toSvg(userData.profile!);
+    String valueBase64 = base64.encode(utf8.encode(svgValue));
 
     var dataJson = jsonEncode({
       'username': userData.username,
-      'profile': svgValue,
+      'profile': valueBase64,
       'email': userData.email,
       'password': userData.password,
       'person': {

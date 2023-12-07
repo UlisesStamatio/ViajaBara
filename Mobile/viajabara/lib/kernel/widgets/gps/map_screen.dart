@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:viajabara/domain/entities/trip/driver_trip.dart';
 import 'package:viajabara/kernel/blocs/blocs.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
+import 'package:viajabara/providers/utils/utils.dart';
 
 class MapScreen extends StatefulWidget {
   final DriverTrip trip;
@@ -130,7 +131,7 @@ class _MapScreenState extends State<MapScreen> {
                           style: const TextStyle(fontSize: 15.0, color: ColorsApp.text),
                         ),
                         Text(
-                          'Llegada: ${widget.trip.trip?.route?.time}',
+                          'Llegada: ${Utils().sumarTiempo(widget.trip.trip!.startTime!, widget.trip.trip!.route!.time!)}',
                           style: const TextStyle(fontSize: 15.0, color: ColorsApp.text),
                         )
                       ],

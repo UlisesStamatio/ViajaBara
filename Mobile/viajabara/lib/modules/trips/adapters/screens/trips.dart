@@ -7,6 +7,7 @@ import 'package:viajabara/kernel/themes/stuff.dart';
 import 'package:viajabara/kernel/widgets/details/details_travels.dart';
 import 'package:viajabara/modules/trips/adapters/screens/traveling.dart';
 import 'package:viajabara/providers/driver_provider.dart';
+import 'package:viajabara/providers/utils/utils.dart';
 
 class Trips extends StatefulWidget {
   const Trips({super.key});
@@ -117,7 +118,7 @@ class _TripsState extends State<Trips> {
                 Container(
                   padding: const EdgeInsets.only(top: 10),
                   child: Text(
-                    'Tiempo estimado: ${trip.trip?.route?.time}',
+                    'Tiempo estimado: ${Utils().formatTime(trip.trip!.route!.time!)}',
                     style: const TextStyle(
                         fontSize: 15.0,
                         color: ColorsApp.primayColor,
@@ -147,7 +148,7 @@ class _TripsState extends State<Trips> {
                         ),
                       ),
                       Text(
-                        'Llegada: ${trip.trip?.startTime} + ${trip.trip?.route?.time}',
+                        'Llegada: ${Utils().sumarTiempo(trip.trip!.startTime!, trip.trip!.route!.time!)}',
                         style: const TextStyle(
                           fontSize: 15.0,
                           color: ColorsApp.text,
@@ -215,7 +216,7 @@ class _TripsState extends State<Trips> {
                     if (trip.status == 2) {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                            builder: (context) => Traveling(trip: trip )),
+                            builder: (context) => Traveling(trip: trip)),
                       );
                     }
                   },
