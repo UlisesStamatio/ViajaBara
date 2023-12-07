@@ -16,8 +16,7 @@ class _SplashState extends State<Splash> {
     super.initState();
     Future.delayed(
       const Duration(seconds: 2),
-      () => Navigator.pushReplacementNamed(
-          context, '/login'),
+      () => Navigator.pushReplacementNamed(context, '/login'),
     );
   }
 
@@ -29,7 +28,7 @@ class _SplashState extends State<Splash> {
         children: [
           ColorFiltered(
             colorFilter: const ColorFilter.mode(
-              ColorsApp.backgroundImagesColor,
+              ColorsApp.whiteColor,
               BlendMode.color,
             ),
             child: SvgPicture.asset(

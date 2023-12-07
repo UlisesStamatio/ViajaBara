@@ -117,7 +117,7 @@ class _MapScreenState extends State<MapScreen> {
                   initialCameraPosition: initialCameraPosition,
                   compassEnabled: false,
                   myLocationEnabled: true,
-                  zoomControlsEnabled: false,
+                  zoomControlsEnabled: true,
                   myLocationButtonEnabled: false,
                 ),
               ),

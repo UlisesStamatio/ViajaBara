@@ -140,7 +140,7 @@ class AuthProvider {
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseBody =
             response.data as Map<String, dynamic>;
-        print("response");
+        print("response getVisualConfigurations");
         print(responseBody);
 
         if (responseBody.containsKey('result')) {

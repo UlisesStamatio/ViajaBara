@@ -19,11 +19,11 @@ extension FilterTypeExtension on FilterType {
 
   static FilterType fromValue(String value) {
     switch (value) {
-      case 'START_ADDRESS':
+      case 'START_ADDRESS' || 'Viaje completo':
         return FilterType.START_ADDRESS;
-      case 'END_ADDRESS':
+      case 'END_ADDRESS' || 'Viaje completo':
         return FilterType.END_ADDRESS;
-      case 'STOP_OVER':
+      case 'STOP_OVER' || 'Parada':
         return FilterType.STOP_OVER;
       default:
         throw ArgumentError('Valor no válido para FilterType: $value');
