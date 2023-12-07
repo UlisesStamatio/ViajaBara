@@ -60,7 +60,7 @@
           </div>
           <div class="row mt-4">
             <div class="col-12 text-end ">
-                <button type="button" class="btn bg-gradient-secondary mb-0 me-2 ms-auto js-btn-next" @click="cancelar()" title="Regresar">Regresar</button>
+                <button type="button" class="btn btn bg-gradient-dark mb-0 me-2 ms-auto js-btn-next" @click="cancelar()" title="Regresar">Regresar</button>
             </div>
           </div>
       </div>

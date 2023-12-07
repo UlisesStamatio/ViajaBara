@@ -114,7 +114,7 @@
                 text="Consultar"
               />
                <sidenav-item
-                :to="{ name: 'Registro Ruta' }"
+                :to="{ name: 'Registrar Ruta' }"
                 mini-icon="W"
                 text="Registrar"
               />
@@ -142,7 +142,7 @@
                 text="Consultar"
               />
               <sidenav-item
-                :to="{ name: 'Registro Viaje' }"
+                :to="{ name: 'Registrar Viaje' }"
                 mini-icon="W"
                 text="Registrar"
               />

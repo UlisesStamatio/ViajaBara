@@ -14,7 +14,7 @@
     /> -->
     <section
       class="container-fluid pb-5 pt-7 postion-relative z-index-2"
-      id="home"
+      id="inicio"
     >
       <div class="row">
         <div class="mx-auto text-center col-md-6">
@@ -57,7 +57,7 @@
   </div>
 
   <div class="container my-6">
-    <section class="container" id="who">
+    <section class="container" id="quienes">
       <div class="row">
         <div class="col-12 text-center">
           <h2>¿Quiénes somos?</h2>
@@ -84,7 +84,7 @@
       </div>
     </section>
     <hr class="mt-5 mb-2 horizontal dark" />
-    <section class="container" id="route">
+    <section class="container" id="rutas">
       <div class="row">
         <div class="col-12 text-center">
           <h2 class="mb-5">Ruta Actual</h2>
@@ -167,97 +167,9 @@
         </div>
       </div>
     </section>
-    <hr class="mt-5 mb-2 horizontal dark" />
-    <section class="container" id="services">
-      <div class="row">
-        <div class="col-12 text-center"><h2>Servicios adicionales</h2></div>
-        <div class="col-12 mt-5 col-md-3">
-          <div class="card">
-            <div
-              class="py-3 text-center card-header d-flex justify-content-center"
-            >
-              <div
-                class="icon icon-shape icon-lg shadow text-center border-radius-lg bg-gradient-primary"
-              >
-                <i
-                  class="opacity-10 text-white fas fa-bus"
-                  aria-hidden="true"
-                  style="font-size: 32px"
-                ></i>
-              </div>
-            </div>
-            <div class="p-3 pt-0 text-center card-body">
-              <h6 class="mb-0 text-center">Transporte Escolar</h6>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 mt-5 col-md-3">
-          <div class="card">
-            <div
-              class="py-3 text-center card-header d-flex justify-content-center"
-            >
-              <div
-                class="icon icon-shape icon-lg shadow text-center border-radius-lg bg-gradient-primary"
-              >
-                <i
-                  class="opacity-10 text-white fas fa-bus"
-                  aria-hidden="true"
-                  style="font-size: 32px"
-                ></i>
-              </div>
-            </div>
-            <div class="p-3 pt-0 text-center card-body">
-              <h6 class="mb-0 text-center">Transporte Turistico</h6>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 mt-5 col-md-3">
-          <div class="card">
-            <div
-              class="py-3 text-center card-header d-flex justify-content-center"
-            >
-              <div
-                class="icon icon-shape icon-lg shadow text-center border-radius-lg bg-gradient-primary"
-              >
-                <i
-                  class="opacity-10 text-white fas fa-car"
-                  aria-hidden="true"
-                  style="font-size: 32px"
-                ></i>
-              </div>
-            </div>
-            <div class="p-3 pt-0 text-center card-body">
-              <h6 class="mb-0 text-center">
-                Transporte para eventos y empresas
-              </h6>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 col-md-3 mt-5">
-          <div class="card">
-            <div
-              class="py-3 text-center card-header d-flex justify-content-center"
-            >
-              <div
-                class="icon icon-shape icon-lg shadow text-center border-radius-lg bg-gradient-primary"
-              >
-                <i
-                  class="opacity-10 text-white fas fa-box"
-                  aria-hidden="true"
-                  style="font-size: 32px"
-                ></i>
-              </div>
-            </div>
-            <div class="p-3 pt-0 text-center card-body">
-              <h6 class="mb-0 text-center">Paquetería</h6>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
 
     <hr class="mt-5 mb-2 horizontal dark" />
-    <section class="container" id="services">
+    <section class="container" id="servicios">
       <div class="row">
         <div class="col-12 text-center"><h2>Servicios adicionales</h2></div>
         <div class="col-12 mt-5 col-md-3">
@@ -346,9 +258,31 @@
     </section>
 
     <hr class="mt-5 mb-2 horizontal dark" />
-    
+    <section class="container" id="paqueteria">
+      <div class="row">
+        <div class="col-12 text-center mb-3"><h2>Paquetería</h2></div>
+        <div class="col-12">
+          <div class="row">
+            <div class="col-12 col-lg-6">
+              <img
+                  src="../../../../assets/paqueteria.png"
+                  class="img-fluid"
+                  srcset=""
+                />
+            </div>
+            <div class="col-12 col-lg-6">
+              <h6 class="text-center mb-4">Servicio especializado en envío de paquetes y transporte de mercancías</h6>
+              <p class="justified">Viajabara se convierte en un excelente socio estratégico para transportar lo que requieras. Desde un servicio de paquetería a soluciones especializadas en movilidad de carga consolidada, dedicada, fría, seca, hidrocarburos, etc. Te invitamos a conocernos.</p>
+              <p class="justified">Conoce los diferentes servicios de transporte de mercancías que Viajabara tiene para ti. Viajabara te acerca hasta donde tú quieras: ¡pregunta por nuestras tarifas!</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  
   </div>
-  <footer class="container-fluid bg-gradient-danger" id="contact">
+  <footer class="container-fluid bg-gradient-danger" id="contacto">
     <div class="row py-2">
       <div class="col-12 text-center text-white">
         <span class="fw-bold" style="font-size: 1.5em">
@@ -388,11 +322,7 @@
 </template>
 <script>
 import Navbar from "@/examples/PageLayout/Navbar.vue";
-//import PricingCard from "../../../../views/pages/components/PricingCard.vue";
-//import AppFooter from "@/examples/PageLayout/Footer.vue";
-//import AccordionItem from "../../../../views/pages/components/AccordionItem.vue";
 import setNavPills from "@/assets/js/nav-pills.js";
-//import Accordion from "../../../../views/pages/components/Accordion.vue";
 import icon from "../../../../assets/img/landing-image.png";
 import bus from "../../../../assets/img/bus-footer.png";
 
@@ -400,10 +330,6 @@ export default {
   name: "LandingPage",
   components: {
     Navbar,
-    //PricingCard,
-    //AppFooter,
-    //AccordionItem,
-    //Accordion,
   },
   data() {
     return {
@@ -430,3 +356,12 @@ export default {
   },
 };
 </script>
+<style scoped>
+  .justified{
+    text-align: justify;
+  }
+ .fade-in {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+</style>

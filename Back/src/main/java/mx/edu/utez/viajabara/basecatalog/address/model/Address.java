@@ -32,7 +32,6 @@ public class Address {
 
     @ManyToOne
     @JoinColumn(name = "id_state")
-    @JsonBackReference
     private State state;
 
     @Column(name = "create_at", insertable = false, columnDefinition = "TIMESTAMP DEFAULT NOW()")

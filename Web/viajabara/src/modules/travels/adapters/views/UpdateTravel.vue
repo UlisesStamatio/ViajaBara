@@ -108,7 +108,7 @@
           <div class="row mt-4">
             <div class="col-12 text-end ">
                 <button type="button" class="btn bg-gradient-secondary mb-0 me-2 ms-auto js-btn-next" @click="cancelar()" title="Cancelar">Cancelar</button>
-                <button type="button" class="btn bg-gradient-dark mb-0 ms-auto js-btn-next" title="Guardar Viaje" @click="preUpdateTrip()">Guardar</button>
+                <button type="button" class="btn bg-gradient-dark mb-0 ms-auto js-btn-next" title="Guardar" @click="preUpdateTrip()">Guardar</button>
             </div>
           </div>
       </div>

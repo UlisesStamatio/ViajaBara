@@ -147,7 +147,7 @@ const routes = [
   },
   {
     path: "/ruta/registrar",
-    name: "Registro Ruta",
+    name: "Registrar Ruta",
     component: NewRoute,
     meta: { requiresAuth: true }
   },
@@ -158,8 +158,8 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: "/ruta/consultar/detalles/:id",
-    name: "Detalles Ruta",
+    path: "/ruta/consultar/visualizar/:id",
+    name: "Visualizar Ruta",
     component: DetailRoute,
     meta: { requiresAuth: true }
   },
@@ -171,7 +171,7 @@ const routes = [
   },
   {
     path: "/viaje/registrar",
-    name: "Registro Viaje",
+    name: "Registrar Viaje",
     component: NewTravel,
     meta: { requiresAuth: true }
   },
@@ -182,8 +182,8 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: "/viaje/consultar/detalles/:id",
-    name: "Detalles Viaje",
+    path: "/viaje/consultar/visualizar/:id",
+    name: "Visualizar Viaje",
     component: DetailTravel,
     meta: { requiresAuth: true }
   },
