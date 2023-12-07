@@ -110,7 +110,7 @@ class _HistoryUserState extends State<HistoryUser> {
                                     _showModalInfo(context);
                                   },
                                   style: TextButton.styleFrom(
-                                      primary: Colors.white,
+                                      foregroundColor: Colors.white,
                                       backgroundColor: ColorsApp.primayColor,
                                       minimumSize: const Size(150, 40)),
                                 ),
@@ -120,7 +120,7 @@ class _HistoryUserState extends State<HistoryUser> {
                                   onPressed: () => Navigator.pushNamed(
                                       context, "/traveling"),
                                   style: TextButton.styleFrom(
-                                      primary: Colors.white,
+                                      foregroundColor: Colors.white,
                                       backgroundColor: ColorsApp.primayColor,
                                       minimumSize: const Size(150, 40)),
                                 ),
@@ -192,7 +192,7 @@ class _HistoryUserState extends State<HistoryUser> {
                                     _showModalInfo(context);
                                   },
                                   style: TextButton.styleFrom(
-                                      primary: Colors.white,
+                                      foregroundColor: Colors.white,
                                       backgroundColor: ColorsApp.primayColor,
                                       minimumSize: const Size(150, 40)),
                                 ),
@@ -201,7 +201,7 @@ class _HistoryUserState extends State<HistoryUser> {
                                   label: const Text('Calificar'),
                                   onPressed: () => _qualifyDriver(context),
                                   style: TextButton.styleFrom(
-                                      primary: Colors.white,
+                                      foregroundColor: Colors.white,
                                       backgroundColor: ColorsApp.primayColor,
                                       minimumSize: const Size(150, 40)),
                                 ),
@@ -273,7 +273,7 @@ class _HistoryUserState extends State<HistoryUser> {
                                     _showModalInfo(context);
                                   },
                                   style: TextButton.styleFrom(
-                                      primary: Colors.white,
+                                      foregroundColor: Colors.white,
                                       backgroundColor: ColorsApp.primayColor,
                                       minimumSize: const Size(150, 40)),
                                 ),
@@ -283,7 +283,7 @@ class _HistoryUserState extends State<HistoryUser> {
                                   label: const Text('4.5'),
                                   onPressed: () {},
                                   style: TextButton.styleFrom(
-                                      primary: Colors.white,
+                                      foregroundColor: Colors.white,
                                       backgroundColor: ColorsApp.muted,
                                       minimumSize: const Size(150, 40)),
                                 ),
@@ -329,7 +329,9 @@ class _HistoryUserState extends State<HistoryUser> {
         ),
       ),
       builder: (BuildContext context) {
-        return const DetailsOfTravels();
+        // return const DetailsOfTravels();
+        //Recordar cambiar esto por el modal que es, se comenta por que se desarrolla otra pantalla
+        return const QualifyDriver();
       },
     );
   }

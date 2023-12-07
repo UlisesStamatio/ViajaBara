@@ -53,7 +53,7 @@
                   </div>
                   <div class="my-auto mt-4 ms-auto mt-lg-0">
                     <div class="my-auto ms-auto">
-                      <button class="mb-0 btn bg-gradient-primary btn-sm" @click="openModalStopover()">+&nbsp; Nueva Parada</button>
+                      <button class="mb-0 btn bg-gradient-danger btn-sm" @click="openModalStopover()">+&nbsp; Nueva Parada</button>
                     </div>
                   </div>
                 </div>
@@ -91,14 +91,15 @@
             </div>
             <div class="col-12 mt-3 text-end ">
               <button
-                class="btn bg-secondary-gradient me-2"
+                class="btn bg-gradient-secondary me-2"
                 title="Cancelar"
+                @click="cancelar()"
                 >Cancelar</button>
               <button
                 class="btn bg-gradient-dark"
-                title="Crear ruta"
+                title="Guardar"
                 @click="preNewRoute()"
-              >Crear ruta</button>
+              >Guardar</button>
             </div>
 
         </div>
@@ -120,7 +121,7 @@
     <MDBModalBody>
             <div class="container-d">
               <div class="row">
-                <div class="col-12 mb-3">
+                <div class="col-12 mb-3 autocomplete-container ">
                   <label>Dirección</label>
                     <div class="input-group flex-nowrap">
                       <input
@@ -135,8 +136,8 @@
                         <i class="fas fa-search"></i>
                       </span>
                   </div>
-                  <ul>
-                    <li v-for="place in placesSearchedStart" :key="place.id" @click="selectPlaceStart(place)">{{ place.description }}</li>
+                  <ul class="list-group autocomplete-list">
+                    <li class="autocomplete-container " v-for="place in placesSearchedStart" :key="place.id" @click="selectPlaceStart(place)">{{ place.description }}</li>
                   </ul>
                 
                 </div>
@@ -184,7 +185,7 @@
     <MDBModalBody>
             <div class="container-d">
               <div class="row">
-                <div class="col-12 mb-3">
+                <div class="col-12 mb-3 autocomplete-container ">
                   <label>Dirección</label>
                     <div class="input-group flex-nowrap">
                       <input
@@ -199,8 +200,8 @@
                         <i class="fas fa-search"></i>
                       </span>
                   </div>
-                  <ul>
-                    <li v-for="place in placesSearchedEnd" :key="place.id" @click="selectPlaceEnd(place)">{{ place.description }}</li>
+                  <ul class="list-group autocomplete-list">
+                    <li class="autocomplete-list-item" v-for="place in placesSearchedEnd" :key="place.id" @click="selectPlaceEnd(place)">{{ place.description }}</li>
                   </ul>
                 
                 </div>
@@ -249,7 +250,7 @@
     <MDBModalBody>
             <div class="container-d">
               <div class="row">
-                <div class="col-12 mb-3">
+                <div class="col-12 mb-3 autocomplete-container ">
                   <label>Dirección</label>
                     <div class="input-group flex-nowrap">
                       <input
@@ -264,8 +265,8 @@
                         <i class="fas fa-search"></i>
                       </span>
                   </div>
-                  <ul>
-                    <li v-for="place in placesSearchedStopover" :key="place.id" @click="selectPlaceStopover(place)">{{ place.description }}</li>
+                  <ul class="list-group autocomplete-list">
+                    <li class="autocomplete-list-item" v-for="place in placesSearchedStopover" :key="place.id" @click="selectPlaceStopover(place)">{{ place.description }}</li>
                   </ul>
                 
                 </div>
@@ -314,7 +315,7 @@
     <MDBModalBody>
             <div class="container-d">
               <div class="row">
-                <div class="col-12 mb-3">
+                <div class="col-12 mb-3 autocomplete-container">
                   <label>Dirección</label>
                     <div class="input-group flex-nowrap">
                       <input
@@ -329,8 +330,8 @@
                         <i class="fas fa-search"></i>
                       </span>
                   </div>
-                  <ul>
-                    <li v-for="place in placesSearchedStopoverUpdate" :key="place.id" @click="selectPlaceStopoverUpdate(place)">{{ place.description }}</li>
+                  <ul class="list-group autocomplete-list">
+                    <li class="autocomplete-list-item" v-for="place in placesSearchedStopoverUpdate" :key="place.id" @click="selectPlaceStopoverUpdate(place)">{{ place.description }}</li>
                   </ul>
                 
                 </div>
@@ -372,7 +373,6 @@ import mapFunctions from '../../../../kernel/map-functions/maps'
 import routeValidator from '../../../../kernel/validators/route.validator'
 import Loader from '../../../../components/Loader.vue'
 import DataTable from 'datatables.net-dt';
-//import { DataTable } from "simple-datatables";
 import $ from 'jquery';
 import updateRoute from '../../use-cases/update.route'
 import getRoute from '../../use-cases/get.route'
@@ -464,6 +464,7 @@ export default {
       if(!error){
           const {result} = data
           this.route = result;
+          console.log(this.route);
           this.routeOriginal = {...result}
       }else{
            this.$swal({
@@ -974,6 +975,7 @@ export default {
       if(!this.errors.startPosition && !this.errors.endPosition){
          const response = routeValidator.isSameAddressesRegardingEndAndStartUpdate(this.route.stopOvers, this.route.startAddress, this.route.endAddress);
           if(!response){
+            console.log(this.route)
             try{
             let meters = await mapFunctions.getMetersBetweenTwoDirections(this.route.startAddress.description,this.route.endAddress.description);
             let time = await mapFunctions.getTimeBetweenTwoDirections(this.route.startAddress.description,this.route.endAddress.description);
@@ -1007,7 +1009,6 @@ export default {
             })])
           this.$swal({
           title: "¿Estás segura(a) de guardar los cambios?",
-          text: "¡No podrás revertir esto.!",
           icon: "warning",
           showCancelButton: true,
           cancelButtonText: "Cancelar",
@@ -1055,6 +1056,9 @@ export default {
       }
       
     },
+    cancelar(){
+      router.push({name: 'Consultar Rutas'})
+    }
    
     
   },
@@ -1062,3 +1066,31 @@ export default {
 };
 </script>
 
+<style scoped>
+.autocomplete-container {
+            position: relative;
+        }
+
+.autocomplete-list {
+            position: absolute;
+            z-index: 1000;
+            width: 95%;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid white;
+            border-radius: 0 0 5px 5px;
+            margin-top: 5px;
+            background-color: #fff;
+        }
+
+        .autocomplete-list-item {
+            list-style: none;
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .autocomplete-list-item:hover {
+            background-color: #f8f9fa;
+        }
+</style>

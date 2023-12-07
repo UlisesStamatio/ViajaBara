@@ -13,7 +13,7 @@
               <div class="my-auto mt-4 ms-auto mt-lg-0">
                 <div class="my-auto ms-auto">
                   <router-link
-                    :to="{ name: 'Registro Método' }"
+                    :to="{ name: 'Registrar Método' }"
                     class="mb-0 btn bg-gradient-danger btn-sm"
                     >+&nbsp; Nuevo Método</router-link
                   >
@@ -21,58 +21,57 @@
               </div>
             </div>
           </div>
-          <div class="px-0 pb-0 card-body">
+          <div class="px-0 pb-0 card-body mx-4 my-3">
             <div class="table-responsive">
               <table id="methods-list" class="table table-flush">
                 <thead class="thead-light">
                   <tr>
-                    <th>#</th>
-                    <th>Nombre</th>
-                    <th>Estatus</th>
-                    <th>Acciones</th>
+                    <th style="font-size: 0.65em; font-weight: bold; text-align: start">#</th>
+                    <th style="font-size: 0.65em; font-weight: bold;">Nombre</th>
+                    <th style="font-size: 0.65em; font-weight: bold;">Estatus</th>
+                    <th style="font-size: 0.65em; font-weight: bold;">Acciones</th>
                   </tr>
                 </thead>
-                 <tbody v-if="methods.length !== 0">
+                 <tbody>
                   <tr v-for="({name, status, id}, index) in methods" :key="index">
                     <td>{{(index + 1)}} </td>
                     <td class="text-sm" >{{name}}</td>
-                    <td>
+                    <td class="text-center">
                       <span class="badge badge-success badge-sm" :class="{'badge-success': status, 'badge-danger': !status}"
                         >{{status ? 'Activo' : 'Inactivo'}}</span
                       >
                     </td>
                     <td class="text-sm">
-
-                      <router-link
-                        :to="{ name: 'Modificar Método', params:{id:id} }"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Editar método"
+                      <a
+                        title="Actualizar método"
+                        @click="updateMethod(id)"
+                        class="clickeable"
                       >
                         <i class="fa fa-pencil-square-o text-secondary"></i>
-                      </router-link>
-                        <router-link
-                          :to="{ name: 'Detalles Método', params:{id:id} }"
-                          class="mx-3"
-                          data-bs-toggle="tooltip"
-                          data-bs-original-title="Detalles del método"
+                      </a>
+                      
+                        <a
+                        title="Visualizar método"
+                        @click="detailMethod(id)"
+                        class="mx-3 clickeable"
                       >
                         <i class="fas fa-eye text-secondary"></i>
-                      </router-link>
-                       <a
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Desactivar método"
-                        v-if="status"
-                        :id="'times-'+id"
-                      >
-                        <i class="fa fa-times-circle text-secondary"></i>
                       </a>
                       <a
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Activar método"
-                        v-if="!status"
-                        :id="'times-'+id"
+                        title="Desactivar método"
+                        @click="changeStatusMethod(id, name)"
+                        class="clickeable"
+                        v-if="status"
                       >
-                        <i class="fa fa-check-circle text-secondary"></i>
+                        <i class="fa fa-times-circle text-secondary" ></i>
+                      </a>
+                        <a
+                        title="Activar método"
+                        @click="changeStatusMethod(id, name)"
+                        class="clickeable"
+                        v-if="!status"
+                        >
+                        <i class="fa fa-check-circle text-secondary" ></i>
                       </a>
                     </td>
                   </tr>
@@ -91,11 +90,13 @@
 </template>
 
 <script>
-import { DataTable } from "simple-datatables";
+import DataTable from 'datatables.net-dt';
 import setTooltip from "@/assets/js/tooltip.js";
 import listMethods from '../../use-cases/list.methods'
 import changeStatusMethod from '../../use-cases/change.status.method'
 import Loader from '../../../../components/Loader.vue'
+import $ from 'jquery';
+import router from '../../../../router/index'
 
 export default {
   name: "ListMethod",
@@ -105,8 +106,8 @@ export default {
   data(){
     return{
       methods: [],
-      datatable: {},
       isLoading: false,
+      datatable: null,
     }
   },
   async mounted() {
@@ -132,36 +133,43 @@ export default {
     },
     async datatableMethods(){
         await this.listMethods();
-       if (document.getElementById("methods-list")) {
-        this.datatable = new DataTable("#methods-list", {
-        searchable: true,
-        fixedHeight: false,
-        perPage: 5,
-        labels: {
-            placeholder: "Buscar...", // The search input placeholder
-            perPage: "{select} Registros por página", // per-page dropdown label
-            noRows: "Ningún dato encontrado", // Message shown when there are no search results
-            info: "Mostrando {start} de {end} de {rows} registros",  //
-            noResults: "No hay resultados que coincidan con su búsqueda"
-        },
-
-
-          });
-        this.datatable.on('datatable.page', () =>{
-              this.eventListeners()
+       if(this.datatable){
+            this.datatable.destroy()
+          }
+          this.$nextTick(()=>{
+            this.datatable =  new DataTable('#methods-list', {
+            searching: true,
+            ordering: true,
+            pageLength:5,
+            lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Mostrar todos"]],
+            language:{
+              infoEmpty: "",
+              url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json',
+              paginate: {
+                      next: ">"
+                  },
+              search: "",
+              searchPlaceholder: "Buscar...",
+              
+            },
+            pagingType: "simple_numbers",
+            drawCallback: ()=>{
+                  $('#methods-list_previous').addClass('d-none');
+            },
+            columnDefs: [
+                  {
+                      targets: [0, 1, 2], // Índices de las columnas que deben ser visibles
+                      visible: true
+                  }
+            ]
+            });
         })
-        //En valoración
-        // this.datatable.on('datatable.perPage', function (event) {
-        //       var perPage = event.detail.perPage;
-        // });
-        }
-      this.eventListeners()
     },
-    async changeStatus(id){
+    async changeStatusMethod(id, name){
        this.$swal({
-            title: "¿Estás segura(a) de realizar la acción?",
-            text: "¡No podrás revertir esto.!",
+            title: `¿Estás segura(a) de cambiar el estatus de <strong>${name}</strong>?`,
             icon: "warning",
+             type: "custom-html",
             showCancelButton: true,
             cancelButtonText: "Cancelar",
             confirmButtonText: "Confirmar",
@@ -197,17 +205,17 @@ export default {
             }
           })
     },
-    eventListeners(){
-          let elementos = document.querySelectorAll('[id*="times"]');
-          const method = this.changeStatus;
-
-          elementos.forEach(function(elemento) {
-              elemento.addEventListener('click', async function() {
-                  const id = elemento.id.toString().split('-')[1]
-                  await method(id)
-              });
-          });
+    updateMethod(id){
+      router.push({name: 'Modificar Método', params: {id: id}})
+    },
+    detailMethod(id){
+      router.push({name: 'Visualizar Método', params: {id: id}})
     }
   }
 };
 </script>
+<style scoped>
+  .clickeable{
+    cursor: pointer;
+  }
+</style>

@@ -24,17 +24,22 @@
             </div>
             <div class="col-12 mb-4">
               <label>API KEY(<span class="text-danger">*</span>)</label>
-              <input 
-                type="text"
-                placeholder="eg. SeguridadEnLineaTotal"
-                id="name"
-                v-model="method.apikey"
-                class="form-control"
-                :class="{ 'is-invalid': errors.apikey, 'is-valid': errors.apikey === null }"
-                 maxlength="256"
-              >
-              <div class="invalid-feedback" v-if="errors.apikey">
-                  {{ errors.apikey }}
+
+               <div class="input-group flex-nowrap">
+                  <input
+                  :type="showPassword ? 'text' : 'password'" 
+                  class="form-control" 
+                  id="apikey-input"  
+                  v-model="method.apikey"
+                  maxlength="256"
+                  :class="{ 'is-invalid': errors.apikey, 'is-valid': errors.apikey === null }"
+                  />
+                  <span class="input-group-text" id="apikey-input" @click="togglePasswordVisibility" style="cursor:pointer;">
+                    <i class="fas" :class="showPassword ?  'fa-eye' : 'fa-eye-slash' "></i>
+                  </span>
+              </div>
+                <div style="font-size: 0.875em; color: #fd5c70;" v-if="errors.apikey">
+                {{ errors.apikey }}
               </div>
             </div>
         </div>
@@ -65,8 +70,6 @@
 </template>
 
 <script>
-import Quill from "quill";
-import Choices from "choices.js";
 import methodValidator from '../../../../kernel/validators/method.validator'
 import router from '../../../../router/index'
 import updateMethod from '../../use-cases/update.method'
@@ -74,7 +77,7 @@ import getMethod from '../../use-cases/get.method'
 import Loader from '../../../../components/Loader.vue'
 
 export default {
-  name: "NewMethod",
+  name: "UpdateMethod",
   components: {
     Loader
   },
@@ -95,31 +98,12 @@ export default {
       idMethod:0,
       methodOriginal: {},
       isLoading: false,
+      showPassword: false,
     };
   },
   async mounted() {
     this.idMethod = this.$route.params.id;
     await this.getMethod(this.idMethod);
-
-    if (document.getElementById("edit-description")) {
-      // eslint-disable-next-line no-unused-vars
-      var quill = new Quill("#edit-description", {
-        theme: "snow", // Specify theme in configuration
-      });
-    }
-    if (document.getElementById("choices-category")) {
-      var element = document.getElementById("choices-category");
-      new Choices(element, {
-        searchEnabled: false,
-      });
-    }
-
-    if (document.getElementById("choices-sizes")) {
-      let element = document.getElementById("choices-sizes");
-      new Choices(element, {
-        searchEnabled: false,
-      });
-    }
   },
    computed:{
     isFormModified(){
@@ -165,6 +149,9 @@ export default {
             type: "basic",
           });
       }
+    },
+    togglePasswordVisibility() {
+      this.showPassword = !this.showPassword;
     },
     async preUpdateMethod(){
         let method = {...this.method};

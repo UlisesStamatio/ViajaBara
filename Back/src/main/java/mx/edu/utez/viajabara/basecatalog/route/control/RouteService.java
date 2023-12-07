@@ -98,7 +98,6 @@ public class RouteService {
         if (dto.getStopOvers() != null) {
             List<StopOver> stopOverList = new ArrayList<>();
             for (StopOverSaveDto stop : dto.getStopOvers()) {
-                System.out.println(stop.toString());
                 AddressSaveDto stopAdressDto = new AddressSaveDto( stop.getLatitude(),  stop.getLongitude(), stop.getDescription(), stop.getState());
                 Address stopAddress = addressService.save(stopAdressDto);
                 if(stopAddress == null){
@@ -128,9 +127,7 @@ public class RouteService {
             return new ResponseEntity<>(new Message("No se encontró la ruta", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
 
-
         Route route = optional.get();
-
         List<StopOver> firstStopOverList = route.getStopOvers();
         for (StopOver stop : firstStopOverList) {
             stop.setRoute(null);
@@ -164,17 +161,18 @@ public class RouteService {
         if(startAddress == null){
             return new ResponseEntity<>(new Message("No se registró la ruta, el estado es inexistente", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
         }
+
         AddressSaveDto endAddressDto = new AddressSaveDto( dto.getEndAddress().getLatitude(),  dto.getEndAddress().getLongitude(),  dto.getEndAddress().getDescription(), dto.getEndAddress().getState());
         Address endAddress = addressService.save(endAddressDto);
         if(endAddress == null){
             return new ResponseEntity<>(new Message("No se registró la ruta, el estado es inexistente", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
         }
 
-
         route.setStartAddress(startAddress);
         route.setEndAddress(endAddress);
         route.setMeters(dto.getMeters());
         route.setTime(dto.getTime());
+
 
         route = repository.saveAndFlush(route);
         if (route == null) {

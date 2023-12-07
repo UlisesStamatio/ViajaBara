@@ -32,7 +32,7 @@
         <ul class="mx-auto navbar-nav navbar-nav-hover">
           <li class="mx-2 nav-item dropdown dropdown-hover">
             <a
-              :href="'/inicio#home'"
+              :href="'/inicio#inicio'"
               class="cursor-pointer nav-link ps-2 d-flex justify-content-between align-items-center"
               :class="[darkModes]"
             >
@@ -41,7 +41,7 @@
           </li>
           <li class="mx-2 nav-item dropdown dropdown-hover">
             <a
-              :href="'/inicio#who'"
+              :href="'/inicio#quienes'"
               class="cursor-pointer nav-link ps-2 d-flex justify-content-between align-items-center"
               :class="[darkModes]"
             >
@@ -50,7 +50,7 @@
           </li>
           <li class="mx-2 nav-item dropdown dropdown-hover">
             <a
-              :href="'/inicio#route'"
+              :href="'/inicio#rutas'"
               class="cursor-pointer nav-link ps-2 d-flex justify-content-between align-items-center"
               :class="[darkModes]"
             >
@@ -59,7 +59,7 @@
           </li>
           <li class="mx-2 nav-item dropdown dropdown-hover">
             <a
-              :href="'/inicio#services'"
+              :href="'/inicio#servicios'"
               class="cursor-pointer nav-link ps-2 d-flex justify-content-between align-items-center"
               :class="[darkModes]"
             >
@@ -68,17 +68,17 @@
           </li>
           <li class="mx-2 nav-item dropdown dropdown-hover">
             <a
-              :href="'/inicio#quotes'"
+              :href="'/inicio#paqueteria'"
               class="cursor-pointer nav-link ps-2 d-flex justify-content-between align-items-center"
               :class="[darkModes]"
             >
-              Cotiza tu viaje
+              Paqueteria
             </a>
           </li>
 
             <li class="mx-2 nav-item dropdown dropdown-hover">
             <a
-              :href="'/inicio#contact'"
+              :href="'/inicio#contacto'"
               class="cursor-pointer nav-link ps-2 d-flex justify-content-between align-items-center"
               :class="[darkModes]"
             >

@@ -45,7 +45,7 @@
               <div class="my-auto mt-4 ms-auto mt-lg-0">
                 <div class="my-auto ms-auto">
                   <router-link
-                    :to="{ name: 'Registro Usuario' }"
+                    :to="{ name: 'Registrar Usuario' }"
                     class="mb-0 btn bg-gradient-danger btn-sm"
                     >+&nbsp; Nuevo Conductor</router-link
                   >
@@ -53,33 +53,28 @@
               </div>
             </div>
           </div>
-          <div class="px-0 pb-0 card-body">
+          <div class="px-0 pb-0 card-body mx-4 my-3">
             <div class="table-responsive">
-              
               <table id="drivers-list" class="table table-flush">
-
                 <thead class="thead-light">
                   <tr>
-                    
-                    <th>#</th>
-                    <th>Nombre</th>
-                    <th>Correo</th>
-                    <th>Usuario</th>
-                    <th>Rol</th>
-                    <th>Estatus</th>
-                    <th>Acciones</th>
+                    <th  style="font-size: 0.65em; font-weight: bold; text-align: start">#</th>
+                    <th style="font-size: 0.65em; font-weight: bold">Nombre</th>
+                    <th style="font-size: 0.65em; font-weight: bold">Correo</th>
+                    <th style="font-size: 0.65em; font-weight: bold">Usuario</th>
+                    <th style="font-size: 0.65em; font-weight: bold">Estatus</th>
+                    <th style="font-size: 0.65em; font-weight: bold;">Acciones</th>
 
                   </tr>
                 </thead>
-              <tbody v-if="users.length !== 0">
-                  <tr v-for="({email, person:{name, surname}, username, roles, status, id}, index) in users" :key="index">
+              <tbody >
+                  <tr v-for="({email, name, username, status, id}, index) in users" :key="index">
                     <td>
                       {{(index + 1)}}
                     </td>
-                    <td class="text-sm">{{name + ' ' + surname}}</td>
+                     <td class="text-sm">{{name}}</td>
                     <td class="text-sm">{{email}}</td>
                     <td class="text-sm">{{username}}</td>
-                    <td class="text-sm">{{roles.length > 0 ? roles[0].name.toLowerCase() : 'Sin rol'}}</td>
                     <td>
                       <span class="badge  badge-sm" :class="{'badge-success': status, 'badge-danger': !status}"
                         >{{status ? 'Activo' : 'Inactivo'}}</span
@@ -87,38 +82,34 @@
                     </td>
                     <td class="text-sm">
 
-                      <router-link
-                        :to="{ name: 'Modificar Usuario', params: {id: id} }"
-
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Editar usuario"
+                      <a
+                        title="Actualizar conductor"
+                        @click="updateDriver(id)"
+                        class="clickeable"
                       >
                         <i class="fa fa-pencil-square-o text-secondary"></i>
-                      </router-link>
+                      </a>
                       
-                        <router-link
-                        :to="{ name: 'Detalles Usuario', params: {id: id} }"
-                        class="mx-3"
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Detalles del usuario"
+                        <a
+                        title="Visualizar conductor"
+                        @click="detailDriver(id)"
+                        class="mx-3 clickeable"
                       >
                         <i class="fas fa-eye text-secondary"></i>
-                      </router-link>
+                      </a>
                       <a
-                        v-cloak
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Desactivar usuario"
+                        title="Desactivar conductor"
+                        @click="changeStatusDriver(id, username)"
+                        class="clickeable"
                         v-if="status"
-                        :id="'times-' + id"
                       >
                         <i class="fa fa-times-circle text-secondary" ></i>
                       </a>
                         <a
-                        v-cloak
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Activar usuario"
+                        title="Activar conductor"
+                        @click="changeStatusDriver(id, username)"
+                        class="clickeable"
                         v-if="!status"
-                        :id="'times-' + id"
                         >
                         <i class="fa fa-check-circle text-secondary" ></i>
                       </a>
@@ -126,8 +117,6 @@
                   </tr>
                  
                 </tbody>
-                 <tfoot>
-                </tfoot>
               </table>
             </div>
           </div>
@@ -142,61 +131,54 @@
               </div>
             </div>
           </div>
-          <div class="px-0 pb-0 card-body">
+          <div class="px-0 pb-0 card-body  mx-4 my-3">
             <div class="table-responsive">
               <table id="clients-list" class="table table-flush">
                 <thead class="thead-light">
                   <tr>
-                    <th>#</th>
-                    <th>Nombre</th>
-                    <th>Correo</th>
-                    <th>Usuario</th>
-                    <th>Rol</th>
-                    <th>Estatus</th>
-                    <th>Acciones</th>
+                    <th style="font-size: 0.65em; font-weight: bold; text-align: start">#</th>
+                    <th style="font-size: 0.65em; font-weight: bold;">Nombre</th>
+                    <th style="font-size: 0.65em; font-weight: bold;">Correo</th>
+                    <th style="font-size: 0.65em; font-weight: bold;">Usuario</th>
+                    <th style="font-size: 0.65em; font-weight: bold;">Estatus</th>
+                    <th style="font-size: 0.65em; font-weight: bold;">Acciones</th>
                   </tr>
                 </thead>
-              <tbody v-if="consumers.length !== 0">
+              <tbody>
                   
-                  <tr v-for="({email, person:{name, surname}, username, roles, status, id }, index) in consumers" :key="index">
+                  <tr v-for="({email, name, username, status, id }, index) in consumers" :key="index">
                     <td>
                       {{(index + 1)}}
                     </td>
-                    <td class="text-sm">{{name + ' ' + surname}}</td>
+                    <td class="text-sm">{{name}}</td>
                     <td class="text-sm">{{email}}</td>
                     <td class="text-sm">{{username}}</td>
-                    <td class="text-sm">{{roles.length > 0 ? roles[0].name.toLowerCase() : 'Sin rol'}}</td>
                     <td>
                       <span class="badge  badge-sm" :class="{'badge-success': status, 'badge-danger': !status}"
                         >{{status ? 'Activo' : 'Inactivo'}}</span
                       >
                     </td>
                     <td class="text-sm">
-                        <router-link
-                        :to="{ name: 'Detalles Usuario', params: {id: id} }"
-
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Detalles del usuario"
+                        <a
+                        title="Visualizar cliente"
+                        @click="detailDriver(id)"
+                        class="clickeable me-2"
                       >
-                      <i class="fas fa-eye text-secondary"></i>
-                       </router-link>
-                     <a
-                        v-cloak
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Desactivar usuario"
-                        class="mx-3"
+                        <i class="fas fa-eye text-secondary"></i>
+                      </a>
+                      <a
+                        title="Desactivar cliente"
+                        @click="changeStatusClient(id,username )"
+                        class="clickeable"
                         v-if="status"
-                        :id="'times-' + id"
                       >
                         <i class="fa fa-times-circle text-secondary" ></i>
                       </a>
                         <a
-                        v-cloak
-                        data-bs-toggle="tooltip"
-                        data-bs-original-title="Activar usuario"
-                        class="mx-3"
+                        title="Activar cliente"
+                        @click="changeStatusClient(id, username)"
+                        class="clickeable"
                         v-if="!status"
-                        :id="'times-' + id"
                         >
                         <i class="fa fa-check-circle text-secondary" ></i>
                       </a>
@@ -217,14 +199,14 @@
 
 <script>
 import setNavPills from "@/assets/js/nav-pills.js";
-import { DataTable } from "simple-datatables";
+import DataTable from 'datatables.net-dt';
 import setTooltip from "@/assets/js/tooltip.js";
 import listUsers from '../../use-cases/list.user.js'
 import listConsumers from '../../use-cases/list.consumers.js'
 import changeStatusUser from '../../use-cases/change.status.user'
 import Loader from '../../../../components/Loader.vue'
-
-
+import $ from 'jquery';
+import router from '../../../../router/index'
 
 export default {
   name: "ProductsList",
@@ -238,6 +220,8 @@ export default {
       active: true,
       value: true,
       isLoading: false,
+      storeDatatableDriver: null,
+      storeDatatableClient: null
     }
   },
 
@@ -245,7 +229,6 @@ export default {
     setNavPills();
     this.active = true;
     await this.datatableDriver();
-    this.eventListeners()
     setTooltip(this.$store.state.bootstrap);
 
 
@@ -259,7 +242,7 @@ export default {
       this.isLoading = false;
       if(!error){
           const {result} = data
-          this.users = result
+          this.users = result.map(user => ({...user, name: user.person.name === '' && (user.person.surname === ' ' ||  user.person.surname === '')? 'Sin nombre' : `${user.person.name} ${user.person.surname}`}))
 
       }else{
           this.$swal({
@@ -276,7 +259,7 @@ export default {
       this.isLoading = false;
       if(!error){
           const {result} = data
-          this.consumers = result
+          this.consumers = result.map(user => ({...user, name: user.person.name === '' && (user.person.surname === ' ' ||  user.person.surname === '')? 'Sin nombre' : `${user.person.name} ${user.person.surname}`}))
       }else{
           this.$swal({
             icon: "error", 
@@ -285,11 +268,17 @@ export default {
         });
       }
     },
-    async changeStatus(id){
+    async changeStatusDriver (id, name){
+      await this.changeStatus(id, 1,name)
+    },
+    async changeStatusClient(id, name){
+      await this.changeStatus(id, 2, name)
+    },
+    async changeStatus(id, type, name){
        this.$swal({
-            title: "¿Estás segura(a) de realizar la acción?",
-            text: "¡No podrás revertir esto.!",
+            title: `¿Estás segura(a) de cambiar el estatus de <strong>${name}</strong>?`,
             icon: "warning",
+            type: "custom-html",
             showCancelButton: true,
             cancelButtonText: "Cancelar",
             confirmButtonText: "Confirmar",
@@ -303,7 +292,7 @@ export default {
                 this.isLoading = true;
                 const response = {...await changeStatusUser(id)};
                 const {error, data, message} = response;
-                this.isLoading = false;
+                
                 if(!error){
                     const {result:{text}} =data
                     this.$swal({
@@ -312,8 +301,11 @@ export default {
                       text: text,
                       type: 'success-message',
                     });
-                    await this.datatableDriver()
+                    if(type === 1) await this.datatableDriver()
+                    await this.datatableClient()
+                  this.isLoading = false;
                 }else{
+                  this.isLoading = false;
                     this.$swal({
                       icon: "error", 
                       title: 'Ocurrio un error durante la actualización. Inténtalo de nuevo.',
@@ -327,59 +319,86 @@ export default {
     },
     async datatableDriver(){
           await this.listUsers();
-          if (document.getElementById("drivers-list")) {
-          new DataTable("#drivers-list", {
-              searchable: true,
-              fixedHeight: false,
-              perPage: 5,
-              labels: {
-                  placeholder: "Buscar...", // The search input placeholder
-                  perPage: "{select} Registros por página", // per-page dropdown label
-                  noRows: "Ningún dato encontrado", // Message shown when there are no search results
-                  info: "Mostrando {start} de {end} de {rows} registros",  //
-                  noResults: "No hay resultados que coincidan con su búsqueda"
-              },
-            });
+          if(this.storeDatatableDriver){
+            this.storeDatatableDriver.destroy()
           }
+          this.$nextTick(()=>{
+            this.storeDatatableDriver =  new DataTable('#drivers-list', {
+            searching: true,
+            ordering: true,
+            pageLength:5,
+            lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Mostrar todos"]],
+            language:{
+              infoEmpty: "",
+              url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json',
+              paginate: {
+                      next: ">"
+                  },
+              search: "",
+              searchPlaceholder: "Buscar...",
+              
+            },
+            pagingType: "simple_numbers",
+            drawCallback: ()=>{
+                  $('#drivers-list_previous').addClass('d-none');
+            },
+            columnDefs: [
+                  {
+                      targets: [0, 1, 2], // Índices de las columnas que deben ser visibles
+                      visible: true
+                  }
+            ]
+            });
+        })
     },
     async datatableClient(){
           await this.listConsumers();
-          if (document.getElementById("clients-list")) {
-          new DataTable("#clients-list", {
-              searchable: true,
-              fixedHeight: false,
-              perPage: 5,
-              labels: {
-                  placeholder: "Buscar...", // The search input placeholder
-                  perPage: "{select} Registros por página", // per-page dropdown label
-                  noRows: "Ningún dato encontrado", // Message shown when there are no search results
-                  info: "Mostrando {start} de {end} de {rows} registros",  //
-                  noResults: "No hay resultados que coincidan con su búsqueda"
-              },
-            });
+           if(this.storeDatatableClient){
+            this.storeDatatableClient.destroy()
           }
+          this.$nextTick(()=>{
+            this.storeDatatableClient =  new DataTable('#clients-list', {
+            searching: true,
+            ordering: true,
+            pageLength:5,
+            lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Mostrar todos"]],
+            language:{
+              infoEmpty: "",
+              url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json',
+              paginate: {
+                      next: ">"
+                  },
+              search: "",
+              searchPlaceholder: "Buscar...",
+              
+            },
+            pagingType: "simple_numbers",
+            drawCallback: ()=>{
+                  $('#clients-list_previous').addClass('d-none');
+            },
+            columnDefs: [
+                  {
+                      targets: [0, 1, 2], // Índices de las columnas que deben ser visibles
+                      visible: true
+                  }
+            ]
+            });
+        })
     },
     async changeTab(tab){
       if(tab === 1){
         await this.datatableDriver();
-        this.eventListeners()
         this.active=true;
       }else{
         await this.datatableClient();
-        this.eventListeners()
         this.active=false;
       } 
     },
-     eventListeners(){
-          let elementos = document.querySelectorAll('[id*="times"]');
-          const method = this.changeStatus;
-
-          elementos.forEach(function(elemento) {
-              elemento.addEventListener('click', async function() {
-                  const id = elemento.id.toString().split('-')[1]
-                  await method(id)
-              });
-          });
+    detailDriver(id){
+      router.push({name: 'Visualizar Usuario', params: {id: id}})
+    },
+    updateDriver(id){
+      router.push({name: 'Modificar Usuario', params: {id: id}})
     }
   },
   watch:{
@@ -390,3 +409,9 @@ export default {
 
 };
 </script>
+
+<style scoped>
+  .clickeable{
+    cursor: pointer;
+  }
+</style>

@@ -194,7 +194,7 @@ export default {
       if(!error){
           const {result} = data
           this.drivers = result.map((item) =>{
-            return {id: item.id, name: `${item.person.name} ${item.person.surname}` }
+            return {id: item.id, name: `${item.username}` }
           })
 
       }else{

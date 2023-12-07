@@ -1,48 +1,106 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 
 class ChangePhotoModal extends StatefulWidget {
-  const ChangePhotoModal({Key? key}) : super(key: key);
+  final String photo;
+  const ChangePhotoModal({Key? key, required this.photo}) : super(key: key);
 
   @override
   _ChangePhotoModal createState() => _ChangePhotoModal();
 }
 
 class _ChangePhotoModal extends State<ChangePhotoModal> {
-  final photo = 'assets/images/perfilGirl.avif';
+  late String photo;
+
+  @override
+  void initState() {
+    super.initState();
+    photo = widget.photo;
+  }
+
+  void _showPhoto() {
+    late OverlayEntry overlayEntry; // Declara la variable como late
+    overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        child: GestureDetector(
+          onTap: () {
+            overlayEntry.remove(); // Ahora puedes usar la variable directamente
+          },
+          child: Container(
+            color: Colors.black.withOpacity(0.7),
+            child: Center(
+              child: Hero(
+                tag: 'photo',
+                child: SvgPicture.string(
+                  widget.photo,
+                  height: MediaQuery.of(context).size.height * 0.8,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    Overlay.of(context)?.insert(overlayEntry);
+  }
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
-        mainAxisSize: MainAxisSize.min, 
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          CircleAvatar(
-            radius: 60, 
-            backgroundImage: AssetImage(photo),
+          Padding(
+            padding: const EdgeInsets.only(top: 20),
+            child: Hero(
+              tag: 'photo',
+              child: CircleAvatar(
+                radius: 60,
+                backgroundColor: Colors.transparent,
+                child: SvgPicture.string(
+                  widget.photo,
+                  height: 150,
+                ),
+              ),
+            ),
           ),
           const SizedBox(height: 30),
-          const Divider(color: ColorsApp.text, ),
+          const Divider(
+            color: ColorsApp.text,
+          ),
           ListTile(
-            title: const Text('Seleccionar foto desde la galería', style: TextStyle(color: ColorsApp.text), textAlign: TextAlign.center),
-            onTap: () {
-            },
+            title: const Text('Seleccionar foto desde la galería',
+                style: TextStyle(color: ColorsApp.text),
+                textAlign: TextAlign.center),
+            onTap: () {            },
           ),
           const Divider(color: ColorsApp.text),
           ListTile(
-            title: const Text('Ver foto', style: TextStyle(color: ColorsApp.text), textAlign: TextAlign.center),
-            onTap: () {
-            },
+            title: const Text('Ver foto',
+                style: TextStyle(color: ColorsApp.text),
+                textAlign: TextAlign.center),
+            onTap: _showPhoto,
           ),
           const Divider(color: ColorsApp.text),
           ListTile(
-            title: const Text('Cancelar', style: TextStyle(color: ColorsApp.text), textAlign: TextAlign.center),
+            title: const Text('Cancelar',
+                style: TextStyle(color: ColorsApp.text),
+                textAlign: TextAlign.center),
             onTap: () {
-              Navigator.of(context).pop(); 
+              Navigator.of(context).pop();
             },
           ),
         ],
       ),
     );
   }
+
 }
+
+

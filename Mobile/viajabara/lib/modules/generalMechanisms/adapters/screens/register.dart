@@ -237,7 +237,7 @@ class _RegisterState extends State<Register> {
                                 ),
                                 decoration: InputDecoration(
                                   labelText: 'Número de teléfono',
-                                  hintText: '777-111-22-33',
+                                  hintText: '7771112233',
                                   filled: true,
                                   fillColor: ColorsApp.whiteColor,
                                   hintStyle: const TextStyle(
@@ -454,10 +454,12 @@ class _RegisterState extends State<Register> {
                                     ? null
                                     : () async {
                                         UserData userData = UserData(
+                                            profile: _email.text,
                                             email: _email.text,
                                             username: _username.text,
-                                            password: _repeatPass.text,
-                                            sex: "M");
+                                            password: _repeatPass.text, 
+                                            cellphone: _phone.text);
+
                                         ResMsg isRegister = await AuthProvider()
                                             .register(userData);
 

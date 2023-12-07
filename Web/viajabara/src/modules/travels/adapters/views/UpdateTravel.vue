@@ -108,7 +108,7 @@
           <div class="row mt-4">
             <div class="col-12 text-end ">
                 <button type="button" class="btn bg-gradient-secondary mb-0 me-2 ms-auto js-btn-next" @click="cancelar()" title="Cancelar">Cancelar</button>
-                <button type="button" class="btn bg-gradient-dark mb-0 ms-auto js-btn-next" title="Guardar Viaje" @click="preUpdateTrip()">Guardar</button>
+                <button type="button" class="btn bg-gradient-dark mb-0 ms-auto js-btn-next" title="Guardar" @click="preUpdateTrip()">Guardar</button>
             </div>
           </div>
       </div>
@@ -188,7 +188,7 @@ export default {
       if(!error){
           const {result} = data
           this.searchedTrip = {...result, 
-            driver: {id: result.driver.id, name: `${result.driver.person.name} ${result.driver.person.surname}`},
+            driver: {id: result.driver.id, name: `${result.driver.username}`},
             bus: {id: result.bus.id, plaque: result.bus.plaque},
             route: {id: result.route.id, name: `${result.route.endAddress.description.split(',')[0]} - ${result.route.startAddress.description.split(',')[0]}`},
             startTime: new Date(result.startTime).toTimeString().split(' ')[0],
@@ -223,7 +223,7 @@ export default {
       if(!error){
           const {result} = data
           this.drivers = result.map((item) =>{
-            return {id: item.id, name: `${item.person.name} ${item.person.surname}` }
+            return {id: item.id, name: `${item.username}` }
           })
 
       }else{

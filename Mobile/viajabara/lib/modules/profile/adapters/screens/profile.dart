@@ -9,8 +9,8 @@ import 'package:viajabara/kernel/themes/stuff.dart';
 import 'package:viajabara/kernel/widgets/profile/change_information.dart';
 import 'package:viajabara/kernel/widgets/profile/change_password.dart';
 import 'package:viajabara/kernel/widgets/profile/change_photo.dart';
-import 'package:viajabara/modules/generalMechanisms/adapters/screens/login.dart';
 import 'package:viajabara/providers/auth_provider.dart';
+import 'package:viajabara/providers/session_manager.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -22,7 +22,6 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   final double topWidgetHeight = 10.0;
   final double avatarRadius = 20.0;
-  String userRole = '';
   String email = '';
   String name = '';
   String cellphone = '';
@@ -34,45 +33,55 @@ class _ProfileState extends State<Profile> {
 
   void initState() {
     super.initState();
-    _loadUserRole();
+    _loadUserInfo();
   }
 
-  Future<void> _loadUserRole() async {
+  Future<void> _loadUserInfo() async {
     if (mounted) {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       if (prefs.containsKey('data')) {
         Map<String, dynamic> jsonData = json.decode(prefs.getString('data')!);
         ResMsg responseMessage = ResMsg.fromJson(jsonData);
-        ResMsg dataUser = await AuthProvider().getInfoUser(responseMessage.email);
+        ResMsg dataUser =
+            await AuthProvider().getInfoUser(responseMessage.email);
         String? role = responseMessage.roles?.keyRole;
-
-        if (role == null) {
-          Navigator.pushReplacementNamed(context, '/login');
-        }
-
-        setState(() {
-          profile = dataUser.profile ?? '';
-          name = dataUser.name ?? 'Agrega tu nombre';
-          email = dataUser.email ?? 'Agrega tu correo';
-          cellphone = dataUser.cellphone ?? 'Agrega tu celular';
-          birthDate = dataUser.birthDate ?? 'Agrega tu fecha de nacimiento';
-          sex = dataUser.sex ?? 'Agrega tu sexo';
-          state = dataUser.state ?? 'Agrega tu estado';
-        });
-
-        if (role == "ADMIN") {
-          setState(() {
-            isAdmin = true;
-          });
-        }
+        _updateUserProfile(dataUser);
+        _setRole(role);
       }
     }
+  }
+
+  void _setRole(String? role) {
+    if (role == null) {
+      Navigator.pushReplacementNamed(context, '/login');
+    } else if (role == "ADMIN" || role == "COND") {
+      setState(() {
+        isAdmin = true;
+      });
+    }
+  }
+
+  void _updateUserProfile(ResMsg dataUser) {
+    setState(() {
+      profile = dataUser.profile!;
+      name = dataUser.name!;
+      email = dataUser.email!;
+      cellphone = dataUser.cellphone!;
+      birthDate = dataUser.birthDate!;
+      sex = dataUser.sex!;
+      state = dataUser.state!;
+    });
+  }
+
+  Future<void> cerrarSesion() async {
+    await SessionManager.logOut();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Container(
             alignment: Alignment.centerLeft,
             child: const Text(
@@ -111,9 +120,18 @@ class _ProfileState extends State<Profile> {
                     child: Column(
                       children: [
                         const SizedBox(height: 10),
-                        const CircleAvatar(
+                        CircleAvatar(
                           radius: 60,
-                          backgroundImage: AssetImage('assets/images/Girl.png'),
+                          backgroundColor: Colors.transparent,
+                          child: SizedBox(
+                            height: 120,
+                            width: 120,
+                            child: SvgPicture.string(
+                              profile,
+                              fit: BoxFit
+                                  .contain, // Asegúrate de que el SVG se ajusta dentro del contenedor
+                            ),
+                          ),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -217,7 +235,7 @@ class _ProfileState extends State<Profile> {
                         ),
                         GestureDetector(
                           onTap: () {
-                            _showModalChangeProfile(context);
+                            _showModalChangeProfile(context, profile);
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(
@@ -308,38 +326,31 @@ class _ProfileState extends State<Profile> {
                               ],
                             )),
                         Container(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 15),
-                            alignment: Alignment.centerLeft,
-                            child: Row(
-                              children: [
-                                if (sex == 'M') ...{
-                                  const Icon(
-                                    Icons.female,
-                                    color: ColorsApp.text,
-                                  ),
-                                },
-                                if (sex == 'H') ...{
-                                  const Icon(
-                                    Icons.male,
-                                    color: ColorsApp.text,
-                                  ),
-                                },
-                                if (sex == 'Agrega tu sexo') ...{
-                                  const Icon(
-                                    Icons.person,
-                                    color: ColorsApp.text,
-                                  ),
-                                },
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                  sex,
-                                  style: const TextStyle(color: ColorsApp.text),
-                                ),
-                              ],
-                            )),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 15),
+                          alignment: Alignment.centerLeft,
+                          child: Row(
+                            children: [
+                              // Usando operador ternario para determinar el icono
+                              Icon(
+                                sex == 'M'
+                                    ? Icons.female
+                                    : sex == 'H'
+                                        ? Icons.male
+                                        : Icons.person,
+                                color: ColorsApp.text,
+                              ),
+
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Text(
+                                sex,
+                                style: const TextStyle(color: ColorsApp.text),
+                              ),
+                            ],
+                          ),
+                        ),
                         Container(
                             padding: const EdgeInsets.symmetric(
                                 vertical: 10, horizontal: 15),
@@ -364,6 +375,7 @@ class _ProfileState extends State<Profile> {
                           width: 150,
                           child: ElevatedButton(
                             onPressed: () {
+                              cerrarSesion();
                               Navigator.pushReplacementNamed(context, '/login');
                             },
                             style: ButtonStyle(
@@ -414,7 +426,7 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  void _showModalChangeProfile(BuildContext context) {
+  void _showModalChangeProfile(BuildContext context, String photo) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -424,7 +436,7 @@ class _ProfileState extends State<Profile> {
         ),
       ),
       builder: (BuildContext context) {
-        return const ChangePhotoModal();
+        return ChangePhotoModal(photo: photo);
       },
     );
   }
@@ -443,4 +455,5 @@ class _ProfileState extends State<Profile> {
       },
     );
   }
+
 }

@@ -39,7 +39,7 @@
           <hr class="my-3 horizontal dark" />
           <div class="row">
             <div class="col-12 col-sm-6 col-lg-4 mb-3">
-              <label>Nombre(<span class="text-danger">*</span>)</label>
+              <label>Nombre</label>
               <input
                 id="name"
                 type="text"
@@ -54,7 +54,7 @@
               </div>
             </div>
             <div class="col-12 col-sm-6 col-lg-4  mb-3">
-              <label>Apellido Paterno(<span class="text-danger">*</span>)</label>
+              <label>Apellido Paterno</label>
               <input
                 id="lastname"
                 type="text"
@@ -85,7 +85,7 @@
             </div>
 
             <div class="col-12 col-sm-6 col-lg-4 mb-3">
-              <label>Sexo(<span class="text-danger">*</span>)</label>
+              <label>Sexo</label>
               <select
                 id="sex-select"
                 class="form-control"
@@ -103,7 +103,7 @@
             </div>
 
             <div class="col-12 col-sm-6 col-lg-4 mb-3">
-              <label>Fecha de nacimiento(<span class="text-danger">*</span>)</label>
+              <label>Fecha de nacimiento</label>
              <input
                 id="birthday"
                 type="date"
@@ -118,7 +118,7 @@
             </div>
 
             <div class="col-12 col-sm-6 col-lg-4 mb-3">
-              <label>Estado de residencia(<span class="text-danger">*</span>)</label>
+              <label>Estado de residencia</label>
               <select
                 id="state-select"
                 class="form-control"
@@ -150,53 +150,7 @@
               </div>
             </div>
 
-              <div class="col-12 col-sm-6 col-lg-4 mb-3">
-                <label>Usuario(<span class="text-danger">*</span>)</label>
-                <input
-                  id="username"
-                  type="text"
-                  placeholder="eg. MichaelJack"
-                  name="username"
-                  v-model.trim="user.username"
-                  class="form-control"
-                :class="{ 'is-invalid': errors.username, 'is-valid': errors.username === null }"
-                />
-                <div class="invalid-feedback" v-if="errors.username">
-                    {{ errors.username }}
-                </div>
-              </div>
 
-              <div class="col-12 col-sm-6 col-lg-4 mb-3">
-              <label>Correo(<span class="text-danger">*</span>)</label>
-              <input
-                id="email"
-                type="email"
-                placeholder="eg. example@address.com"
-                name="email"
-                v-model.trim="user.email"
-                class="form-control"
-               :class="{ 'is-invalid': errors.email, 'is-valid': errors.email === null }"
-              />
-              <div class="invalid-feedback" v-if="errors.email">
-                  {{ errors.email }}
-              </div>
-            </div>
-
-            <div class="col-12 col-sm-6 col-lg-4 mb-3">
-              <label>Confirmar correo(<span class="text-danger">*</span>)</label>
-              <input
-                id="confirmEmail"
-                type="email"
-                placeholder="eg. example@address.com"
-                name="confirmEmail"
-                v-model.trim="user.confirmEmail"
-                class="form-control"
-               :class="{ 'is-invalid': errors.confirmEmail, 'is-valid': errors.confirmEmail === null }"
-              />
-              <div class="invalid-feedback" v-if="errors.confirmEmail">
-                  {{ errors.confirmEmail }}
-              </div>
-            </div>
 
 
           </div>
@@ -215,7 +169,7 @@
                 <button 
                 type="submit"
                 class="mb-0 ms-auto btn js-btn-next bg-gradient-dark"
-                title="Crear usuario"
+                title="Guardar"
                 >
                   Guardar
                 </button>
@@ -228,7 +182,6 @@
 </template>
 
 <script>
-import Quill from "quill";
 import blobToBase64 from '../../../../kernel/translate/blobToBase64'
 import userValidator from '../../../../kernel/validators/user.validator'
 import router from '../../../../router/index'
@@ -295,12 +248,6 @@ export default {
   async mounted() {
      this.idUser = this.$route.params.id;
     await this.getUser( this.idUser);
-    if (document.getElementById("edit-description")) {
-      // eslint-disable-next-line no-unused-vars
-      var quill = new Quill("#edit-description", {
-        theme: "snow", // Specify theme in configuration
-      });
-    }
     await this.listStates();
   },
   methods: {

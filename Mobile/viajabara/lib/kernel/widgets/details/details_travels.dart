@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:viajabara/domain/entities/trip/driver_trip.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 
 class DetailsOfTravels extends StatefulWidget {
-  const DetailsOfTravels({Key? key}) : super(key: key);
+  final DriverTrip trip;
+
+  const DetailsOfTravels({Key? key, required this.trip}) : super(key: key);
 
   @override
   _DetailsOfTravels createState() => _DetailsOfTravels();
 }
 
 class _DetailsOfTravels extends State<DetailsOfTravels> {
-  final photo = 'assets/images/perfilGirl.avif';
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -24,61 +25,81 @@ class _DetailsOfTravels extends State<DetailsOfTravels> {
                 const Text(
                   'Detalles del viaje',
                   style: TextStyle(
-                    color: ColorsApp.primayColor,
+                    color: ColorsApp.text,
                     fontSize: 25.0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 30),
                 Container(
-                  padding: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
-                  child: const Column(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: const Divider(color: ColorsApp.text)),
+                const SizedBox(height: 20),
+                Container(
+                  padding:
+                      const EdgeInsets.only(bottom: 20, left: 20, right: 20),
+                  child: Column(
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.location_on, color: ColorsApp.text, size: 35,),
-                          SizedBox(width: 10),
+                          const Icon(
+                            Icons.location_on,
+                            color: ColorsApp.text,
+                            size: 35,
+                          ),
+                          const SizedBox(width: 10),
                           Text(
-                            'Origen: Acapulco',
-                            style: TextStyle(
+                            'Origen: ${widget.trip.trip?.route?.startAddress?.description}',
+                            style: const TextStyle(
                               color: ColorsApp.text,
                               fontSize: 16.0,
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 15),
+                      const SizedBox(height: 15),
                       Row(
                         children: [
-                          Icon(Icons.flight_land, color: ColorsApp.text, size: 35,),
-                          SizedBox(width: 10),
+                          const Icon(
+                            Icons.flight_land,
+                            color: ColorsApp.text,
+                            size: 35,
+                          ),
+                          const SizedBox(width: 10),
                           Text(
-                            'Destino: Guadalajara',
-                            style: TextStyle(
+                            'Destino: ${widget.trip.trip?.route?.endAddress?.description}',
+                            style: const TextStyle(
                               color: ColorsApp.text,
                               fontSize: 16.0,
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 15),
+                      const SizedBox(height: 15),
                       Row(
                         children: [
-                          Icon(Icons.date_range, color: ColorsApp.text, size: 35,),
-                          SizedBox(width: 10),
+                          const Icon(
+                            Icons.date_range,
+                            color: ColorsApp.text,
+                            size: 35,
+                          ),
+                          const SizedBox(width: 10),
                           Text(
-                            'Fecha: 03/08/2024',
-                            style: TextStyle(
+                            'Fecha: ${widget.trip.startDate}',
+                            style: const TextStyle(
                               color: ColorsApp.text,
                               fontSize: 16.0,
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 15),
-                      Row(
+                      const SizedBox(height: 15),
+                      const Row(
                         children: [
-                          Icon(Icons.timeline, color: ColorsApp.text, size: 35,),
+                          Icon(
+                            Icons.timeline,
+                            color: ColorsApp.text,
+                            size: 35,
+                          ),
                           SizedBox(width: 10),
                           Text(
                             'Escala(s): 1',
@@ -89,54 +110,71 @@ class _DetailsOfTravels extends State<DetailsOfTravels> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 15),
+                      const SizedBox(height: 15),
                       Row(
                         children: [
-                          Icon(Icons.access_time, color: ColorsApp.text, size: 35,),
-                          SizedBox(width: 10),
+                          const Icon(
+                            Icons.access_time,
+                            color: ColorsApp.text,
+                            size: 35,
+                          ),
+                          const SizedBox(width: 10),
                           Text(
-                            'Hora de salida: 07:00 a.m.',
-                            style: TextStyle(
+                            'Hora de salida: ${widget.trip.trip?.startTime}',
+                            style: const TextStyle(
                               color: ColorsApp.text,
                               fontSize: 16.0,
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 15),
+                      const SizedBox(height: 15),
                       Row(
                         children: [
-                          Icon(Icons.access_time, color: ColorsApp.text, size: 35,),
-                          SizedBox(width: 10),
-                          Text('Hora de llegada: 11:00 a.m.',
-                              style: TextStyle(
+                          const Icon(
+                            Icons.access_time,
+                            color: ColorsApp.text,
+                            size: 35,
+                          ),
+                          const SizedBox(width: 10),
+                          Text(
+                              'Hora de llegada: ${widget.trip.trip?.startTime} + ${widget.trip.trip?.route?.time}',
+                              style: const TextStyle(
                                 color: ColorsApp.text,
                                 fontSize: 16.0,
                               ))
                         ],
                       ),
-                      SizedBox(height: 15),
+                      const SizedBox(height: 15),
                       Row(
                         children: [
-                          Icon(Icons.timer, color: ColorsApp.text, size: 35,),
-                          SizedBox(width: 10),
+                          const Icon(
+                            Icons.timer,
+                            color: ColorsApp.text,
+                            size: 35,
+                          ),
+                          const SizedBox(width: 10),
                           Text(
-                            'Tiempo estimado: 4:20 hrs.',
-                            style: TextStyle(
+                            'Duración: ${widget.trip.trip?.route?.time}',
+                            style: const TextStyle(
                               color: ColorsApp.text,
                               fontSize: 16.0,
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 15),
+                      const SizedBox(height: 15),
                       Row(
                         children: [
-                          Icon(Icons.person, color: ColorsApp.text, size: 35,),
-                          SizedBox(width: 10),
+                          const Icon(
+                            Icons.person,
+                            color: ColorsApp.text,
+                            size: 35,
+                          ),
+                          const SizedBox(width: 10),
                           Text(
-                            'Número de pasajeros: 22',
-                            style: TextStyle(
+                            'Pasajeros: ${widget.trip.enableSeats}',
+                            style: const TextStyle(
                               color: ColorsApp.text,
                               fontSize: 16.0,
                             ),

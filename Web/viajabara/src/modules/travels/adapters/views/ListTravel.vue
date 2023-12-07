@@ -12,7 +12,7 @@
               <div class="my-auto mt-4 ms-auto mt-lg-0">
                 <div class="my-auto ms-auto">
                   <router-link
-                    :to="{ name: 'Registro Viaje' }"
+                    :to="{ name: 'Registrar Viaje' }"
                     class="mb-0 btn bg-gradient-danger btn-sm"
                     >+&nbsp; Nuevo Viaje</router-link
                   >
@@ -27,7 +27,7 @@
                   <tr>
                     <th style="font-size: 0.65em; font-weight: bold; text-align: start">#</th>
                     <th style="font-size: 0.65em; font-weight: bold">Conductor</th>
-                    <th style="font-size: 0.65em; font-weight: bold">Autobus</th>
+                    <th style="font-size: 0.65em; font-weight: bold">Unidad</th>
                     <th style="font-size: 0.65em; font-weight: bold">Ruta</th>
                     <th style="font-size: 0.65em; font-weight: bold">Hora</th>
                     <th style="font-size: 0.65em; font-weight: bold">Estatus</th>
@@ -39,8 +39,8 @@
                     <td class="text-center">
                       {{index + 1}}
                     </td> 
-                    <td class="text-sm">{{trip.driver.person.name + ' ' + trip.driver.person.surname}}</td>
-                    <td class="text-sm">{{trip.bus.serial}}</td>
+                    <td class="text-sm">{{trip.driver.username}}</td>
+                    <td class="text-sm">{{trip.bus.plaque}}</td>
                     <td class="text-sm">{{trip.route}}</td>
                     <td class="text-sm">{{trip.startTime}}</td>
                     <td>
@@ -50,18 +50,21 @@
                     </td>
                     <td class="text-sm">
                          <a
+                         title="Actualizar viaje"
                             class="clickeable"
                             @click="editTrip(trip.id)"
                           >
                             <i class="fa fa-pencil-square-o text-secondary"></i>
                           </a>
                           <a
+                          title="Visualizar viaje"
                             class="mx-2 clickeable"
                             @click="detailTrip(trip.id)"
                           >
                             <i class="fas fa-eye text-secondary"></i>
                           </a>
                           <a
+                          title="Desactivar viaje"
                           class="clickeable"
                           v-show="trip.status"
                           @click="changeStatusTrip({id: trip.id})"
@@ -69,6 +72,7 @@
                           <i class="fa fa-times-circle text-secondary" ></i>
                         </a>
                           <a
+                          title="Activar viaje"
                           class="clickeable"
                           v-show="!trip.status"
                           @click="changeStatusTrip({id: trip.id})"
@@ -200,7 +204,7 @@ export default {
       router.push({name: 'Modificar Viaje', params: {id: id}})
     },
      detailTrip(id){
-      router.push({name: 'Detalles Viaje', params: {id: id}})
+      router.push({name: 'Visualizar Viaje', params: {id: id}})
     },
   }
 };

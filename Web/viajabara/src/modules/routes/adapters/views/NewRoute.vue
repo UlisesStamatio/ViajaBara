@@ -52,7 +52,7 @@
                   </div>
                   <div class="my-auto mt-4 ms-auto mt-lg-0">
                     <div class="my-auto ms-auto">
-                      <button class="mb-0 btn bg-gradient-primary btn-sm" @click="openModalStopover()">+&nbsp; Nueva Parada</button>
+                      <button class="mb-0 btn bg-gradient-danger btn-sm" @click="openModalStopover()">+&nbsp; Nueva Parada</button>
                     </div>
                   </div>
                 </div>
@@ -62,8 +62,8 @@
                 <thead class="thead-light">
                     <tr>
                       <th style="font-size: 0.65em; font-weight: bold; text-align: start">#</th>
-                      <th style="font-size: 0.65em; font-weight: bold">DIRECCIÓN</th>
-                      <th style="font-size: 0.65em; font-weight: bold">ACCIONES</th>
+                      <th style="font-size: 0.65em; font-weight: bold">Dirección</th>
+                      <th style="font-size: 0.65em; font-weight: bold">Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="tablebody">
@@ -90,8 +90,9 @@
             </div>
             <div class="col-12 mt-3 text-end ">
               <button
-                class="btn bg-secondary-gradient me-2"
+                class="btn bg-gradient-secondary me-2"
                 title="Cancelar"
+                @click="cancelar()"
                 >Cancelar</button>
               <button
                 class="btn bg-gradient-dark"
@@ -119,7 +120,7 @@
     <MDBModalBody>
             <div class="container-d">
               <div class="row">
-                <div class="col-12 mb-3">
+                <div class="col-12 mb-3 autocomplete-container ">
                   <label>Dirección</label>
                     <div class="input-group flex-nowrap">
                       <input
@@ -134,10 +135,12 @@
                         <i class="fas fa-search"></i>
                       </span>
                   </div>
-                  <ul>
-                    <li v-for="place in placesSearchedStart" :key="place.id" @click="selectPlaceStart(place)">{{ place.description }}</li>
+
+                  <ul class="list-group autocomplete-list ">
+                    <li class="autocomplete-list-item" v-for="place in placesSearchedStart" :key="place.id" @click="selectPlaceStart(place)">{{ place.description }}</li>
                   </ul>
-                
+                  
+
                 </div>
                   <hr class="horizontal dark" />
                 <div class="col-12">
@@ -183,7 +186,7 @@
     <MDBModalBody>
             <div class="container-d">
               <div class="row">
-                <div class="col-12 mb-3">
+                <div class="col-12 mb-3 autocomplete-container ">
                   <label>Dirección</label>
                     <div class="input-group flex-nowrap">
                       <input
@@ -198,8 +201,8 @@
                         <i class="fas fa-search"></i>
                       </span>
                   </div>
-                  <ul>
-                    <li v-for="place in placesSearchedEnd" :key="place.id" @click="selectPlaceEnd(place)">{{ place.description }}</li>
+                  <ul class="list-group autocomplete-list" >
+                    <li class="autocomplete-list-item" v-for="place in placesSearchedEnd" :key="place.id" @click="selectPlaceEnd(place)">{{ place.description }}</li>
                   </ul>
                 
                 </div>
@@ -248,7 +251,7 @@
     <MDBModalBody>
             <div class="container-d">
               <div class="row">
-                <div class="col-12 mb-3">
+                <div class="col-12 mb-3 autocomplete-container ">
                   <label>Dirección</label>
                     <div class="input-group flex-nowrap">
                       <input
@@ -263,8 +266,8 @@
                         <i class="fas fa-search"></i>
                       </span>
                   </div>
-                  <ul>
-                    <li v-for="place in placesSearchedStopover" :key="place.id" @click="selectPlaceStopover(place)">{{ place.description }}</li>
+                  <ul class="list-group autocomplete-list">
+                    <li class="autocomplete-list-item" v-for="place in placesSearchedStopover" :key="place.id" @click="selectPlaceStopover(place)">{{ place.description }}</li>
                   </ul>
                 
                 </div>
@@ -313,7 +316,7 @@
     <MDBModalBody>
             <div class="container-d">
               <div class="row">
-                <div class="col-12 mb-3">
+                <div class="col-12 mb-3 autocomplete-container ">
                   <label>Dirección</label>
                     <div class="input-group flex-nowrap">
                       <input
@@ -328,13 +331,14 @@
                         <i class="fas fa-search"></i>
                       </span>
                   </div>
-                  <ul>
-                    <li v-for="place in placesSearchedStopoverUpdate" :key="place.id" @click="selectPlaceStopoverUpdate(place)">{{ place.description }}</li>
+                  <ul class="list-group autocomplete-list">
+                    <li class="autocomplete-list-item" v-for="place in placesSearchedStopoverUpdate" :key="place.id" @click="selectPlaceStopoverUpdate(place)">{{ place.description }}</li>
                   </ul>
                 
                 </div>
-                  <hr class="horizontal dark" />
+
                 <div class="col-12">
+                  <hr class="horizontal dark" />
                   <GMapMap
                     :center="centerStopoverUpdate"
                     ref="myMapRef"
@@ -457,6 +461,9 @@ export default {
    this.initializaDatatable();
   },
   methods: {
+    cancelar(){
+         router.push({name: 'Consultar Rutas'})
+    },
     initializaDatatable(){
       if(this.datatable){
         this.datatable.destroy()
@@ -1036,3 +1043,31 @@ export default {
 };
 </script>
 
+<style scoped>
+.autocomplete-container {
+            position: relative;
+        }
+
+.autocomplete-list {
+            position: absolute;
+            z-index: 1000;
+            width: 95%;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid white;
+            border-radius: 0 0 5px 5px;
+            margin-top: 5px;
+            background-color: #fff;
+        }
+
+        .autocomplete-list-item {
+            list-style: none;
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .autocomplete-list-item:hover {
+            background-color: #f8f9fa;
+        }
+</style>

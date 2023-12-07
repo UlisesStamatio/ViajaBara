@@ -69,7 +69,7 @@ const routes = [
   },
   {
     path: "/usuario/registrar",
-    name: "Registro Usuario",
+    name: "Registrar Usuario",
     component: NewUser,
     meta: { requiresAuth: true }
   },
@@ -80,8 +80,8 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: "/usuario/consultar/detalles/:id",
-    name: "Detalles Usuario",
+    path: "/usuario/consultar/visualizar/:id",
+    name: "Visualizar Usuario",
     component: DetailUser,
     meta: { requiresAuth: true }
   },
@@ -99,7 +99,7 @@ const routes = [
   },
   {
     path: "/metodo/registrar",
-    name: "Registro Método",
+    name: "Registrar Método",
     component: NewMethod,
     meta: { requiresAuth: true }
   },
@@ -110,32 +110,32 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: "/metodo/consultar/detalles/:id",
-    name: "Detalles Método",
+    path: "/metodo/consultar/visualizar/:id",
+    name: "Visualizar Método",
     component: DetailMethod,
     meta: { requiresAuth: true }
   },
   {
-    path: "/autobus/consultar",
-    name: "Consultar Autobuses",
+    path: "/unidad/consultar",
+    name: "Consultar Unidades",
     component: ListBus,
     meta: { requiresAuth: true }
   },
   {
-    path: "/autobus/registrar",
-    name: "Registro Autobus",
+    path: "/unidad/registrar",
+    name: "Registrar Unidad",
     component: NewBus,
     meta: { requiresAuth: true }
   },
   {
-    path: "/autobus/consultar/modificar/:id",
-    name: "Modificar Autobus",
+    path: "/unidad/consultar/modificar/:id",
+    name: "Modificar Unidad",
     component: UpdateBus,
     meta: { requiresAuth: true }
   },
   {
-    path: "/autobus/consultar/detalles/:id",
-    name: "Detalles Autobus",
+    path: "/unidad/consultar/visualizar/:id",
+    name: "Visualizar Unidad",
     component: DetailBus,
     meta: { requiresAuth: true }
   },
@@ -147,7 +147,7 @@ const routes = [
   },
   {
     path: "/ruta/registrar",
-    name: "Registro Ruta",
+    name: "Registrar Ruta",
     component: NewRoute,
     meta: { requiresAuth: true }
   },
@@ -158,8 +158,8 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: "/ruta/consultar/detalles/:id",
-    name: "Detalles Ruta",
+    path: "/ruta/consultar/visualizar/:id",
+    name: "Visualizar Ruta",
     component: DetailRoute,
     meta: { requiresAuth: true }
   },
@@ -171,7 +171,7 @@ const routes = [
   },
   {
     path: "/viaje/registrar",
-    name: "Registro Viaje",
+    name: "Registrar Viaje",
     component: NewTravel,
     meta: { requiresAuth: true }
   },
@@ -182,8 +182,8 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: "/viaje/consultar/detalles/:id",
-    name: "Detalles Viaje",
+    path: "/viaje/consultar/visualizar/:id",
+    name: "Visualizar Viaje",
     component: DetailTravel,
     meta: { requiresAuth: true }
   },
