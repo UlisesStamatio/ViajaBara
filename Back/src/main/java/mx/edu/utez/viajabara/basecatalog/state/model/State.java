@@ -30,7 +30,7 @@ public class State {
     private List<Person> people;
 
     @OneToMany(mappedBy = "state")
-    @JsonManagedReference
+    @JsonIgnore
     private List<Address> addresses;
 
     public State() {

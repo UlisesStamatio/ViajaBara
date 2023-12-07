@@ -169,7 +169,7 @@
                 <button 
                 type="submit"
                 class="mb-0 ms-auto btn js-btn-next bg-gradient-dark"
-                title="Crear usuario"
+                title="Guardar"
                 >
                   Guardar
                 </button>
