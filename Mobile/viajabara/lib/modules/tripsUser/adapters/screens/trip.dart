@@ -1170,10 +1170,12 @@ class _TripState extends State<Trip> {
                                                           avatar: Icon(
                                                               CupertinoIcons
                                                                   .bus,
-                                                              color: trips[index]
-                                                                          .filterType!
-                                                                          .value ==
-                                                                      "Parada"
+                                                              color: trips[
+                                                                          index]
+                                                                      .filterType!
+                                                                      .value
+                                                                      .contains(
+                                                                          "Parada")
                                                                   ? ColorsApp
                                                                       .secondaryColor
                                                                   : ColorsApp
@@ -1183,10 +1185,12 @@ class _TripState extends State<Trip> {
                                                                 .filterType!
                                                                 .value,
                                                             style: TextStyle(
-                                                                color: trips[index]
-                                                                            .filterType!
-                                                                            .value ==
-                                                                        "Parada"
+                                                                color: trips[
+                                                                            index]
+                                                                        .filterType!
+                                                                        .value
+                                                                        .contains(
+                                                                            "Parada")
                                                                     ? ColorsApp
                                                                         .secondaryColor
                                                                     : ColorsApp
@@ -1472,7 +1476,8 @@ String calculateTime(DateTime startTime, DateTime endTime) {
 
 String calculateRoutePrice(
     TripDto trip, VisualConfigDto visualConfigDto, BookTrip bookTrip) {
-  if (trip.filterType?.value == "Parada" && trip.route?.stopOvers != null) {
+  if (trip.filterType!.value.contains("Parada") &&
+      trip.route?.stopOvers != null) {
     // Si es una parada y tiene stopovers, calcula el precio considerando los stopovers
     double routeMeters = trip.route!.meters ?? 0.0;
 

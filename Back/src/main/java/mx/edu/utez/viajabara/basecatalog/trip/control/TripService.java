@@ -105,6 +105,8 @@ public class TripService {
         return new ResponseEntity<>(new Message(statesProcessed, "Listado de viajes activos", TypesResponse.SUCCESS), HttpStatus.OK);
 
         }
+        System.out.println("Listado de viajes activos");
+        System.out.println(filteredTrips);
         return new ResponseEntity<>(new Message(filteredTrips, "Listado de viajes activos", TypesResponse.SUCCESS), HttpStatus.OK);
     }
 
@@ -123,6 +125,7 @@ public class TripService {
                     trip.getDriver().setRoles("[]");
                     trip.getDriver().setPerson(null);
                     trip.setBus(new Bus());
+
                     boolean isStartAddressMatch = trip.getRoute().getStartAddress().getId() == bookTripDto.getOriginId()
                             && trip.getRoute().getEndAddress().getId() == bookTripDto.getDestinyId();
 
@@ -131,13 +134,23 @@ public class TripService {
                         return true;
                     }
 
-                    boolean isStopOverMatch = trip.getRoute().getStopOvers() != null
+                    boolean isStopOverStartMatch = trip.getRoute().getStopOvers() != null
                             && trip.getRoute().getStopOvers().stream()
                             .anyMatch(stopOver -> stopOver.getAddressDto().getId() == bookTripDto.getOriginId()
                                     && trip.getRoute().getEndAddress().getId() == bookTripDto.getDestinyId());
 
-                    if (isStopOverMatch) {
-                        trip.setFilterType(FilterType.STOP_OVER);
+                    if (isStopOverStartMatch) {
+                        trip.setFilterType(FilterType.STOP_OVER_START);
+                        return true;
+                    }
+
+                    boolean isStopOverEndMatch = trip.getRoute().getStopOvers() != null
+                            && trip.getRoute().getStopOvers().stream()
+                            .anyMatch(stopOver -> stopOver.getAddressDto().getId() == bookTripDto.getDestinyId()
+                                    && trip.getRoute().getStartAddress().getId() == bookTripDto.getOriginId());
+
+                    if (isStopOverEndMatch) {
+                        trip.setFilterType(FilterType.STOP_OVER_END);
                         return true;
                     }
 

@@ -1,7 +1,8 @@
 enum FilterType {
   START_ADDRESS,
   END_ADDRESS,
-  STOP_OVER,
+  STOP_OVER_START,
+  STOP_OVER_END,
 }
 
 // Métodos de extensión para convertir entre String y FilterType
@@ -12,8 +13,10 @@ extension FilterTypeExtension on FilterType {
         return 'Viaje completo';
       case FilterType.END_ADDRESS:
         return 'Viaje completo';
-      case FilterType.STOP_OVER:
-        return 'Parada';
+      case FilterType.STOP_OVER_START:
+        return 'Inicia en Parada';
+      case FilterType.STOP_OVER_END:
+        return 'Termina en Parada';
     }
   }
 
@@ -23,8 +26,10 @@ extension FilterTypeExtension on FilterType {
         return FilterType.START_ADDRESS;
       case 'END_ADDRESS' || 'Viaje completo':
         return FilterType.END_ADDRESS;
-      case 'STOP_OVER' || 'Parada':
-        return FilterType.STOP_OVER;
+      case 'STOP_OVER_START' || 'Inicia en Parada':
+        return FilterType.STOP_OVER_START;
+      case 'STOP_OVER_END' || 'Termina en Parada':
+        return FilterType.STOP_OVER_END;
       default:
         throw ArgumentError('Valor no válido para FilterType: $value');
     }
