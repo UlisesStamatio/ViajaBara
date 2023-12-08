@@ -72,7 +72,7 @@ class _RegisterState extends State<Register> {
                                   const Align(
                                     alignment: Alignment.center,
                                     child: Text(
-                                      'Únete y viaja de volada',
+                                      'Únete y viaja con nosotros',
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,

@@ -231,7 +231,7 @@ class _HistoryState extends State<History> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const HistoryStars()));
+                            builder: (context) => HistoryStars(trip: trip,)));
                   },
                   style: ButtonStyle(
                     backgroundColor:
