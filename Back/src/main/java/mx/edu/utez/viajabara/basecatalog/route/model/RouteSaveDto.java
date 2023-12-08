@@ -15,10 +15,8 @@ public class RouteSaveDto {
 
     @NotNull(groups = {Modify.class,ChangeStatus.class})
     private Long id;
-    @NotNull(groups = {Register.class,Modify.class})
-    private AddressSaveDto startAddress;
-    @NotNull(groups = {Register.class,Modify.class})
-    private AddressSaveDto endAddress;
+    @NotBlank(groups = {Register.class,Modify.class})
+    private String name;
     @Min(value = 0, groups = {Register.class,Modify.class})
     private double meters;
     @Min(value = 0, groups = {Register.class,Modify.class})
@@ -36,20 +34,12 @@ public class RouteSaveDto {
         this.id = id;
     }
 
-    public AddressSaveDto getStartAddress() {
-        return startAddress;
+    public String getName() {
+        return name;
     }
 
-    public void setStartAddress(AddressSaveDto startAddress) {
-        this.startAddress = startAddress;
-    }
-
-    public AddressSaveDto getEndAddress() {
-        return endAddress;
-    }
-
-    public void setEndAddress(AddressSaveDto endStart) {
-        this.endAddress = endStart;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public double getMeters() {

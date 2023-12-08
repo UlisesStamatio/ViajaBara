@@ -1,32 +1,22 @@
 
+const REGEX_INJECTION_HTML = new RegExp('<[^>]*>')
+
+const MAX_NAME = 15;
 
 const routeValidator = {
-
-   isSameAddress(latStart, latEnd, lngStart, lngEnd){
-     if(latStart === latEnd && lngEnd === lngStart) return 'Ingresa diferentes direcciones.'
-     return null
-   },
    isSameStopOver(stopovers, lat, lng){
     if(stopovers.filter(stopover => stopover.lat === lat && stopover.lng === lng).length > 0) return "La parada ya se ha añadido." ;
     return null;
    },
-   validateAddress(address){
-    if(!address.lat || !address.lng) return "Ingresa una dirección"
+   validateName(name){
+    if(!name) return "Campo obligatorio."
+    if(name.length > MAX_NAME) return "El nombre debe contener máximo 15 caracteres."
+    if(REGEX_INJECTION_HTML.test(name)) return "El nombre es inválido."
     return null;
    },
-   validateAddressUpdate(address){
-    if(!address.latitude || !address.longitude) return "Ingresa una dirección"
-    return null;
-   },
-   isSameAddressesRegardingEndAndStart(stopovers, addressStart, addressEnd){
-
-    if(stopovers.filter((stopover) => addressStart.lat === stopover.lat  && addressStart.lng === stopover.lng).length > 0) return "Hay alguna dirección de parada igual a la dirección de partida"
-    if(stopovers.filter((stopover) => addressEnd.lat === stopover.lat  && addressEnd.lng === stopover.lng).length > 0) return "Hay alguna dirección de parada igual a la dirección de llegada"
-    return null;
-   },
-   isSameAddressesRegardingEndAndStartUpdate(stopovers, addressStart, addressEnd){
-    if(stopovers.filter((stopover) => addressStart.latitude === stopover.address.latitude  && addressStart.longitude === stopover.address.longitude).length > 0) return "Hay alguna dirección de parada igual a la dirección de partida"
-    if(stopovers.filter((stopover) => addressEnd.latitude === stopover.address.latitude  && addressEnd.longitude === stopover.address.longitude).length > 0) return "Hay alguna dirección de parada igual a la dirección de llegada"
+    validateStopovers(stopovers){
+    if(!stopovers) return "Ingresa al menos dos paradas."
+    if(stopovers.length < 2) return "Ingresa al menos dos paradas."
     return null;
    }
 

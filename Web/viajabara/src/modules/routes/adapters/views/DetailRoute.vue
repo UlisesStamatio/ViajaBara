@@ -94,10 +94,15 @@ export default {
       
       //let map = new window.google.maps.Map(document.getElementById('map'), {zoom: this.zoom, center: this.route.startAddress.description});
       this.$refs.myMapRef.$mapPromise.then(async (mapObject) => {
-        const waypoints = this.route.stopOvers.map((stopover) =>{
-        return {location: stopover.address.description, stopover: true }
-        })
-        const response = await mapFunctions.getRouteWithPaths(waypoints, this.route.startAddress.description, this.route.endAddress.description);
+
+          const waypoints = this.route.stopOvers.map((stopover, array) => {
+            if (stopover.sequence !== 1 && stopover.sequence !== array.length) {
+              return {location: stopover.address.description, stopover: true };
+            }
+            return undefined;
+          }).filter(element => element !== undefined);
+
+        const response = await mapFunctions.getRouteWithPaths(waypoints, this.route.stopOvers[0].address.description, this.route.stopOvers[(this.route.stopOvers.length -1)].address.description);
         let directionsRenderer = new window.google.maps.DirectionsRenderer();
         directionsRenderer.setMap(mapObject);
         directionsRenderer.setDirections(response);
