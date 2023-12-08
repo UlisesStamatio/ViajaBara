@@ -109,7 +109,7 @@
                 type="number"
                 placeholder="eg. 76568788787"
                 name="cellphone"
-                v-model.trim="user.cellphone"
+                :value="user.cellphone"
                 class="form-control"
                 disabled
               />
@@ -122,7 +122,7 @@
                   type="text"
                   placeholder="eg. MichaelJack"
                   name="username"
-                  v-model.trim="user.username"
+                  :value="user.username"
                   class="form-control"
                   disabled
                 />
@@ -135,24 +135,12 @@
                 type="email"
                 placeholder="eg. example@address.com"
                 name="email"
-                v-model.trim="user.email"
+                :value="user.email"
                 class="form-control"
                 disabled
               />
             </div>
 
-            <div class="col-12 col-sm-6 col-lg-4 mb-3">
-              <label>Confirmar correo:</label>
-              <input
-                id="confirmEmail"
-                type="email"
-                placeholder="eg. example@address.com"
-                name="confirmEmail"
-                v-model.trim="user.confirmEmail"
-                class="form-control"
-                disabled
-              />
-            </div>
 
 
           </div>
