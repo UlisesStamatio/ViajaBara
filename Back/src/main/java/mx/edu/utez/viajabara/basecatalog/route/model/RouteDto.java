@@ -17,9 +17,7 @@ public class RouteDto {
     @NotNull(groups = {Modify.class,ChangeStatus.class})
     private Long id;
     @NotBlank(groups = {Register.class,Modify.class})
-    private AddressDto startAddress;
-    @NotBlank(groups = {Register.class,Modify.class})
-    private AddressDto endAddress;
+    private String name;
     @Min(value = 0, groups = {Register.class,Modify.class})
     private double meters;
     @Min(value = 0, groups = {Register.class,Modify.class})
@@ -37,20 +35,12 @@ public class RouteDto {
         this.id = id;
     }
 
-    public AddressDto getStartAddress() {
-        return startAddress;
+    public String getName() {
+        return name;
     }
 
-    public void setStartAddress(AddressDto startAddress) {
-        this.startAddress = startAddress;
-    }
-
-    public AddressDto getEndAddress() {
-        return endAddress;
-    }
-
-    public void setEndAddress(AddressDto endStart) {
-        this.endAddress = endStart;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public double getMeters() {
@@ -84,8 +74,7 @@ public class RouteDto {
     public static RouteDto from(Route route, Date initialTimeRoute) {
         RouteDto routeDto = new RouteDto();
         routeDto.setId(route.getId());
-        routeDto.setStartAddress(AddressDto.from(route.getStartAddress()));
-        routeDto.setEndAddress(AddressDto.from(route.getEndAddress()));
+        routeDto.setName(routeDto.getName());
         routeDto.setMeters(route.getMeters());
         routeDto.setTime(route.getTime());
         routeDto.setStopOvers(StopOverDto.fromList(route.getStopOvers(), initialTimeRoute));

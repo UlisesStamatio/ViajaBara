@@ -41,14 +41,6 @@ public class Address {
 
     @OneToMany(mappedBy = "startAddress")
     @JsonIgnore
-    private List<Route> routesStart;
-
-    @OneToMany(mappedBy = "endAddress")
-    @JsonIgnore
-    private List<Route> routesEnd;
-
-    @OneToMany(mappedBy = "startAddress")
-    @JsonIgnore
     private List<SeatingSales> seatingSalesStart;
 
     @OneToMany(mappedBy = "endAddress")

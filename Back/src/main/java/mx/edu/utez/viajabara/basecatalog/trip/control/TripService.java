@@ -71,7 +71,7 @@ public class TripService {
         }
         return new ResponseEntity<>(new Message(response, "Listado de viajes", TypesResponse.SUCCESS), HttpStatus.OK);
     }
-    @Transactional(readOnly = true)
+  /*  @Transactional(readOnly = true)
     public ResponseEntity<Object> getStatesForFiltersByDate(String date, boolean onlyStatesAndAddresses) throws ParseException {
         List<Trip> trips = repository.findAllByStatusIsTrue();
         System.out.println("dto " + date);
@@ -101,9 +101,9 @@ public class TripService {
 
         }
         return new ResponseEntity<>(new Message(filteredTrips, "Listado de viajes activos", TypesResponse.SUCCESS), HttpStatus.OK);
-    }
+    }*/
 
-    @Transactional(readOnly = true)
+  /*  @Transactional(readOnly = true)
     public ResponseEntity<Object> findByFiltersClient(BookTripDto bookTripDto) throws ParseException {
         Message msg =  (Message) getStatesForFiltersByDate(bookTripDto.getDate(), false).getBody() ;
         List<Trip> trips = (List<Trip>) msg.getResult();
@@ -141,7 +141,7 @@ public class TripService {
                 .collect(Collectors.toList());
         System.out.println(filteredTrips);
         return new ResponseEntity<>(new Message(filteredTrips, "Rutas encontradas", TypesResponse.SUCCESS), HttpStatus.OK);
-    }
+    }*/
     private Date parseDate(String timeString) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
@@ -203,13 +203,13 @@ public class TripService {
                 .collect(Collectors.toList());
     }
 
-    private List<State> getStatesWithoutStopOvers(List<Trip> trips) {
+   /* private List<State> getStatesWithoutStopOvers(List<Trip> trips) {
         return trips.stream()
                 .filter(trip -> trip.getRoute().getStopOvers().isEmpty())
                 .map(trip -> trip.getRoute().getStartAddress().getState())
                 .distinct()
                 .collect(Collectors.toList());
-    }
+    }*/
     private List<State> combineUniqueLists(List<State> list1, List<State> list2) {
         return Stream.concat(list1.stream(), list2.stream())
                 .distinct()

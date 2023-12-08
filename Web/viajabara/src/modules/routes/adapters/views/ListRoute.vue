@@ -27,8 +27,7 @@
                 <thead class="thead-light">
                   <tr>
                     <th style="font-size: 0.65em; font-weight: bold; text-align: start">#</th>
-                    <th style="font-size: 0.65em; font-weight: bold">Punto de inicio</th>
-                    <th style="font-size: 0.65em; font-weight: bold">Destino</th>
+                    <th style="font-size: 0.65em; font-weight: bold">Nombre</th>
                     <th style="font-size: 0.65em; font-weight: bold">No. de paradas</th>
                     <th style="font-size: 0.65em; font-weight: bold">Estatus</th>
                     <th style="font-size: 0.65em; font-weight: bold">Acciones</th>
@@ -37,8 +36,7 @@
                 <tbody>
                   <tr  v-for="(route, index) in routes" :key="index">
                       <td class="text-center">{{index + 1}}</td>
-                      <td>{{route.startAddress.description}}</td> 
-                      <td>{{route.endAddress.description}}</td> 
+                      <td>{{route.name}}</td> 
                       <td class="text-center">{{route.stopOvers.length}}</td> 
                       <td class="text-center">
                         <span class="badge badge-sm" :class="{'badge-success': route.status, 'badge-danger': !route.status}"
@@ -64,7 +62,7 @@
                           class="clickeable"
                           title="Desactivar ruta"
                           v-show="route.status"
-                          @click="changeStatusRoute({id: route.id})"
+                          @click="changeStatusRoute({id: route.id}, route.name)"
                         >
                           <i class="fa fa-times-circle text-secondary" ></i>
                         </a>
@@ -72,7 +70,7 @@
                           class="clickeable"
                           title="Activar ruta"
                           v-show="!route.status"
-                          @click="changeStatusRoute({id: route.id})"
+                          @click="changeStatusRoute({id: route.id}, route.name)"
                           >
                           <i class="fa fa-check-circle text-secondary" ></i>
                         </a>
@@ -113,38 +111,6 @@ export default {
   },
   mounted() {
     this.initializaDatatable()
-    // if (document.getElementById("products-list")) {
-    //   const dataTableSearch = new DataTable("#products-list", {
-    //     searchable: true,
-    //     fixedHeight: false,
-    //     perPage: 7,
-    //     labels: {
-    //         placeholder: "Buscar...", // The search input placeholder
-    //         perPage: "{select} Registros por página", // per-page dropdown label
-    //         noRows: "Ningún dato encontrado", // Message shown when there are no search results
-    //         info: "Mostrando {start} de {end} de {rows} registros",  //
-    //         noResults: "No hay resultados que coincidan con su búsqueda"
-    //     },
-        
-    //   });
-
-    //   document.querySelectorAll(".export").forEach(function (el) {
-    //     el.addEventListener("click", function () {
-    //       var type = el.dataset.type;
-
-    //       var data = {
-    //         type: type,
-    //         filename: "soft-ui-" + type,
-    //       };
-
-    //       if (type === "csv") {
-    //         data.columnDelimiter = "|";
-    //       }
-
-    //       dataTableSearch.export(data);
-    //     });
-    //   });
-    // }
     setTooltip(this.$store.state.bootstrap);
   },
   methods:{
@@ -152,11 +118,7 @@ export default {
       try{
         this.isLoading = true;
          const {data:{result} } = await listRoutes();
-         this.routes = result.map((route) => {
-            route.startAddress.description = `${route.startAddress.description.substring(0, 30)}...`;
-            route.endAddress.description = `${route.endAddress.description.substring(0, 30)}...`;
-            return route;
-         });
+         this.routes = result
          
          if(this.datatable){
           this.datatable.destroy()
@@ -201,10 +163,11 @@ export default {
     detailRoute(id){
       router.push({name: 'Visualizar Ruta', params: {id: id}})
     },
-    async changeStatusRoute(payload){
+    async changeStatusRoute(payload, name){
       this.$swal({
-            title: "¿Estás segura(a) de cambiar el estatus?",
+            title: `¿Estás segura(a) de cambiar el estatus de <strong>${name}</strong>?`,
             icon: "warning",
+            type: "custom-html",
             showCancelButton: true,
             cancelButtonText: "Cancelar",
             confirmButtonText: "Confirmar",
