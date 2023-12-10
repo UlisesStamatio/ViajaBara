@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:viajabara/domain/entities/trip/driver_trip.dart';
 import 'package:viajabara/kernel/blocs/blocs.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
+import 'package:viajabara/modules/passangers/adapters/screens/passengers.dart';
 import 'package:viajabara/providers/utils/utils.dart';
 
 class MapScreen extends StatefulWidget {
@@ -26,13 +27,17 @@ class _MapScreenState extends State<MapScreen> {
     locationBloc = BlocProvider.of<LocationBloc>(context);
     locationBloc.startFollowingUser();
     LatLng startPoint = LatLng(
-      double.parse(widget.trip.trip!.route!.startAddress?.latitude ?? '0'),
-      double.parse(widget.trip.trip!.route!.startAddress?.longitude ?? '0'),
+      double.parse(
+          widget.trip.trip!.route!.stopOvers![0].address?.latitude ?? '0'),
+      double.parse(
+          widget.trip.trip!.route!.stopOvers![0].address?.longitude ?? '0'),
     );
     print('startPoint $startPoint');
     LatLng endPoint = LatLng(
-      double.parse(widget.trip.trip!.route!.endAddress?.latitude ?? '0'),
-      double.parse(widget.trip.trip!.route!.endAddress?.longitude ?? '0'),
+      double.parse(
+          widget.trip.trip!.route!.stopOvers!.last.address?.latitude ?? '0'),
+      double.parse(
+          widget.trip.trip!.route!.stopOvers!.last.address?.longitude ?? '0'),
     );
     print('endPoint $endPoint');
 
@@ -51,7 +56,7 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   LatLngBounds boundsFromLatLngList(List<LatLng> list,
-      {double padding = 0.14}) {
+      {double padding = 0.20}) {
     assert(list.isNotEmpty);
     double x0, x1, y0, y1;
     x0 = list.first.longitude - padding;
@@ -115,9 +120,8 @@ class _MapScreenState extends State<MapScreen> {
           slivers: <Widget>[
             SliverAppBar(
               backgroundColor: ColorsApp.whiteColor,
-              pinned: true, // Mantener el encabezado "sticky"
-              floating:
-                  false, // No permitir que aparezca de nuevo cuando se desplaza hacia arriba
+              pinned: true,
+              floating: false,
               flexibleSpace: Container(
                 padding: const EdgeInsets.all(10),
                 child: Row(
@@ -128,17 +132,22 @@ class _MapScreenState extends State<MapScreen> {
                       children: [
                         Text(
                           'Salida: ${widget.trip.trip?.startTime}',
-                          style: const TextStyle(fontSize: 15.0, color: ColorsApp.text),
+                          style: const TextStyle(
+                              fontSize: 15.0, color: ColorsApp.text),
                         ),
                         Text(
                           'Llegada: ${Utils().sumarTiempo(widget.trip.trip!.startTime!, widget.trip.trip!.route!.time!)}',
-                          style: const TextStyle(fontSize: 15.0, color: ColorsApp.text),
+                          style: const TextStyle(
+                              fontSize: 15.0, color: ColorsApp.text),
                         )
                       ],
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, '/passengers');
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (context) => Passengers(trip: widget.trip)),
+                        );
                       },
                       style: ButtonStyle(
                           backgroundColor:

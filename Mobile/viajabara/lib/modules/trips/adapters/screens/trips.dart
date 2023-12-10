@@ -91,6 +91,16 @@ class _TripsState extends State<Trips> {
   }
 
   Widget _buildTripCard(DriverTrip trip) {
+    int lastPos = trip.trip!.route!.stopOvers!.length - 1;
+    String destino = trip.trip!.route!.stopOvers![lastPos].address!.state!;
+    int numParadas = trip.trip!.route!.stopOvers!.length - 2;
+    String textoParadas;
+    if (numParadas <= 0) {
+      textoParadas = 'Directo - Local';
+    } else {
+      textoParadas = '$numParadas parada${numParadas > 1 ? 's' : ''}';
+    }
+
     return Card(
       elevation: 5,
       margin: const EdgeInsets.all(10),
@@ -162,15 +172,15 @@ class _TripsState extends State<Trips> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text(
-                        'Destino: ${trip.trip?.route?.endAddress?.description}',
+                        'Destino: $destino',
                         style: const TextStyle(
                           fontSize: 15.0,
                           color: ColorsApp.text,
                         ),
                       ),
-                      const Text(
-                        'Directo - Local',
-                        style: TextStyle(
+                      Text(
+                        textoParadas,
+                        style: const TextStyle(
                           fontSize: 15.0,
                           color: ColorsApp.text,
                         ),

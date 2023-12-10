@@ -69,6 +69,16 @@ class _TravelingState extends State<Traveling> {
       topLeft: Radius.circular(24.0),
       topRight: Radius.circular(24.0),
     );
+    int lastPos = widget.trip.trip!.route!.stopOvers!.length - 1;
+    String? destino =
+        widget.trip.trip?.route!.stopOvers![lastPos].address!.state!;
+    int numParadas = widget.trip.trip!.route!.stopOvers!.length - 2;
+    String textoParadas;
+    if (numParadas <= 0) {
+      textoParadas = 'Directo - Local';
+    } else {
+      textoParadas = '$numParadas parada${numParadas > 1 ? 's' : ''}';
+    }
 
     return SlidingUpPanel(
       panel: Padding(
@@ -81,7 +91,7 @@ class _TravelingState extends State<Traveling> {
                 const Icon(Icons.location_on, color: Colors.black, size: 40),
                 const SizedBox(width: 8),
                 Text(
-                    'Origen: ${widget.trip.trip?.route?.startAddress?.description}',
+                    'Origen: ${widget.trip.trip?.route?.stopOvers?[0].address!.state!}',
                     style: const TextStyle(fontSize: 20)),
               ],
             ),
@@ -90,17 +100,15 @@ class _TravelingState extends State<Traveling> {
               children: [
                 const Icon(Icons.flight_land, color: Colors.black, size: 40),
                 const SizedBox(width: 8),
-                Text(
-                    'Destino: ${widget.trip.trip?.route?.endAddress?.description}',
-                    style: const TextStyle(fontSize: 20)),
+                Text('Destino: $destino', style: const TextStyle(fontSize: 20)),
               ],
             ),
             const SizedBox(height: 15),
-            const Row(
+            Row(
               children: [
-                Icon(Icons.timeline, color: Colors.black, size: 40),
-                SizedBox(width: 8),
-                Text('Paradas: 1', style: TextStyle(fontSize: 20)),
+                const Icon(Icons.timeline, color: Colors.black, size: 40),
+                const SizedBox(width: 8),
+                Text(textoParadas, style: const TextStyle(fontSize: 20)),
               ],
             ),
             const SizedBox(height: 20),

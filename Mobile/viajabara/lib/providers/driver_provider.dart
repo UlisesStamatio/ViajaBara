@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:viajabara/config/dio/module_network.dart';
 import 'package:viajabara/domain/entities/qualifications/qualifications.dart';
 import 'package:viajabara/domain/entities/trip/driver_trip.dart';
+import 'package:viajabara/domain/entities/trip/riders_trip.dart';
 
 class DriverProvider {
   Dio dio = NetworkModule().instance;
@@ -70,5 +71,31 @@ class DriverProvider {
       throw Exception('Fallo al obtener los comentario $e');
     }
   }
-  
+
+  Future<List<RidersTrip>> getRidersForTrip(int id) async {
+    try {
+      final response = await dio.put('driver/allRiders', data: {"openTrips": {"id": id}});
+      if (response.statusCode == 200) {
+        List<dynamic> tripsJson = response.data['result'];
+        return tripsJson.map((json) => RidersTrip.fromJson(json)).toList();
+      } else {
+        throw Exception('Fallo al obtener los pasajeros');
+      }
+    } on DioException catch (e) {
+      throw Exception('Fallo al obtener los pasajeros $e');
+    }
+  }
+
+  Future<bool> checkAsistenceUser(int id, int checked) async {
+    try {
+      final response = await dio.put('driver/checkAssist', data: {'id': id, 'checked': checked});
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        throw Exception('Fallo al actualizar la asistencia del usuario');
+      }
+    } on DioException catch (e) {
+      throw Exception('Fallo al actualizar la asistencia del usuario $e');
+    }
+  }
 }
