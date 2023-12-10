@@ -7,44 +7,21 @@
           <h6 class="mb-0">Información básica</h6>
           <hr class="my-3 horizontal dark" />
           <div class="row mx-2" >
-            <div class="col-12 col-lg-6 mb-3">
-              <label>Punto de inicio(<span class="text-danger">*</span>)</label>
-                <div class="input-group flex-nowrap">
+             <div class="col-12">
+              <label>Nombre de la ruta(<span class="text-danger">*</span>)</label>
                   <input
                   type="text"
                   class="form-control" 
-                  placeholder="Ingresa la dirección" 
-                  id="password-input"
-                  v-cloak
-                  :value="route?.startAddress?.description"  
+                  placeholder="Ingresa el nombre" 
+                  id="name-input" 
+                  v-model="route.name" 
+                  :class="{ 'is-invalid': errors.name, 'is-valid': errors.name === null }"
                   />
-                  <span class="input-group-text" id="password-input" @click="openModalStart()" style="cursor:pointer;">
-                    <i class="fa fa-map-marker"></i>
-                  </span>
-                   
-              </div>
-              <div v-if="errors.startPosition" style="color: red">
-                      {{ errors.startPosition }}
-              </div>
-            </div>
-            <div class="col-12 col-lg-6">
-              <label>Destino(<span class="text-danger">*</span>)</label>
-               <div class="input-group flex-nowrap">
-                  <input
-                  type="text"
-                  class="form-control" 
-                  placeholder="Ingresa la dirección" 
-                  id="password-input" 
-                  :value="route?.endAddress?.description"  
-                  />
-                  <span class="input-group-text" id="password-input" @click="openModalEnd()" style="cursor:pointer;">
-                    <i class="fa fa-map-marker"></i>
-                  </span>
-              </div>
-                  <div  v-if="errors.endPosition" style="color: red">
-                      {{ errors.endPosition }}
+                  <div  v-if="errors.name" style="color: red">
+                      {{ errors.name }}
                  </div>
             </div>
+
             <hr class="my-4 horizontal dark" />
             <div class="col-12 mb-2">
                 <div class="d-lg-flex">
@@ -63,8 +40,8 @@
                 <thead class="thead-light">
                     <tr>
                       <th style="font-size: 0.65em; font-weight: bold; text-align: start">#</th>
-                      <th style="font-size: 0.65em; font-weight: bold">DIRECCIÓN</th>
-                      <th style="font-size: 0.65em; font-weight: bold">ACCIONES</th>
+                      <th style="font-size: 0.65em; font-weight: bold">Dirección</th>
+                      <th style="font-size: 0.65em; font-weight: bold">Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="tablebody">
@@ -88,6 +65,9 @@
                   </tr>
                 </tbody>
               </table>
+              <div  v-if="errors.stopovers" style="color: red">
+                      {{ errors.stopovers }}
+              </div>
             </div>
             <div class="col-12 mt-3 text-end ">
               <button
@@ -98,7 +78,7 @@
               <button
                 class="btn bg-gradient-dark"
                 title="Guardar"
-                @click="preNewRoute()"
+                @click="preUpdateRoute()"
               >Guardar</button>
             </div>
 
@@ -109,133 +89,6 @@
   </div>
   </div>
 
-  <MDBModal
-    id="newRouteStartPositionModal"
-    tabindex="-1"
-    labelledby="newRouteStartPositionModalLabel"
-    v-model="exampleModal"
-  >
-    <MDBModalHeader>
-      <MDBModalTitle id="exampleModalLabel">Ubicación </MDBModalTitle>
-    </MDBModalHeader>
-    <MDBModalBody>
-            <div class="container-d">
-              <div class="row">
-                <div class="col-12 mb-3 autocomplete-container ">
-                  <label>Dirección</label>
-                    <div class="input-group flex-nowrap">
-                      <input
-                      type="text"
-                      class="form-control" 
-                      placeholder="Ingresa la dirección" 
-                      id="address-input"  
-                      v-model="searchQueryStart"
-                      @input="updateSearchStart()"
-                      />
-                      <span class="input-group-text" id="password-input" style="cursor:pointer;">
-                        <i class="fas fa-search"></i>
-                      </span>
-                  </div>
-                  <ul class="list-group autocomplete-list">
-                    <li class="autocomplete-container " v-for="place in placesSearchedStart" :key="place.id" @click="selectPlaceStart(place)">{{ place.description }}</li>
-                  </ul>
-                
-                </div>
-                  <hr class="horizontal dark" />
-                <div class="col-12">
-                  <GMapMap
-                    :center="centerStart"
-                    ref="myMapRef"
-                    :zoom="zoom"
-                    @click="onMapClickStart"
-                    style="height: 20rem"
-                    :options="mapOptions"
-                  >
-                    <GMapMarker
-                      v-if="startPositionStart"
-                      :position="startPositionStart.position"
-                    />
-                  </GMapMap>
-                </div>
-              </div>
-            </div>
-
-    </MDBModalBody>
-    <MDBModalFooter >
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-12 text-center">
-            <button  class="btn bg-gradient-secondary me-2" @click="closeModalNewRouteStart()">Cancelar</button>
-            <button  class="btn bg-gradient-dark" @click="selectAddressStart()">Seleccionar</button>
-          </div>
-        </div>
-      </div>
-    </MDBModalFooter>
-  </MDBModal>
-
-  <MDBModal
-    id="newRouteEndPositionModal"
-    tabindex="-1"
-    labelledby="newRouteEndPositionModalLabel"
-    v-model="exampleModalEnd"
-  >
-    <MDBModalHeader>
-      <MDBModalTitle id="exampleModalLabel">Ubicación </MDBModalTitle>
-    </MDBModalHeader>
-    <MDBModalBody>
-            <div class="container-d">
-              <div class="row">
-                <div class="col-12 mb-3 autocomplete-container ">
-                  <label>Dirección</label>
-                    <div class="input-group flex-nowrap">
-                      <input
-                      type="text"
-                      class="form-control" 
-                      placeholder="Ingresa la dirección" 
-                      id="address-input"  
-                      v-model="searchQueryEnd"
-                      @input="updateSearchEnd()"
-                      />
-                      <span class="input-group-text" id="password-input" style="cursor:pointer;">
-                        <i class="fas fa-search"></i>
-                      </span>
-                  </div>
-                  <ul class="list-group autocomplete-list">
-                    <li class="autocomplete-list-item" v-for="place in placesSearchedEnd" :key="place.id" @click="selectPlaceEnd(place)">{{ place.description }}</li>
-                  </ul>
-                
-                </div>
-                  <hr class="horizontal dark" />
-                <div class="col-12">
-                  <GMapMap
-                    :center="centerEnd"
-                    ref="myMapRef"
-                    :zoom="zoom"
-                    @click="onMapClickEnd"
-                    style="height: 20rem"
-                    :options="mapOptions"
-                  >
-                    <GMapMarker
-                      v-if="startPositionEnd"
-                      :position="startPositionEnd.position"
-                    />
-                  </GMapMap>
-                </div>
-              </div>
-            </div>
-
-    </MDBModalBody>
-    <MDBModalFooter >
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-12 text-center">
-            <button  class="btn bg-gradient-secondary me-2" @click="closeModalNewRouteEnd()">Cancelar</button>
-            <button  class="btn bg-gradient-dark" @click="selectAddressEnd()">Seleccionar</button>
-          </div>
-        </div>
-      </div>
-    </MDBModalFooter>
-  </MDBModal>
 
 
   <MDBModal
@@ -402,40 +255,28 @@ export default {
       activeClass: "js-active position-relative",
       activeStep: 0,
       formSteps: 3,
-      centerStart:{},
-      centerEnd:{},
       centerStopover:{},
       centerStopoverUpdate:{},
       zoom: 12,
-      startPositionStart: null,
-      startPositionEnd: null,
       startPositionStopover: null,
       startPositionStopoverUpdate: null,
-      exampleModal:false,
-      exampleModalEnd: false,
       exampleModalStopover: false,
       exampleModalStopoverUpdate: false,
       mapOptions: {
         disableDefaultUI: true, 
       },
-      searchQueryStart:"",
-      searchQueryEnd:"",
       searchQueryStopover:"",
       searchQueryStopoverUpdate:"",
-      placesSearchedStart: [],
-      placesSearchedEnd: [],
       placesSearchedStopover: [],
       placesSearchedStopoverUpdate: [],
       geocoder: {},
       isLoading: false,
       route:{},
-      defaultAddressStart: '',
-      defaultAddressEnd: '',
       defaultAddressStopover: '',
       defaultAddressStopoverUpdate: '',
       errors:{
-        endPosition: '',
-        startPosition: '',
+        name: '',
+        stopovers: '',
       },
       stopover:{
 
@@ -464,7 +305,6 @@ export default {
       if(!error){
           const {result} = data
           this.route = result;
-          console.log(this.route);
           this.routeOriginal = {...result}
       }else{
            this.$swal({
@@ -519,48 +359,6 @@ export default {
         this.activeStep -= 1;
       }
     },
-    async onMapClickStart(event) {
-      const latLng = event.latLng; 
-      mapFunctions.getGeocode(latLng).then((response) =>{
-        let isMexico = mapFunctions.isPlaceInMexico(response);
-        if(isMexico){
-          const {formatted_address} = response
-          this.searchQueryStart = formatted_address
-          this.route.startAddress.state = mapFunctions.getStateFromResult(response);
-          this.route.startAddress.latitude = latLng.lat();
-          this.route.startAddress.longitude = latLng.lng();
-          this.route.startAddress.latLng = latLng;
-        }else{
-          this.$swal({icon: "info", title: 'El lugar se encuentra fuera de México', type: "basic" });
-        }
-      }).catch((err)=>{
-        this.$swal({icon: "error", title: err,type: "basic"});
-      })
-      
-
-      this.startPositionStart = { position: { lat: latLng.lat(), lng: latLng.lng()} };
-    },
-    async onMapClickEnd(event) {
-        const latLng = event.latLng; 
-        mapFunctions.getGeocode(latLng).then((response) =>{
-        let isMexico = mapFunctions.isPlaceInMexico(response);
-        if(isMexico){
-          const {formatted_address} = response
-          this.searchQueryEnd = formatted_address
-          this.route.endAddress.state = mapFunctions.getStateFromResult(response);
-          this.route.endAddress.latitude = latLng.lat();
-          this.route.endAddress.longitude = latLng.lng();
-          this.route.endAddress.latLng = latLng;
-        }else{
-          this.$swal({icon: "info", title: 'El lugar se encuentra fuera de México', type: "basic" });
-        }
-      }).catch((err)=>{
-        this.$swal({icon: "error", title: err,type: "basic"});
-      })
-      
-
-      this.startPositionEnd= { position: { lat: latLng.lat(), lng: latLng.lng()} };
-    },
     async onMapClickStopover(event) {
       const latLng = event.latLng; 
       mapFunctions.getGeocode(latLng).then((response) =>{
@@ -602,80 +400,6 @@ export default {
       
 
       this.startPositionStopoverUpdate= { position: { lat: latLng.lat(), lng: latLng.lng()} };
-    },
-    openModalStart(){
-      this.isLoading = true;
-      if(!(this.route.startAddress.description != '' && this.route.startAddress.description  != null)){
-            mapFunctions.getCurrentPosition().then( async (response) =>{
-            this.centerStart = {lat: response.coords.latitude, lng: response.coords.longitude}
-
-            let position = await  mapFunctions.convertLatLng(this.centerStart.lat, this.centerStart.lng)
-            this.route.startAddress = {...this.route.startAddress, latitude: this.centerStart.lat, longitude: this.centerStart.lng};
-             this.route.startAddress.latLng = position;
-
-            let result = await mapFunctions.getGeocode(position)
-            if(mapFunctions.isPlaceInMexico(result)){
-                this.searchQueryStart = await mapFunctions.getAddressByLatLng(position);
-                this.route.startAddress.state = mapFunctions.getStateFromResult(result);
-                this.defaultAddressStart = this.searchQueryStart
-                this.isLoading = false;
-                this.exampleModal = true
-                this.startPositionStart = {position: {...this.centerStart}}
-            }else{
-                this.isLoading = false;
-                this.$swal({icon: "info", title: 'El lugar se encuentra fuera de México', type: "basic" });
-            } 
-
-          }).catch((err)=>{
-          this.isLoading = false;
-          this.$swal({ icon: "error", title: err,type: "basic"});
-          })
-      }else{
-        const {latitude, longitude, description} = this.route.startAddress
-        this.searchQueryStart = description
-        this.defaultAddressStart = description
-        this.startPositionStart = {position: {lat: parseFloat(latitude), lng: parseFloat(longitude)}};
-        this.centerStart = {lat: parseFloat(latitude), lng: parseFloat(longitude)}
-        this.isLoading = false
-        this.exampleModal = true;
-      }
-    },
-    openModalEnd(){
-      this.isLoading = true;
-      if(!(this.route.endAddress.description != '' && this.route.endAddress.description != null)){
-            mapFunctions.getCurrentPosition().then( async (response) =>{
-            this.centerEnd = {lat: response.coords.latitude, lng: response.coords.longitude}
-
-            let position = await  mapFunctions.convertLatLng(this.centerEnd.lat, this.centerEnd.lng)
-            this.route.endAddress = {...this.route.endAddress, latitude: this.centerEnd.lat, longitude: this.centerEnd.lng};
-            this.route.endAddress.latLng = position;
-
-            let result = await mapFunctions.getGeocode(position)
-            if(mapFunctions.isPlaceInMexico(result)){
-                this.searchQueryEnd = await mapFunctions.getAddressByLatLng(position);
-                this.route.endAddress.state = mapFunctions.getStateFromResult(result);
-                this.defaultAddressEnd = this.searchQueryEnd
-                this.isLoading = false;
-                this.exampleModalEnd = true
-                this.startPositionEnd = {position: {...this.centerEnd}}
-            }else{
-                this.isLoading = false;
-                this.$swal({icon: "info", title: 'El lugar se encuentra fuera de México', type: "basic" });
-            } 
-
-          }).catch((err)=>{
-          this.isLoading = false;
-          this.$swal({ icon: "error", title: err,type: "basic"});
-          })
-      }else{
-        const {latitude, longitude, description} = this.route.endAddress
-        this.searchQueryEnd = description
-        this.defaultAddressEnd = description
-        this.startPositionEnd = {position: {lat:parseFloat(latitude), lng: parseFloat(longitude)}};
-        this.centerEnd = {lat:parseFloat(latitude), lng: parseFloat(longitude)}
-        this.isLoading = false
-        this.exampleModalEnd = true;
-      }
     },
     openModalStopover(){
       this.isLoading = true;
@@ -722,28 +446,6 @@ export default {
       this.exampleModalStopoverUpdate = true;
 
     },
-    async updateSearchStart() {
-       const {AutocompleteService} = await window.google.maps.importLibrary("places")
-       const instance = new AutocompleteService();
-       if(this.searchQueryStart && this.searchQueryStart !== '' && this.searchQueryStart != undefined){
-            instance.getQueryPredictions({ input: this.searchQueryStart }, (predictions) =>{
-              this.placesSearchedStart = predictions;
-            })
-       }else{
-        this.placesSearchedStart = [];
-       }
-    },
-    async updateSearchEnd() {
-       const {AutocompleteService} = await window.google.maps.importLibrary("places")
-       const instance = new AutocompleteService();
-       if(this.searchQueryEnd && this.searchQueryEnd !== '' && this.searchQueryEnd != undefined){
-            instance.getQueryPredictions({ input: this.searchQueryEnd }, (predictions) =>{
-              this.placesSearchedEnd = predictions;
-            })
-       }else{
-        this.placesSearchedEnd = [];
-       }
-    },
     async updateSearchStopover() {
        const {AutocompleteService} = await window.google.maps.importLibrary("places")
        const instance = new AutocompleteService();
@@ -765,60 +467,6 @@ export default {
        }else{
         this.placesSearchedStopoverUpdate = [];
        }
-    },
-    async selectPlaceStart(place){
-      const {place_id, description} = place
-      this.placesSearchedStart = [];
-      const geocoder = new window.google.maps.Geocoder();
-      geocoder.geocode({ placeId: place_id }, (results, status) => {
-        if (status === "OK") {
-          if (results[0]) {
-            let isMexico = mapFunctions.isPlaceInMexico(results[0])
-            if(isMexico){
-              this.searchQueryStart = description;
-              let address =  results[0].geometry.location;
-              this.centerStart = { lat: address.lat() , lng: address.lng()}
-              this.route.startAddress = {... this.route.startAddress, latitude: this.centerStart.lat, longitude: this.centerStart.lng};
-              this.startPositionStart = { position: { lat: address.lat(), lng: address.lng()} };
-            }else{
-                this.searchQueryStart = this.defaultAddressStart;
-                this.$swal({icon: "info", title: 'El lugar se encuentra fuera de México', type: "basic" });
-            }
-          } else {
-            this.$swal({icon: "error", title: 'No se encontraron resultados de geocodificación.', type: "basic" });
-          }
-        } else {
-          this.$swal({icon: "error", title: 'Error en la solicitud de geocodificación', type: "basic" });
-        }
-      });
-      
-    },
-    async selectPlaceEnd(place){
-      const {place_id, description} = place
-      this.placesSearchedEnd = [];
-      const geocoder = new window.google.maps.Geocoder();
-      geocoder.geocode({ placeId: place_id }, (results, status) => {
-        if (status === "OK") {
-          if (results[0]) {
-            let isMexico = mapFunctions.isPlaceInMexico(results[0])
-            if(isMexico){
-              this.searchQueryEnd = description;
-              let address =  results[0].geometry.location;
-              this.centerEnd = { lat: address.lat() , lng: address.lng()}
-              this.route.endAddress = {...this.route.endAddress, longitude: this.centerEnd.lng, latitude: this.centerEnd.lat};
-              this.startPositionEnd = { position: { lat: address.lat(), lng: address.lng()} };
-            }else{
-                this.searchQueryEnd = this.defaultAddressEnd;
-                this.$swal({icon: "info", title: 'El lugar se encuentra fuera de México', type: "basic" });
-            }
-          } else {
-            this.$swal({icon: "error", title: 'No se encontraron resultados de geocodificación.', type: "basic" });
-          }
-        } else {
-          this.$swal({icon: "error", title: 'Error en la solicitud de geocodificación', type: "basic" });
-        }
-      });
-      
     },
     async selectPlaceStopover(place){
       const {place_id, description} = place
@@ -874,18 +522,6 @@ export default {
       });
       
     },
-    closeModalNewRouteStart(){
-      this.exampleModal = false;
-      this.searchQueryStart = "";
-      this.startPositionStart = {};
-      this.centerStart = {};
-    },
-    closeModalNewRouteEnd(){
-      this.exampleModalEnd = false;
-      this.searchQueryEnd = "";
-      this.startPositionEnd = {};
-      this.centerEnd = {};
-    },
     closeModalNewRouteStopover(){
       this.exampleModalStopover = false;
       this.searchQueryStopover= "";
@@ -897,14 +533,6 @@ export default {
       this.searchQueryStopoverUpdate= "";
       this.startPositionStopoverUpdate = {};
       this.centerStopoverUpdate = {};
-    },
-    selectAddressStart(){
-      this.route.startAddress.description = this.searchQueryStart;
-      this.closeModalNewRouteStart();
-    },
-    selectAddressEnd(){
-      this.route.endAddress.description = this.searchQueryEnd;
-      this.closeModalNewRouteEnd();
     },
     selectAddressStopover(){
       const response = routeValidator.isSameStopOver(this.route.stopOvers, this.stopover.lat, this.stopover.lng);
@@ -962,99 +590,80 @@ export default {
       this.initializaDatatable()
      
     },
-    modificar(){
-    },
-    async preNewRoute(){
-      this.errors.startPosition = routeValidator.validateAddressUpdate(this.route.startAddress);
-      this.errors.endPosition = routeValidator.validateAddressUpdate(this.route.endAddress);
-      if(!this.errors.startPosition && !this.errors.endPosition){
-        this.errors.startPosition = routeValidator.isSameAddress(this.route.startAddress.latitude,this.route.endAddress.latitude, this.route.startAddress.longitude, this.route.endAddress.longitude);
-        this.errors.endPosition = routeValidator.isSameAddress(this.route.startAddress.latitude,this.route.endAddress.latitude, this.route.startAddress.longitude, this.route.endAddress.longitude);
-      }
 
-      if(!this.errors.startPosition && !this.errors.endPosition){
-         const response = routeValidator.isSameAddressesRegardingEndAndStartUpdate(this.route.stopOvers, this.route.startAddress, this.route.endAddress);
-          if(!response){
-            console.log(this.route)
+    async preUpdateRoute(){
+      this.initializaDatatable()
+      this.errors.name = routeValidator.validateName(this.route.name);
+      this.errors.stopovers = routeValidator.validateStopovers(this.route.stopOvers);
+
+      if(!this.errors.name && !this.errors.stopovers){
             try{
-            let meters = await mapFunctions.getMetersBetweenTwoDirections(this.route.startAddress.description,this.route.endAddress.description);
-            let time = await mapFunctions.getTimeBetweenTwoDirections(this.route.startAddress.description,this.route.endAddress.description);
+            let meters = await mapFunctions.getMetersBetweenTwoDirections(this.route.stopOvers[0].address.description,this.route.stopOvers[(this.route.stopOvers.length -1)].address.description);
+            let time = await mapFunctions.getTimeBetweenTwoDirections(this.route.stopOvers[0].address.description,this.route.stopOvers[(this.route.stopOvers.length -1)].address.description);
             const payload = {
               id: this.route.id,
-              startAddress: {
-                description: this.route.startAddress.description,
-                latitude: this.route.startAddress.latitude,
-                longitude: this.route.startAddress.longitude,
-                state: this.route.startAddress.state.name ? this.route.startAddress.state.name : this.route.startAddress.state
-              },
-              endAddress:{
-                description: this.route.endAddress.description,
-                latitude: this.route.endAddress.latitude,
-                longitude: this.route.endAddress.longitude,
-                state: this.route.endAddress.state.name ? this.route.endAddress.state.name : this.route.endAddress.state
-              },
+              name: this.route.name,
               meters: parseFloat(meters),
               time: time
             }
 
             payload.stopOvers = await Promise.all([...this.route.stopOvers.map(async (stopover) =>{
-              stopover = {description: stopover.address.description, latitude: stopover.address.latitude, longitude: stopover.address.longitude, sequence: stopover.sequence, state: stopover.address.state.name ?  stopover.address.state.name : stopover.address.state}
-              mapFunctions.getMetersBetweenTwoDirections(payload.startAddress.description,stopover.description).then((response) =>{
+              stopover = {description: stopover.address.description, latitude: stopover.address.latitude, longitude: stopover.address.longitude, sequence: stopover.sequence, state: (stopover.address.state.name !== null && stopover.address.state.name !== undefined) ? stopover.address.state.name : stopover.address.state }
+
+              mapFunctions.getMetersBetweenTwoDirections(this.route.stopOvers[0].address.description,stopover.description).then((response) =>{
                   stopover.meters = parseFloat(response)
               });
-              mapFunctions.getTimeBetweenTwoDirections(payload.endAddress.description,stopover.description).then((response) =>{
+              mapFunctions.getTimeBetweenTwoDirections(this.route.stopOvers[0].address.description,stopover.description).then((response) =>{
                 stopover.time = parseFloat(response)
               });
               return stopover;
             })])
-          this.$swal({
-          title: "¿Estás segura(a) de guardar los cambios?",
-          icon: "warning",
-          showCancelButton: true,
-          cancelButtonText: "Cancelar",
-          confirmButtonText: "Confirmar",
-          customClass: {
-            confirmButton: "btn bg-gradient-success",
-            cancelButton: "btn bg-gradient-secondary",
-          },
-          buttonsStyling: false,
-        }).then(async(result) => {
-          if (result.isConfirmed) {
-              this.isLoading = true;
-              const {message, error, data} =  await updateRoute(payload);
-              this.isLoading = false;
-              if(!error){
-                const {result:{text}} = data
-                this.$swal({
-                  icon: "success",
-                  title: message,
-                  text: text,
-                  type: 'success-message',
-                });
-                router.push({name: 'Consultar Rutas'})
-              }else{
-                const {text} = data
-                this.$swal({
-                    icon: "error", 
-                    title: message,
-                    text: text,
-                    type: "basic",
-                  });
+
+            this.$swal({
+              title: "¿Estás segura(a) de guardar los cambios?",
+              text: "¡No podrás revertir esto.!",
+              icon: "warning",
+              showCancelButton: true,
+              cancelButtonText: "Cancelar",
+              confirmButtonText: "Confirmar",
+              customClass: {
+                confirmButton: "btn bg-gradient-success",
+                cancelButton: "btn bg-gradient-secondary",
+              },
+              buttonsStyling: false,
+            }).then(async(result) => {
+              if (result.isConfirmed) {
+                  this.isLoading = true;
+                  const {message, error, data} =  await updateRoute(payload);
+                  this.isLoading = false;
+                  if(!error){
+                    const {result:{text}} = data
+                    this.$swal({
+                      icon: "success",
+                      title: message,
+                      text: text,
+                      type: 'success-message',
+                    });
+                    router.push({name: 'Consultar Rutas'})
+                  }else{
+                    const {text} = data
+                    this.$swal({
+                        icon: "error", 
+                        title: message,
+                        text: text,
+                        type: "basic",
+                      });
+                  }
+              } else if (result.dismiss === this.$swal.DismissReason.cancel) {
+                this.$swal.dismiss;
               }
-          } else if (result.dismiss === this.$swal.DismissReason.cancel) {
-            this.$swal.dismiss;
-          }
-        });
+            });
 
 
             }catch(err){
               this.$swal({icon: "error", title:err, type: "basic" });
             }
-          }else{
-            this.$swal({icon: "warning", title:response, type: "basic" });
-          }
       }
-      
     },
     cancelar(){
       router.push({name: 'Consultar Rutas'})

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:viajabara/config/dio/module_network.dart';
+import 'package:viajabara/domain/entities/qualifications/qualifications.dart';
 import 'package:viajabara/domain/entities/trip/driver_trip.dart';
 
 class DriverProvider {
@@ -49,10 +50,24 @@ class DriverProvider {
         List<dynamic> tripsJson = response.data['result'];
         return tripsJson.map((json) => DriverTrip.fromJson(json)).toList();
       } else {
-        throw Exception('Fallo al obtener los registros');
+        throw Exception('Fallo al obtener el historial para el conductor');
       }
     } on DioException catch (e) {
-      throw Exception('Fallo al obtener los registros $e');
+      throw Exception('Fallo al obtener el historial para el conductor $e');
+    }
+  }
+
+  Future<List<Qualifications>> getQualificationsAboutTravel(int id) async {
+    try {
+      final response = await dio.put('driver/findQualifications', data: {'id': id});
+      if (response.statusCode == 200) {
+        List<dynamic> tripsJson = response.data['result'];
+        return tripsJson.map((json) => Qualifications.fromJson(json)).toList();
+      } else {
+        throw Exception('Fallo al obtener los comentarios');
+      }
+    } on DioException catch (e) {
+      throw Exception('Fallo al obtener los comentario $e');
     }
   }
   

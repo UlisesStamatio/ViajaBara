@@ -16,6 +16,8 @@ import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOverRepository;
 import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOverSaveDto;
 import mx.edu.utez.viajabara.basecatalog.trip.model.Trip;
 import mx.edu.utez.viajabara.basecatalog.trip.model.TripRepository;
+import mx.edu.utez.viajabara.basecatalog.way.model.Way;
+import mx.edu.utez.viajabara.basecatalog.way.model.WayRepository;
 import mx.edu.utez.viajabara.utils.entity.Message;
 import mx.edu.utez.viajabara.utils.entity.TypesResponse;
 import org.slf4j.Logger;
@@ -45,17 +47,20 @@ public class RouteService {
 
     private TripRepository tripRepository;
 
+    private WayRepository wayRepository;
+
 
     @Autowired
     public RouteService(RouteRepository repository, DutyRepository dutyRepository,
                         StopOverService stopOverService, StopOverRepository stopOverRepository, AddressService addressService,
-                        TripRepository tripRepository) {
+                        TripRepository tripRepository, WayRepository wayRepository) {
         this.repository = repository;
         this.dutyRepository = dutyRepository;
         this.stopOverService = stopOverService;
         this.stopOverRepository = stopOverRepository;
         this.addressService = addressService;
         this.tripRepository = tripRepository;
+        this.wayRepository = wayRepository;
     }
 
     @Transactional(readOnly = true)
@@ -76,20 +81,8 @@ public class RouteService {
 
     @Transactional(rollbackFor = {SQLException.class})
     public ResponseEntity<Object> save(RouteSaveDto dto) throws SQLException {
-        AddressSaveDto startAddressDto = new AddressSaveDto( dto.getStartAddress().getLatitude(),  dto.getStartAddress().getLongitude(),  dto.getStartAddress().getDescription(), dto.getStartAddress().getState());
-        Address startAddress = addressService.save(startAddressDto);
-        if(startAddress == null){
-            return new ResponseEntity<>(new Message("No se registró la ruta, el estado es inexistente", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
-        }
 
-        AddressSaveDto endAddressDto = new AddressSaveDto( dto.getEndAddress().getLatitude(),  dto.getEndAddress().getLongitude(),  dto.getEndAddress().getDescription(), dto.getEndAddress().getState());
-        Address endAddress = addressService.save(endAddressDto);
-
-        if(endAddress == null){
-            return new ResponseEntity<>(new Message("No se registró la ruta, el estado es inexistente", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
-        }
-
-        Route route = new Route( startAddress, endAddress, dto.getMeters(), dto.getTime(), true );
+        Route route = new Route( dto.getName(), dto.getMeters(), dto.getTime(), true );
 
         route = repository.saveAndFlush(route);
         if (route == null) {
@@ -156,20 +149,7 @@ public class RouteService {
             stopOverService.save(stopOverList);
         }
 
-        AddressSaveDto startAddressDto = new AddressSaveDto( dto.getStartAddress().getLatitude(),  dto.getStartAddress().getLongitude(),  dto.getStartAddress().getDescription(), dto.getStartAddress().getState());
-        Address startAddress = addressService.save(startAddressDto);
-        if(startAddress == null){
-            return new ResponseEntity<>(new Message("No se registró la ruta, el estado es inexistente", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
-        }
-
-        AddressSaveDto endAddressDto = new AddressSaveDto( dto.getEndAddress().getLatitude(),  dto.getEndAddress().getLongitude(),  dto.getEndAddress().getDescription(), dto.getEndAddress().getState());
-        Address endAddress = addressService.save(endAddressDto);
-        if(endAddress == null){
-            return new ResponseEntity<>(new Message("No se registró la ruta, el estado es inexistente", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
-        }
-
-        route.setStartAddress(startAddress);
-        route.setEndAddress(endAddress);
+        route.setName(dto.getName());
         route.setMeters(dto.getMeters());
         route.setTime(dto.getTime());
 
@@ -191,8 +171,8 @@ public class RouteService {
         }
         Route route = optional.get();
 
-        Optional<Trip> optionalTrip = tripRepository.findByRouteIdAndStatusTrue(route.getId());
-        if(optionalTrip.isPresent() && route.isStatus()){
+        Optional<Way> optionalWay = wayRepository.findByRouteIdAndTripStatusIsTrue(route.getId());
+        if(optionalWay.isPresent() && route.isStatus()){
             return new ResponseEntity<>(new Message("La ruta se encuentra en un viaje, no puedes deshabilitarla", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
         }
 

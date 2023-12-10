@@ -8,5 +8,4 @@ import java.util.Optional;
 public interface TripRepository extends JpaRepository<Trip,Long> {
     List<Trip> findAllByStatusIsTrue();
 
-    Optional<Trip> findByRouteIdAndStatusTrue(Long id);
 }

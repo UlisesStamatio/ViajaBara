@@ -5,6 +5,7 @@ import mx.edu.utez.viajabara.access.user.model.User;
 import mx.edu.utez.viajabara.basecatalog.bus.model.Bus;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTrips;
 import mx.edu.utez.viajabara.basecatalog.route.model.Route;
+import mx.edu.utez.viajabara.basecatalog.way.model.Way;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -25,9 +26,6 @@ public class Trip {
     @ManyToOne
     private Bus bus;
 
-    @ManyToOne
-    private Route route;
-
     @OneToMany(mappedBy = "trip")
     @JsonIgnore
     private List<OpenTrips> trips;
@@ -39,11 +37,27 @@ public class Trip {
     @Column(name = "status", columnDefinition = "BOOL DEFAULT TRUE")
     private boolean status;
 
+    @Column(name = "distance_meters", columnDefinition = "DOUBLE")
+    private double meters;
+
+    @Column(name = "distance_time", columnDefinition = "DOUBLE")
+    private double time;
+
     @Column(columnDefinition = "time", name = "start_time")
     private Date startTime;
     @Column(name = "work_days", columnDefinition = "json")
     @Type(type = "json")
     private String workDays;
+
+    @Column(name = "stopovers", columnDefinition = "json")
+    @Type(type = "json")
+    private String stopovers;
+
+
+    @OneToMany(mappedBy = "trip")
+    @JsonIgnore
+    private List<Way> ways;
+
 
     public Trip() {
     }
@@ -51,17 +65,18 @@ public class Trip {
     public Trip(User driver, Bus bus, Route route, boolean status) {
         this.driver = driver;
         this.bus = bus;
-        this.route = route;
         this.status = status;
     }
 
-    public Trip(User driver, Bus bus, Route route, boolean status, Date startTime, String workDays) {
+    public Trip(User driver, Bus bus, boolean status, double meters, double time, Date startTime, String workDays, String stopovers) {
         this.driver = driver;
         this.bus = bus;
-        this.route = route;
         this.status = status;
+        this.meters = meters;
+        this.time = time;
         this.startTime = startTime;
         this.workDays = workDays;
+        this.stopovers = stopovers;
     }
 
     public Long getId() {
@@ -86,14 +101,6 @@ public class Trip {
 
     public void setBus(Bus bus) {
         this.bus = bus;
-    }
-
-    public Route getRoute() {
-        return route;
-    }
-
-    public void setRoute(Route route) {
-        this.route = route;
     }
 
     public Date getCreatedAt() {
@@ -126,5 +133,29 @@ public class Trip {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public String getStopovers() {
+        return stopovers;
+    }
+
+    public void setStopovers(String stopovers) {
+        this.stopovers = stopovers;
+    }
+
+    public double getMeters() {
+        return meters;
+    }
+
+    public void setMeters(double meters) {
+        this.meters = meters;
+    }
+
+    public double getTime() {
+        return time;
+    }
+
+    public void setTime(double time) {
+        this.time = time;
     }
 }

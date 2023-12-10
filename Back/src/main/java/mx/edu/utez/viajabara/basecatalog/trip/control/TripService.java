@@ -18,12 +18,16 @@ import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTripsRepository;
 import mx.edu.utez.viajabara.basecatalog.person.model.Person;
 import mx.edu.utez.viajabara.basecatalog.route.control.RouteService;
 import mx.edu.utez.viajabara.basecatalog.route.model.Route;
+import mx.edu.utez.viajabara.basecatalog.route.model.RouteDto;
 import mx.edu.utez.viajabara.basecatalog.route.model.RouteRepository;
 import mx.edu.utez.viajabara.basecatalog.state.model.State;
 import mx.edu.utez.viajabara.basecatalog.state.model.StateBookTripDto;
 import mx.edu.utez.viajabara.basecatalog.state.model.StateDto;
 import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOver;
 import mx.edu.utez.viajabara.basecatalog.trip.model.*;
+import mx.edu.utez.viajabara.basecatalog.way.control.WayService;
+import mx.edu.utez.viajabara.basecatalog.way.model.Way;
+import mx.edu.utez.viajabara.basecatalog.way.model.WayRepository;
 import mx.edu.utez.viajabara.utils.entity.Message;
 import mx.edu.utez.viajabara.utils.entity.TypesResponse;
 import org.slf4j.Logger;
@@ -54,13 +58,19 @@ public class TripService {
 
     private final OpenTripsRepository openTripsRepository;
 
+    private final WayService wayService;
+
+    private final WayRepository wayRepository;
+
     @Autowired
-    public TripService(TripRepository repository, UserRepository userRepository, BusRepository busRepository, RouteRepository routeRepository, OpenTripsRepository openTripsRepository) {
+    public TripService(TripRepository repository, UserRepository userRepository, BusRepository busRepository, RouteRepository routeRepository, OpenTripsRepository openTripsRepository, WayService wayService, WayRepository wayRepository) {
         this.repository = repository;
         this.userRepository = userRepository;
         this.busRepository = busRepository;
         this.routeRepository = routeRepository;
         this.openTripsRepository = openTripsRepository;
+        this.wayService = wayService;
+        this.wayRepository = wayRepository;
     }
 
 
@@ -75,7 +85,7 @@ public class TripService {
         }
         return new ResponseEntity<>(new Message(response, "Listado de viajes", TypesResponse.SUCCESS), HttpStatus.OK);
     }
-    @Transactional(readOnly = true)
+  /*  @Transactional(readOnly = true)
     public ResponseEntity<Object> getStatesForFiltersByDate(String date, boolean onlyStatesAndAddresses) throws ParseException {
         List<Trip> trips = repository.findAllByStatusIsTrue();
         System.out.println("dto " + date);
@@ -108,9 +118,9 @@ public class TripService {
         System.out.println("Listado de viajes activos");
         System.out.println(filteredTrips);
         return new ResponseEntity<>(new Message(filteredTrips, "Listado de viajes activos", TypesResponse.SUCCESS), HttpStatus.OK);
-    }
+    }*/
 
-    @Transactional(readOnly = true)
+  /*  @Transactional(readOnly = true)
     public ResponseEntity<Object> findByFiltersClient(BookTripDto bookTripDto) throws ParseException {
         Message msg =  (Message) getStatesForFiltersByDate(bookTripDto.getDate(), false).getBody() ;
         List<Trip> trips = (List<Trip>) msg.getResult();
@@ -160,7 +170,7 @@ public class TripService {
                 .collect(Collectors.toList());
         System.out.println(filteredTrips);
         return new ResponseEntity<>(new Message(filteredTrips, "Rutas encontradas", TypesResponse.SUCCESS), HttpStatus.OK);
-    }
+    }*/
     private Date parseDate(String timeString) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
@@ -215,20 +225,20 @@ public class TripService {
     }
 
 
-    private List<State> getStatesWithStopOvers(List<Trip> trips) {
+   /* private List<State> getStatesWithStopOvers(List<Trip> trips) {
         return trips.stream()
                 .flatMap(trip -> trip.getRoute().getStopOvers().stream().map(StopOver::getAddress).map(Address::getState))
                 .distinct()
                 .collect(Collectors.toList());
-    }
+    }*/
 
-    private List<State> getStatesWithoutStopOvers(List<Trip> trips) {
+   /* private List<State> getStatesWithoutStopOvers(List<Trip> trips) {
         return trips.stream()
                 .filter(trip -> trip.getRoute().getStopOvers().isEmpty())
                 .map(trip -> trip.getRoute().getStartAddress().getState())
                 .distinct()
                 .collect(Collectors.toList());
-    }
+    }*/
     private List<State> combineUniqueLists(List<State> list1, List<State> list2) {
         return Stream.concat(list1.stream(), list2.stream())
                 .distinct()
@@ -276,17 +286,30 @@ public class TripService {
             return new ResponseEntity<>(new Message("No se encontró la unidad", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
         Optional<User> driver = userRepository.findById(dto.getDriver().getId());
-        if(!driver.isPresent()){
+        if(!driver.isPresent()) {
             return new ResponseEntity<>(new Message("No se encontró el conductor", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
-        Optional<Route> route = routeRepository.findById(dto.getRoute().getId());
-        if(!route.isPresent()){
-            return new ResponseEntity<>(new Message("No se encontró la ruta", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
-        }
-        Trip trip = new Trip(driver.get(),bus.get(),route.get(),true, dto.getStartTime(), dto.getWorkDays());
+
+        Trip trip = new Trip(dto.getDriver(),dto.getBus(),true, dto.getMeters(), dto.getTime(), dto.getStartTime(), dto.getWorkDays(), dto.getStopovers());
         trip = repository.saveAndFlush(trip);
         if (trip == null) {
             return new ResponseEntity<>(new Message("No se registró el viaje", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
+        }
+
+        if(dto.getWays().size() > 0 ){
+            List<Way> wayList = new ArrayList<>();
+            for (Way way : dto.getWays()) {
+                Optional<Route> route = routeRepository.findById(way.getRoute().getId());
+                if(!route.isPresent()){
+                    return new ResponseEntity<>(new Message("No se encontró la ruta", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
+                }
+                Way wayToSave = new Way();
+                wayToSave.setRoute(route.get());
+                wayToSave.setTrip(trip);
+                wayToSave.setSequence(way.getSequence());
+                wayList.add(wayToSave);
+            }
+            wayService.save(wayList);
         }
         return new ResponseEntity<>(new Message(trip, "Se registró el viaje", TypesResponse.SUCCESS), HttpStatus.OK);
     }
@@ -307,21 +330,46 @@ public class TripService {
         if(!bus.isPresent()){
             return new ResponseEntity<>(new Message("No se encontró el autobús", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
+
         Optional<User> driver = userRepository.findById(dto.getDriver().getId());
         if(!driver.isPresent()){
             return new ResponseEntity<>(new Message("No se encontró el conductor", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
-        Optional<Route> route = routeRepository.findById(dto.getRoute().getId());
-        if(!route.isPresent()){
-            return new ResponseEntity<>(new Message("No se encontró la ruta", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
+
+        List<Way> ways = wayRepository.findByTripId(optionalTrip.get().getId());
+        if(ways.size() > 0){
+            for (Way way : ways){
+                way.setRoute(null);
+                way.setTrip(null);
+                wayRepository.saveAndFlush(way);
+                wayRepository.delete(way);
+            }
+        }
+
+        if(dto.getWays().size() > 0 ){
+            List<Way> wayList = new ArrayList<>();
+            for (Way way : dto.getWays()) {
+                Optional<Route> route = routeRepository.findById(way.getRoute().getId());
+                if(!route.isPresent()){
+                    return new ResponseEntity<>(new Message("No se encontró la ruta", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
+                }
+                Way wayToSave = new Way();
+                wayToSave.setRoute(route.get());
+                wayToSave.setTrip(optionalTrip.get());
+                wayToSave.setSequence(way.getSequence());
+                wayList.add(wayToSave);
+            }
+            wayService.save(wayList);
         }
 
         Trip trip = optionalTrip.get();
         trip.setBus(bus.get());
         trip.setDriver(driver.get());
-        trip.setRoute(route.get());
         trip.setStartTime(dto.getStartTime());
         trip.setWorkDays(dto.getWorkDays());
+        trip.setTime(dto.getTime());
+        trip.setMeters(dto.getMeters());
+        trip.setStopovers(dto.getStopovers());
 
         trip = repository.saveAndFlush(trip);
         if (trip == null) {

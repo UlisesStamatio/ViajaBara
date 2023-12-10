@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:viajabara/domain/entities/trip/driver_trip.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
+import 'package:viajabara/kernel/widgets/custom_progress_indicator.dart';
 import 'package:viajabara/kernel/widgets/details/details_travels.dart';
 import 'package:viajabara/modules/trips/adapters/screens/traveling.dart';
 import 'package:viajabara/providers/driver_provider.dart';
@@ -65,7 +66,7 @@ class _TripsState extends State<Trips> {
               future: data,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return CustomCircularProgressIndicator();
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {

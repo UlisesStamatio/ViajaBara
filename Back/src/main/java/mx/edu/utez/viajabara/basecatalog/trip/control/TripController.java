@@ -52,7 +52,7 @@ public class TripController {
         return service.findAllEnabled();
     }
 
-    @PostMapping("/states-for-filters-by-date")
+    /*@PostMapping("/states-for-filters-by-date")
     @Secured({VIAJES})
     @ApiOperation(
             value = "Busca los estados y direcciones disponibles en una fecha estimada",
@@ -70,7 +70,7 @@ public class TripController {
     )
     public ResponseEntity<Object> findByFiltersClient(@RequestBody BookTripDto bookTripDto) throws ParseException {
         return service.findByFiltersClient(bookTripDto);
-    }
+    }*/
 
 
     @PostMapping("")

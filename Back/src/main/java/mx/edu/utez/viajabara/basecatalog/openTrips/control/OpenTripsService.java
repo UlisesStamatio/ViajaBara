@@ -165,4 +165,10 @@ public class OpenTripsService {
         return new ResponseEntity<>(new Message(openTrips, "Viaje abierto modificado", TypesResponse.SUCCESS), HttpStatus.OK);
     }
 
+    @Transactional(readOnly = true)
+    public ResponseEntity<Object> countTripsByDriver(Long driver_id){
+        long trips = repository.countTripsByDriver(driver_id);
+        return new ResponseEntity<>(new Message(trips, "Cantidad de viajes realizados por el conductor", TypesResponse.SUCCESS), HttpStatus.OK);
+    }
+
 }

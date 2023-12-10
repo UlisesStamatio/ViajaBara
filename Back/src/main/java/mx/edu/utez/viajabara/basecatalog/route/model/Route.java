@@ -6,6 +6,7 @@ import mx.edu.utez.viajabara.basecatalog.address.model.Address;
 import mx.edu.utez.viajabara.basecatalog.duty.model.Duty;
 import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOver;
 import mx.edu.utez.viajabara.basecatalog.trip.model.Trip;
+import mx.edu.utez.viajabara.basecatalog.way.model.Way;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -18,24 +19,14 @@ public class Route {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "id_start_address")
-    private Address startAddress;
-
-    @ManyToOne
-    @JoinColumn(name = "id_end_address")
-    private Address endAddress;
+    @Column(name = "name", columnDefinition = "VARCHAR(45)")
+    private String name;
 
     @Column(name = "distance_meters", columnDefinition = "DOUBLE")
     private double meters;
 
-
     @Column(name = "distance_time", columnDefinition = "DOUBLE")
     private double time;
-
-    @OneToMany(mappedBy = "route")
-    @JsonIgnore
-    private List<Trip> trips;
 
     @Column(name = "create_at", insertable = false, columnDefinition = "TIMESTAMP DEFAULT NOW()")
     @Temporal(TemporalType.TIMESTAMP)
@@ -47,29 +38,31 @@ public class Route {
     @OneToMany(mappedBy = "route", cascade = CascadeType.ALL)
     private List<StopOver> stopOvers;
 
+    @OneToMany(mappedBy = "route")
+    @JsonIgnore
+    private List<Way> ways;
+
+
     public Route() {
     }
 
 
-    public Route(Long id, Address startAddress, Address endAddress, double meters, double time) {
+    public Route(Long id, String name, double meters, double time) {
         this.id = id;
-        this.startAddress = startAddress;
-        this.endAddress = endAddress;
         this.meters = meters;
         this.time = time;
+        this.name = name;
     }
 
-    public Route(Address startAddress, Address endAddress, double meters, double time, boolean status) {
-        this.startAddress = startAddress;
-        this.endAddress = endAddress;
+    public Route( String name, double meters, double time, boolean status) {
         this.meters = meters;
         this.time = time;
         this.status = status;
+        this.name = name;
     }
 
-    public Route(Address startAddress, Address endAddress, double meters, double time) {
-        this.startAddress = startAddress;
-        this.endAddress = endAddress;
+    public Route(String name, double meters, double time) {
+        this.name = name;
         this.meters = meters;
         this.time = time;
     }
@@ -82,21 +75,12 @@ public class Route {
         this.id = id;
     }
 
-
-    public Address getStartAddress() {
-        return startAddress;
+    public String getName() {
+        return name;
     }
 
-    public void setStartAddress(Address startAddress) {
-        this.startAddress = startAddress;
-    }
-
-    public Address getEndAddress() {
-        return endAddress;
-    }
-
-    public void setEndAddress(Address endAddress) {
-        this.endAddress = endAddress;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public double getMeters() {

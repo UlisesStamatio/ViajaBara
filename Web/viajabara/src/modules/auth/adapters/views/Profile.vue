@@ -150,53 +150,6 @@
               </div>
             </div>
 
-              <div class="col-12 col-sm-6 col-lg-4 mb-3">
-                <label>Usuario(<span class="text-danger">*</span>)</label>
-                <input
-                  id="username"
-                  type="text"
-                  placeholder="eg. MichaelJack"
-                  name="username"
-                  v-model.trim="user.username"
-                  class="form-control"
-                :class="{ 'is-invalid': errors.username, 'is-valid': errors.username === null }"
-                />
-                <div class="invalid-feedback" v-if="errors.username">
-                    {{ errors.username }}
-                </div>
-              </div>
-
-              <div class="col-12 col-sm-6 col-lg-4 mb-3">
-              <label>Correo(<span class="text-danger">*</span>)</label>
-              <input
-                id="email"
-                type="email"
-                placeholder="eg. example@address.com"
-                name="email"
-                v-model.trim="user.email"
-                class="form-control"
-               :class="{ 'is-invalid': errors.email, 'is-valid': errors.email === null }"
-              />
-              <div class="invalid-feedback" v-if="errors.email">
-                  {{ errors.email }}
-              </div>
-            </div>
-
-            <div class="col-12 col-sm-6 col-lg-4 mb-3">
-              <label>Confirmar correo(<span class="text-danger">*</span>)</label>
-              <input
-                id="confirmEmail"
-                type="email"
-                placeholder="eg. example@address.com"
-                name="confirmEmail"
-                v-model.trim="user.confirmEmail"
-                class="form-control"
-               :class="{ 'is-invalid': errors.confirmEmail, 'is-valid': errors.confirmEmail === null }"
-              />
-              <div class="invalid-feedback" v-if="errors.confirmEmail">
-                  {{ errors.confirmEmail }}
-              </div>
-            </div>
 
 
           </div>

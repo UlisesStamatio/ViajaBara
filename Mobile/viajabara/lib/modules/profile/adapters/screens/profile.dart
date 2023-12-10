@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:viajabara/domain/entities/resMsg.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
+import 'package:viajabara/kernel/widgets/custom_progress_indicator.dart';
 import 'package:viajabara/kernel/widgets/profile/change_information.dart';
 import 'package:viajabara/kernel/widgets/profile/change_password.dart';
 import 'package:viajabara/kernel/widgets/profile/change_photo.dart';
@@ -84,7 +85,7 @@ class _ProfileState extends State<Profile> {
       future: _futureUserInfo,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: const CircularProgressIndicator());
+          return CustomCircularProgressIndicator();
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
@@ -144,8 +145,7 @@ class _ProfileState extends State<Profile> {
                             width: 120,
                             child: SvgPicture.string(
                               profile,
-                              fit: BoxFit
-                                  .contain, // Asegúrate de que el SVG se ajusta dentro del contenedor
+                              fit: BoxFit.contain, // Asegúrate de que el SVG se ajusta dentro del contenedor
                             ),
                           ),
                         ),

@@ -1,13 +1,43 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:viajabara/domain/entities/qualifications/qualifications.dart';
+import 'package:viajabara/domain/entities/trip/driver_trip.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
+import 'package:viajabara/kernel/widgets/custom_progress_indicator.dart';
+import 'package:viajabara/providers/driver_provider.dart';
+import 'package:viajabara/providers/utils/utils.dart';
 
-class HistoryStars extends StatelessWidget {
-  const HistoryStars({super.key});
+class HistoryStars extends StatefulWidget {
+  final DriverTrip trip;
+  const HistoryStars({Key? key, required this.trip}) : super(key: key);
+
+  @override
+  State<HistoryStars> createState() => _HistoryStarsState();
+}
+
+class _HistoryStarsState extends State<HistoryStars> {
+  Future<List<Qualifications>> data = Future.value([]);
+
+  @override
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
+  void loadData() async {
+    var tripsData = await DriverProvider().getQualificationsAboutTravel(widget.trip.id!);
+    setState(() {
+      data = Future.value(tripsData);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    String? salida = "${widget.trip.trip?.route?.startAddress?.description}-${widget.trip.startDate}-${widget.trip.trip?.startTime}";
+    String? horaLlegada = Utils().sumarTiempo(widget.trip.trip!.startTime!, widget.trip.trip!.route!.time!);
+    String? llegada = "${widget.trip.trip?.route?.endAddress?.description}-${widget.trip.startDate}-$horaLlegada";
     return Scaffold(
       appBar: AppBar(
         title: Container(
@@ -52,26 +82,42 @@ class HistoryStars extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           vertical: 10, horizontal: 40),
                       height: 90.0,
-                      child: const Column(
+                      child: Column(
                         crossAxisAlignment:
                             CrossAxisAlignment.start, // Alinear a la izquierda
                         mainAxisAlignment:
                             MainAxisAlignment.spaceAround, // Espaciado uniforme
                         children: <Widget>[
-                          Text('Salida : Morelos 09/09/2021 09:00',
-                              style: TextStyle(fontSize: 15.0)),
-                          Text('Llegada : Chihuahua 09/09/2021 12:00',
-                              style: TextStyle(fontSize: 15.0)),
+                          Text('Salida : $salida',
+                              style: const TextStyle(fontSize: 15.0)),
+                          Text('Llegada : $llegada',
+                              style: const TextStyle(fontSize: 15.0)),
                         ],
                       ),
                     ),
                   ),
-                  const SizedBox(
-                      height:
-                          16.0), // Espacio entre la tarjeta y las calificaciones
-                  comentarioWidget(),
-                  comentarioWidget(),
-                  comentarioWidget(),
+                  const SizedBox(height: 16.0),
+                  FutureBuilder<List<Qualifications>>(
+                    future: data,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CustomCircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return Text('No hay comentarios disponibles aún');
+                      } else {
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: snapshot.data!.length,
+                          itemBuilder: (context, index) {
+                            return comentarioWidget(snapshot.data![index]);
+                          },
+                        );
+                      }
+                    },
+                  ),
                 ],
               ),
             ),
@@ -81,34 +127,35 @@ class HistoryStars extends StatelessWidget {
     );
   }
 
-  Widget comentarioWidget() {
-    return const Card(
+  Widget comentarioWidget(Qualifications qualification) {
+    return Card(
       elevation: 5,
-      margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             CircleAvatar(
-              radius: 30, // puedes ajustar el tamaño de la imagen redonda aquí
-              backgroundImage: AssetImage(
-                  'assets/images/perfilGirl.avif'), // reemplaza con la ruta de tu imagen
+              radius: 30,
+              backgroundColor: Colors.transparent,
+              child: SvgPicture.string(
+                  utf8.decode(base64.decode(qualification.clientPhoto!))),
             ),
-            SizedBox(width: 16.0),
+            const SizedBox(width: 16.0),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Row(
                     children: [
-                      Text("Calificación: 4.5"),
-                      Icon(Icons.star, color: Colors.yellow),
+                      Text("Calificación: ${qualification.score.toString()}"),
+                      const Icon(Icons.star, color: Colors.yellow),
                     ],
                   ),
-                  SizedBox(height: 8.0),
+                  const SizedBox(height: 8.0),
                   Text(
-                      'Comentarios: Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum'),
+                      "Comentarios: ${qualification.comments ?? 'Sin comentarios'}"),
                 ],
               ),
             ),
