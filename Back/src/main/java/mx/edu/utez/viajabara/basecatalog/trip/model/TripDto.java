@@ -4,7 +4,10 @@ import mx.edu.utez.viajabara.access.user.model.User;
 import mx.edu.utez.viajabara.basecatalog.bus.model.Bus;
 import mx.edu.utez.viajabara.basecatalog.route.model.Route;
 import mx.edu.utez.viajabara.basecatalog.route.model.RouteDto;
+import mx.edu.utez.viajabara.basecatalog.route.model.RouteSaveDto;
+import mx.edu.utez.viajabara.basecatalog.way.model.Way;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.sql.Time;
 import java.text.ParseException;
@@ -25,13 +28,19 @@ public class TripDto {
     private Bus bus;
     @NotNull(groups = {Register.class,Modify.class,GetByDate.class})
     private Date startTime;
-
-    private Date endTime;
+    @Min(value = 0, groups = {Register.class, Modify.class})
+    private double time;
+    @Min(value = 0, groups = {Register.class, Modify.class})
+    private double meters;
+    @NotNull(groups = {Register.class,Modify.class})
+    private String stopovers;
     @NotNull(groups = {Register.class,Modify.class})
     private String workDays;
     @NotNull(groups = {Register.class,Modify.class})
-    private RouteDto route;
+    private List<Way> ways;
+
     private FilterType filterType;
+    private Date endTime;
 
     private int enabledSeats;
 
@@ -62,12 +71,13 @@ public class TripDto {
         this.bus = bus;
     }
 
-    public RouteDto getRoute() {
-        return route;
+
+    public List<Way> getWays() {
+        return ways;
     }
 
-    public void setRoute(RouteDto route) {
-        this.route = route;
+    public void setWays(List<Way> ways) {
+        this.ways = ways;
     }
 
     public Date getStartTime() {
@@ -106,16 +116,40 @@ public class TripDto {
         this.enabledSeats = enabledSeats;
     }
 
+    public double getTime() {
+        return time;
+    }
+
+    public void setTime(double time) {
+        this.time = time;
+    }
+
+    public double getMeters() {
+        return meters;
+    }
+
+    public void setMeters(double meters) {
+        this.meters = meters;
+    }
+
+    public String getStopovers() {
+        return stopovers;
+    }
+
+    public void setStopovers(String stopovers) {
+        this.stopovers = stopovers;
+    }
+
     public void setFilterType(FilterType filterType) {
         this.filterType = filterType;
     }
-    public static List<TripDto> fromList(List<Trip> trips) {
+    /*public static List<TripDto> fromList(List<Trip> trips) {
         return trips.stream()
                 .map(TripDto::from)
                 .collect(Collectors.toList());
-    }
+    }*/
 
-    public static TripDto from(Trip trip) {
+  /*  public static TripDto from(Trip trip) {
         TripDto tripDto = new TripDto();
         tripDto.setId(trip.getId());
         tripDto.setDriver(trip.getDriver());
@@ -129,7 +163,7 @@ public class TripDto {
         tripDto.setWorkDays(trip.getWorkDays());
         return tripDto;
     }
-
+*/
     public interface Register{}
     public interface Modify{}
     public interface ChangeStatus{}
