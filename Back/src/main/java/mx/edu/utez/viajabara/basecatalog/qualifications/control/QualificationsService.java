@@ -77,4 +77,15 @@ public class QualificationsService {
         }
         return new ResponseEntity<>(new Message(qualifications, "Se modificó la venta del lugar", TypesResponse.SUCCESS), HttpStatus.OK);
     }
+
+    @Transactional(readOnly = true)
+    public ResponseEntity<Object> generalQualificationByDriver(Long driver_id){
+        long trips;
+        try {
+            trips = repository.generalQualificationByDriver(driver_id);
+        }catch (Exception e){
+            trips = 0;
+        }
+        return new ResponseEntity<>(new Message(trips, "Calificación general del conductor", TypesResponse.SUCCESS), HttpStatus.OK);
+    }
 }
