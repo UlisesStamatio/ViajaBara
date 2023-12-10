@@ -6,6 +6,7 @@ import mx.edu.utez.viajabara.basecatalog.address.model.Address;
 import mx.edu.utez.viajabara.basecatalog.duty.model.Duty;
 import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOver;
 import mx.edu.utez.viajabara.basecatalog.trip.model.Trip;
+import mx.edu.utez.viajabara.basecatalog.way.model.Way;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -27,10 +28,6 @@ public class Route {
     @Column(name = "distance_time", columnDefinition = "DOUBLE")
     private double time;
 
-    @OneToMany(mappedBy = "route")
-    @JsonIgnore
-    private List<Trip> trips;
-
     @Column(name = "create_at", insertable = false, columnDefinition = "TIMESTAMP DEFAULT NOW()")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
@@ -40,6 +37,11 @@ public class Route {
 
     @OneToMany(mappedBy = "route", cascade = CascadeType.ALL)
     private List<StopOver> stopOvers;
+
+    @OneToMany(mappedBy = "route")
+    @JsonIgnore
+    private List<Way> ways;
+
 
     public Route() {
     }
