@@ -31,7 +31,7 @@ appInstance.use(SoftUIDashboard);
 appInstance.use(VueAxios, axiosInstance)
 appInstance.use(VueGoogleMaps, {
     load:{
-        key:  '',
+        key:  'AIzaSyCAdSIMc0pqLy4FIlPuedaAW3Tytc4-ULg',
     },
     autobindAllEvents: true,
 })
