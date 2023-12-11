@@ -1,5 +1,6 @@
 package mx.edu.utez.viajabara.basecatalog.way.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import mx.edu.utez.viajabara.basecatalog.route.model.Route;
 import mx.edu.utez.viajabara.basecatalog.trip.model.Trip;
 
@@ -19,6 +20,7 @@ public class Way {
 
     @ManyToOne
     @JoinColumn(name = "trip_id")
+    @JsonIgnore
     private Trip trip;
 
     @Column(name = "sequence", columnDefinition = "INT(2)")

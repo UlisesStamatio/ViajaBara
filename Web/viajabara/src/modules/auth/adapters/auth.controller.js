@@ -11,6 +11,14 @@ const OperationsController = {
         storeSession.setDataSession(data)
       }
       return response;
+    },
+    async updateProfile(data){
+      const response = await Operations.updateProfile('/update-user', data)
+      return response;
+    },
+    async changeProfile(data){
+      const response = await Operations.updateProfile('/change-profile', data)
+      return response;
     }
 }
 

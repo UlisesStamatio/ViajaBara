@@ -189,6 +189,7 @@ import listStates from '../../../state/use-cases/list.state'
 import getUser from '../../use-cases/get.user'
 import updateUser from '../../use-cases/update.user'
 import Loader from '../../../../components/Loader.vue'
+import moment from 'moment'
 
 export default {
   name: "UpdateUser",
@@ -355,6 +356,7 @@ export default {
             if (result.isConfirmed) {
                 user.id =  this.idUser
                 user.profile = document.getElementById('image_profile').src.split('base64,')[1]
+                user.birthday = moment(new Date(user.birthday)).format('YYYY-MM-DD');
                 this.isLoading = true;
                 const response = await updateUser(user)
                 const {message, error, data}  = response
