@@ -1,6 +1,6 @@
 <template>
 <Loader :isLoading="isLoading"/>
-  <div class="py-4 container-fluid">
+  <div class="py-4 container-fluid" v-show="!isLoading">
     <form class="mt-4 row" @submit.prevent="preNewBus()">
       <div class="col-lg-4">
         <div class="card">

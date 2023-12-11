@@ -1,6 +1,6 @@
 <template>
 <Loader :isLoading="isLoading"/>
-  <div class="container-fluid">
+  <div class="container-fluid" v-show="!isLoading">
     <form class="row g-3" @submit.prevent="preUpdateUser">
       <div class="col-12 col-sm-4">
         <div class="mt-4 card card-body">
