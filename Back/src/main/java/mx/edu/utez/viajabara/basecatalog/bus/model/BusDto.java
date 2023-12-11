@@ -1,5 +1,7 @@
 package mx.edu.utez.viajabara.basecatalog.bus.model;
 
+import mx.edu.utez.viajabara.basecatalog.typeBus.model.TypeBus;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -14,6 +16,8 @@ public class BusDto {
     private String mark;
     @NotBlank(groups = {Register.class,Modify.class})
     private String model;
+    @NotNull(groups = {Register.class,Modify.class})
+    private TypeBus typeBus;
     private String serial;
     private String fuel;
 
@@ -74,6 +78,14 @@ public class BusDto {
 
     public void setFuel(String fuel) {
         this.fuel = fuel;
+    }
+
+    public TypeBus getTypeBus() {
+        return typeBus;
+    }
+
+    public void setTypeBus(TypeBus typeBus) {
+        this.typeBus = typeBus;
     }
 
     public interface Register{}

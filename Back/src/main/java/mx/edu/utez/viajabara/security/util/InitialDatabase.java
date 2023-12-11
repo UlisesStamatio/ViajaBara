@@ -15,6 +15,8 @@ import mx.edu.utez.viajabara.basecatalog.person.control.PersonService;
 import mx.edu.utez.viajabara.basecatalog.person.model.Person;
 import mx.edu.utez.viajabara.basecatalog.state.control.StateService;
 import mx.edu.utez.viajabara.basecatalog.state.model.State;
+import mx.edu.utez.viajabara.basecatalog.typeBus.control.TypeBusService;
+import mx.edu.utez.viajabara.basecatalog.typeBus.model.TypeBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +45,10 @@ public class InitialDatabase implements CommandLineRunner {
     private final PersonService personService;
 
     private final DutyService dutyService;
+
+    private final TypeBusService typeBusService;
     @Autowired
-    public InitialDatabase(PrivilegeService privilegeService, RoleService roleService, UserService userService, StateService stateService, PasswordEncoder passwordEncoder, VisualConfigService visualConfigService, PersonService personService, DutyService dutyService) {
+    public InitialDatabase(PrivilegeService privilegeService, RoleService roleService, UserService userService, StateService stateService, PasswordEncoder passwordEncoder, VisualConfigService visualConfigService, PersonService personService, DutyService dutyService, TypeBusService typeBusService) {
         this.privilegeService = privilegeService;
         this.roleService = roleService;
         this.userService = userService;
@@ -53,6 +57,7 @@ public class InitialDatabase implements CommandLineRunner {
         this.visualConfigService = visualConfigService;
         this.personService = personService;
         this.dutyService = dutyService;
+        this.typeBusService = typeBusService;
     }
 
     @Override
@@ -101,6 +106,17 @@ public class InitialDatabase implements CommandLineRunner {
         if (!optionalPrivilege.isPresent()) {
             privilege = new Privilege(PrivilegeName.AUTOBUSES,
                     "Catálogo que permite tener el control de todos aquellos " +
+                            "autobuses que están en el sistema");
+            privilege = privilegeService.saveInitial(privilege);
+        } else {
+            privilege = optionalPrivilege.get();
+        }
+        privilegesCA += privilege.toString() + ",";
+
+        optionalPrivilege = privilegeService.findByName(PrivilegeName.TIPOS_AUTOBUSES);
+        if (!optionalPrivilege.isPresent()) {
+            privilege = new Privilege(PrivilegeName.TIPOS_AUTOBUSES,
+                    "Catálogo que permite tener el control de todos los tipos de " +
                             "autobuses que están en el sistema");
             privilege = privilegeService.saveInitial(privilege);
         } else {
@@ -278,7 +294,15 @@ public class InitialDatabase implements CommandLineRunner {
         /* ESTADOS */
         State state = null;
         Duty duty = null;
+        TypeBus typeBus = null;
         VisualConfig visualConfig;
+
+
+        Optional<TypeBus> optionalTypeBus = typeBusService.findByDescription("A");
+        if (!optionalTypeBus.isPresent()) {
+            typeBus = new TypeBus("A", true);
+            typeBusService.saveInitialTypeBus(typeBus);
+        }
 
 
         Optional<Duty> optional = dutyService.findByName("ida y vuelta");

@@ -87,6 +87,26 @@
                   {{ errors.model }}
               </div>
               </div>
+
+              <div class="col-12 col-sm-6  mb-3">
+              <label>Tipo de Unidad(<span class="text-danger">*</span>)</label>
+              <select
+                id="sex-select"
+                class="form-control"
+                name="sex-select"
+                v-model.trim="bus.typeBus.id"
+                :class="{ 'is-invalid': errors.type, 'is-valid': errors.type === null }"
+              >
+                <option value="" selected disabled>Selecciona una opción...</option>
+                <option v-for="(type, index) in types" :key="index" :value="type.id" >{{type.description}}</option>
+              </select>
+              <div class="invalid-feedback" v-if="errors.type">
+                  {{ errors.type }}
+              </div>
+            </div>
+              
+            </div>
+            <div class="row">
               <div class="mt-3 col-12 col-sm-6 mb-3 mt-sm-0">
                <label>Número de serie</label>
                 <input
@@ -102,8 +122,6 @@
                   {{ errors.serial }}
               </div>
               </div>
-            </div>
-            <div class="row">
               <div class="mt-3 col-12 col-sm-6 mb-3 mt-sm-0">
                <label>Combustible</label>
                 <input
@@ -159,6 +177,7 @@ import updateBus from '../../use-cases/update.bus'
 import imagesEmpty from '../../../../assets/img/errorImagen.png'
 import router from '../../../../router/index'
 import Loader from '../../../../components/Loader.vue'
+import listTypeBusEnabled from '../../use-cases/list.type.bus.enabled'
 
 export default {
   name: "UpdateBus",
@@ -173,7 +192,10 @@ export default {
         mark: null,
         model: null,
         serial: null,
-        fuel: null
+        fuel: null,
+        typeBus:{
+          id: ""
+        }
       },
       errors:{
         plaque: "",
@@ -181,16 +203,22 @@ export default {
         mark: "",
         model: "",
         serial: "",
-        fuel: ""
+        fuel: "",
+        type: ""
       },
       busOriginal:{},
       idBus: 0,
       image: "",
+      types: [],
+      isLoading: false,
      }
   },
     async mounted() {
     this.idBus = this.$route.params.id;
+    this.isLoading = true;
+    await this.listTypeBusEnabled();
     await this.getBus( this.idBus);
+    this.isLoading = false;
     
   },
   computed:{
@@ -204,6 +232,20 @@ export default {
     }
   },
   methods: {
+    async listTypeBusEnabled(){
+      const response = {...await listTypeBusEnabled()};
+      const {error, data} = response;
+      if(!error){
+          const {result} = data
+          this.types = result
+      }else{
+          this.$swal({
+            icon: "error", 
+            title: 'Ocurrio un error durante la consultar. Inténtalo de nuevo.',
+            type: "basic",
+          });
+      }
+    },
     async getBus(id){
       this.isLoading = true;
       const response = {...await getBus(id)};
@@ -270,10 +312,11 @@ export default {
       this.errors.model = busValidator.validateModel(bus.model);
       this.errors.serial = busValidator.validateSerial(bus.serial);
       this.errors.fuel = busValidator.validateFuel(bus.fuel);
+      this.errors.type = busValidator.validateType(bus.typeBus.id);
 
      if(this.isFormModified){
        if(!this.errors.plaque && !this.errors.mark && !this.errors.model &&
-          !this.errors.serial && !this.errors.fuel){
+          !this.errors.serial && !this.errors.fuel && !this.errors.type){
           
           bus.fuel = bus.fuel === '' ? null : bus.fuel 
           bus.serial = bus.serial === '' ? null : bus.serial 

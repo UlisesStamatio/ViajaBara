@@ -87,6 +87,25 @@
                   {{ errors.model }}
               </div>
               </div>
+
+               <div class="col-12 col-sm-6  mb-3">
+              <label>Tipo de Unidad(<span class="text-danger">*</span>)</label>
+              <select
+                id="sex-select"
+                class="form-control"
+                name="sex-select"
+                v-model.trim="bus.typeBus.id"
+                :class="{ 'is-invalid': errors.type, 'is-valid': errors.type === null }"
+              >
+                <option value="" selected disabled>Selecciona una opción...</option>
+                <option v-for="(type, index) in types" :key="index" :value="type.id" >{{type.description}}</option>
+              </select>
+              <div class="invalid-feedback" v-if="errors.type">
+                  {{ errors.type }}
+              </div>
+            </div>
+            </div>
+            <div class="row">
               <div class="mt-3 col-12 col-sm-6 mb-3 mt-sm-0">
                <label>Número de serie</label>
                 <input
@@ -102,8 +121,6 @@
                   {{ errors.serial }}
               </div>
               </div>
-            </div>
-            <div class="row">
               <div class="mt-3 col-12 col-sm-6 mb-3 mt-sm-0">
                <label>Combustible</label>
                 <input
@@ -119,7 +136,10 @@
                   {{ errors.fuel }}
               </div>
               </div>
+
+
             </div>
+            
 
 
             <div class="row mt-5">
@@ -156,6 +176,7 @@ import Choices from "choices.js";
 import imagesEmpty from '../../../../assets/img/errorImagen.png'
 import busValidator from '../../../../kernel/validators/bus.validator'
 import newBus from '../../use-cases/new.bus'
+import listTypeBusEnabled from '../../use-cases/list.type.bus.enabled'
 import router from '../../../../router/index'
 import Loader from '../../../../components/Loader.vue'
 
@@ -172,7 +193,10 @@ export default {
         mark: null,
         model: null,
         serial: null,
-        fuel: null
+        fuel: null,
+        typeBus: {
+          id: "",
+        },
       },
       errors:{
         plaque: "",
@@ -180,16 +204,35 @@ export default {
         mark: "",
         model: "",
         serial: "",
-        fuel: ""
+        fuel: "",
+        typeBus: ""
       },
       image: "",
       isLoading: false,
+      types: []
      }
   },
-  mounted() {
+  async mounted() {
+    this.isLoading = true;
     this.setImage()
+    await this.listTypeBusEnabled()
+    this.isLoading = false;
   },
   methods: {
+    async listTypeBusEnabled(){
+      const response = {...await listTypeBusEnabled()};
+      const {error, data} = response;
+      if(!error){
+          const {result} = data
+          this.types = result
+      }else{
+          this.$swal({
+            icon: "error", 
+            title: 'Ocurrio un error durante la consultar. Inténtalo de nuevo.',
+            type: "basic",
+          });
+      }
+    },
     setImage(){
         document.getElementById("image-bus").src = imagesEmpty
     },
@@ -238,13 +281,13 @@ export default {
       this.errors.serial = busValidator.validateSerial(bus.serial);
       this.errors.fuel = busValidator.validateFuel(bus.fuel);
       this.errors.image = busValidator.validateImage(bus.image);
+      this.errors.type = busValidator.validateType(bus.typeBus.id);
 
       if(!this.errors.plaque && !this.errors.mark && !this.errors.model &&
-          !this.errors.serial && !this.errors.fuel && !this.errors.image){
+          !this.errors.serial && !this.errors.fuel && !this.errors.image && !this.errors.type){
 
           bus.fuel = bus.fuel === '' ? null : bus.fuel 
           bus.serial = bus.serial === '' ? null : bus.serial 
-
           this.$swal({
           title: "¿Estás segura(a) de guardar los cambios?",
           text: "¡No podrás revertir esto.!",
