@@ -1,5 +1,6 @@
 <template>
-  <div class="container top-0 position-sticky z-index-sticky">
+  <Loader :isLoading="isLoading"/>
+  <div class="container top-0 position-sticky z-index-sticky" v-show="!isLoading">
     <div class="row">
       <div class="col-12">
         <navbar
@@ -10,7 +11,7 @@
       </div>
     </div>
   </div>
-  <main class="mt-0 main-content">
+  <main class="mt-0 main-content" v-show="!isLoading">
     <section>
       <div class="page-header min-vh-100">
         <div class="container">
@@ -26,25 +27,22 @@
                   </p>
                 </div>
                 <div class="card-body">
-                  <form role="form">
-                    <div class="mb-3">
-                      <label>Correo electrónico</label>
-                      <soft-input
-                        type="email"
-                        placeholder="Ingresa tu correo"
-                        name="email"
-                      />
+                  <form class="row g-3 needs-validation" novalidate @submit.prevent="prerecover" >
+                    <div class="col-12 mb-1">
+                      <label>Correo</label>
+                      <div class="input-group has-validation">
+                        <input type="email" v-model="form.email" class="form-control" :class="{ 'is-invalid': errors.email, 'is-valid': errors.email === null }" 
+                        placeholder="Ingresa tu correo" required/> 
+                        <div class="invalid-feedback" v-if="errors.email">
+                          {{ errors.email }}
+                        </div>
+                      </div>
                     </div>
+
                     <div class="text-center">
-                      <soft-button
-                        class="my-4"
-                        variant="gradient"
-                        color="danger"
-                        full-width
-                        size="lg"
-                        >Enviar
-                      </soft-button>
+                      <button type="submit" class="mt-4 btn btn-lg bg-gradient-danger w-100">Enviar</button>
                     </div>
+
                   </form>
                 </div>
               </div>
@@ -84,8 +82,10 @@
 
 <script>
 import Navbar from "@/examples/PageLayout/Navbar.vue";
-import SoftInput from "@/components/SoftInput.vue";
-import SoftButton from "@/components/SoftButton.vue";
+import Validations from "../../../../kernel/validators/autoregister.validator"
+import Recover from '../../use-cases/recover'
+import router from '../../../../router/index'
+import Loader from '../../../../components/Loader.vue'
 
 const body = document.getElementsByTagName("body")[0];
 import { mapMutations } from "vuex";
@@ -93,8 +93,18 @@ export default {
   name: "ResetPassword",
   components: {
     Navbar,
-    SoftInput,
-    SoftButton,
+    Loader
+  },
+  data(){
+    return{
+      form:{
+      email: "",
+      },
+      errors:{
+        email: "",
+      },
+      isLoading:false,
+    }
   },
   created() {
     this.toggleEveryDisplay();
@@ -107,6 +117,54 @@ export default {
     body.classList.add("bg-gray-100");
   },
   methods: {
+    prerecover(){
+      this.errors.email = Validations.validateEmail(this.form.email);
+
+      if(!this.errors.email){
+         this.$swal({
+          title: "¿Estás segura(a) de guardar los cambios?",
+          text: "¡No podrás revertir esto.!",
+          icon: "warning",
+          showCancelButton: true,
+          cancelButtonText: "Cancelar",
+          confirmButtonText: "Confirmar",
+          customClass: {
+            confirmButton: "btn bg-gradient-success",
+            cancelButton: "btn bg-gradient-secondary",
+          },
+          buttonsStyling: false,
+        }).then(async(result) => {
+          if (result.isConfirmed) {
+              this.isLoading = true;
+              const {message, error, data} = await Recover(this.form)
+              if(!error){
+                this.isLoading = false;
+                const {result:{text}} = data
+                this.$swal({
+                  icon: "success",
+                  title: message,
+                  text: text,
+                  type: 'success-message',
+                });
+                setTimeout(()=>{
+                 router.push({name: 'Cambiar Password'})
+                }, 2000)
+              }else{
+                this.isLoading = false;
+                const {text} = data
+                this.$swal({
+                    icon: "error", 
+                    title: message,
+                    text: text,
+                    type: "basic",
+                  });
+              }
+          } else if (result.dismiss === this.$swal.DismissReason.cancel) {
+            this.$swal.dismiss;
+          }
+        });
+      }
+    },
     ...mapMutations(["toggleEveryDisplay", "toggleHideConfig"]),
   },
 };
