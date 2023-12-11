@@ -15,9 +15,9 @@ class DetailsOfTravels extends StatefulWidget {
 class _DetailsOfTravels extends State<DetailsOfTravels> {
   @override
   Widget build(BuildContext context) {
-    int lastPos = widget.trip.trip!.route!.stopOvers!.length - 1;
-    String destino = widget.trip.trip!.route!.stopOvers![lastPos].address!.state!;
-    int numParadas = widget.trip.trip!.route!.stopOvers!.length - 2;
+    int lastPos = widget.trip.trip!.stopOvers!.length - 1;
+    String destino = widget.trip.trip!.stopOvers![lastPos].address!.state!;
+    int numParadas = widget.trip.trip!.stopOvers!.length - 2;
     String textoParadas;
     if (numParadas <= 0) {
       textoParadas = 'Directo - Local';
@@ -58,7 +58,7 @@ class _DetailsOfTravels extends State<DetailsOfTravels> {
                           ),
                           const SizedBox(width: 10),
                           Text(
-                            'Origen: ${widget.trip.trip!.route!.stopOvers?[0].address!.state}',
+                            'Origen: ${widget.trip.trip!.stopOvers?[0].address!.state}',
                             style: const TextStyle(
                               color: ColorsApp.text,
                               fontSize: 16.0,
@@ -148,7 +148,7 @@ class _DetailsOfTravels extends State<DetailsOfTravels> {
                           ),
                           const SizedBox(width: 10),
                           Text(
-                              'Hora de llegada: ${Utils().sumarTiempo(widget.trip.trip!.startTime!, widget.trip.trip!.route!.time!)}',
+                              'Hora de llegada: ${Utils().sumarTiempo(widget.trip.trip!.startTime!, widget.trip.trip!.time!)}',
                               style: const TextStyle(
                                 color: ColorsApp.text,
                                 fontSize: 16.0,
@@ -165,7 +165,7 @@ class _DetailsOfTravels extends State<DetailsOfTravels> {
                           ),
                           const SizedBox(width: 10),
                           Text(
-                            'Duración: ${Utils().formatTime(widget.trip.trip!.route!.time!)}',
+                            'Duración: ${Utils().formatTime(widget.trip.trip!.time!)}',
                             style: const TextStyle(
                               color: ColorsApp.text,
                               fontSize: 16.0,

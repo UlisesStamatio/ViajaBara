@@ -156,7 +156,7 @@ class _HistoryState extends State<History> {
                     children: [
                       Expanded(
                         child: Text(
-                          '${trip.trip?.route?.stopOvers?[0].address?.state}',
+                          '${trip.trip?.stopOvers?[0].address?.state}',
                           style: const TextStyle(
                             fontSize: 15.0,
                             color: ColorsApp.text,
@@ -176,7 +176,7 @@ class _HistoryState extends State<History> {
                         child: Padding(
                           padding: const EdgeInsets.only(left: 5),
                           child: Text(
-                            '${trip.trip?.route?.stopOvers?.last.address?.state}',
+                            '${trip.trip?.stopOvers?.last.address?.state}',
                             style: const TextStyle(
                               fontSize: 15.0,
                               color: ColorsApp.text,
@@ -210,7 +210,7 @@ class _HistoryState extends State<History> {
                         ),
                       ),
                       Text(
-                        'Llegada: ${trip.trip?.route?.time}',
+                        'Llegada: ${trip.trip?.time}',
                         style: const TextStyle(
                           fontSize: 15.0,
                           color: ColorsApp.text,
