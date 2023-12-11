@@ -49,6 +49,10 @@ const busValidator = {
         if(fuel.length > MAX_PLAQUE) return `El combustible debe ser menor a ${MAX_PLAQUE} caracteres.`;
         else if(REGEX_INJECTION_HTML.test(fuel)) return "El combustible es inválido."
         return null;
+    },
+    validateType(type){
+        if(!type) return "Campo obligatorio.";
+        return null;
     }
 }
 

@@ -1,6 +1,6 @@
 <template>
   <Loader :isLoading="isLoading"/>
-  <div class="container top-0 position-sticky z-index-sticky">
+  <div class="container top-0 position-sticky z-index-sticky" v-show="!isLoading">
     <div class="row">
       <div class="col-12">
         <navbar
@@ -11,7 +11,7 @@
       </div>
     </div>
   </div>
-  <main class="mt-5 main-content">
+  <main class="mt-5 main-content" v-show="!isLoading">
     <section>
       <div class="page-header min-vh-100">
         <div class="container">
@@ -89,7 +89,7 @@
                   <p class="mx-auto mb-4 text-sm">
                     ¿No tienes una cuenta? 
                     <router-link
-                      :to="{ name: 'Signup Illustration' }"
+                      :to="{ name: 'Auto Registro' }"
                       class=" font-weight-bold"
                     >
                       Registrarse

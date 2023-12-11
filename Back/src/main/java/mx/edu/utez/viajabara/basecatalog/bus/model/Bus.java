@@ -3,6 +3,7 @@ package mx.edu.utez.viajabara.basecatalog.bus.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import mx.edu.utez.viajabara.basecatalog.trip.model.Trip;
+import mx.edu.utez.viajabara.basecatalog.typeBus.model.TypeBus;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -40,6 +41,10 @@ public class Bus {
     @Column(name = "status", columnDefinition = "BOOL DEFAULT TRUE")
     private boolean status;
 
+    @ManyToOne
+    @JoinColumn(name = "type_id")
+    private TypeBus typeBus;
+
 
     @OneToMany(mappedBy = "bus")
     @JsonIgnore
@@ -48,11 +53,12 @@ public class Bus {
     public Bus() {
     }
 
-    public Bus(String plaque, String mark, String model, boolean status) {
+    public Bus(String plaque, String mark, String model, boolean status, TypeBus typeBus) {
         this.plaque = plaque;
         this.mark = mark;
         this.model = model;
         this.status = status;
+        this.typeBus = typeBus;
     }
 
     public Long getId() {
@@ -125,5 +131,13 @@ public class Bus {
 
     public void setStatus(boolean status) {
         this.status = status;
+    }
+
+    public TypeBus getTypeBus() {
+        return typeBus;
+    }
+
+    public void setTypeBus(TypeBus typeBus) {
+        this.typeBus = typeBus;
     }
 }

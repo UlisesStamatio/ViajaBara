@@ -1,6 +1,6 @@
 <template>
   <Loader :isLoading="isLoading"/>
-  <div class="py-4 container-fluid">
+  <div class="py-4 container-fluid" v-show="!isLoading">
     <form class="mt-4 row">
       <div class="col-lg-4">
         <div class="card ">
@@ -32,7 +32,7 @@
                     name="plaque"
                     class="form-control"
                     disabled
-                    v-model.trim="bus.plaque"
+                    :value="bus.plaque"
                 />
               </div>
               <div class="mt-3 col-12 col-sm-6 mb-4 mt-sm-0">
@@ -44,7 +44,7 @@
                     name="mark"
                     class="form-control"
                     disabled
-                    v-model.trim="bus.mark"
+                    :value="bus.mark"
                 />
               </div>
             </div>
@@ -58,9 +58,26 @@
                     name="model"
                     class="form-control"
                     disabled
-                    v-model.trim="bus.model"
+                    :value="bus.model"
                 />
               </div>
+             
+             <div class="col-12 col-sm-6  mb-3">
+              <label>Tipo de Unidad(<span class="text-danger">*</span>)</label>
+              <select
+                id="sex-select"
+                class="form-control"
+                name="sex-select"
+                :value="bus.typeBus.id"
+                disabled
+              >
+                <option value="" selected disabled>Selecciona una opción...</option>
+                <option v-for="(type, index) in types" :key="index" :value="type.id" >{{type.description}}</option>
+              </select>
+            </div>
+              
+            </div>
+            <div class="row">
               <div class="mt-3 col-12 col-sm-6 mb-4 mt-sm-0">
                 <label>Número de serie:</label>
                 <input
@@ -70,11 +87,9 @@
                     name="serial"
                     class="form-control"
                     disabled
-                    v-model.trim="bus.serial"
+                    :value="bus.serial"
                 />
               </div>
-            </div>
-            <div class="row">
               <div class="mt-3 col-12 col-sm-6 mb-4 mt-sm-0">
                 <label>Combustible:</label>
                 <input
@@ -84,7 +99,7 @@
                     name="name"
                     class="form-control"
                     disabled
-                    v-model.trim="bus.fuel"
+                    :value="bus.fuel"
                 />
               </div>
             </div>
@@ -115,6 +130,7 @@ import Choices from "choices.js";
 import getBus from '../../use-cases/get.bus'
 import router from '../../../../router/index'
 import Loader from '../../../../components/Loader.vue'
+import listTypeBusEnabled from '../../use-cases/list.type.bus.enabled'
 
 export default {
   name: "DetailBus",
@@ -129,23 +145,41 @@ export default {
         mark: "",
         model: "",
         serial: "",
-        fuel: ""
+        fuel: "",
+        typeBus:{
+          id: ""
+        }
       },
       idBus: 0,
       isLoading: false,
+      types: [],
      }
   },
     async mounted() {
     this.idBus = this.$route.params.id;
+    this.isLoading = true;
     await this.getBus( this.idBus);
-    
+    await this.listTypeBusEnabled()
+    this.isLoading = false;
   },
   methods: {
+    async listTypeBusEnabled(){
+      const response = {...await listTypeBusEnabled()};
+      const {error, data} = response;
+      if(!error){
+          const {result} = data
+          this.types = result
+      }else{
+          this.$swal({
+            icon: "error", 
+            title: 'Ocurrio un error durante la consultar. Inténtalo de nuevo.',
+            type: "basic",
+          });
+      }
+    },
     async getBus(id){
-      this.isLoading = true;
       const response = {...await getBus(id)};
       const {error, data} = response;
-      this.isLoading = false;
         if(!error){
           const {result} = data
           document.getElementById("image-bus").src = `data:image/png;base64,${result.image}`;

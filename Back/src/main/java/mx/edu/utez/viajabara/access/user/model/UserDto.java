@@ -13,7 +13,7 @@ public class UserDto {
     private Long id;
     @NotBlank(groups = {Modify.class, Register.class})
     private String username;
-    @NotBlank(groups = {Modify.class, Register.class,ChangeProfile.class})
+    @NotBlank(groups = {Modify.class,ChangeProfile.class})
     private String profile;
     @NotBlank(groups = {Modify.class, Register.class, Recover.class, ChangePassword.class, VerifyCode.class, UpdatePassword.class,GetUser.class})
     private String email;

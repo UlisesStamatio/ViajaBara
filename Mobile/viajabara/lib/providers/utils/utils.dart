@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -17,7 +18,8 @@ class Utils {
     DateTime newTime = dateTime.add(duration);
 
     // Formatear la nueva hora a una cadena de texto
-    String formattedTime = "${newTime.hour.toString().padLeft(2, '0')}:${newTime.minute.toString().padLeft(2, '0')}";
+    String formattedTime =
+        "${newTime.hour.toString().padLeft(2, '0')}:${newTime.minute.toString().padLeft(2, '0')}";
 
     return formattedTime;
   }
@@ -39,14 +41,29 @@ class Utils {
       resultado += "${minutos}min";
     }
 
-    return resultado.trim(); // Elimina los espacios extra al final si solo hay horas
+    return resultado
+        .trim(); // Elimina los espacios extra al final si solo hay horas
   }
 
   Widget profilePicture(String profile) {
-    profile = utf8.decode(base64.decode(profile));
-    return SvgPicture.string(
-      profile,
-      fit: BoxFit.contain,
-    );
+    try {
+      if (profile.contains('<svg')) {
+        // Si es un SVG
+        return SvgPicture.string(
+          profile,
+          fit: BoxFit.cover,
+        );
+      } else {
+        // Si es PNG/JPG
+        Uint8List bytes = base64.decode(profile);
+        return Image.memory(
+          bytes,
+          fit: BoxFit.cover,
+        );
+      }
+    } catch (e) {
+      print("Error al decodificar la imagen: $e");
+      return const Icon(Icons.error);
+    }
   }
 }

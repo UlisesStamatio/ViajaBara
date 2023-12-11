@@ -15,5 +15,6 @@ public enum PrivilegeName {
     SERVICIOS,
     CALIFICACIONES,
     CONDUCTOR,
-    CLIENTE
+    CLIENTE,
+    TIPOS_AUTOBUSES
 }

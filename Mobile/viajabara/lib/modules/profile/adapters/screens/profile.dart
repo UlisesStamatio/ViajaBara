@@ -11,7 +11,9 @@ import 'package:viajabara/kernel/widgets/profile/change_information.dart';
 import 'package:viajabara/kernel/widgets/profile/change_password.dart';
 import 'package:viajabara/kernel/widgets/profile/change_photo.dart';
 import 'package:viajabara/providers/auth_provider.dart';
+import 'package:viajabara/providers/general_provider.dart';
 import 'package:viajabara/providers/session_manager.dart';
+import 'package:viajabara/providers/utils/utils.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -32,10 +34,14 @@ class _ProfileState extends State<Profile> {
   String state = '';
   String profile = '';
   bool isAdmin = false;
+  int? countTravels;
+  int? driverQualification;
 
   void initState() {
     super.initState();
     _futureUserInfo = _loadUserInfo();
+    _getTravelsCount();
+    _getDriverQualification();
   }
 
   Future<void> _loadUserInfo() async {
@@ -65,13 +71,28 @@ class _ProfileState extends State<Profile> {
 
   void _updateUserProfile(ResMsg dataUser) {
     setState(() {
-      profile = utf8.decode(base64.decode(dataUser.profile!));
+      profile = dataUser.profile!;
       name = dataUser.name!;
       email = dataUser.email!;
       cellphone = dataUser.cellphone!;
       birthDate = dataUser.birthDate!;
       sex = dataUser.sex!;
       state = dataUser.state!;
+    });
+  }
+
+  void _getTravelsCount() async {
+    int numberTravels = await GeneralProvider().getDriverTripCount();
+    setState(() {
+      countTravels = numberTravels;
+    });
+  }
+
+  void _getDriverQualification() async {
+    int qualification = await GeneralProvider().driverQualificationAverage();
+    setState(() {
+      driverQualification = qualification;
+      print(qualification);
     });
   }
 
@@ -93,6 +114,12 @@ class _ProfileState extends State<Profile> {
         }
       },
     );
+  }
+
+  void _reloadProfileData() {
+    setState(() {
+      _futureUserInfo = _loadUserInfo();
+    });
   }
 
   Widget profileCard() {
@@ -143,10 +170,7 @@ class _ProfileState extends State<Profile> {
                           child: SizedBox(
                             height: 120,
                             width: 120,
-                            child: SvgPicture.string(
-                              profile,
-                              fit: BoxFit.contain, // Asegúrate de que el SVG se ajusta dentro del contenedor
-                            ),
+                            child: Utils().profilePicture(profile)
                           ),
                         ),
                         Padding(
@@ -168,21 +192,17 @@ class _ProfileState extends State<Profile> {
                               const Text("Calificación general"),
                               const SizedBox(height: 10),
                               Center(
-                                child: RatingBar.builder(
-                                  initialRating: 3,
-                                  minRating: 1,
-                                  direction: Axis.horizontal,
-                                  allowHalfRating: true,
-                                  itemCount: 5,
-                                  itemPadding: const EdgeInsets.symmetric(
-                                      horizontal: 4.0),
-                                  itemBuilder: (context, _) => const Icon(
+                                child: RatingBarIndicator(
+                                  rating: driverQualification?.toDouble() ??
+                                      0, // Usa driverQualification como calificación
+                                  itemBuilder: (context, index) => const Icon(
                                     Icons.star,
                                     color: Colors.amber,
                                   ),
-                                  onRatingUpdate: (rating) {
-                                    print(rating);
-                                  },
+                                  itemCount: 5,
+                                  itemSize:
+                                      40.0, // Puedes ajustar el tamaño según tus necesidades
+                                  direction: Axis.horizontal,
                                 ),
                               ),
                               Container(
@@ -192,39 +212,23 @@ class _ProfileState extends State<Profile> {
                             ],
                           ),
                         },
-                        const Row(
+                        Row(
                           children: [
                             Expanded(
                               child: ListTile(
                                 title: Text(
-                                  '89',
+                                  countTravels.toString(),
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold),
                                 ),
-                                subtitle: Text(
+                                subtitle: const Text(
                                   'Viajes realizados',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontSize: 15,
                                   ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: ListTile(
-                                title: Text(
-                                  '23',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                subtitle: Text(
-                                  'Último mes',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(fontSize: 15),
                                 ),
                               ),
                             ),
@@ -347,7 +351,6 @@ class _ProfileState extends State<Profile> {
                           alignment: Alignment.centerLeft,
                           child: Row(
                             children: [
-                              // Usando operador ternario para determinar el icono
                               Icon(
                                 sex == 'M'
                                     ? Icons.female
@@ -467,9 +470,11 @@ class _ProfileState extends State<Profile> {
         ),
       ),
       builder: (BuildContext context) {
-        return const ChangeInformation();
+        return ChangeInformation(onUpdate: _reloadProfileData);
       },
-    );
+    ).then((_) {
+      _reloadProfileData(); // Recargar datos del perfil después de cerrar la pantalla de cambio de información
+    });
   }
 
 }

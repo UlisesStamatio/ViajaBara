@@ -1,6 +1,6 @@
 <template>
 <Loader :isLoading="isLoading"/>
-  <div class="container-fluid">
+  <div class="container-fluid" v-show="!isLoading">
     <form class="row g-3" @submit.prevent="preNewUser">
       <div class="col-12 col-sm-4">
         <div class="mt-4 card card-body">
@@ -241,6 +241,7 @@ import newUser from '../../use-cases/new.user'
 import router from '../../../../router/index'
 import listStates from '../../../state/use-cases/list.state'
 import Loader from '../../../../components/Loader.vue'
+import moment from 'moment'
 
 export default {
   name: "NewUser",
@@ -381,6 +382,7 @@ export default {
           buttonsStyling: false,
         }).then(async(result) => {
           if (result.isConfirmed) {
+              user.birthday = moment(new Date(user.birthday)).format('YYYY-MM-DD')
               user.profile = document.getElementById('image_profile').src.split('base64,')[1]
               this.isLoading = true;
               const {message, error, data} = await newUser(user)
