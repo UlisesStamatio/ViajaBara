@@ -167,19 +167,7 @@ public class TripDto {
         tripDto.setStartTime(trip.getStartTime());
         tripDto.setWays(trip.getWays());
         tripDto.setWorkDays(trip.getWorkDays());
-        return tripDto;
-    }
-    public static List<TripDto> fromListToBookSelect(List<Trip> trips) {
-        return trips.stream()
-                .map(TripDto::fromToBookSelect)
-                .collect(Collectors.toList());
-    }
-    public static TripDto fromToBookSelect(Trip trip) {
-        TripDto tripDto = new TripDto();
-        tripDto.setId(trip.getId());
-        tripDto.setStartTime(trip.getStartTime());
-        tripDto.setWays(Way.fromListToBookSelect(trip.getWays()));
-        tripDto.setWorkDays(trip.getWorkDays());
+        tripDto.setStopovers(trip.getStopovers());
         return tripDto;
     }
 

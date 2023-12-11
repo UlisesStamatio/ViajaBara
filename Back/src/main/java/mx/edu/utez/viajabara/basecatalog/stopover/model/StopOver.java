@@ -2,11 +2,18 @@ package mx.edu.utez.viajabara.basecatalog.stopover.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jdk.internal.org.objectweb.asm.TypeReference;
+import mx.edu.utez.viajabara.access.role.model.Role;
 import mx.edu.utez.viajabara.basecatalog.address.model.Address;
 import mx.edu.utez.viajabara.basecatalog.route.model.Route;
 
 import javax.persistence.*;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "stopovers")
@@ -114,5 +121,12 @@ public class StopOver {
 
     public void setTime(double time) {
         this.time = time;
+    }
+    public List<StopOver> parseStopOversFromJson(String stopoversJson) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.configure(DeserializationFeature.USE_JAVA_ARRAY_FOR_JSON_ARRAY, true);
+        List<StopOver> stopOvers = mapper.readValue(stopoversJson, new com.fasterxml.jackson.core.type.TypeReference<List<StopOver>>() {
+        });
+        return stopOvers;
     }
 }

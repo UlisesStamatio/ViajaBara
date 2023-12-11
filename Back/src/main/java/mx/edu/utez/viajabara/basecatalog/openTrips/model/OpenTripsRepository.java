@@ -11,7 +11,7 @@ public interface OpenTripsRepository extends JpaRepository<OpenTrips,Long> {
     @Query(value = "SELECT * from open_trips where status=?1",nativeQuery = true)
     List<OpenTrips> searchAllByStatusActive(int status);
     
-    @Query("SELECT new mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTripsDto(ot.id, ot.trip, DATE_FORMAT(ot.startDate, '%Y-%m-%d'), ot.status, ot.enableSeats) FROM OpenTrips ot WHERE ot.trip.id = :tripId AND ot.startDate = STR_TO_DATE(:startDate, '%Y-%m-%d')")
+    @Query("SELECT new mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTripsDto(ot.id, ot.trip, DATE_FORMAT(ot.startDate, '%Y-%m-%d'), ot.status, ot.enableSeats) FROM OpenTrips ot WHERE ot.trip.id = :tripId AND ot.startDate = STR_TO_DATE(:startDate, '%Y-%m-%d') AND ot.enableSeats > 0")
     OpenTripsDto findByTripIdAndDate(@Param("tripId") Long tripId, @Param("startDate") String startDate);
 
     @Query(value = "SELECT op.* FROM open_trips op inner join trips t on op.trip_id = t.id where (op.status = 1 OR op.status = 2) AND DATE(op.start_date) = CURDATE() AND t.driver_id = ?1",nativeQuery = true)

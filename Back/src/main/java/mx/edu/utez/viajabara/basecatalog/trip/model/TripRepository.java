@@ -13,11 +13,11 @@ public interface TripRepository extends JpaRepository<Trip,Long> {
 
     @Query("SELECT t " +
             "FROM Trip t " +
-            "INNER JOIN t.ways w " + // Corregido el join
+            "INNER JOIN t.ways w " +
             "WHERE t.status = true " +
             "AND w.status = true " +
             "AND JSON_SEARCH(t.workDays, 'one', :workDay) IS NOT NULL")
-    List<Trip> findTripsAvailableInTimeAndDay(@Param("workDay") String workDay);
+    List<Trip> findTripsAvailableInDay(@Param("workDay") String workDay);
 
 
 }

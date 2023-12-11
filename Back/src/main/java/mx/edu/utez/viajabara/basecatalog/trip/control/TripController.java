@@ -62,7 +62,7 @@ public class TripController {
         return service.getStatesForFiltersByDate(date, true);
     }
 
-    /*
+
     @PostMapping("/find-by-filters-client")
     @Secured({VIAJES})
     @ApiOperation(
@@ -71,7 +71,7 @@ public class TripController {
     )
     public ResponseEntity<Object> findByFiltersClient(@RequestBody BookTripDto bookTripDto) throws ParseException {
         return service.findByFiltersClient(bookTripDto);
-    }*/
+    }
 
 
     @PostMapping("")

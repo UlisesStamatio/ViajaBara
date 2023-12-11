@@ -160,8 +160,6 @@ class _TripState extends State<Trip> {
 
       completer.complete();
     } catch (e) {
-      // ignore: use_build_context_synchronously
-      showErrorSnackBar(context, "Error al cargar los estados");
       completer.completeError(e);
     }
     return completer.future;
@@ -219,7 +217,7 @@ class _TripState extends State<Trip> {
           dateController.text = "${picked.toLocal()}".split(' ')[0];
           bookTrip.date = dateController.text;
           cleanInputs();
-          loadStatesForTrip();
+          _initialization = loadStatesForTrip();
         });
       }
     }
