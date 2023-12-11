@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import SignupIllustration from "../views/auth/signup/Illustration.vue";
+import Autoregister from "../modules/auth/adapters/views/Autoregister.vue";
 
 import Error404 from "../modules/auth/adapters/views/Error404.vue";
 import Error500 from "../modules/auth/adapters/views/Error500.vue";
@@ -37,9 +37,9 @@ const routes = [
   },
 
   {
-    path: "/signup",
-    name: "Signup Illustration",
-    component: SignupIllustration,
+    path: "/autoregistro",
+    name: "Auto Registro",
+    component: Autoregister,
   },
   {
     path: "/error404",

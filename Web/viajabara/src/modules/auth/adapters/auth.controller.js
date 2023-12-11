@@ -19,6 +19,10 @@ const OperationsController = {
     async changeProfile(data){
       const response = await Operations.updateProfile('/change-profile', data)
       return response;
+    },
+    async autoregister(data){
+      const response = await Operations.autoregister('/register', data)
+      return response;
     }
 }
 
