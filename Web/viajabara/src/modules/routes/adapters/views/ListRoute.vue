@@ -1,6 +1,6 @@
 <template>
 <Loader :isLoading="isLoading"/>
-  <div class="py-4 container-fluid">
+  <div class="py-4 container-fluid" v-show="!isLoading">
     <div class="row">
       <div class="col-12">
         <div class="card">

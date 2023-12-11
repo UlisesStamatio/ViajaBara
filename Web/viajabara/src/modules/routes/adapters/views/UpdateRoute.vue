@@ -1,6 +1,6 @@
 <template>
 <Loader :isLoading="isLoading"/>
-  <div class="container-fluid">
+  <div class="container-fluid" v-show="!isLoading">
     <div class="row">
       <div class=" col-lg-12 col-12">
         <div class="mt-4 card card-body">
