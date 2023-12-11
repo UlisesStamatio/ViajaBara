@@ -168,7 +168,7 @@ export default {
       }
     },
     goProfile(){
-      router.push({name: 'Perfil Usuario'})
+      router.push({name: 'Gestionar Perfil'})
     }
   },
 };

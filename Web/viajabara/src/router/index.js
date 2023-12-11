@@ -86,8 +86,8 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: "/profile",
-    name: "Perfil Usuario",
+    path: "/perfil",
+    name: "Gestionar Perfil",
     component: Profile,
     meta: { requiresAuth: true }
   },
