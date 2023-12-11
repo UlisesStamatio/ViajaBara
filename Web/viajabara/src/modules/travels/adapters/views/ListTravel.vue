@@ -1,5 +1,6 @@
 <template>
-  <div class="py-4 container-fluid">
+<Loader :isLoading="isLoading"/>
+  <div class="py-4 container-fluid" v-show="!isLoading">
     <div class="row">
       <div class="col-12">
         <div class="card">
@@ -28,7 +29,7 @@
                     <th style="font-size: 0.65em; font-weight: bold; text-align: start">#</th>
                     <th style="font-size: 0.65em; font-weight: bold">Conductor</th>
                     <th style="font-size: 0.65em; font-weight: bold">Unidad</th>
-                    <th style="font-size: 0.65em; font-weight: bold">Ruta</th>
+                    <th style="font-size: 0.65em; font-weight: bold">Número de rutas</th>
                     <th style="font-size: 0.65em; font-weight: bold">Hora</th>
                     <th style="font-size: 0.65em; font-weight: bold">Estatus</th>
                     <th style="font-size: 0.65em; font-weight: bold">Acciones</th>
@@ -41,7 +42,7 @@
                     </td> 
                     <td class="text-sm">{{trip.driver.username}}</td>
                     <td class="text-sm">{{trip.bus.plaque}}</td>
-                    <td class="text-sm">{{trip.route}}</td>
+                    <td class="text-sm text-center">{{trip.ways.length}}</td>
                     <td class="text-sm">{{trip.startTime}}</td>
                     <td>
                        <span class="badge badge-sm" :class="{'badge-success': trip.status, 'badge-danger': !trip.status}"
@@ -50,7 +51,7 @@
                     </td>
                     <td class="text-sm">
                          <a
-                         title="Actualizar viaje"
+                            title="Actualizar viaje"
                             class="clickeable"
                             @click="editTrip(trip.id)"
                           >
@@ -99,14 +100,18 @@ import $ from 'jquery';
 import listTrips from '../../use-cases/list.trips';
 import changeStatusTrip from '../../use-cases/change.status.trip';
 import router from '../../../../router/index'
-
+import Loader from '../../../../components/Loader.vue'
 
 export default {
   name: "ListTravel",
+  components:{
+    Loader,
+  },
   data(){
     return {
       trips: [],
       datatable: null,
+      isLoading: false,
     }
   },
   async mounted() {
@@ -118,10 +123,7 @@ export default {
       try{
         this.isLoading = true;
          const {data:{result} } = await listTrips();
-         this.trips = result.map((trip) =>{
-          trip.route.startAddress.description.split(',')[0] + ' - ' + trip.route.endAddress.description.split(',')[0]
-          return {...trip, route: trip.route.startAddress.description.split(',')[0] + ' - ' + trip.route.endAddress.description.split(',')[0], startTime: new Date(trip.startTime).toTimeString().split(' ')[0]}
-         })
+         this.trips = result.map((trip) => ({...trip, startTime: new Date(trip.startTime).toTimeString().split(' ')[0]}) )
          if(this.datatable){
           this.datatable.destroy()
          }
@@ -161,8 +163,7 @@ export default {
     },
     async changeStatusTrip(payload){
       this.$swal({
-            title: "¿Estás segura(a) de realizar la acción?",
-            text: "¡No podrás revertir esto.!",
+            title: "¿Estás segura(a) de cambiar el estatus del viaje?",
             icon: "warning",
             showCancelButton: true,
             cancelButtonText: "Cancelar",
