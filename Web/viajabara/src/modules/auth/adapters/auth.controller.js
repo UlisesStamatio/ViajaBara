@@ -7,8 +7,12 @@ const OperationsController = {
       if(!response.error){
         let {data:{token}} = response
         let {data} = response
-        storeSession.setToken(token);
-        storeSession.setDataSession(data)
+        let {roles} = data;
+        if(roles.some((rol) => rol.keyRole === 'ADMIN')){
+          storeSession.setToken(token);
+          storeSession.setDataSession(data)
+        }
+
       }
       return response;
     },
@@ -18,6 +22,18 @@ const OperationsController = {
     },
     async changeProfile(data){
       const response = await Operations.updateProfile('/change-profile', data)
+      return response;
+    },
+    async autoregister(data){
+      const response = await Operations.autoregister('/register', data)
+      return response;
+    },
+    async recover(data){
+      const response = await Operations.recover('/recover', data)
+      return response;
+    },
+    async changePassword(data){
+      const response = await Operations.changePassword('/change-password', data)
       return response;
     }
 }

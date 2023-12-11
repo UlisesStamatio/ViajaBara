@@ -89,7 +89,7 @@
                   <p class="mx-auto mb-4 text-sm">
                     ¿No tienes una cuenta? 
                     <router-link
-                      :to="{ name: 'Signup Illustration' }"
+                      :to="{ name: 'Auto Registro' }"
                       class=" font-weight-bold"
                     >
                       Registrarse
