@@ -3,10 +3,13 @@ package mx.edu.utez.viajabara.basecatalog.bus.control;
 import mx.edu.utez.viajabara.basecatalog.bus.model.Bus;
 import mx.edu.utez.viajabara.basecatalog.bus.model.BusDto;
 import mx.edu.utez.viajabara.basecatalog.bus.model.BusRepository;
+import mx.edu.utez.viajabara.basecatalog.typeBus.model.TypeBus;
+import mx.edu.utez.viajabara.basecatalog.typeBus.model.TypeBusRepository;
 import mx.edu.utez.viajabara.utils.entity.Message;
 import mx.edu.utez.viajabara.utils.entity.TypesResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -25,8 +28,12 @@ public class BusService {
 
     private final BusRepository repository;
 
-    public BusService(BusRepository repository) {
+    private final TypeBusRepository typeBusRepository;
+
+    @Autowired
+    public BusService(BusRepository repository, TypeBusRepository typeBusRepository) {
         this.repository = repository;
+        this.typeBusRepository = typeBusRepository;
     }
 
     @Transactional(readOnly = true)
@@ -65,7 +72,12 @@ public class BusService {
             return new ResponseEntity<>(new Message("La placa del autobús ya existe", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
         }
 
-        Bus bus = new Bus(dto.getPlaque(),dto.getMark(),dto.getModel(),true);
+        Optional<TypeBus> optionalTypeBus = typeBusRepository.findById(dto.getTypeBus().getId());
+        if (!optionalTypeBus.isPresent()) {
+            return new ResponseEntity<>(new Message("El tipo de autobus no se ha encontrado", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
+        }
+
+        Bus bus = new Bus(dto.getPlaque(),dto.getMark(),dto.getModel(),true, optionalTypeBus.get());
 
         if(dto.getImage() != null){
             bus.setImage(dto.getImage());
@@ -94,6 +106,12 @@ public class BusService {
         if (!busOptional.isPresent()) {
             return new ResponseEntity<>(new Message("No se encontró el autobús", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
         }
+
+        Optional<TypeBus> optionalTypeBus = typeBusRepository.findById(dto.getTypeBus().getId());
+        if (!optionalTypeBus.isPresent()) {
+            return new ResponseEntity<>(new Message("El tipo de autobus no se ha encontrado", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
+        }
+
         Optional<Bus> optional = repository.searchByPlaqueAndId(dto.getPlaque(), dto.getId());
         if (optional.isPresent()) {
             return new ResponseEntity<>(new Message("La placa del autobús ya existe", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
@@ -104,6 +122,7 @@ public class BusService {
         bus.setPlaque(dto.getPlaque());
         bus.setMark(dto.getMark());
         bus.setModel(dto.getModel());
+        bus.setTypeBus(optionalTypeBus.get());
         bus.setFuel(null);
         bus.setImage(null);
         bus.setSerial(null);

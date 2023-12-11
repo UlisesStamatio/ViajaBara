@@ -17,6 +17,10 @@ const OperationsController = {
         const response = await Operations.listBuses('/all-buses-enabled')
         return response;
     },
+    async listTypeBusEnabled(){
+        const response = await Operations.listTypeBusEnabled('/enabled')
+        return response;
+    },
     async getBus(payload){
         const response = await Operations.getBus('/getOne', payload)
         return response;
