@@ -52,16 +52,17 @@ public class TripController {
         return service.findAllEnabled();
     }
 
-    /*@PostMapping("/states-for-filters-by-date")
+    @PostMapping("/states-for-filters-by-date")
     @Secured({VIAJES})
     @ApiOperation(
             value = "Busca los estados y direcciones disponibles en una fecha estimada",
-            notes = "{ \"date\": 2 }"
+            notes = "{ \"date\":\"2023-12-10\" }"
     )
     public ResponseEntity<Object> getStatesForFiltersByDate(@RequestBody String date) throws ParseException {
-        return service.getStatesForFiltersByDate(date,true);
+        return service.getStatesForFiltersByDate(date, true);
     }
 
+    /*
     @PostMapping("/find-by-filters-client")
     @Secured({VIAJES})
     @ApiOperation(

@@ -40,8 +40,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -85,40 +90,40 @@ public class TripService {
         }
         return new ResponseEntity<>(new Message(response, "Listado de viajes", TypesResponse.SUCCESS), HttpStatus.OK);
     }
-  /*  @Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public ResponseEntity<Object> getStatesForFiltersByDate(String date, boolean onlyStatesAndAddresses) throws ParseException {
-        List<Trip> trips = repository.findAllByStatusIsTrue();
         System.out.println("dto " + date);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date providedDate = dateFormat.parse(date);
         TimeZone timeZone = TimeZone.getTimeZone("UTC-6");
         Calendar calendar = Calendar.getInstance(timeZone);
         calendar.setTime(providedDate);
-        Integer dayOfWeekInteger = calendar.get(Calendar.DAY_OF_WEEK);
-        Integer dayOfYearInteger = calendar.get(Calendar.DAY_OF_YEAR);
+        int dayOfWeekInteger = calendar.get(Calendar.DAY_OF_WEEK);
+        List<Trip> trips = repository.findTripsAvailableInTimeAndDay(Integer.toString(dayOfWeekInteger));
+        System.out.println(trips);
 
-        List<Trip> filteredTrips = getFilteredTrips(trips, dayOfWeekInteger,dayOfYearInteger);
+
+        int dayOfYearInteger = calendar.get(Calendar.DAY_OF_YEAR);
+        List<Trip> filteredTrips = getFilteredTrips(trips,dayOfYearInteger);
         System.out.println("filteredTrips " + filteredTrips);
 
-        if (onlyStatesAndAddresses ) {
-        // Obtener una lista de estados sin duplicados que tienen StopOvers
-        List<State> uniqueStates = getStatesWithStopOvers(filteredTrips);
-
-        // Obtener estados de rutas que no tienen StopOvers
-        List<State> statesWithoutStopOvers = getStatesWithoutStopOvers(filteredTrips);
-
-        // Combinar ambas listas sin duplicados
-        List<State> allUniqueStates = combineUniqueLists(uniqueStates, statesWithoutStopOvers);
-        List<StateBookTripDto> statesProcessed = StateBookTripDto.fromList(allUniqueStates);
-            System.out.println("statesProcessed");
-        System.out.println(statesProcessed);
-        return new ResponseEntity<>(new Message(statesProcessed, "Listado de viajes activos", TypesResponse.SUCCESS), HttpStatus.OK);
-
-        }
-        System.out.println("Listado de viajes activos");
-        System.out.println(filteredTrips);
+//        if (onlyStatesAndAddresses ) {
+//        // Obtener una lista de estados sin duplicados que tienen StopOvers
+//        List<State> uniqueStates = getStatesWithStopOvers(filteredTrips);
+//
+//        // Obtener estados de rutas que no tienen StopOvers
+//        List<State> statesWithoutStopOvers = getStatesWithoutStopOvers(filteredTrips);
+//
+//        // Combinar ambas listas sin duplicados
+//        List<State> allUniqueStates = combineUniqueLists(uniqueStates, statesWithoutStopOvers);
+//        List<StateBookTripDto> statesProcessed = StateBookTripDto.fromList(allUniqueStates);
+//            System.out.println("statesProcessed");
+//        System.out.println(statesProcessed);
+//        return new ResponseEntity<>(new Message(statesProcessed, "Listado de viajes activos", TypesResponse.SUCCESS), HttpStatus.OK);
+//
+//        }
         return new ResponseEntity<>(new Message(filteredTrips, "Listado de viajes activos", TypesResponse.SUCCESS), HttpStatus.OK);
-    }*/
+    }
 
   /*  @Transactional(readOnly = true)
     public ResponseEntity<Object> findByFiltersClient(BookTripDto bookTripDto) throws ParseException {
@@ -181,24 +186,12 @@ public class TripService {
             return null;
         }
     }
-    private List<Trip> getFilteredTrips(List<Trip> trips, Integer dayOfWeek, Integer dayOfYear) {
+    private List<Trip> getFilteredTrips(List<Trip> trips, Integer dayOfYear) {
         return trips.stream()
-                .filter(trip -> isDayInWorkDays(dayOfWeek, trip.getWorkDays()))
                 .filter(trip ->isTripAvailable(trip, dayOfYear))
                 .collect(Collectors.toList());
     }
-    // Método para verificar si el día de la semana está en los días laborables del viaje
-    private boolean isDayInWorkDays(Integer dayOfWeek, String workDaysJson) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setTimeZone(TimeZone.getTimeZone("America/Mexico_City"));
-        try {
-            List<Integer> workDaysList = objectMapper.readValue(workDaysJson,new TypeReference<ArrayList<Integer>>() {});
-            return workDaysList.contains(dayOfWeek);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+
     private boolean isTripAvailable(Trip trip, Integer dayOfYearSelected) {
         Date now = new Date();
 
