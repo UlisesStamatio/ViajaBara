@@ -95,6 +95,12 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  void _reloadProfileData() {
+    setState(() {
+      _futureUserInfo = _loadUserInfo();
+    });
+  }
+
   Widget profileCard() {
     return Scaffold(
       appBar: AppBar(
@@ -145,7 +151,7 @@ class _ProfileState extends State<Profile> {
                             width: 120,
                             child: SvgPicture.string(
                               profile,
-                              fit: BoxFit.contain, // Asegúrate de que el SVG se ajusta dentro del contenedor
+                              fit: BoxFit.contain, 
                             ),
                           ),
                         ),
@@ -347,7 +353,6 @@ class _ProfileState extends State<Profile> {
                           alignment: Alignment.centerLeft,
                           child: Row(
                             children: [
-                              // Usando operador ternario para determinar el icono
                               Icon(
                                 sex == 'M'
                                     ? Icons.female
@@ -467,9 +472,11 @@ class _ProfileState extends State<Profile> {
         ),
       ),
       builder: (BuildContext context) {
-        return const ChangeInformation();
+        return ChangeInformation(onUpdate: _reloadProfileData);
       },
-    );
+    ).then((_) {
+      _reloadProfileData(); // Recargar datos del perfil después de cerrar la pantalla de cambio de información
+    });
   }
 
 }

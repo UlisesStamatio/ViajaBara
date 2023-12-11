@@ -301,7 +301,7 @@ class _ChangePassword extends State<ChangePassword> {
                 padding: const EdgeInsets.only(bottom: 20),
                 child: ElevatedButton(
                     onPressed: _isButtonDisabled ? null : () async  {
-                      bool resp =  await DriverProvider().changePassword(_lastPass.text, _pass.text);
+                      bool resp =  await GeneralProvider().changePassword(_lastPass.text, _pass.text);
                       if(resp)
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(

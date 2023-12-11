@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:viajabara/domain/entities/list_states.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/providers/auth_provider.dart';
+import 'package:viajabara/providers/general_provider.dart';
 
 class ChangeInformation extends StatefulWidget {
-  const ChangeInformation({Key? key}) : super(key: key);
+  final Function? onUpdate;
+  const ChangeInformation({Key? key, this.onUpdate}) : super(key: key);
 
   @override
   _ChangeInformation createState() => _ChangeInformation();
@@ -13,23 +15,37 @@ class ChangeInformation extends StatefulWidget {
 class _ChangeInformation extends State<ChangeInformation> {
   final _formKey = GlobalKey<FormState>();
   bool _isButtonDisabled = true;
-  int? selectedState = 1;
+  bool _isLoading = false;
+  int? selectedState;
   List<StateItem> states = [];
   final TextEditingController _names = TextEditingController(text: '');
   final TextEditingController _lastnames = TextEditingController(text: '');
   final TextEditingController _phone = TextEditingController(text: '');
   TextEditingController _dateController = TextEditingController();
-  String _selectedSex = 'M';
-  final Map<String, String> sexOptions = {
-    'Masculino': 'M',
-    'Femenino': 'H',
-    'Prefiero no decirlo': ''
+  String? _selectedSex;
+  final Map<String, String?> sexOptions = {
+    'Selecciona tu sexo': null,
+    'Femenino': 'M',
+    'Masculino': 'H',
   };
 
   @override
   void initState() {
     super.initState();
     loadStates();
+  }
+
+  void _checkIfAnyFieldIsFilled() {
+    bool isAnyFieldFilled = _names.text.isNotEmpty ||
+        _lastnames.text.isNotEmpty ||
+        _phone.text.isNotEmpty ||
+        _dateController.text.isNotEmpty ||
+        selectedState != null ||
+        (_selectedSex != null && _selectedSex!.isNotEmpty);
+
+    setState(() {
+      _isButtonDisabled = !isAnyFieldFilled;
+    });
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -42,13 +58,13 @@ class _ChangeInformation extends State<ChangeInformation> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
-              primary: ColorsApp.primayColor, // header background color
-              onPrimary: ColorsApp.whiteColor, // header text color
-              onSurface: ColorsApp.text, // body text color
+              primary: ColorsApp.primayColor,
+              onPrimary: ColorsApp.whiteColor,
+              onSurface: ColorsApp.text,
             ),
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-                foregroundColor: Colors.red, // button text color
+                foregroundColor: Colors.red,
               ),
             ),
           ),
@@ -82,9 +98,7 @@ class _ChangeInformation extends State<ChangeInformation> {
       child: Form(
         key: _formKey,
         onChanged: () {
-          setState(() {
-            _isButtonDisabled = !_formKey.currentState!.validate();
-          });
+          _checkIfAnyFieldIsFilled();
         },
         child: Container(
           padding: const EdgeInsets.all(20),
@@ -152,6 +166,9 @@ class _ChangeInformation extends State<ChangeInformation> {
                             width: 1.0,
                             style: BorderStyle.solid)),
                   ),
+                  onChanged: (value) {
+                    _checkIfAnyFieldIsFilled();
+                  },
                 ),
               ),
               Container(
@@ -203,6 +220,9 @@ class _ChangeInformation extends State<ChangeInformation> {
                             width: 1.0,
                             style: BorderStyle.solid)),
                   ),
+                  onChanged: (value) {
+                    _checkIfAnyFieldIsFilled();
+                  },
                 ),
               ),
               Container(
@@ -245,10 +265,9 @@ class _ChangeInformation extends State<ChangeInformation> {
                   ),
                   onChanged: (String? newValue) {
                     setState(() {
-                      if (newValue != null) {
-                        _selectedSex = newValue;
-                      }
+                      _selectedSex = newValue;
                     });
+                    _checkIfAnyFieldIsFilled();
                   },
                   items:
                       sexOptions.entries.map<DropdownMenuItem<String>>((entry) {
@@ -317,51 +336,57 @@ class _ChangeInformation extends State<ChangeInformation> {
                             width: 1.0,
                             style: BorderStyle.solid)),
                   ),
+                  onChanged: (value) {
+                    _checkIfAnyFieldIsFilled();
+                  },
                 ),
               ),
               Container(
                 padding: const EdgeInsets.only(bottom: 20),
-                child: DropdownButtonFormField<int>(
-                  value: selectedState,
-                  decoration: InputDecoration(
-                    labelText: 'Estado de residencia*',
-                    hintText: 'Selecciona un estado',
-                    filled: true,
-                    fillColor: ColorsApp
-                        .whiteColor, // Reemplaza con ColorsApp.whiteColor si es necesario
-                    prefixIcon: const Icon(Icons.location_city),
-                    prefixIconColor: ColorsApp
-                        .primayColor, // Reemplaza con ColorsApp.primayColor si es necesario
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(4.0),
-                      borderSide: const BorderSide(
-                          color: ColorsApp.primayColor,
-                          width:
-                              1.0), // Reemplaza con ColorsApp.muted si es necesario
+                child: DropdownButtonFormField<int?>(
+                    value: selectedState,
+                    decoration: InputDecoration(
+                      labelText: 'Estado de residencia*',
+                      hintText: 'Selecciona un estado',
+                      hintStyle: const TextStyle(
+                        color: ColorsApp.text,
+                      ),
+                      labelStyle: const TextStyle(
+                        color: ColorsApp.text,
+                      ),
+                      filled: true,
+                      fillColor: ColorsApp.whiteColor,
+                      prefixIcon: const Icon(Icons.location_city),
+                      prefixIconColor: ColorsApp.primayColor,
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                        borderSide: const BorderSide(
+                            color: ColorsApp.muted, width: 1.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(4.0),
+                        borderSide: const BorderSide(
+                            color: ColorsApp.primayColor, width: 1.0),
+                      ),
                     ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(4.0),
-                      borderSide: const BorderSide(
-                          color: ColorsApp.primayColor,
-                          width:
-                              1.0), // Reemplaza con ColorsApp.primayColor si es necesario
-                    ),
-                    // Añade borderStyles adicionales según sea necesario
-                  ),
-                  onChanged: (int? newValue) {
-                    setState(() {
-                      selectedState = newValue;
-                    });
-                  },
-                  validator: (value) =>
-                      value == null ? 'Campo obligatorio' : null,
-                  items: states.map<DropdownMenuItem<int>>((StateItem state) {
-                    return DropdownMenuItem<int>(
-                      value: state.id,
-                      child: Text(state.name),
-                    );
-                  }).toList(),
-                ),
+                    onChanged: (int? newValue) {
+                      setState(() {
+                        selectedState = newValue;
+                      });
+                      _checkIfAnyFieldIsFilled();
+                    },
+                    items: [
+                      const DropdownMenuItem<int?>(
+                        value: null,
+                        child: Text("Selecciona un estado"),
+                      ),
+                      ...states.map<DropdownMenuItem<int?>>((StateItem state) {
+                        return DropdownMenuItem<int?>(
+                          value: state.id,
+                          child: Text(state.name),
+                        );
+                      }).toList(),
+                    ]),
               ),
               Container(
                 padding: const EdgeInsets.only(
@@ -376,8 +401,9 @@ class _ChangeInformation extends State<ChangeInformation> {
                   ),
                   decoration: InputDecoration(
                     labelText: 'Número de teléfono',
-                    hintText: '777-111-22-33',
+                    hintText: '7771112233',
                     filled: true,
+                    counterText: '',
                     fillColor: ColorsApp.whiteColor,
                     hintStyle: const TextStyle(
                       color: ColorsApp.text,
@@ -412,12 +438,65 @@ class _ChangeInformation extends State<ChangeInformation> {
                             width: 1.0,
                             style: BorderStyle.solid)),
                   ),
+                  onChanged: (value) {
+                    _checkIfAnyFieldIsFilled();
+                  },
+                  maxLength: 10,
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 20),
                 child: ElevatedButton(
-                    onPressed: _isButtonDisabled ? null : () => {},
+                    onPressed: _isButtonDisabled
+                        ? null
+                        : () async {
+                            try {
+                              setState(() {
+                                _isLoading = true;
+                              });
+                              bool result =
+                                  await GeneralProvider().updateUserInfo(
+                                _names.text.isNotEmpty ? _names.text : null,
+                                _lastnames.text.isNotEmpty
+                                    ? _lastnames.text
+                                    : null,
+                                _selectedSex != null ? _selectedSex : null,
+                                _dateController.text.isNotEmpty
+                                    ? _dateController.text
+                                    : null,
+                                selectedState != null ? selectedState : null,
+                                _phone.text.isNotEmpty ? _phone.text : null,
+                              );
+
+                              setState(() {
+                                _isLoading = false;
+                              });
+
+                              if (result) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text(
+                                          'Se actualizaron correctamente los dato(s)')),
+                                );
+                                if (widget.onUpdate != null) {
+                                  widget.onUpdate!(); // Llama al callback aquí
+                                }
+                                Navigator.pop(context);
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text(
+                                          'Hubo un error al actualizar la información')),
+                                );
+                                Navigator.pop(context);
+                              }
+                            } catch (e) {
+                              setState(() {
+                                _isLoading = false;
+                              });
+                              print('Error al actualizar la información: $e');
+                            }
+                          },
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(
                         _isButtonDisabled
@@ -427,6 +506,7 @@ class _ChangeInformation extends State<ChangeInformation> {
                     ),
                     child: const Text('Actualizar información')),
               ),
+              if (_isLoading) const CircularProgressIndicator(),
             ],
           ),
         ),
