@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
+import 'package:viajabara/providers/utils/utils.dart';
 
 class ChangePhotoModal extends StatefulWidget {
   final String photo;
@@ -36,10 +37,7 @@ class _ChangePhotoModal extends State<ChangePhotoModal> {
             child: Center(
               child: Hero(
                 tag: 'photo',
-                child: SvgPicture.string(
-                  widget.photo,
-                  height: MediaQuery.of(context).size.height * 0.8,
-                ),
+                child: Utils().profilePicture(photo),
               ),
             ),
           ),
@@ -63,10 +61,7 @@ class _ChangePhotoModal extends State<ChangePhotoModal> {
               child: CircleAvatar(
                 radius: 60,
                 backgroundColor: Colors.transparent,
-                child: SvgPicture.string(
-                  widget.photo,
-                  height: 150,
-                ),
+                child: Utils().profilePicture(photo),
               ),
             ),
           ),

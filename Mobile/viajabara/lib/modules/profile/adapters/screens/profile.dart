@@ -13,6 +13,7 @@ import 'package:viajabara/kernel/widgets/profile/change_photo.dart';
 import 'package:viajabara/providers/auth_provider.dart';
 import 'package:viajabara/providers/general_provider.dart';
 import 'package:viajabara/providers/session_manager.dart';
+import 'package:viajabara/providers/utils/utils.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -70,7 +71,7 @@ class _ProfileState extends State<Profile> {
 
   void _updateUserProfile(ResMsg dataUser) {
     setState(() {
-      profile = utf8.decode(base64.decode(dataUser.profile!));
+      profile = dataUser.profile!;
       name = dataUser.name!;
       email = dataUser.email!;
       cellphone = dataUser.cellphone!;
@@ -169,10 +170,7 @@ class _ProfileState extends State<Profile> {
                           child: SizedBox(
                             height: 120,
                             width: 120,
-                            child: SvgPicture.string(
-                              profile,
-                              fit: BoxFit.contain,
-                            ),
+                            child: Utils().profilePicture(profile)
                           ),
                         ),
                         Padding(
