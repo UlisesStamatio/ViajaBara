@@ -1,18 +1,18 @@
 <template>
 <Loader :isLoading="isLoading"/>
   <div class="container-fluid">
-    <form class="row g-3" @submit.prevent="preUpdateUser" v-show="!isEdit">
+    <form class="row g-3" @submit.prevent="preUpdateUser" v-show="!isEdit && !isLoading">
       <div class="col-12 col-sm-4">
         <div class="mt-4 card card-body">
                     <div class="row text-center">
-            <div class="col">
-              <label>Imagen de perfil(<span class="text-danger">*</span>)</label>
+            <div class="col-12">
+              <label>Imagen de perfil</label>
             </div>
            <div class="col-12">
                 <img
                   class="mt-3 shadow-lg img-fluid border-radius-lg w-100 h-auto"
                   id="image-profile-edit"
-                  alt="autobus_image"
+                  alt="profile-image"
                 />
                 
                 <input type="file" id="img-input" class="d-none" :class="{ 'is-invalid': errors.profile, 'is-valid': errors.profile === null }" @change="handleFileChange" accept=".png, .jpg, .jpeg" > 
@@ -29,6 +29,15 @@
                   >
                     Editar
                   </button>
+
+                  <button 
+                  type="button"
+                  class="mb-0 btn btn-sm bg-gradient-dark"
+                  title="Guardar"
+                  @click="saveImage()"
+                  >
+                    Guardar
+                  </button>
               </div>
           </div>   
         </div>
@@ -39,7 +48,7 @@
           <hr class="my-3 horizontal dark" />
           <div class="row">
             <div class="col-12 col-sm-6 col-lg-4 mb-3">
-              <label>Nombre(<span class="text-danger">*</span>)</label>
+              <label>Nombre</label>
               <input
                 id="name"
                 type="text"
@@ -54,7 +63,7 @@
               </div>
             </div>
             <div class="col-12 col-sm-6 col-lg-4  mb-3">
-              <label>Apellido Paterno(<span class="text-danger">*</span>)</label>
+              <label>Apellido Paterno</label>
               <input
                 id="lastname"
                 type="text"
@@ -85,12 +94,12 @@
             </div>
 
             <div class="col-12 col-sm-6 col-lg-4 mb-3">
-              <label>Sexo(<span class="text-danger">*</span>)</label>
+              <label>Sexo</label>
               <select
                 id="sex-select"
                 class="form-control"
                 name="sex-select"
-                v-model.trim="user.sex"
+                v-model="user.sex"
                 :class="{ 'is-invalid': errors.sex, 'is-valid': errors.sex === null }"
               >
                 <option value="" selected disabled>Selecciona una opción...</option>
@@ -103,12 +112,12 @@
             </div>
 
             <div class="col-12 col-sm-6 col-lg-4 mb-3">
-              <label>Fecha de nacimiento(<span class="text-danger">*</span>)</label>
+              <label>Fecha de nacimiento</label>
              <input
                 id="birthday"
                 type="date"
                 name="birthday"
-                v-model.trim="user.birthday"
+                v-model="user.birthday"
                 class="form-control"
               :class="{ 'is-invalid': errors.birthday, 'is-valid': errors.birthday === null }"
               />
@@ -118,12 +127,12 @@
             </div>
 
             <div class="col-12 col-sm-6 col-lg-4 mb-3">
-              <label>Estado de residencia(<span class="text-danger">*</span>)</label>
+              <label>Estado de residencia</label>
               <select
                 id="state-select"
                 class="form-control"
                 name="state-select"
-                v-model.trim="user.state"
+                v-model="user.state"
                 :class="{ 'is-invalid': errors.state, 'is-valid': errors.state === null }"
               >
                 <option value="" selected disabled>Selecciona una opción...</option>
@@ -141,7 +150,7 @@
                 type="number"
                 placeholder="eg. 76568788787"
                 name="cellphone"
-                v-model.trim="user.cellphone"
+                v-model="user.cellphone"
                 class="form-control"
                :class="{ 'is-invalid': errors.cellphone, 'is-valid': errors.cellphone === null }"
               />
@@ -178,18 +187,18 @@
     </div>
     </form>
 
-    <div class="row g-3"  v-show="isEdit">
+    <div class="row g-3"  v-show="isEdit && !isLoading">
       <div class="col-12 col-sm-4">
         <div class="mt-4 card card-body">
                     <div class="row text-center">
-            <div class="col">
+            <div class="col-12">
               <label>Imagen de perfil:</label>
             </div>
-           <div class="col-12">
+           <div class="col-12  mb-3">
                 <img
                   class="mt-3 shadow-lg img-fluid border-radius-lg w-100 h-auto"
-                  id="image_profile"
-                  alt="autobus_image"
+                  id="image-profile-view"
+                  alt="profile-image"
                 />
               </div>
           </div>   
@@ -205,7 +214,7 @@
               <input
                 id="name"
                 type="text"
-                v-model.trim="user.name"
+                :value="user.name ? user.name : 'Sin nombre'"
                 placeholder="eg. Michael"
                 name="name"
                 class="form-control"
@@ -219,7 +228,7 @@
                 type="text"
                 placeholder="eg. Jackson"
                 name="lastname"
-                v-model.trim="user.lastname"
+                :value="user.lastname ? user.lastname : 'Sin apellido' "
                 class="form-control"
               disabled
               />
@@ -231,7 +240,7 @@
                 type="text"
                 placeholder="eg. Smith"
                 name="surname"
-                v-model="user.surname"
+                :value="user.surname ? user.surname : 'Sin apellido'"
                 class="form-control"
                 disabled
               />
@@ -243,7 +252,7 @@
                 id="sex-select"
                 class="form-control"
                 name="sex-select"
-                v-model.trim="user.sex"
+                :value="user.sex"
                 disabled
               >
                 <option value="" selected disabled>Selecciona una opción...</option>
@@ -256,9 +265,9 @@
               <label>Fecha de nacimiento:</label>
              <input
                 id="birthday"
-                type="date"
+                :type="user.birthday ? 'date' : 'text'"
                 name="birthday"
-                v-model.trim="user.birthday"
+                :value="user.birthday ? user.birthday : 'Sin fecha' "
                 class="form-control"
                 disabled
               />
@@ -270,7 +279,7 @@
                 id="state-select"
                 class="form-control"
                 name="state-select"
-                v-model.trim="user.state"
+                :value="user.state"
                 disabled
               >
                 <option value="" selected disabled>Sin estado</option>
@@ -282,10 +291,10 @@
               <label>Télefono:</label>
              <input
                 id="cellphone"
-                type="number"
+                :type="user.cellphone ? 'number' : 'text'"
                 placeholder="eg. 76568788787"
                 name="cellphone"
-                v-model.trim="user.cellphone"
+                :value="user.cellphone ? user.cellphone : 'Sin télefono'"
                 class="form-control"
                 disabled
               />
@@ -298,7 +307,7 @@
                   type="text"
                   placeholder="eg. MichaelJack"
                   name="username"
-                  v-model.trim="user.username"
+                  :value="user.username"
                   class="form-control"
                   disabled
                 />
@@ -311,7 +320,7 @@
                 type="email"
                 placeholder="eg. example@address.com"
                 name="email"
-                v-model.trim="user.email"
+                :value="user.email"
                 class="form-control"
                 disabled
               />
@@ -341,12 +350,13 @@
 import Quill from "quill";
 import blobToBase64 from '../../../../kernel/translate/blobToBase64'
 import userValidator from '../../../../kernel/validators/user.validator'
-import router from '../../../../router/index'
 import listStates from '../../../../modules/state/use-cases/list.state'
 import getProfile from '../../../../modules/users/use-cases/get.profile'
-import updateUser from '../../../../modules/users/use-cases/update.user'
 import Loader from '../../../../components/Loader.vue'
 import storeSession from '../../../../kernel/store/store.session';
+import updateProfile from '../../use-cases/update.profile'
+import changeProfile from '../../use-cases/change.profile'
+import moment from 'moment'
 
 export default {
   name: "Profile",
@@ -368,7 +378,7 @@ export default {
         surname: "",
         sex: "",
         birthday: "",
-        cellphone: "",
+        cellphone: null,
         username: "",
         email: "",
         confirmEmail: "",
@@ -388,25 +398,19 @@ export default {
         confirmEmail: "",
          state: "",
       },
-      idUser: 0,
       userOriginal: {},
       isLoading: false,
       isEdit: true,
+      idUser: 0,
     };
   },
-  computed:{
-    isFormModified(){
-        for (const key in this.user) {
-          if (this.user[key] !== this.userOriginal[key]) {
-              return true;
-          }
-        }
-        return false;
-    }
-  },
+
   async mounted() {
     let {identKey}  = storeSession.getDataSession()
+    this.idUser = identKey;
+    this.isLoading = true;
     await this.getProfile(identKey);
+    this.isLoading = false;
     if (document.getElementById("edit-description")) {
       // eslint-disable-next-line no-unused-vars
       var quill = new Quill("#edit-description", {
@@ -451,9 +455,10 @@ export default {
         if(!error){
           const {result:{profile}} = data
           const {result} = data
-          document.getElementById("image_profile").src = `data:image/png;base64,${profile}`;
           document.getElementById("image-profile-edit").src = `data:image/png;base64,${profile}`;
-          this.user = result;
+          document.getElementById("image-profile-view").src = `data:image/png;base64,${profile}`;
+
+        this.user = {...result, cellphone: result.cellphone === 0 ? '' : result.cellphone};
           this.userOriginal = {...result}
       }else{
            this.$swal({
@@ -498,66 +503,114 @@ export default {
       this.errors.birthday = userValidator.validateBirthday(user.birthday);
       this.errors.state = userValidator.validateState(user.state, this.states);
       this.errors.cellphone = userValidator.validateCellphone(user.cellphone);
-      this.errors.username = userValidator.validateUsername(user.username);
-      this.errors.email = userValidator.validateEmail(user.email);
-      this.errors.confirmEmail = userValidator.validateConfirmEmail(user.email, user.confirmEmail);
 
-      if(this.isFormModified){
-        if(!this.errors.name && !this.errors.lastname && ! this.errors.surname &&
-          !this.errors.sex && !this.errors.birthday && !this.errors.cellphone &&
-          !this.errors.username && !this.errors.email  && ! this.errors.confirmEmail && !this.errors.state){
-            this.$swal({
-            title: "¿Estás segura(a) de guardar los cambios?",
-            text: "¡No podrás revertir esto.!",
-            icon: "warning",
-            showCancelButton: true,
-            cancelButtonText: "Cancelar",
-            confirmButtonText: "Confirmar",
-            customClass: {
-              confirmButton: "btn bg-gradient-success",
-              cancelButton: "btn bg-gradient-secondary",
-            },
-            buttonsStyling: false,
-          }).then(async(result) => {
-            if (result.isConfirmed) {
-                user.id =  this.idUser
-                user.profile = document.getElementById('image-profile-edit').src.split('base64,')[1]
-                this.isLoading = true;
-                const response = await updateUser(user)
-                const {message, error, data}  = response
-                 this.isLoading = false;
-                if(!error){
-                  const {result:{text}} = data
-                  this.$swal({
-                    icon: "success",
+      if(!this.errors.name && !this.errors.lastname && ! this.errors.surname &&
+        !this.errors.sex && !this.errors.birthday && !this.errors.cellphone
+         && !this.errors.state) {
+         let payload = {
+            id: this.idUser,
+            person:{
+              id: this.user.id,
+              name: user.name,
+              surname: `${user.lastname} ${user.surname === '' ? '': user.surname}`,
+              cellphone: user.cellphone,
+              birthDate: moment(new Date(user.birthday)).format('YYYY-MM-DD'),
+              sex: `${parseInt(user.sex) === 1 ? 'H' : parseInt(user.sex) === 2 ? 'M' : ''}`,
+              state: user.state ? { id: parseInt(user.state)} : null
+            }
+         }
+          this.$swal({
+          title: "¿Estás segura(a) de guardar los cambios?",
+          text: "¡No podrás revertir esto.!",
+          icon: "warning",
+          showCancelButton: true,
+          cancelButtonText: "Cancelar",
+          confirmButtonText: "Confirmar",
+          customClass: {
+            confirmButton: "btn bg-gradient-success",
+            cancelButton: "btn bg-gradient-secondary",
+          },
+          buttonsStyling: false,
+        }).then(async(result) => {
+          if (result.isConfirmed) {
+              this.isLoading = true;
+              const response = await updateProfile(payload)
+              const {message, error, data}  = response
+                this.isLoading = false;
+              if(!error){
+                const {result:{text}} = data
+                this.$swal({
+                  icon: "success",
+                  title: message,
+                  text: text,
+                  type: 'success-message',
+                });
+                this.errors = {}
+                this.isEdit = true;
+                await this.getProfile(this.idUser)
+              }else{
+                const {text} = data
+                this.$swal({
+                    icon: "error", 
                     title: message,
                     text: text,
-                    type: 'success-message',
+                    type: "basic",
                   });
-                  router.push({name: 'Consultar Usuarios'})
-                }else{
-                  const {text} = data
-                  this.$swal({
-                      icon: "error", 
-                      title: message,
-                      text: text,
-                      type: "basic",
-                    });
-                }
-            } else if (result.dismiss === this.$swal.DismissReason.cancel) {
-              this.$swal.dismiss;
-            }
-          });
-        }
-      }else{
-         this.$swal({
-          icon: "info", 
-          title: 'No has realizado ninguna modificación.',
-          type: "basic",
+              }
+          } else if (result.dismiss === this.$swal.DismissReason.cancel) {
+            this.$swal.dismiss;
+          }
         });
-      }
 
-      
+      }
+    },
+    saveImage(){
+      let user = {
+        profile: document.getElementById('image-profile-edit').src.split('base64,')[1],
+        id: this.idUser
+      }
+       this.$swal({
+          title: "¿Estás segura(a) de guardar los cambios?",
+          text: "¡No podrás revertir esto.!",
+          icon: "warning",
+          showCancelButton: true,
+          cancelButtonText: "Cancelar",
+          confirmButtonText: "Confirmar",
+          customClass: {
+            confirmButton: "btn bg-gradient-success",
+            cancelButton: "btn bg-gradient-secondary",
+          },
+          buttonsStyling: false,
+        }).then(async(result) => {
+          if (result.isConfirmed) {
+              this.isLoading = true;
+              const response = await changeProfile(user)
+              const {message, error, data}  = response
+                this.isLoading = false;
+              if(!error){
+                const {result:{text}} = data
+                this.$swal({
+                  icon: "success",
+                  title: message,
+                  text: text,
+                  type: 'success-message',
+                });
+                this.errors = {}
+                this.isEdit = true;
+                await this.getProfile(this.idUser)
+              }else{
+                const {text} = data
+                this.$swal({
+                    icon: "error", 
+                    title: message,
+                    text: text,
+                    type: "basic",
+                  });
+              }
+          } else if (result.dismiss === this.$swal.DismissReason.cancel) {
+            this.$swal.dismiss;
+          }
+        });
     }
 
 
