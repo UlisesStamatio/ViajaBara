@@ -27,7 +27,7 @@ class GeneralProvider {
       String? birthDate, int? state, String? cellphone) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     Map<String, dynamic> jsonData = json.decode(prefs.getString('data')!);
-    String id = jsonData['id'].toString();
+    int id = jsonData['id'];
 
     var requestData = jsonEncode({
       "id": id,
@@ -52,6 +52,40 @@ class GeneralProvider {
       }
     } on DioException catch (e) {
       throw Exception('Fallo al actualizar la información del usuario $e');
+    }
+  }
+
+  Future<int> getDriverTripCount() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, dynamic> jsonData = json.decode(prefs.getString('data')!);
+    int id = jsonData['id'];
+
+    try {
+      final response = await dio.put('logged/driver-trips-count', data: {"id": id});
+      if (response.statusCode == 200) {
+        return response.data['result'];
+      } else {
+        throw Exception('Fallo al obtener el conteo de viajes del conductor');
+      }
+    } on DioException catch (e) {
+      throw Exception('Fallo al obtener el conteo de viajes del conductor $e');
+    }
+  }
+
+  Future<int> driverQualificationAverage() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Map<String, dynamic> jsonData = json.decode(prefs.getString('data')!);
+    int id = jsonData['id'];
+
+    try {
+      final response = await dio.put('logged/driver-qualification-average', data: {"id": id});
+      if (response.statusCode == 200) {
+        return response.data['result'];
+      } else {
+        throw Exception('Fallo al obtener el promedio de calificación del conductor');
+      }
+    } on DioException catch (e) {
+      throw Exception('Fallo al obtener el promedio de calificación del conductor $e');
     }
   }
 }

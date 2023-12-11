@@ -11,6 +11,7 @@ import 'package:viajabara/kernel/widgets/profile/change_information.dart';
 import 'package:viajabara/kernel/widgets/profile/change_password.dart';
 import 'package:viajabara/kernel/widgets/profile/change_photo.dart';
 import 'package:viajabara/providers/auth_provider.dart';
+import 'package:viajabara/providers/general_provider.dart';
 import 'package:viajabara/providers/session_manager.dart';
 
 class Profile extends StatefulWidget {
@@ -32,10 +33,14 @@ class _ProfileState extends State<Profile> {
   String state = '';
   String profile = '';
   bool isAdmin = false;
+  int? countTravels;
+  int? driverQualification;
 
   void initState() {
     super.initState();
     _futureUserInfo = _loadUserInfo();
+    _getTravelsCount();
+    _getDriverQualification();
   }
 
   Future<void> _loadUserInfo() async {
@@ -72,6 +77,21 @@ class _ProfileState extends State<Profile> {
       birthDate = dataUser.birthDate!;
       sex = dataUser.sex!;
       state = dataUser.state!;
+    });
+  }
+
+  void _getTravelsCount() async {
+    int numberTravels = await GeneralProvider().getDriverTripCount();
+    setState(() {
+      countTravels = numberTravels;
+    });
+  }
+
+  void _getDriverQualification() async {
+    int qualification = await GeneralProvider().driverQualificationAverage();
+    setState(() {
+      driverQualification = qualification;
+      print(qualification);
     });
   }
 
@@ -151,7 +171,7 @@ class _ProfileState extends State<Profile> {
                             width: 120,
                             child: SvgPicture.string(
                               profile,
-                              fit: BoxFit.contain, 
+                              fit: BoxFit.contain,
                             ),
                           ),
                         ),
@@ -174,21 +194,17 @@ class _ProfileState extends State<Profile> {
                               const Text("Calificación general"),
                               const SizedBox(height: 10),
                               Center(
-                                child: RatingBar.builder(
-                                  initialRating: 3,
-                                  minRating: 1,
-                                  direction: Axis.horizontal,
-                                  allowHalfRating: true,
-                                  itemCount: 5,
-                                  itemPadding: const EdgeInsets.symmetric(
-                                      horizontal: 4.0),
-                                  itemBuilder: (context, _) => const Icon(
+                                child: RatingBarIndicator(
+                                  rating: driverQualification?.toDouble() ??
+                                      0, // Usa driverQualification como calificación
+                                  itemBuilder: (context, index) => const Icon(
                                     Icons.star,
                                     color: Colors.amber,
                                   ),
-                                  onRatingUpdate: (rating) {
-                                    print(rating);
-                                  },
+                                  itemCount: 5,
+                                  itemSize:
+                                      40.0, // Puedes ajustar el tamaño según tus necesidades
+                                  direction: Axis.horizontal,
                                 ),
                               ),
                               Container(
@@ -198,39 +214,23 @@ class _ProfileState extends State<Profile> {
                             ],
                           ),
                         },
-                        const Row(
+                        Row(
                           children: [
                             Expanded(
                               child: ListTile(
                                 title: Text(
-                                  '89',
+                                  countTravels.toString(),
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold),
                                 ),
-                                subtitle: Text(
+                                subtitle: const Text(
                                   'Viajes realizados',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontSize: 15,
                                   ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: ListTile(
-                                title: Text(
-                                  '23',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                subtitle: Text(
-                                  'Último mes',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(fontSize: 15),
                                 ),
                               ),
                             ),
