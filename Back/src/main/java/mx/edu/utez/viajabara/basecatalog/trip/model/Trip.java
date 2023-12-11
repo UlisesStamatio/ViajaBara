@@ -19,10 +19,8 @@ public class Trip {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-
     @ManyToOne
     private User driver;
-
     @ManyToOne
     private Bus bus;
 
@@ -52,7 +50,6 @@ public class Trip {
     @Column(name = "stopovers", columnDefinition = "json")
     @Type(type = "json")
     private String stopovers;
-
 
     @OneToMany(mappedBy = "trip")
     @JsonIgnore

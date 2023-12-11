@@ -14,6 +14,10 @@ const tripValidator = {
     validateDate(date){
         if(!date || date === undefined || date === null) return 'Campo obligatorio.'
         return null
+    },
+    validateWays(ways){
+        if(ways.length < 1) return "Ingresa al menos una ruta para el viaje."
+        return null;
     }
 }
 

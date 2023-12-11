@@ -81,12 +81,27 @@ public class TripService {
 
     @Transactional(readOnly = true)
     public ResponseEntity<Object> findAll() {
+
         List<Trip> trips = repository.findAll();
-        List<Trip> response = new ArrayList<>();
+        List<ListTripsDto> response = new ArrayList<>();
         for (Trip trip:trips) {
             trip.getDriver().setProfile(null);
             trip.getBus().setImage(null);
-            response.add(trip);
+            ListTripsDto tripsDto = new ListTripsDto();
+            tripsDto.setBus(trip.getBus());
+            tripsDto.setDriver(trip.getDriver());
+            tripsDto.setId(trip.getId());
+            tripsDto.setMeters(trip.getMeters());
+            tripsDto.setStatus(trip.isStatus());
+            tripsDto.setStopovers(trip.getStopovers());
+            tripsDto.setTime(trip.getTime());
+            tripsDto.setStartTime(trip.getStartTime());
+            tripsDto.setWorkDays(trip.getWorkDays());
+            tripsDto.setCreatedAt(trip.getCreatedAt());
+
+            List<Way> ways = wayRepository.findByTripId(trip.getId());
+            tripsDto.setWays(ways);
+            response.add(tripsDto);
         }
         return new ResponseEntity<>(new Message(response, "Listado de viajes", TypesResponse.SUCCESS), HttpStatus.OK);
     }
@@ -203,17 +218,12 @@ public class TripService {
         Calendar calendar = Calendar.getInstance(timeZone);
         Integer dayOfYearToday = calendar.get(Calendar.DAY_OF_YEAR);
 
-        System.out.println("tripStartTime " + tripStartTime.getTime());
-        System.out.println("currentFormattedTime " + trip.getStartTime().getTime());
         long timeDifferenceMillis = trip.getStartTime().getTime() - tripStartTime.getTime();
-        System.out.println("timeDifferenceMillis " + timeDifferenceMillis);
+
         if (dayOfYearSelected.equals(dayOfYearToday)) {
             return timeDifferenceMillis >= 360000;
         } else {
-            System.out.println("dayOfYearToday  " + (dayOfYearToday));
-            System.out.println("dayOfYearSelected  " + (dayOfYearSelected));
-            System.out.println("dayOfYearSelected > dayOfYearToday " + (dayOfYearSelected > dayOfYearToday));
-            return dayOfYearSelected > dayOfYearToday;
+           return dayOfYearSelected > dayOfYearToday;
         }
     }
 
@@ -256,11 +266,25 @@ public class TripService {
     @Transactional(readOnly = true)
     public ResponseEntity<Object> findAllEnabled() {
         List<Trip> trips = repository.findAllByStatusIsTrue();
-        List<Trip> response = new ArrayList<>();
+        List<ListTripsDto> response = new ArrayList<>();
         for (Trip trip:trips) {
             trip.getDriver().setProfile(null);
             trip.getBus().setImage(null);
-            response.add(trip);
+            ListTripsDto tripsDto = new ListTripsDto();
+            tripsDto.setBus(trip.getBus());
+            tripsDto.setDriver(trip.getDriver());
+            tripsDto.setId(trip.getId());
+            tripsDto.setMeters(trip.getMeters());
+            tripsDto.setStatus(trip.isStatus());
+            tripsDto.setStopovers(trip.getStopovers());
+            tripsDto.setTime(trip.getTime());
+            tripsDto.setStartTime(trip.getStartTime());
+            tripsDto.setWorkDays(trip.getWorkDays());
+            tripsDto.setCreatedAt(trip.getCreatedAt());
+
+            List<Way> ways = wayRepository.findByTripId(trip.getId());
+            tripsDto.setWays(ways);
+            response.add(tripsDto);
         }
         return new ResponseEntity<>(new Message(response, "Listado de viajes activos", TypesResponse.SUCCESS), HttpStatus.OK);
     }
@@ -269,7 +293,28 @@ public class TripService {
     @Transactional(readOnly = true)
     public ResponseEntity<Object> getOne(Long id) {
         Optional<Trip> optional = repository.findById(id);
-        return optional.<ResponseEntity<Object>>map(route -> new ResponseEntity<>(new Message(route, "Viaje encontrado", TypesResponse.SUCCESS), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(new Message("Viaje no encontrado", TypesResponse.WARNING), HttpStatus.NOT_FOUND));
+        if(!optional.isPresent()){
+            return new ResponseEntity<>(new Message("No se encontró el viaje", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
+        }
+
+        Trip trip = optional.get();
+        trip.getDriver().setProfile(null);
+        trip.getBus().setImage(null);
+        ListTripsDto tripsDto = new ListTripsDto();
+        tripsDto.setBus(trip.getBus());
+        tripsDto.setDriver(trip.getDriver());
+        tripsDto.setId(trip.getId());
+        tripsDto.setMeters(trip.getMeters());
+        tripsDto.setStatus(trip.isStatus());
+        tripsDto.setStopovers(trip.getStopovers());
+        tripsDto.setTime(trip.getTime());
+        tripsDto.setStartTime(trip.getStartTime());
+        tripsDto.setWorkDays(trip.getWorkDays());
+        tripsDto.setCreatedAt(trip.getCreatedAt());
+        List<Way> ways = wayRepository.findByTripId(trip.getId());
+        tripsDto.setWays(ways);
+
+        return new ResponseEntity<>(new Message(tripsDto, "Consulta realizada con éxito.", TypesResponse.SUCCESS), HttpStatus.OK);
     }
 
     @Transactional(rollbackFor = {SQLException.class})
@@ -283,7 +328,7 @@ public class TripService {
             return new ResponseEntity<>(new Message("No se encontró el conductor", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
 
-        Trip trip = new Trip(dto.getDriver(),dto.getBus(),true, dto.getMeters(), dto.getTime(), dto.getStartTime(), dto.getWorkDays(), dto.getStopovers());
+        Trip trip = new Trip(driver.get(), bus.get(),true, dto.getMeters(), dto.getTime(), dto.getStartTime(), dto.getWorkDays(), dto.getStopovers());
         trip = repository.saveAndFlush(trip);
         if (trip == null) {
             return new ResponseEntity<>(new Message("No se registró el viaje", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);

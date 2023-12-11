@@ -15,6 +15,15 @@ class DetailsOfTravels extends StatefulWidget {
 class _DetailsOfTravels extends State<DetailsOfTravels> {
   @override
   Widget build(BuildContext context) {
+    int lastPos = widget.trip.trip!.route!.stopOvers!.length - 1;
+    String destino = widget.trip.trip!.route!.stopOvers![lastPos].address!.state!;
+    int numParadas = widget.trip.trip!.route!.stopOvers!.length - 2;
+    String textoParadas;
+    if (numParadas <= 0) {
+      textoParadas = 'Directo - Local';
+    } else {
+      textoParadas = '$numParadas parada${numParadas > 1 ? 's' : ''}';
+    }
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -49,7 +58,7 @@ class _DetailsOfTravels extends State<DetailsOfTravels> {
                           ),
                           const SizedBox(width: 10),
                           Text(
-                            'Origen: ${widget.trip.trip?.route?.startAddress?.description}',
+                            'Origen: ${widget.trip.trip!.route!.stopOvers?[0].address!.state}',
                             style: const TextStyle(
                               color: ColorsApp.text,
                               fontSize: 16.0,
@@ -67,7 +76,7 @@ class _DetailsOfTravels extends State<DetailsOfTravels> {
                           ),
                           const SizedBox(width: 10),
                           Text(
-                            'Destino: ${widget.trip.trip?.route?.endAddress?.description}',
+                            'Destino: $destino',
                             style: const TextStyle(
                               color: ColorsApp.text,
                               fontSize: 16.0,
@@ -94,17 +103,17 @@ class _DetailsOfTravels extends State<DetailsOfTravels> {
                         ],
                       ),
                       const SizedBox(height: 15),
-                      const Row(
+                      Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.timeline,
                             color: ColorsApp.text,
                             size: 35,
                           ),
-                          SizedBox(width: 10),
+                          const SizedBox(width: 10),
                           Text(
-                            'Escala(s): 1',
-                            style: TextStyle(
+                            textoParadas,
+                            style: const TextStyle(
                               color: ColorsApp.text,
                               fontSize: 16.0,
                             ),

@@ -1,5 +1,6 @@
 <template>
-  <div class="container-fluid">
+<Loader :isLoading="isLoading"/>
+  <div class="container-fluid" v-show="!isLoading">
     <div class="row">
       <div class="mx-auto col-lg-12 col-12">
         <div class="mt-4 card card-body">
@@ -21,13 +22,6 @@
                     class="form-control"
                     disabled
                     />
-            </div>
-            <div class="col-12 col-lg-6 mb-3">
-              <label>Ruta(<span class="text-danger">*</span>)</label>
-              <input
-                    :value="searchedTrip.route?.name"
-                    class="form-control"
-                    disabled/>
             </div>
 
             <div class="col-12 col-lg-6 mb-3">
@@ -56,11 +50,26 @@
               </div>
             </div>
 
+              <div class="col-12 mt-3">
+                <h6>Detalles de la ruta</h6>
+              </div>
+              <hr class="my-3 horizontal dark" />
+              <div class="col-12 ">
+               <GMapMap
+              :center="center"
+              ref="myMapRef"
+              :zoom="zoom"
+              style="height: 40rem"
+               :options="mapOptions" 
+               >
+              </GMapMap>
+              </div>
+
 
           </div>
           <div class="row mt-4">
             <div class="col-12 text-end ">
-                <button type="button" class="btn btn bg-gradient-dark mb-0 me-2 ms-auto js-btn-next" @click="cancelar()" title="Regresar">Regresar</button>
+                <button type="button" class="btn btn bg-gradient-dark mb-0 ms-auto js-btn-next" @click="cancelar()" title="Regresar">Regresar</button>
             </div>
           </div>
       </div>
@@ -76,11 +85,14 @@ import listBusesEnabled from '../../../../modules/buses/use-cases/list.bus.enabl
 import listRoutesEnabled from '../../../../modules/routes/use-cases/list.route.enabled'
 import getTrip from '../../use-cases/get.trip'
 import router from '../../../../router/index'
+import mapFunctions from '../../../../kernel/map-functions/maps'
+import Loader from '../../../../components/Loader.vue'
 
 export default {
   name: "DetailTravel",
   components: {
     VueMultiselect,
+    Loader
   },
   data() {
     return {
@@ -118,29 +130,36 @@ export default {
       },
       idTrip: 0,
       searchedTrip: {},
-      tripOriginal: {}
+      tripOriginal: {},
+      zoom: 12,
+      center: {lat:23.634501, lng: -102.552784},
+      mapOptions: {
+        disableDefaultUI: true, 
+      },
+      map:{},
+      isLoading:false,
     };
   },
   async mounted() {
     this.idTrip = this.$route.params.id;
+    this.isLoading = true;
     await this.getTrip(this.idTrip)
     await this.listDriversEnabled()
     await this.listBusesEnabled()
     await this.listRoutesEnabled()
+    await this.getRouteWithPaths()
+    this.isLoading = false;
 
   },
   methods: {
     async getTrip(id){
-      this.isLoading = true;
       const response = {...await getTrip(id)};
       const {error, data} = response;
-      this.isLoading = false;
       if(!error){
           const {result} = data
           this.searchedTrip = {...result, 
-            driver: {id: result.driver.id, name: `${result.driver.person.name} ${result.driver.person.surname}`},
+            driver: {id: result.driver.id, name: result.driver.username},
             bus: {id: result.bus.id, plaque: result.bus.plaque},
-            route: {id: result.route.id, name: `${result.route.endAddress.description.split(',')[0]} - ${result.route.startAddress.description.split(',')[0]}`},
             startTime: new Date(result.startTime).toTimeString().split(' ')[0],
             workDays: JSON.parse(result.workDays).map((day) => ({value: parseInt(day), label: this.getDay(day) }))
           };
@@ -166,10 +185,8 @@ export default {
       }
     },
     async listDriversEnabled(){
-      this.isLoading = true;
       const response = {...await listDriversEnabled()};
       const {error, data} = response;
-      this.isLoading = false;
       if(!error){
           const {result} = data
           this.drivers = result.map((item) =>{
@@ -185,10 +202,8 @@ export default {
       }
     },
     async listBusesEnabled(){
-      this.isLoading = true;
       const response = {...await listBusesEnabled()};
       const {error, data} = response;
-      this.isLoading = false;
       if(!error){
           const {result} = data
           this.buses = result.map((bus) =>{{
@@ -203,15 +218,11 @@ export default {
       }
     },
     async listRoutesEnabled(){
-      this.isLoading = true;
       const response = {...await listRoutesEnabled()};
       const {error, data} = response;
-      this.isLoading = false;
       if(!error){
           const {result} = data
-          this.routes = result.map((route) =>{
-            return {id: route.id, name: `${route.endAddress.description.split(',')[0]} - ${route.startAddress.description.split(',')[0]}`}
-          })
+          this.routes = result
       }else{
           this.$swal({
             icon: "error", 
@@ -226,7 +237,26 @@ export default {
     getDay(value){
       const {label} = this.days.find(day => day.value === parseInt(value))
       return label;
-    }
+    },
+    async getRouteWithPaths(){
+      
+      this.$refs.myMapRef.$mapPromise.then(async (mapObject) => {
+        let stopovers = JSON.parse(this.searchedTrip.stopovers)
+
+
+          const waypoints = stopovers.map((stopover) => {
+            if (stopover.sequence !== 1 && stopover.sequence !== stopovers.length) {
+              return {location: stopover.address.description, stopover: true };
+            }
+            return undefined;
+          }).filter(element => element !== undefined);
+
+        const response = await mapFunctions.getRouteWithPaths(waypoints, stopovers[0].address.description, stopovers[(stopovers.length -1)].address.description);
+        let directionsRenderer = new window.google.maps.DirectionsRenderer();
+        directionsRenderer.setMap(mapObject);
+        directionsRenderer.setDirections(response);
+      });
+    },
     
   },
 };

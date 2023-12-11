@@ -1,3 +1,8 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
+
 class Utils {
   String sumarTiempo(String startTime, double time) {
     // Convertir startTime a DateTime
@@ -35,5 +40,13 @@ class Utils {
     }
 
     return resultado.trim(); // Elimina los espacios extra al final si solo hay horas
+  }
+
+  Widget profilePicture(String profile) {
+    profile = utf8.decode(base64.decode(profile));
+    return SvgPicture.string(
+      profile,
+      fit: BoxFit.contain,
+    );
   }
 }

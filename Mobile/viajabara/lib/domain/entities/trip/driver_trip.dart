@@ -102,18 +102,16 @@ class Bus {
 
 class Route {
   final int? id;
-  final Address? startAddress;
-  final Address? endAddress;
+  final String? name;
   final double? meters;
   final double? time;
   final DateTime? createdAt;
   final bool? status;
-  final List? stopOvers;
+  final List<StopOver>? stopOvers;
 
   Route({
     this.id,
-    this.startAddress,
-    this.endAddress,
+    this.name,
     this.meters,
     this.time,
     this.createdAt,
@@ -124,13 +122,12 @@ class Route {
   factory Route.fromJson(Map<String, dynamic> json) {
     return Route(
       id: json['id'],
-      startAddress: Address.fromJson(json['startAddress']),
-      endAddress: Address.fromJson(json['endAddress']),
+      name: json['name'],
       meters: json['meters'],
       time: json['time'],
       createdAt: DateTime.fromMillisecondsSinceEpoch(json['createdAt']),
       status: json['status'],
-      stopOvers: json['stopOvers'],
+      stopOvers: (json['stopOvers'] as List).map((i) => StopOver.fromJson(i)).toList(),
     );
   }
 }
@@ -140,12 +137,15 @@ class Address {
   final String? latitude;
   final String? longitude;
   final String? description;
+  final String? state;
+
 
   Address({
     this.id,
     this.latitude,
     this.longitude,
     this.description,
+    this.state,
   });
 
   factory Address.fromJson(Map<String, dynamic> json) {
@@ -154,6 +154,31 @@ class Address {
       latitude: json['latitude'],
       longitude: json['longitude'],
       description: json['description'],
+      state: json['state']['name'],
+    );
+  }
+}
+
+class StopOver {
+  int? id;
+  Address? address;
+  int? sequence;
+  double? meters;
+  double? time;
+  int? createdAt;
+  bool? status;
+
+  StopOver({this.id, this.address, this.sequence, this.meters, this.time, this.createdAt, this.status});
+
+  factory StopOver.fromJson(Map<String, dynamic> json) {
+    return StopOver(
+      id: json['id'],
+      address: Address.fromJson(json['address']),
+      sequence: json['sequence'],
+      meters: json['meters'],
+      time: json['time'],
+      createdAt: json['createdAt'],
+      status: json['status'],
     );
   }
 }

@@ -1,5 +1,6 @@
 <template>
-  <div class="container-fluid">
+<Loader :isLoading="isLoading"/>
+  <div class="container-fluid" v-show="!isLoading">
     <div class="row">
       <div class="mx-auto col-lg-12 col-12">
         <div class="mt-4 card card-body">
@@ -47,26 +48,7 @@
                     {{ errors.bus }}
               </div>
             </div>
-            <div class="col-12 col-lg-6 mb-3">
-              <label>Ruta(<span class="text-danger">*</span>)</label>
-              <VueMultiselect
-                    v-model="trip.route"
-                    :options="routes"
-                    selectLabel="Presiona para seleccionar"
-                    selectedLabel="Seleccionado"
-                    deselectLabel="Presiona para remover"
-                    placeholder="Buscar.."
-                    label="name"
-                    :class="{'isInvalid': errors.route, 'isValid': errors.route === null}"
-                    >
-                     <template #noResult>
-                      Elemento no encontrado.
-                    </template>
-                  </VueMultiselect>
-               <div v-if="errors.route" style="color: red">
-                    {{ errors.route }}
-              </div>
-            </div>
+
 
             <div class="col-12 col-lg-6 mb-3">
               <label>Hora(<span class="text-danger">*</span>)</label>
@@ -104,6 +86,56 @@
               </div>
             </div>
 
+            <hr class="my-4 horizontal dark" />
+            <div class="col-12 mb-2">
+                <div class="d-lg-flex">
+                  <div>
+                    <h5 class="mb-0">Rutas (<span class="text-danger">*</span>)</h5>
+                  </div>
+                  <div class="my-auto mt-4 ms-auto mt-lg-0">
+                    <div class="my-auto ms-auto">
+                      <button class="mb-0 btn bg-gradient-danger btn-sm" @click="openModalNewRoute()">+&nbsp; Agregar Ruta</button>
+                    </div>
+                  </div>
+                </div>
+            </div>
+
+            <div class="col-12 table-responsive mt-3">
+              <table class="table table-flush" id="tableRoutes" >
+                <thead class="thead-light">
+                    <tr>
+                      <th style="font-size: 0.65em; font-weight: bold; text-align: start">#</th>
+                      <th style="font-size: 0.65em; font-weight: bold">Nombre</th>
+                      <th style="font-size: 0.65em; font-weight: bold">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablebody">
+                  <tr v-for="(route, index) in routesSelected" :key="index">
+                    <td>{{index + 1}}</td>
+                    <td>{{route.name}}</td>
+                    <td>
+                      <a
+                        class="me-2 clickeable"
+                        @click="updateRoute(route.id)"
+                        >
+                        <i class="fa fa-pencil-square-o text-secondary"></i>
+                        </a>
+
+                        <a
+                         class="clickeable"
+                        @click="removeRoute(route.id)"
+                        >
+                        <i class="fa fa-times-circle text-secondary" ></i>
+                        </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div v-if="errors.ways" style="color: red">
+                    {{ errors.ways }}
+              </div>
+            </div>
+
 
           </div>
           <div class="row mt-4">
@@ -116,20 +148,139 @@
     </div>
   </div>
   </div>
+
+  <MDBModal
+    id="newRouteEndPositionModal"
+    tabindex="-1"
+    labelledby="newRouteEndPositionModalLabel"
+    v-model="newTripModal"
+  >
+    <MDBModalHeader>
+      <MDBModalTitle id="exampleModalLabel">Agregar ruta </MDBModalTitle>
+    </MDBModalHeader>
+    <MDBModalBody>
+            <div class="container-d">
+              <div class="row">
+                  <div class="col-12 mb-3">
+                    <label>Ruta(<span class="text-danger">*</span>)</label>
+                    <VueMultiselect
+                          v-model="routeSelected"
+                          :options="routes"
+                          selectLabel="Presiona para seleccionar"
+                          selectedLabel="Seleccionado"
+                          deselectLabel="Presiona para remover"
+                          placeholder="Buscar.."
+                          label="name"
+                           track-by="name" 
+                          :class="{'isInvalid': modal.route, 'isValid': modal.route === null}"
+                          >
+                          <template #noResult>
+                            Elemento no encontrado.
+                          </template>
+                        </VueMultiselect>
+                    <div v-if="modal.route" style="color: red">
+                          {{ modal.route }}
+                    </div>
+                  </div>
+              </div>
+            </div>
+
+    </MDBModalBody>
+    <MDBModalFooter >
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12 text-center">
+            <button  class="btn bg-gradient-secondary me-2" @click="closeModalNewTrip()">Cancelar</button>
+            <button  class="btn bg-gradient-dark" @click="addRoute()">Agregar</button>
+          </div>
+        </div>
+      </div>
+    </MDBModalFooter>
+  </MDBModal>
+
+
+    <MDBModal
+    id="newRouteEndPositionModal"
+    tabindex="-1"
+    labelledby="newRouteEndPositionModalLabel"
+    v-model="updateTripModal"
+  >
+    <MDBModalHeader>
+      <MDBModalTitle id="exampleModalLabel">Actualizar ruta</MDBModalTitle>
+    </MDBModalHeader>
+    <MDBModalBody>
+            <div class="container-d">
+              <div class="row">
+                  <div class="col-12 mb-3">
+                    <label>Ruta(<span class="text-danger">*</span>)</label>
+                    <VueMultiselect
+                          v-model="routeSelectedUpdate"
+                          :options="routes"
+                          selectLabel="Presiona para seleccionar"
+                          selectedLabel="Seleccionado"
+                          deselectLabel="Presiona para remover"
+                          placeholder="Buscar.."
+                          label="name"
+                           track-by="name" 
+                          :class="{'isInvalid': modalUpdate.route, 'isValid': modalUpdate.route === null}"
+                          >
+                          <template #noResult>
+                            Elemento no encontrado.
+                          </template>
+                        </VueMultiselect>
+                    <div v-if="modalUpdate.route" style="color: red">
+                          {{ modalUpdate.route }}
+                    </div>
+                  </div>
+              </div>
+            </div>
+
+    </MDBModalBody>
+    <MDBModalFooter >
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12 text-center">
+            <button  class="btn bg-gradient-secondary me-2" @click="closeModalUpdateTrip()">Cancelar</button>
+            <button  class="btn bg-gradient-dark" @click="updateRouteInRoutes()">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </MDBModalFooter>
+  </MDBModal>
+
 </template>
 
 <script>
 import VueMultiselect from 'vue-multiselect'
+import mapFunctions from '../../../../kernel/map-functions/maps'
 import listDriversEnabled from '../../../../modules/users/use-cases/list.drivers.enabled'
 import listBusesEnabled from '../../../../modules/buses/use-cases/list.bus.enabled'
 import listRoutesEnabled from '../../../../modules/routes/use-cases/list.route.enabled'
 import tripValidator from '../../../../kernel/validators/trip.validator'
 import newTrip from '../../use-cases/new.trip'
 import router from '../../../../router/index'
+ import {
+    MDBModal,
+    MDBModalBody,
+    MDBModalHeader,
+    MDBModalTitle,
+    MDBModalFooter
+  } from 'mdb-vue-ui-kit';
+import DataTable from 'datatables.net-dt';
+import $ from 'jquery';
+import Loader from '../../../../components/Loader.vue'
+
+
 export default {
   name: "NewUser",
   components: {
     VueMultiselect,
+    MDBModal,
+    MDBModalBody,
+    MDBModalHeader,
+    MDBModalTitle,
+    MDBModalFooter,
+    Loader
   },
   data() {
     return {
@@ -138,7 +289,6 @@ export default {
       activeStep: 0,
       formSteps: 3,
       selected: null,
-      options: ['list', 'of', 'options'],
       drivers: [],
       buses: [],
       routes:[],
@@ -154,26 +304,77 @@ export default {
       trip:{
         driver:"",
         bus:"",
-        route: "",
+        ways: [],
         date:"",
         days: "",
       },
       errors:{
         driver:"",
         bus:"",
-        route: "",
+        ways: "",
         date:"",
         day: "",
-      }
+      },
+      modal:{
+        route: ""
+      },
+      modalUpdate:{
+        route: ""
+      },
+      newTripModal: false,
+      updateTripModal: false,
+      routeSelected: null,
+      routeSelectedUpdate: null,
+      routesSelected: [],
+      datatable: null,
+      idRouteInUpdate: 0,
+      isLoading: false,
     };
   },
   async mounted() {
+    this.isLoading = true
+    this.initializaDatatable()
     await this.listDriversEnabled()
     await this.listBusesEnabled()
     await this.listRoutesEnabled()
+    this.isLoading = false;
 
   },
   methods: {
+     initializaDatatable(){
+      if(this.datatable){
+        this.datatable.destroy()
+      }
+      this.$nextTick(()=>{
+        this.datatable =  new DataTable('#tableRoutes', {
+          searching: true,
+          ordering: true,
+          pageLength:5,
+          lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Mostrar todos"]],
+          language:{
+            infoEmpty: "",
+            url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json',
+            paginate: {
+                    next: ">"
+                },
+            search: "",
+            searchPlaceholder: "Buscar...",
+            
+          },
+          pagingType: "simple_numbers",
+          drawCallback: ()=>{
+                $('#tableRoutes_previous').addClass('d-none');
+          },
+          columnDefs: [
+                {
+                    targets: [0, 1, 2], // Índices de las columnas que deben ser visibles
+                    visible: true
+                }
+          ]
+          });
+      })
+      
+    },
     nextStep() {
       if (this.activeStep < this.formSteps) {
         this.activeStep += 1;
@@ -187,10 +388,8 @@ export default {
       }
     },
     async listDriversEnabled(){
-      this.isLoading = true;
       const response = {...await listDriversEnabled()};
       const {error, data} = response;
-      this.isLoading = false;
       if(!error){
           const {result} = data
           this.drivers = result.map((item) =>{
@@ -206,10 +405,8 @@ export default {
       }
     },
     async listBusesEnabled(){
-      this.isLoading = true;
       const response = {...await listBusesEnabled()};
       const {error, data} = response;
-      this.isLoading = false;
       if(!error){
           const {result} = data
           this.buses = result.map((bus) =>{{
@@ -224,15 +421,11 @@ export default {
       }
     },
     async listRoutesEnabled(){
-      this.isLoading = true;
       const response = {...await listRoutesEnabled()};
       const {error, data} = response;
-      this.isLoading = false;
       if(!error){
           const {result} = data
-          this.routes = result.map((route) =>{
-            return {id: route.id, name: `${route.endAddress.description.split(',')[0]} - ${route.startAddress.description.split(',')[0]}`}
-          })
+          this.routes = result;
       }else{
           this.$swal({
             icon: "error", 
@@ -241,16 +434,45 @@ export default {
           });
       }
     },
-    preNewTrip(){
-
+    async preNewTrip(){
+      this.initializaDatatable()
       this.errors.bus = tripValidator.validateSelect(this.trip.bus);
       this.errors.driver = tripValidator.validateSelect(this.trip.driver);
-      this.errors.route = tripValidator.validateSelect(this.trip.route);
       this.errors.day = tripValidator.validateMultiSelect(this.trip.days);
       this.errors.date = tripValidator.validateDate(this.trip.date);
+      this.errors.ways = tripValidator.validateWays(this.trip.ways);
 
-        if(!this.errors.bus && !this.errors.driver && !this.errors.route && !this.errors.day && !this.errors.date){
-        const {driver, bus, date, days, route} = this.trip;
+      if(!this.errors.bus && !this.errors.driver && !this.errors.day && !this.errors.date && !this.errors.ways){
+        const {driver, bus, date, days, ways} = this.trip;
+        let idRoutes = ways.map((way) => (way.route.id));
+        let fullStopovers = [];
+        idRoutes.map((id) =>{
+            let {stopOvers} = this.routes.find((route) => route.id === id);
+            fullStopovers = [...fullStopovers, ...stopOvers]
+        })
+
+
+        let finalStopovers = await Promise.all([...fullStopovers.map(async (stopover, index) =>{
+              if(index === 0){
+                  stopover.meters = 0
+                  stopover.time = 0
+              }else{
+                stopover.meters = parseFloat(await mapFunctions.getMetersBetweenTwoDirections(fullStopovers[index-1].address.description, fullStopovers[index].address.description));
+                stopover.time = parseFloat(await mapFunctions.getTimeBetweenTwoDirections(fullStopovers[index-1].address.description, fullStopovers[index].address.description));
+              }
+              stopover.sequence = index + 1;
+              return stopover;
+        })])
+
+        let meters = 0;
+        let time = 0;
+        finalStopovers.forEach((stopover) => {
+          meters += stopover.meters;
+          time += stopover.time;
+        });
+        let jsonStopover = JSON.stringify(finalStopovers);
+
+
         const today = new Date();
         const hour = date.split(':');
         today.setHours(parseInt(hour[0])-6, parseInt(hour[1]), 0, 0);
@@ -259,7 +481,10 @@ export default {
           bus: {id: bus.id},
           startTime: today.toISOString(),
           workDays: JSON.stringify(days.map((day) => (day.value.toString()))),
-          route: {id: route.id}
+          ways: ways,
+          stopovers: jsonStopover,
+          meters,
+          time
         }
         this.$swal({
           title: "¿Estás segura(a) de guardar los cambios?",
@@ -304,12 +529,106 @@ export default {
     },
     cancelar(){
        router.push({name: 'Consultar Viajes'})
+    },
+    addRoute(){
+      this.modal.route = tripValidator.validateSelect(this.routeSelected);
+      if(!this.modal.route){
+        let isThereRoute;
+        if(this.trip.ways.length > 0){
+           isThereRoute = this.trip.ways.find((way) => way.route.id === this.routeSelected.id);
+        }
+
+        if(!isThereRoute){
+          this.trip.ways.push({route:{id: this.routeSelected.id}, sequence: (this.trip.ways.length + 1)})
+          this.routesSelected.push({id: this.routeSelected.id, name:  this.routeSelected.name })
+          this.initializaDatatable();
+          this.closeModalNewTrip()
+        }else{
+           this.$swal({
+            icon: "info", 
+            title: 'La ruta ya se ha agregado',
+            type: "basic",
+          });
+        }
+        
+      }
+    },
+    removeRoute(id){
+      this.routesSelected = [...this.routesSelected.filter(route => route.id !== id)]
+      if(this.routesSelected.length > 0){
+        this.routesSelected = [...this.routesSelected.map((route, index)=>{
+        route.sequence = index+1;
+        return route;
+        })]
+      }
+
+       this.trip.ways = [...this.trip.ways.filter(way => way.route.id !== id)]
+      if(this.trip.ways.length > 0){
+        this.trip.ways = [...this.trip.ways.map((way, index)=>{
+        way.sequence = index+1;
+        return way;
+        })]
+      }
+      this.initializaDatatable()
+     
+    },
+    updateRouteInRoutes(){
+      this.modalUpdate.route = tripValidator.validateSelect(this.routeSelectedUpdate);
+      if(!this.modalUpdate.route){
+        let isThereRoute;
+        if(this.trip.ways.length > 0){
+           isThereRoute = this.trip.ways.find((way) => way.route.id === this.routeSelectedUpdate.id);
+        }
+
+        if(!isThereRoute){
+          this.trip.ways = [... this.trip.ways.map((way) =>{
+              if(way.route.id === this.idRouteInUpdate){
+                way = {...way, route:{id: this.routeSelectedUpdate.id}};
+              }
+              return way;
+           })]
+
+          this.routesSelected = [... this.routesSelected.map((route) =>{
+              if(route.id === this.idRouteInUpdate){
+                route = {...route, id: this.routeSelectedUpdate.id, name: this.routeSelectedUpdate.name};
+              }
+              return route;
+           })]
+          this.initializaDatatable();
+          this.closeModalUpdateTrip()
+        }else{
+           this.$swal({
+            icon: "info", 
+            title: 'La ruta ya se ha agregado',
+            type: "basic",
+          });
+        }
+        
+      }
+    },
+    updateRoute(id){
+      this.idRouteInUpdate = id;
+      this.routeSelectedUpdate = this.routes.find((route) => route.id === id);
+      this.updateTripModal = true;
+    },
+    openModalNewRoute(){
+      this.newTripModal = true;
+    },
+    closeModalNewTrip(){
+      this.modal.route = ""
+      this.routeSelected = null;
+      this.newTripModal = false;
+    },
+    closeModalUpdateTrip(){
+      this.modalUpdate.route = ""
+      this.routeSelectedUpdate = null;
+      this.updateTripModal = false;
     }
   },
 };
 </script>
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>
-<style>
+<style scoped>
 .isInvalid{
     border-radius: 5px !important;
     border: 1px solid #fd5c70 !important;
@@ -318,4 +637,8 @@ export default {
     border-radius: 5px !important;
     border: 1px solid #66d432 !important;
 }
+.clickeable{
+    cursor: pointer;
+}
+
 </style>  
