@@ -46,6 +46,34 @@ const Operations = {
         }
       }
       return response;
+    },
+    async recover(url, data){
+      let response;
+      try {
+        response= await axiosInstance.post(`${BASE_URL}${url}`, JSON.stringify(data));
+        response = statusValidator(response);
+      } catch (error) {
+        if(error.response){
+          response = statusValidator(error.response);
+        }else{
+          router.push({name: 'Error Error403'})
+        }
+      }
+      return response;
+    },
+    async changePassword(url, data){
+      let response;
+      try {
+        response= await axiosInstance.post(`${BASE_URL}${url}`, JSON.stringify(data));
+        response = statusValidator(response);
+      } catch (error) {
+        if(error.response){
+          response = statusValidator(error.response);
+        }else{
+          router.push({name: 'Error Error403'})
+        }
+      }
+      return response;
     }
 }
 
