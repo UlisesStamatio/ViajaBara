@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:viajabara/domain/entities/stop_over/stop_over.dart';
 
 class Utils {
   String sumarTiempo(String startTime, double time) {
@@ -70,5 +71,17 @@ class Utils {
       print("Error al decodificar la imagen: $e");
       return const Icon(Icons.error);
     }
+  }
+
+  DateTime calculateEndTimeDate(
+      DateTime startTime, List<StopOverDto> stopovers) {
+    double totalMinutes = 0.0;
+    stopovers.forEach((stopover) {
+      totalMinutes += stopover.time;
+    });
+
+    Duration totalDuration = Duration(minutes: totalMinutes.toInt());
+    DateTime endTime = startTime.add(totalDuration);
+    return endTime;
   }
 }

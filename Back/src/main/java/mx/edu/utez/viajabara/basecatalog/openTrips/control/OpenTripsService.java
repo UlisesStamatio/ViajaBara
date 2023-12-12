@@ -1,10 +1,12 @@
 package mx.edu.utez.viajabara.basecatalog.openTrips.control;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.edu.utez.viajabara.access.user.model.UserRepository;
 import mx.edu.utez.viajabara.basecatalog.bus.model.BusRepository;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTrips;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTripsDto;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTripsRepository;
+import mx.edu.utez.viajabara.basecatalog.seatingSales.model.SeatingSalesRepository;
 import mx.edu.utez.viajabara.basecatalog.trip.model.BookTripDto;
 import mx.edu.utez.viajabara.basecatalog.trip.model.Trip;
 import mx.edu.utez.viajabara.basecatalog.trip.model.TripRepository;
@@ -17,9 +19,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Transactional
 @Service
@@ -29,12 +33,14 @@ public class OpenTripsService {
     private final BusRepository busRepository;
     private final UserRepository userRepository;
 
+    private final SeatingSalesRepository seatingSalesRepository;
     @Autowired
-    public OpenTripsService(OpenTripsRepository repository, TripRepository tripRepository, BusRepository busRepository, UserRepository userRepository) {
+    public OpenTripsService(OpenTripsRepository repository, TripRepository tripRepository, BusRepository busRepository, UserRepository userRepository, SeatingSalesRepository seatingSalesRepository) {
         this.repository = repository;
         this.tripRepository = tripRepository;
         this.busRepository = busRepository;
         this.userRepository = userRepository;
+        this.seatingSalesRepository = seatingSalesRepository;
     }
 
     @Transactional(readOnly = true)
@@ -98,6 +104,58 @@ public class OpenTripsService {
         return new ResponseEntity<>(new Message(openTripsDto, "Viaje abierto encontrado", TypesResponse.SUCCESS), HttpStatus.OK);
     }
 
+    @Transactional(readOnly = true)
+    public ResponseEntity<Object> getSeatsDistributionOfSpecificTravel(BookTripDto bookTripDto) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate = LocalDate.parse(bookTripDto.getDate(), formatter);
+        Date date = java.sql.Date.valueOf(localDate);
+        System.out.println("date");
+        System.out.println("Trip ID: " + bookTripDto.getTripId());
+        System.out.println("Date: " + date);
+        System.out.println("Origin ID: " + bookTripDto.getOriginId());
+        System.out.println("Destiny ID: " + bookTripDto.getDestinyId());
+
+        OpenTripsDto openTripsDto = repository.findByTripIdAndDate((long) bookTripDto.getTripId(),date.toString());
+        if (openTripsDto == null){
+            return new ResponseEntity<>(new Message(new ArrayList<Integer>(), "Distrbucion de asientos no encontrado", TypesResponse.SUCCESS), HttpStatus.OK);
+        }
+
+        List<String> seatsSelectedList = seatingSalesRepository.findSeatsSelectedByCriteria((long) bookTripDto.getTripId(), date.toString(), (long)bookTripDto.getOriginId(),(long)bookTripDto.getDestinyId());
+        System.out.println("seatsSelectedList.size()");
+        System.out.println(seatsSelectedList.size());
+        // Realiza la unión de las listas de seatsSelected
+        List<Integer> combinedSeatsSelected = seatsSelectedList.stream()
+                .flatMap(seatsSelected -> {
+                    try {
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        List<String> jsonList = objectMapper.readValue(seatsSelected, List.class);
+                        return jsonList.stream();
+                    } catch (Exception e) {
+                        System.err.println("Error al analizar JSON: " + e.getMessage());
+                        return Stream.empty();
+                    }
+                })
+                .distinct()
+                .map(Integer::parseInt).sorted().collect(Collectors.toList());
+        return new ResponseEntity<>(new Message(combinedSeatsSelected, "Distrbucion de asientos encontrado", TypesResponse.SUCCESS), HttpStatus.OK);
+
+    }
+
+    private static List<Integer> convertStringListToIntList(List<String> stringList) {
+        List<Integer> intList = new ArrayList<>();
+
+        // Recorre la lista de cadenas y convierte cada elemento a entero
+        for (String str : stringList) {
+            try {
+                intList.add(Integer.parseInt(str));
+            } catch (NumberFormatException e) {
+                // Maneja la excepción si no se puede convertir a entero
+                System.err.println("No se puede convertir '" + str + "' a entero.");
+            }
+        }
+
+        return intList;
+    }
     @Transactional(rollbackFor = {SQLException.class})
     public ResponseEntity<Object> save(OpenTripsDto dto) throws SQLException{
 

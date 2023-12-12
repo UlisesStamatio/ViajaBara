@@ -168,4 +168,22 @@ public class Trip {
     public void setWays(List<Way> ways) {
         this.ways = ways;
     }
+
+    @Override
+    public String toString() {
+        return "Trip{" +
+                "id=" + id +
+                ", driver=" + driver +
+                ", bus=" + bus +
+                ", trips=" + trips +
+                ", createdAt=" + createdAt +
+                ", status=" + status +
+                ", meters=" + meters +
+                ", time=" + time +
+                ", startTime=" + startTime +
+                ", workDays='" + workDays + '\'' +
+                ", stopovers='" + stopovers + '\'' +
+                ", ways=" + ways +
+                '}';
+    }
 }

@@ -48,6 +48,16 @@ public class OpenTripsController {
         return service.getOpenTripByTripIdAndStartDate(tripId, date);
     }
 
+    @PostMapping("/find-seats-distribution")
+    @Secured({VIAJES_ABIERTOS})
+    @ApiOperation(
+            value = "Busca los asientos reservados para un viaje por trip_id, fecha, punto de origen y fin",
+            notes = "{ \"id\": 2 }"
+    )
+    public ResponseEntity<Object> getSeatsDistributionOfSpecificTravel( @RequestBody BookTripDto bookTripDto) {
+        return service.getSeatsDistributionOfSpecificTravel(bookTripDto);
+    }
+
     @GetMapping("/all")
     @Secured({VIAJES_ABIERTOS})
     public ResponseEntity<Object> findAll() throws SQLException {
