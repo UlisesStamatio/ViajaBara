@@ -222,6 +222,7 @@ class _RegisterState extends State<Register> {
                                 bottom: 10,
                               ),
                               child: TextFormField(
+                                maxLength: 10,
                                 keyboardType: TextInputType.phone,
                                 controller: _phone,
                                 validator: (value) {
@@ -239,6 +240,7 @@ class _RegisterState extends State<Register> {
                                   labelText: 'Número de teléfono',
                                   hintText: '7771112233',
                                   filled: true,
+                                  counterText: '',
                                   fillColor: ColorsApp.whiteColor,
                                   hintStyle: const TextStyle(
                                     color: ColorsApp.text,
@@ -457,7 +459,7 @@ class _RegisterState extends State<Register> {
                                             profile: _email.text,
                                             email: _email.text,
                                             username: _username.text,
-                                            password: _repeatPass.text, 
+                                            password: _repeatPass.text,
                                             cellphone: _phone.text);
 
                                         ResMsg isRegister = await AuthProvider()
@@ -468,6 +470,12 @@ class _RegisterState extends State<Register> {
                                         }
 
                                         if (isRegister.type == 'SUCCESS') {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(
+                                            const SnackBar(
+                                                content: Text(
+                                                    'Se registro correctamente el usuario')),
+                                          );
                                           Navigator.pushReplacementNamed(
                                               context, '/login');
                                         } else {

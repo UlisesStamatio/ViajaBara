@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 
 class Utils {
   String sumarTiempo(String startTime, double time) {
@@ -45,19 +46,24 @@ class Utils {
         .trim(); // Elimina los espacios extra al final si solo hay horas
   }
 
+  String formatDate(String timestamp) {
+    try {
+      final date = DateTime.fromMillisecondsSinceEpoch(int.parse(timestamp));
+      return DateFormat('yyyy-MM-dd').format(date);
+    } catch (e) {
+      return 'Agrega tu fecha de nacimiento';
+    }
+  }
+
   Widget profilePicture(String profile) {
     try {
-      Uint8List bytes = base64.decode(profile);
-      String imgb64 = utf8.decode(bytes);
-      print(imgb64.contains('<svg'));
-      if (imgb64.contains('<svg')) {
-        // Si es un SVG
+      if (profile.contains("<svg")) {
         return SvgPicture.string(
-          imgb64,
+          profile,
           fit: BoxFit.cover,
         );
       } else {
-        // Si es PNG/JPG
+        Uint8List bytes = base64.decode(profile);
         return CircleAvatar(
           radius: 30,
           backgroundImage: MemoryImage(
@@ -67,7 +73,7 @@ class Utils {
         );
       }
     } catch (e) {
-      print("Error al decodificar la imagen: $e");
+      print("Error al procesar la imagen: $e");
       return const Icon(Icons.error);
     }
   }

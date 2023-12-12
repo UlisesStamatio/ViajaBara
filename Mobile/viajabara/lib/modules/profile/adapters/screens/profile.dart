@@ -75,7 +75,7 @@ class _ProfileState extends State<Profile> {
       name = dataUser.name!;
       email = dataUser.email!;
       cellphone = dataUser.cellphone!;
-      birthDate = dataUser.birthDate!;
+      birthDate = Utils().formatDate(dataUser.birthDate!);
       sex = dataUser.sex!;
       state = dataUser.state!;
     });
