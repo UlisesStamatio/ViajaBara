@@ -56,8 +56,8 @@
     </section>
   </div>
 
-  <div class="container my-6">
-    <section class="container" id="quienes">
+  <div class="container my-6 ">
+    <section class="container fadeIn2 fadeInBottom" id="quienes">
       <div class="row">
         <div class="col-12 text-center">
           <h2>¿Quiénes somos?</h2>
@@ -84,7 +84,7 @@
       </div>
     </section>
     <hr class="mt-5 mb-2 horizontal dark" />
-    <section class="container" id="rutas">
+    <section class="container fadeIn2 fadeInBottom" id="rutas">
       <div class="row">
         <div class="col-12 text-center">
           <h2 class="mb-5">Ruta Actual</h2>
@@ -169,7 +169,7 @@
     </section>
 
     <hr class="mt-5 mb-2 horizontal dark" />
-    <section class="container" id="servicios">
+    <section class="container fadeIn2 fadeInBottom" id="servicios">
       <div class="row">
         <div class="col-12 text-center"><h2>Servicios adicionales</h2></div>
         <div class="col-12 mt-5 col-md-3">
@@ -258,7 +258,7 @@
     </section>
 
     <hr class="mt-5 mb-2 horizontal dark" />
-    <section class="container" id="paqueteria">
+    <section class="container fadeIn2 fadeInBottom" id="paqueteria">
       <div class="row">
         <div class="col-12 text-center mb-3"><h2>Paquetería</h2></div>
         <div class="col-12">
@@ -325,6 +325,7 @@ import Navbar from "@/examples/PageLayout/Navbar.vue";
 import setNavPills from "@/assets/js/nav-pills.js";
 import icon from "../../../../assets/img/landing-image.png";
 import bus from "../../../../assets/img/bus-footer.png";
+
 
 export default {
   name: "LandingPage",

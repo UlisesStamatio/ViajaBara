@@ -122,8 +122,7 @@ export default {
 
       if(!this.errors.email){
          this.$swal({
-          title: "¿Estás segura(a) de guardar los cambios?",
-          text: "¡No podrás revertir esto.!",
+          title: "¿Estás segura(a) de enviar el correo?",
           icon: "warning",
           showCancelButton: true,
           cancelButtonText: "Cancelar",

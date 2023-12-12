@@ -1,5 +1,15 @@
 <template>
-  <navbar btn-background="bg-gradient-dark" :dark-mode="true" />
+  <div class="container top-0 position-sticky z-index-sticky">
+    <div class="row">
+      <div class="col-12">
+        <navbar
+          is-blur="blur blur-rounded my-3 py-2 start-0 end-0 mx-4 shadow"
+          btn-background="bg-gradient-danger"
+          :dark-mode="true"
+        />
+      </div>
+    </div>
+  </div>
   <main class="main-content mt-0 ps">
     <div>
       <section class="min-vh-100 d-flex align-items-center">
@@ -7,7 +17,7 @@
           <div class="row mt-lg-0 mt-8">
             <div class="col-lg-5 my-auto">
               <h1
-                class="display-1 text-bolder text-gradient text-warning fadeIn1 fadeInBottom mt-5"
+                class="display-1 text-bolder text-gradient text-danger fadeIn1 fadeInBottom mt-5"
               >
                 Error 403
               </h1>
@@ -17,16 +27,10 @@
               <p class="lead opacity-6 fadeIn2 fadeInBottom">
                 No tiene los privilegios para acceder al recurso solicitado.
               </p>
-              <soft-button
-                color="warning"
-                variant="gradient"
-                class="mt-4 fadeIn2 fadeInBottom"
-                >Ir a la página de inicio</soft-button
-              >
             </div>
-            <div class="col-lg-7 my-auto">
+            <div class="col-lg-7 my-auto text-center">
               <img
-                class="w-100 fadeIn1 fadeInBottom"
+                class="w-80 fadeIn1 fadeInBottom"
                 src="../../../../assets/img/illustrations/error-403.png"
                 alt="500-error"
               />
@@ -47,7 +51,7 @@
 <script>
 import Navbar from "@/examples/PageLayout/Navbar.vue";
 import AppFooter from "@/examples/PageLayout/Footer.vue";
-import SoftButton from "@/components/SoftButton.vue";
+import router from '../../../../router/index'
 
 import { mapMutations } from "vuex";
 export default {
@@ -55,7 +59,6 @@ export default {
   components: {
     Navbar,
     AppFooter,
-    SoftButton,
   },
   created() {
     this.toggleEveryDisplay();
@@ -65,8 +68,26 @@ export default {
     this.toggleEveryDisplay();
     this.toggleHideConfig();
   },
+  mounted(){
+     setTimeout(()=>{
+        this.$swal({
+          icon: "warning", 
+          title: "Redirigiendo....",
+          type: "basic",
+          allowOutsideClick: false,
+        });
+    }, 1500)
+
+    setTimeout(()=>{
+       this.$swal.close()
+       router.push({name: 'Signin Illustration'})
+    }, 3000)
+    
+  },
   methods: {
     ...mapMutations(["toggleEveryDisplay", "toggleHideConfig"]),
   },
 };
+
 </script>
+
