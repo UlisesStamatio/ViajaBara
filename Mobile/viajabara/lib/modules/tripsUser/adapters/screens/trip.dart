@@ -21,6 +21,7 @@ import 'package:viajabara/modules/tripsUser/adapters/entities/duty.dart';
 import 'package:viajabara/modules/tripsUser/adapters/methods/show_modal_info.dart';
 import 'package:viajabara/providers/auth_provider.dart';
 import 'package:viajabara/providers/session_manager.dart';
+import 'package:viajabara/providers/utils/utils.dart';
 
 class Trip extends StatefulWidget {
   const Trip({super.key});
@@ -993,7 +994,7 @@ class _TripState extends State<Trip> {
                                                                             crossAxisAlignment:
                                                                                 CrossAxisAlignment.center,
                                                                             children: [
-                                                                              ImageFromBase64(base64String: trips[index].driver!.profile!),
+                                                                              Utils().profilePicture(trips[index].driver!.profile!),
                                                                               Column(
                                                                                 children: [
                                                                                   Text(
