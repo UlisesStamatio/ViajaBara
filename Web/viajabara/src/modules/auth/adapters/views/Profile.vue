@@ -514,7 +514,7 @@ export default {
               name: user.name,
               surname: `${user.lastname} ${user.surname === '' ? '': user.surname}`,
               cellphone: user.cellphone,
-              birthDate: moment(new Date(user.birthday)).format('YYYY-MM-DD'),
+              birthDate: user.birthday ? moment(new Date(user.birthday)).format('YYYY-MM-DD') : null,
               sex: `${parseInt(user.sex) === 1 ? 'H' : parseInt(user.sex) === 2 ? 'M' : ''}`,
               state: user.state ? { id: parseInt(user.state)} : null
             }

@@ -1,15 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:viajabara/domain/entities/user/user_history_trips.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
+import 'package:viajabara/providers/client_provider.dart';
+import 'package:viajabara/providers/utils/utils.dart';
 
 class QualifyDriver extends StatefulWidget {
-  const QualifyDriver({Key? key}) : super(key: key);
+  final HistoryClientTrip historyClientTrip;
+  const QualifyDriver({Key? key, required this.historyClientTrip})
+      : super(key: key);
 
   @override
   _QualifyDriver createState() => _QualifyDriver();
 }
 
 class _QualifyDriver extends State<QualifyDriver> {
+  double _rating = 0;
+  String _comment = '';
+  bool _isButtonDisabled = true;
+
+  void _updateButtonState() {
+    setState(() {
+      _isButtonDisabled = _rating <= 0 || _comment.isEmpty;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -20,12 +35,15 @@ class _QualifyDriver extends State<QualifyDriver> {
       child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            const CircleAvatar(
+            CircleAvatar(
               radius: 80.0,
-              backgroundImage: AssetImage('assets/images/perfilGirl.avif'),
+              backgroundColor: Colors.transparent,
+              child: Utils()
+                  .profilePicture(widget.historyClientTrip.profileImageDriver!),
             ),
             const SizedBox(height: 10.0),
-            const Text('Nathaly Escalona', style: TextStyle(fontSize: 25.0)),
+            Text(widget.historyClientTrip.nameDriver!,
+                style: const TextStyle(fontSize: 25.0)),
             const SizedBox(height: 10.0),
             const Text('¿Qué te ha parecido el viaje?',
                 style: TextStyle(fontSize: 20.0)),
@@ -34,7 +52,7 @@ class _QualifyDriver extends State<QualifyDriver> {
                 style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10.0),
             RatingBar.builder(
-              initialRating: 3,
+              initialRating: 1,
               minRating: 1,
               direction: Axis.horizontal,
               allowHalfRating: true,
@@ -43,16 +61,21 @@ class _QualifyDriver extends State<QualifyDriver> {
               itemBuilder: (context, _) =>
                   const Icon(Icons.star, color: Colors.amber),
               onRatingUpdate: (rating) {
-                print(rating);
+                _rating = rating;
+                _updateButtonState();
               },
             ),
             const SizedBox(height: 20.0),
-            const TextField(
-              decoration: InputDecoration(
+            TextField(
+              decoration: const InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Comentarios',
               ),
               maxLines: 3,
+              onChanged: (text) {
+                _comment = text;
+                _updateButtonState();
+              },
             ),
             const SizedBox(height: 20.0),
             Row(
@@ -65,16 +88,40 @@ class _QualifyDriver extends State<QualifyDriver> {
                     Navigator.of(context).pop();
                   },
                   style: TextButton.styleFrom(
-                      primary: Colors.white,
+                      foregroundColor: Colors.white,
                       backgroundColor: ColorsApp.primayColor,
                       minimumSize: const Size(150, 40)),
                 ),
                 TextButton.icon(
                   icon: const Icon(Icons.thumb_up_outlined),
                   label: const Text('Calificar'),
-                  onPressed: () {},
+                  onPressed: _isButtonDisabled
+                      ? null
+                      : () async {
+                          bool result = await ClientProvider()
+                              .registerQualification(
+                                  widget.historyClientTrip.id!,
+                                  _rating,
+                                  _comment);
+
+                          if (result) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text(
+                                      'Se agrego correctamente la calificación')),
+                            );
+                            Navigator.of(context).pop();
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text(
+                                      'No se pudo agregar la calificación')),
+                            );
+                            Navigator.of(context).pop();
+                          }
+                        },
                   style: TextButton.styleFrom(
-                      primary: Colors.white,
+                      foregroundColor: Colors.white,
                       backgroundColor: ColorsApp.primayColor,
                       minimumSize: const Size(150, 40)),
                 ),

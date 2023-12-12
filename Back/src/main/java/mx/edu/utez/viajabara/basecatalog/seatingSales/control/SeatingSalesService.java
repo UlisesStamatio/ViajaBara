@@ -62,7 +62,7 @@ public class SeatingSalesService {
         List<SeatingSales> seatingSalesList = repository.findAllByClient(optional.get());
         List<SeatingSales> response = new ArrayList<>();
         for (SeatingSales seatingSales:seatingSalesList) {
-            seatingSales.getOpenTrips().getTrip().getDriver().setProfile(null);
+            //seatingSales.getOpenTrips().getTrip().getDriver().setProfile(null);
             seatingSales.getOpenTrips().getTrip().getBus().setImage(null);
             seatingSales.getClient().setProfile(null);
             response.add(seatingSales);

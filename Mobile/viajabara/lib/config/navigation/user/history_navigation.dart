@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:viajabara/modules/historyUser/adapters/screens/historyUser.dart';
-import 'package:viajabara/modules/historyUser/adapters/screens/traveling.dart';
 
 class HistoryNavigation extends StatelessWidget {
   const HistoryNavigation({super.key});
@@ -12,7 +11,6 @@ class HistoryNavigation extends StatelessWidget {
       initialRoute: '/history',
       routes: {
         '/history': (context) => const HistoryUser(),
-        '/traveling': (context) => const TravelingUser(),
       },
     );
   }

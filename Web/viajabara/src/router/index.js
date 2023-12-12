@@ -5,6 +5,7 @@ import ChangePassword from "../modules/auth/adapters/views/ChangePassword.vue";
 import Error404 from "../modules/auth/adapters/views/Error404.vue";
 import Error500 from "../modules/auth/adapters/views/Error500.vue";
 import Error403 from "../modules/auth/adapters/views/Error403.vue";
+import Error401 from "../modules/auth/adapters/views/Error401.vue";
 import Profile from "../modules/auth/adapters/views/Profile.vue";
 import ListUser from "../modules/users/adapters/views/ListUser.vue";
 import NewUser from "../modules/users/adapters/views/NewUser.vue";
@@ -61,6 +62,11 @@ const routes = [
     path: "/error403",
     name: "Error Error403",
     component: Error403,
+  },
+  {
+    path: "/error401",
+    name: "Error Error401",
+    component: Error401,
   },
   {
     path: "/login",

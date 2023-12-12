@@ -8,7 +8,7 @@
               <li class="nav-item">
                 <a
                   class="nav-link mb-0 px-0 py-1"
-                  :class="{'active active': active}"
+                  :class="{'active': active, '': !active }"
                   data-bs-toggle="tab"
                   role="tab"
                   aria-selected="true"
@@ -21,7 +21,7 @@
                 <a
                   class="nav-link mb-0 px-0 py-1"
                   data-bs-toggle="tab"
-                  :class="{'active active': !active}"
+                  :class="{'active': !active, '': active}"
                   role="tab"
                   @click="changeTab(2)"
                   style="cursor:pointer;"
@@ -409,9 +409,14 @@ export default {
 
 };
 </script>
-
+sty
 <style scoped>
   .clickeable{
     cursor: pointer;
   }
+.active{
+    animation: 0.2s ease !important;
+    background-color: #fff !important;
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19) !important;
+}
 </style>

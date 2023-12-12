@@ -1,5 +1,5 @@
 <template>
-  <div class="container top-0 position-sticky z-index-sticky">
+   <div class="container top-0 position-sticky z-index-sticky">
     <div class="row">
       <div class="col-12">
         <navbar
@@ -19,25 +19,25 @@
               <h1
                 class="display-1 text-bolder text-gradient text-danger fadeIn1 fadeInBottom mt-5"
               >
-                Error 500
+                Error 401
               </h1>
               <h2 class="fadeIn3 fadeInBottom opacity-8">
-                Algo salió mal
+                Sin autorización
               </h2>
               <p class="lead opacity-6 fadeIn2 fadeInBottom">
-                Le sugerimos que vaya a la página de inicio mientras solucionamos este problema.
+                No tiene las credenciales necesarias para acceder al recurso solicitado.
               </p>
                   <router-link
                       :to="{ name: 'Página Inicio' }"
-                       class="btn bg-gradient-danger fadeIn2 fadeInBottom"
+                      class="btn bg-gradient-danger fadeIn2 fadeInBottom"
                     >
                       Ir al inicio
                     </router-link>
             </div>
-            <div class="col-lg-7 my-auto">
+            <div class="col-lg-7 my-auto text-center">
               <img
-                class="w-100 fadeIn1 fadeInBottom"
-                src="../../../../assets/img/illustrations/error-500.png"
+                class="w-80 fadeIn1 fadeInBottom "
+                src="../../../../assets/img/illustrations/error-403.png"
                 alt="500-error"
               />
             </div>
@@ -60,7 +60,7 @@ import AppFooter from "@/examples/PageLayout/Footer.vue";
 
 import { mapMutations } from "vuex";
 export default {
-  name: "SignupBasic",
+  name: "Error401",
   components: {
     Navbar,
     AppFooter,
@@ -73,6 +73,7 @@ export default {
     this.toggleEveryDisplay();
     this.toggleHideConfig();
   },
+
   methods: {
     ...mapMutations(["toggleEveryDisplay", "toggleHideConfig"]),
   },

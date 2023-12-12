@@ -2,10 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:viajabara/domain/entities/user/user_history_trips.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
+import 'package:viajabara/kernel/widgets/details/details_history_client.dart';
 import 'package:viajabara/kernel/widgets/details/details_travels.dart';
 import 'package:viajabara/kernel/widgets/historyUser/qualify_driver.dart';
+import 'package:viajabara/modules/historyUser/adapters/screens/traveling.dart';
+import 'package:viajabara/providers/client_provider.dart';
+import 'package:viajabara/providers/utils/utils.dart';
 
 class HistoryUser extends StatefulWidget {
   const HistoryUser({Key? key}) : super(key: key);
@@ -15,6 +20,21 @@ class HistoryUser extends StatefulWidget {
 }
 
 class _HistoryUserState extends State<HistoryUser> {
+  Future<List<HistoryClientTrip>> data = Future.value([]);
+
+  @override
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
+  void loadData() async {
+    var historyData = await ClientProvider().getHistoryTrips();
+    setState(() {
+      data = Future.value(historyData);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,257 +64,126 @@ class _HistoryUserState extends State<HistoryUser> {
               StuffApp.bgGeneral,
               fit: BoxFit.cover,
             ),
-            SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
+            FutureBuilder<List<HistoryClientTrip>>(
+              future: data,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(
+                      child: Text('No hay historial disponible'));
+                }
+
+                return SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: snapshot.data!
+                        .map((trip) => _buildHistoryCard(trip))
+                        .toList(),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHistoryCard(HistoryClientTrip history) {
+    return Card(
+      elevation: 5,
+      margin: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                CircleAvatar(
+                  radius: 45,
+                  backgroundColor: Colors.transparent,
+                  child: Utils().profilePicture(history.profileImageDriver!),
+                ),
+                const SizedBox(width: 20.0),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        'Salida: ${history.startAddress?.state}',
+                        style: const TextStyle(
+                          fontSize: 18.0,
+                        ),
+                      ),
+                      const SizedBox(height: 10.0),
+                      Text(
+                        'Llegada: ${history.endAddress?.state}',
+                        style: const TextStyle(
+                          fontSize: 18.0,
+                        ),
+                      ),
+                      const SizedBox(height: 10.0),
+                      Text(
+                        'Pagado: \$${history.cost}0 ',
+                        style: const TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 15.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Card(
-                    elevation: 5,
-                    margin: const EdgeInsets.symmetric(
-                        vertical: 20.0, horizontal: 16.0),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          const Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              CircleAvatar(
-                                radius: 45,
-                                backgroundImage:
-                                    AssetImage('assets/images/perfilGirl.avif'),
-                              ),
-                              SizedBox(width: 20.0),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text(
-                                      'Salida: Lugar HH:MM',
-                                      style: TextStyle(
-                                        fontSize: 18.0,
-                                      ),
-                                    ),
-                                    SizedBox(height: 10.0),
-                                    Text(
-                                      'Llegada: Lugar HH:MM',
-                                      style: TextStyle(
-                                        fontSize: 18.0,
-                                      ),
-                                    ),
-                                    SizedBox(height: 10.0),
-                                    Text(
-                                      'Pagado: \$100.0',
-                                      style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 15.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                TextButton.icon(
-                                  icon:
-                                      const Icon(Icons.remove_red_eye_outlined),
-                                  label: const Text('Detalles'),
-                                  onPressed: () {
-                                    _showModalInfo(context);
-                                  },
-                                  style: TextButton.styleFrom(
-                                      foregroundColor: Colors.white,
-                                      backgroundColor: ColorsApp.primayColor,
-                                      minimumSize: const Size(150, 40)),
-                                ),
-                                TextButton.icon(
-                                  icon: const Icon(CupertinoIcons.map_fill),
-                                  label: const Text('Ver viaje'),
-                                  onPressed: () => Navigator.pushNamed(
-                                      context, "/traveling"),
-                                  style: TextButton.styleFrom(
-                                      foregroundColor: Colors.white,
-                                      backgroundColor: ColorsApp.primayColor,
-                                      minimumSize: const Size(150, 40)),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                  TextButton.icon(
+                    icon: const Icon(Icons.remove_red_eye_outlined),
+                    label: const Text('Detalles'),
+                    onPressed: () {
+                      _showModalInfo(context, history);
+                    },
+                    style: TextButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: ColorsApp.primayColor,
+                        minimumSize: const Size(150, 40)),
                   ),
-                  Card(
-                    elevation: 5,
-                    margin: const EdgeInsets.symmetric(
-                        vertical: 20.0, horizontal: 16.0),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          const Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              CircleAvatar(
-                                radius: 45,
-                                backgroundImage:
-                                    AssetImage('assets/images/perfilGirl.avif'),
-                              ),
-                              SizedBox(width: 20.0),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text(
-                                      'Salida: Lugar HH:MM',
-                                      style: TextStyle(
-                                        fontSize: 18.0,
-                                      ),
-                                    ),
-                                    SizedBox(height: 10.0),
-                                    Text(
-                                      'Llegada: Lugar HH:MM',
-                                      style: TextStyle(
-                                        fontSize: 18.0,
-                                      ),
-                                    ),
-                                    SizedBox(height: 10.0),
-                                    Text(
-                                      'Pagado: \$100.0',
-                                      style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 15.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                TextButton.icon(
-                                  icon:
-                                      const Icon(Icons.remove_red_eye_outlined),
-                                  label: const Text('Detalles'),
-                                  onPressed: () {
-                                    _showModalInfo(context);
-                                  },
-                                  style: TextButton.styleFrom(
-                                      foregroundColor: Colors.white,
-                                      backgroundColor: ColorsApp.primayColor,
-                                      minimumSize: const Size(150, 40)),
-                                ),
-                                TextButton.icon(
-                                  icon: const Icon(Icons.thumb_up_outlined),
-                                  label: const Text('Calificar'),
-                                  onPressed: () => _qualifyDriver(context),
-                                  style: TextButton.styleFrom(
-                                      foregroundColor: Colors.white,
-                                      backgroundColor: ColorsApp.primayColor,
-                                      minimumSize: const Size(150, 40)),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Card(
-                    elevation: 5,
-                    margin: const EdgeInsets.symmetric(
-                        vertical: 20.0, horizontal: 16.0),
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          const Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              CircleAvatar(
-                                radius: 45,
-                                backgroundImage:
-                                    AssetImage('assets/images/Girl.png'),
-                              ),
-                              SizedBox(width: 20.0),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text(
-                                      'Salida: Lugar HH:MM',
-                                      style: TextStyle(
-                                        fontSize: 18.0,
-                                      ),
-                                    ),
-                                    SizedBox(height: 10.0),
-                                    Text(
-                                      'Llegada: Lugar HH:MM',
-                                      style: TextStyle(
-                                        fontSize: 18.0,
-                                      ),
-                                    ),
-                                    SizedBox(height: 10.0),
-                                    Text(
-                                      'Pagado: \$500.0',
-                                      style: TextStyle(
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 15.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                TextButton.icon(
-                                  icon:
-                                      const Icon(Icons.remove_red_eye_outlined),
-                                  label: const Text('Detalles'),
-                                  onPressed: () {
-                                    _showModalInfo(context);
-                                  },
-                                  style: TextButton.styleFrom(
-                                      foregroundColor: Colors.white,
-                                      backgroundColor: ColorsApp.primayColor,
-                                      minimumSize: const Size(150, 40)),
-                                ),
-                                TextButton.icon(
-                                  icon:
-                                      const Icon(Icons.star_purple500_outlined),
-                                  label: const Text('4.5'),
-                                  onPressed: () {},
-                                  style: TextButton.styleFrom(
-                                      foregroundColor: Colors.white,
-                                      backgroundColor: ColorsApp.muted,
-                                      minimumSize: const Size(150, 40)),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  // Puedes agregar más tarjetas aquí si es necesario
+                  history.stateTrip == 3
+                      ? TextButton.icon(
+                          icon: const Icon(Icons.thumb_up),
+                          label: const Text('Calificar'),
+                          onPressed: () {
+                            _qualifyDriver(context, history);
+                          },
+                          style: TextButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: ColorsApp.primayColor,
+                              minimumSize: const Size(150, 40)),
+                        )
+                      : TextButton.icon(
+                          icon: const Icon(CupertinoIcons.map_fill),
+                          label: const Text('Ver viaje'),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        TravelingUser(trip: history)));
+                          },
+                          style: TextButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: ColorsApp.primayColor,
+                              minimumSize: const Size(150, 40)),
+                        ),
                 ],
               ),
             ),
@@ -304,7 +193,7 @@ class _HistoryUserState extends State<HistoryUser> {
     );
   }
 
-  void _qualifyDriver(BuildContext context) {
+  void _qualifyDriver(BuildContext context, HistoryClientTrip trip) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -314,12 +203,12 @@ class _HistoryUserState extends State<HistoryUser> {
         ),
       ),
       builder: (BuildContext context) {
-        return const QualifyDriver();
+        return QualifyDriver(historyClientTrip: trip);
       },
     );
   }
 
-  void _showModalInfo(BuildContext context) {
+  void _showModalInfo(BuildContext context, HistoryClientTrip trip) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -329,9 +218,7 @@ class _HistoryUserState extends State<HistoryUser> {
         ),
       ),
       builder: (BuildContext context) {
-        // return const DetailsOfTravels();
-        //Recordar cambiar esto por el modal que es, se comenta por que se desarrolla otra pantalla
-        return const QualifyDriver();
+        return DetailsHistoryClient(trip: trip);
       },
     );
   }

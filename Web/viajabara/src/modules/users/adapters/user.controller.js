@@ -1,5 +1,5 @@
 import Operations from "./user.storage";
-
+import moment from 'moment'
 const OperationsController = {
     async newUser(data){
         const {profile, username, email, name, lastname, surname, cellphone, birthday, sex, state } = data
@@ -11,7 +11,7 @@ const OperationsController = {
                 name: name,
                 surname: `${lastname} ${surname === '' ? '': surname}`,
                 cellphone: cellphone,
-                birthDate: birthday,
+                birthDate: birthday ? moment(new Date(birthday)).format('YYYY-MM-DD') : null,
                 sex: `${parseInt(sex) === 1 ? 'h' : parseInt(sex) === 2 ? 'm' : ''}`,
                 state:  state ? { id: parseInt(state)} : null
             },
@@ -35,7 +35,7 @@ const OperationsController = {
                 name: name,
                 surname: `${lastname} ${surname === '' ? '': surname}`,
                 cellphone: cellphone,
-                birthDate: birthday,
+                birthDate:  birthday ? moment(new Date(birthday)).format('YYYY-MM-DD') : null,
                 sex: `${parseInt(sex) === 1 ? 'h' : parseInt(sex) === 2 ? 'm' : ''}`,
                 state: state ? { id: parseInt(state)} : null
             },
