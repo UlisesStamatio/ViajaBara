@@ -1,10 +1,11 @@
+import 'dart:convert';
+
 import 'package:viajabara/domain/entities/address/address.dart';
 import 'package:viajabara/domain/entities/state/state_dto.dart';
 
 class StopOverDto {
   final int? id;
-  final AddressDto?
-      addressDto; // Considerando que AddressDto es un DTO separado
+  final AddressDto? address;
   final String? description;
   final StateDto? state;
   final int sequence;
@@ -14,7 +15,7 @@ class StopOverDto {
 
   StopOverDto({
     this.id,
-    this.addressDto,
+    this.address,
     this.description,
     this.state,
     required this.sequence,
@@ -25,12 +26,13 @@ class StopOverDto {
 
   factory StopOverDto.fromJson(Map<String, dynamic> json) {
     print('Parsing StopOverDto from JSON: $json');
+    print(json.entries);
+    AddressDto? address =
+        json['address'] != null ? AddressDto.fromJson(json['address']) : null;
 
     return StopOverDto(
         id: json['id'],
-        addressDto: json['addressDto'] != null
-            ? AddressDto.fromJson(json['addressDto'])
-            : null,
+        address: address,
         description: json['description'],
         state: json['state'] != null ? StateDto.fromJson(json['state']) : null,
         sequence: json['sequence'],
@@ -51,7 +53,7 @@ class StopOverDto {
   Map<String, dynamic> toJson() {
     final jsonMap = {
       'id': id,
-      'addressDto': addressDto?.toJson(),
+      'address': address?.toJson(),
       'description': description,
       'state': state?.toJson(),
       'sequence': sequence,
@@ -65,9 +67,16 @@ class StopOverDto {
     return jsonMap;
   }
 
+  static List<StopOverDto> fromJsonList(String jsonString) {
+    final List<dynamic> jsonList = json.decode(jsonString);
+    return jsonList
+        .map((json) => StopOverDto.fromJson(json))
+        .toList(); // Mapea cada elemento del JSON a un objeto StopOverDto y retorna la lista resultante.
+  }
+
   @override
   String toString() {
-    return 'StopOverDto{id: $id, addressDto: $addressDto, description: $description, '
+    return 'StopOverDto{id: $id, address: $address, description: $description, '
         'state: $state, sequence: $sequence, meters: $meters, time: $time, '
         'timeAccordingStart: $timeAccordingStart}';
   }

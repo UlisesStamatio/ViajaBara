@@ -1,5 +1,6 @@
 import 'package:viajabara/domain/entities/bus/bus.dart';
 import 'package:viajabara/domain/entities/route/route.dart';
+import 'package:viajabara/domain/entities/stop_over/stop_over.dart';
 import 'package:viajabara/domain/entities/trip/filterType.dart';
 import 'package:viajabara/domain/entities/user/user.dart';
 
@@ -8,9 +9,11 @@ class TripDto {
   UserDto? driver;
   BusDto? bus;
   DateTime? startTime;
-  DateTime? endTime;
+  double? time;
+  double? meters;
   String? workDays;
-  RouteDto? route;
+  String? stopovers;
+  List<StopOverDto>? listStopovers;
   FilterType? filterType;
   int? enabledSeats;
 
@@ -19,9 +22,11 @@ class TripDto {
     this.driver,
     this.bus,
     this.startTime,
-    this.endTime,
+    this.time,
+    this.meters,
     this.workDays,
-    this.route,
+    this.stopovers,
+    this.listStopovers,
     this.filterType,
     this.enabledSeats,
   });
@@ -29,14 +34,23 @@ class TripDto {
   factory TripDto.fromJson(Map<String, dynamic> json) {
     print('Parsing TripDto from JSON: $json');
 
+    List<dynamic>? stopoversJson = json['listStopovers'];
+    List<StopOverDto>? listStopovers = stopoversJson != null
+        ? stopoversJson
+            .map((stopoverJson) => StopOverDto.fromJson(stopoverJson))
+            .toList()
+        : null;
+
     return TripDto(
       id: json['id'] as int?,
       driver: json['driver'] != null ? UserDto.fromJson(json['driver']) : null,
       bus: json['bus'] != null ? BusDto.fromJson(json['bus']) : null,
       startTime: _parseDateTime(json['startTime']),
-      endTime: _parseDateTime(json['endTime']),
+      time: json['time'],
+      meters: json['meters'],
       workDays: "",
-      route: json['route'] != null ? RouteDto.fromJson(json['route']) : null,
+      stopovers: json['stopovers'],
+      listStopovers: listStopovers,
       filterType: json['filterType'] != null
           ? FilterTypeExtension.fromValue(json['filterType'])
           : null,
@@ -59,11 +73,14 @@ class TripDto {
       'driver': driver?.toJson(),
       'bus': bus?.toJson(),
       'startTime': startTime?.toIso8601String(),
-      'endTime': endTime?.toIso8601String(),
+      'time': time,
+      'meters': meters,
       'workDays': "",
-      'route': route?.toJson(),
+      'stopovers': stopovers,
       'filterType': filterType?.value,
       'enabledSeats': enabledSeats,
+      'listStopovers':
+          listStopovers?.map((stopover) => stopover.toJson()).toList()
     };
 
     print('Generated JSON for TripDto: $jsonMap');
@@ -73,7 +90,8 @@ class TripDto {
 
   @override
   String toString() {
-    return 'TripDto{id: $id, bus: $bus, startTime: $startTime, endTime: $endTime, '
-        'workDays: $workDays, route: $route, filterType: $filterType, enabledSeats: $enabledSeats}';
+    return 'TripDto{id: $id, driver: $driver, bus: $bus, startTime: $startTime, '
+        'time: $time, meters: $meters, workDays: $workDays, stopovers: $stopovers, '
+        'filterType: $filterType, enabledSeats: $enabledSeats}';
   }
 }

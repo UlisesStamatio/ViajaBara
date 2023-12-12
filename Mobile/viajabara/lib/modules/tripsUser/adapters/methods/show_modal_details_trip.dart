@@ -49,7 +49,7 @@ void ShowModalDetailsTrip(BuildContext context, TripDto tripDto) {
                             SizedBox(
                               width: 300,
                               child: Text(
-                                'Origen: ${tripDto.route!.startAddress!.state!.name}, ${tripDto.route!.startAddress!.description}',
+                                'Origen: ${tripDto.listStopovers!.first.address}',
                                 style: const TextStyle(
                                   color: ColorsApp.text,
                                   fontSize: 16.0,
@@ -70,7 +70,7 @@ void ShowModalDetailsTrip(BuildContext context, TripDto tripDto) {
                             SizedBox(
                               width: 300,
                               child: Text(
-                                'Destino: ${tripDto.route!.endAddress!.state!.name}, ${tripDto.route!.endAddress!.description}',
+                                'Destino: ${tripDto.listStopovers!.last.description}',
                                 style: const TextStyle(
                                   color: ColorsApp.text,
                                   fontSize: 16.0,
@@ -89,7 +89,7 @@ void ShowModalDetailsTrip(BuildContext context, TripDto tripDto) {
                             ),
                             const SizedBox(width: 10),
                             Text(
-                              'Parada(s): ${tripDto.route!.stopOvers!.length}',
+                              'Parada(s): ${tripDto.listStopovers!.length}',
                               style: const TextStyle(
                                 color: ColorsApp.text,
                                 fontSize: 16.0,
@@ -98,11 +98,11 @@ void ShowModalDetailsTrip(BuildContext context, TripDto tripDto) {
                           ],
                         ),
                         SizedBox(
-                            height: tripDto.route!.stopOvers!.length * 35,
+                            height: tripDto.listStopovers!.length * 35,
                             child: Padding(
                               padding: const EdgeInsets.only(left: 20),
                               child: ListView.builder(
-                                  itemCount: tripDto.route!.stopOvers!.length,
+                                  itemCount: tripDto.listStopovers!.length,
                                   itemBuilder: (context, index) {
                                     return Row(
                                       crossAxisAlignment:
@@ -115,7 +115,7 @@ void ShowModalDetailsTrip(BuildContext context, TripDto tripDto) {
                                               top: 5,
                                               right: 8,
                                               child: Text(
-                                                tripDto.route!.stopOvers![index]
+                                                tripDto.listStopovers![index]
                                                     .sequence
                                                     .toString(),
                                                 style: const TextStyle(
@@ -126,7 +126,7 @@ void ShowModalDetailsTrip(BuildContext context, TripDto tripDto) {
                                         SizedBox(
                                           width: 300,
                                           child: Text(
-                                            ' ${tripDto.route!.stopOvers![index].description}',
+                                            ' ${tripDto.listStopovers![index].description}',
                                             style: const TextStyle(
                                               color: ColorsApp.text,
                                               fontSize: 16.0,
@@ -147,7 +147,7 @@ void ShowModalDetailsTrip(BuildContext context, TripDto tripDto) {
                             ),
                             const SizedBox(width: 10),
                             Text(
-                              'Hora: ${formatTime(tripDto.startTime!)} hrs - ${formatTime(tripDto.endTime!)} hrs',
+                              'Hora: ${formatTime(tripDto.startTime!)} hrs - {formatTime(tripDto.endTime!)} hrs',
                               style: const TextStyle(
                                 color: ColorsApp.text,
                                 fontSize: 16.0,
@@ -165,7 +165,7 @@ void ShowModalDetailsTrip(BuildContext context, TripDto tripDto) {
                             ),
                             const SizedBox(width: 10),
                             Text(
-                              'Tiempo estimado: ${calculateTime(tripDto.startTime!, tripDto.endTime!)}.',
+                              'Tiempo estimado: {calculateTime(tripDto.startTime!, tripDto.endTime!)}.',
                               style: const TextStyle(
                                 color: ColorsApp.text,
                                 fontSize: 16.0,
