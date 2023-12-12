@@ -13,7 +13,7 @@ const Operations = {
         if(error.response){
           response = statusValidator(error.response);
         }else{
-          router.push({name: 'Error Error403'})
+          router.push({name: 'Error Error500'})
         }
       }
       return response;

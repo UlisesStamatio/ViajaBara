@@ -36,15 +36,19 @@ public class JwtProvider {
             return true;
         } catch (MalformedJwtException e) {
             logger.error("Token mal formado");
+            throw e;
         } catch (UnsupportedJwtException e) {
             logger.error("Token no soportado");
+            throw e;
         } catch (ExpiredJwtException e) {
             logger.error("Token expirado");
+            throw e;
         } catch (IllegalArgumentException e) {
             logger.error("Token vacío");
+            throw e;
         } catch (SignatureException e) {
             logger.error("Firma erronea");
+            throw e;
         }
-        return false;
     }
 }

@@ -86,13 +86,12 @@
             </a>
           </li>
         </ul>
-        <ul class="navbar-nav d-lg-block d-none">
+        <ul class="navbar-nav d-lg-block text-center text-lg-end ">
           <li class="nav-item">
             <router-link
               :to="{ name: 'Signin Illustration' }"
               class="mb-0 btn btn-sm btn-round me-1"
               :class="btnBackground ? btnBackground : 'bg-white'"
-              onclick="smoothToPricing('pricing-soft-ui')"
               >Iniciar sesión
               </router-link>
           </li>
