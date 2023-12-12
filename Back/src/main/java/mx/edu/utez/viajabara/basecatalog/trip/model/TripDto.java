@@ -47,6 +47,15 @@ public class TripDto {
     public TripDto() {
     }
 
+    public TripDto(Long id) {
+        this.id = id;
+    }
+
+    public TripDto(Long id, List<Way> ways) {
+        this.id = id;
+        this.ways = ways;
+    }
+
     public Long getId() {
         return id;
     }
@@ -140,30 +149,28 @@ public class TripDto {
         this.stopovers = stopovers;
     }
 
+
     public void setFilterType(FilterType filterType) {
         this.filterType = filterType;
     }
-    /*public static List<TripDto> fromList(List<Trip> trips) {
+    public static List<TripDto> fromList(List<Trip> trips) {
         return trips.stream()
                 .map(TripDto::from)
                 .collect(Collectors.toList());
-    }*/
+    }
 
-  /*  public static TripDto from(Trip trip) {
+    public static TripDto from(Trip trip) {
         TripDto tripDto = new TripDto();
         tripDto.setId(trip.getId());
         tripDto.setDriver(trip.getDriver());
         tripDto.setBus(trip.getBus());
         tripDto.setStartTime(trip.getStartTime());
-        tripDto.setRoute(RouteDto.from(trip.getRoute(), trip.getStartTime()));
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(trip.getStartTime());
-        calendar.add(Calendar.MINUTE, (int) tripDto.getRoute().getTime());
-        tripDto.setEndTime(calendar.getTime());
+        tripDto.setWays(trip.getWays());
         tripDto.setWorkDays(trip.getWorkDays());
+        tripDto.setStopovers(trip.getStopovers());
         return tripDto;
     }
-*/
+
     public interface Register{}
     public interface Modify{}
     public interface ChangeStatus{}

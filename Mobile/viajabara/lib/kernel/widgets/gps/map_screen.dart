@@ -192,7 +192,7 @@ class _MapScreenState extends State<MapScreen> {
                   markers: _markers,
                   compassEnabled: false,
                   myLocationEnabled: true,
-                  zoomControlsEnabled: false,
+                  zoomControlsEnabled: true,
                   myLocationButtonEnabled: false,
                 ),
               ),

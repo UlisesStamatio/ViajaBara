@@ -1,9 +1,23 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:book_my_seat/book_my_seat.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:viajabara/domain/entities/book_trip.dart';
+import 'package:viajabara/domain/entities/stop_over/stop_over.dart';
+import 'package:viajabara/domain/entities/trip/filterType.dart';
+import 'package:viajabara/domain/entities/trip/seat_booking.dart';
+import 'package:viajabara/domain/entities/trip/trip.dart';
+import 'package:viajabara/domain/entities/visual_config/visual_config.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
+import 'package:viajabara/kernel/widgets/custom_progress_indicator.dart';
+import 'package:viajabara/modules/tripsUser/adapters/methods/show_modal_details_trip.dart';
+import 'package:viajabara/modules/tripsUser/adapters/methods/show_modal_info.dart';
+import 'package:viajabara/modules/tripsUser/adapters/widgets/BookTripsDataSource.dart';
 
 class Booking extends StatefulWidget {
   const Booking({super.key});
@@ -14,10 +28,6 @@ class Booking extends StatefulWidget {
 
 class _BookingState extends State<Booking> {
   final _formKey = GlobalKey<FormState>();
-  int _rowsPerPage = 3;
-  int _sortColumnIndex = 0;
-  bool _sortAscending = true;
-  Set<SeatNumber> selectedSeats = Set();
   List<MapEntry<String, int>> patternList = const [
     // 1 fila
     MapEntry("[0][0]", 4),
@@ -55,21 +65,288 @@ class _BookingState extends State<Booking> {
     MapEntry("[6][2]", 0),
     MapEntry("[6][3]", 0),
   ];
+  List<List<SeatState>> seatStateCleanList = [
+    [
+      SeatState.unselected,
+      SeatState.unselected,
+      SeatState.unselected,
+      SeatState.unselected,
+    ],
+    [
+      SeatState.unselected,
+      SeatState.empty,
+      SeatState.unselected,
+      SeatState.unselected,
+    ],
+    [
+      SeatState.unselected,
+      SeatState.empty,
+      SeatState.unselected,
+      SeatState.unselected,
+    ],
+    [
+      SeatState.unselected,
+      SeatState.empty,
+      SeatState.unselected,
+      SeatState.unselected,
+    ],
+    [
+      SeatState.unselected,
+      SeatState.empty,
+      SeatState.unselected,
+      SeatState.unselected,
+    ],
+    [
+      SeatState.empty,
+      SeatState.unselected,
+      SeatState.unselected,
+      SeatState.unselected,
+    ],
+    [
+      SeatState.empty,
+      SeatState.unselected,
+      SeatState.disabled,
+      SeatState.empty,
+    ]
+  ];
+  List<String> seatsNumberDistribution = [
+    "4-1",
+    "7-5",
+    "10-8",
+    "13-11",
+    "16-14",
+    "19-17",
+    "20"
+  ];
+  List<int> seatsSold = [1, 3, 10, 11, 12, 19];
+  late bool thereAreUnassignedSeats;
+  VisualConfigDto visualConfigDto = VisualConfigDto.empty();
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  late Future<void> _initialization;
+  BookTrip bookTrip = BookTrip();
+  TripDto tripDto = TripDto();
+  int rowsPerPagePersonalized = 0;
+  late List<DataRow> _rows;
+  late List<SeatBooking> seatsBooking;
+  late int seatsAvailableToSelect;
+  int seatIdxToAssignNumber = 0;
+
+  void assignSeatNumber(int selectedRow, int selectedColumn) {
+    int seatNumber = patternList
+        .firstWhere(
+          (entry) => entry.key == '[$selectedRow][$selectedColumn]',
+          orElse: () => const MapEntry('', -1),
+        )
+        .value;
+    if (seatNumber != -1) {
+      setState(() {
+        seatsBooking[seatIdxToAssignNumber].seatNumber = seatNumber.toString();
+        seatStateCleanList[selectedRow][selectedColumn] = SeatState.selected;
+        _regenerateRows();
+      });
+      print(seatsBooking);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initialization = _initializeData();
+  }
+
+  Future<void> _initializeData() async {
+    await loadVisualConfig();
+    await loadBookTrip();
+    await loadTripSelected();
+    if (bookTrip.seats != null && tripDto.id != null) {
+      seatsBooking = await generateSeatBookings(bookTrip.seats!);
+      seatsAvailableToSelect = seatsBooking.length;
+      thereAreUnassignedSeats = areThereUnassignedSeats();
+      _rows = _generateRows();
+      updateSeatStateList();
+      rebuildListView();
+    }
+    rowsPerPagePersonalized = calculateRowsPerPage(bookTrip.seats!);
+    Future.delayed(const Duration(seconds: 3), () {
+      _formKey.currentState?.validate();
+    });
+  }
+
+  void updateSeatStateList() {
+    for (int i = 0; i < seatStateCleanList.length; i++) {
+      for (int j = 0; j < seatStateCleanList[i].length; j++) {
+        int seatNumber =
+            patternList[i * seatStateCleanList[i].length + j].value;
+
+        if (seatsSold.contains(seatNumber)) {
+          seatStateCleanList[i][j] = SeatState.sold;
+        }
+      }
+    }
+  }
+
+  void cleanIndexSeatStateList(int index) {
+    for (int i = 0; i < seatStateCleanList.length; i++) {
+      for (int j = 0; j < seatStateCleanList[i].length; j++) {
+        int seatNumber =
+            patternList[i * seatStateCleanList[i].length + j].value;
+
+        if (index == seatNumber) {
+          setState(() {
+            print("[$i][$j]");
+            print(seatStateCleanList[i][j].toString());
+            seatStateCleanList[i][j] = SeatState.unselected;
+            print(seatStateCleanList[i][j].toString());
+          });
+        }
+      }
+    }
+  }
+
+  List<Widget> seatLayoutWidgets = [];
+  void rebuildListView() {
+    Key newKey = UniqueKey();
+    setState(() {
+      seatLayoutWidgets = List.generate(
+        seatStateCleanList.length,
+        (index) => Column(
+          children: [
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 8.0,
+                    horizontal: 10,
+                  ),
+                  child: SizedBox(
+                    width: 50,
+                    child: Text(
+                      seatsNumberDistribution[index],
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+                SeatLayoutWidget(
+                  key: newKey,
+                  onSeatStateChanged: (rowI, colI, seatState) {
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: seatState == SeatState.selected
+                            ? Text("Selected Seat[$index][$colI]")
+                            : Text("De-selected Seat[$index][$colI]"),
+                      ),
+                    );
+                    setState(() {
+                      assignSeatNumber(index, colI);
+                      areThereUnassignedSeats();
+                    });
+                  },
+                  stateModel: SeatLayoutStateModel(
+                    pathDisabledSeat: StuffApp.blackSeat,
+                    pathSelectedSeat: StuffApp.redSeat,
+                    pathSoldSeat: StuffApp.blueSeat,
+                    pathUnSelectedSeat: StuffApp.whiteSeat,
+                    rows: 1,
+                    cols: 4,
+                    seatSvgSize: 60,
+                    currentSeatsState: [seatStateCleanList[index]],
+                  ),
+                ),
+              ],
+            ),
+            const Divider(
+              height: 2,
+            )
+          ],
+        ),
+      );
+    });
+  }
+
+  void editSeat(int selectedRow) {
+    setState(() {
+      cleanIndexSeatStateList(int.parse(seatsBooking[selectedRow].seatNumber));
+      seatsBooking[selectedRow].seatNumber = "S/N";
+      _regenerateRows();
+      rebuildListView();
+    });
+  }
+
+  List<DataRow> _generateRows() {
+    List<DataRow> rows = [];
+
+    for (int index = 0; index < seatsBooking.length; index++) {
+      final seatBooking = seatsBooking[index];
+
+      rows.add(DataRow(cells: [
+        DataCell(Text(seatBooking.passengerNumber.toString())),
+        DataCell(Text(seatBooking.seatNumber)),
+        DataCell(Row(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.edit),
+              onPressed: () {
+                editSeat(index);
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () {
+                print('Acción para el segundo elemento en la fila $index');
+              },
+            ),
+          ],
+        )),
+      ]));
+    }
+
+    return rows;
+  }
+
+  void _regenerateRows() {
+    setState(() {
+      _rows = _generateRows();
+    });
+  }
+
+  bool areThereUnassignedSeats() {
+    seatIdxToAssignNumber =
+        seatsBooking.indexWhere(((seat) => seat.seatNumber == "S/N"));
+    setState(() {
+      thereAreUnassignedSeats =
+          seatsBooking.any((seat) => seat.seatNumber == "S/N");
+    });
+    return thereAreUnassignedSeats;
+  }
+
+  Future<List<SeatBooking>> generateSeatBookings(int numberOfBookings) async {
+    Completer<List<SeatBooking>> completer = Completer<List<SeatBooking>>();
+
+    try {
+      await Future.delayed(Duration(seconds: 1));
+
+      List<SeatBooking> seatBookings = [];
+
+      for (int i = 1; i <= numberOfBookings; i++) {
+        seatBookings.add(SeatBooking(
+          seatNumber: 'S/N',
+          passengerNumber: i,
+        ));
+      }
+
+      completer.complete(seatBookings);
+    } catch (e) {
+      print('Error generating seat bookings: $e');
+      completer.completeError(e);
+    }
+
+    return completer.future;
+  }
 
   @override
   Widget build(BuildContext context) {
-    List<DataRow> _dataRows = List.generate(
-      100, // Número total de filas
-      (index) {
-        return DataRow(
-          cells: [
-            DataCell(Text('Seat $index')),
-            DataCell(Text('Destino $index')),
-          ],
-        );
-      },
-    );
-
     return Scaffold(
         appBar: AppBar(
           title: Container(
@@ -102,286 +379,329 @@ class _BookingState extends State<Booking> {
             fit: BoxFit.cover,
           ),
           SingleChildScrollView(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                Form(
-                  key: _formKey,
-                  onChanged: () {
-                    // setState(() {
-                    //   _isButtonDisabled =
-                    //       !_formKey.currentState!.validate();
-                    // });
-                  },
-                  child: Column(
-                    children: [
-                      Container(
-                          width: MediaQuery.of(context).size.width,
-                          color: Colors.white,
-                          margin: const EdgeInsets.only(bottom: 10),
-                          child: Column(children: <Widget>[
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            TextButton.icon(
-                              icon: const Icon(Icons.remove_red_eye_outlined),
-                              label: const Text('Detalles'),
-                              onPressed: () {},
-                              style: TextButton.styleFrom(
-                                  foregroundColor: ColorsApp.whiteColor,
-                                  backgroundColor: ColorsApp.primayColor,
-                                  minimumSize: Size(
-                                    MediaQuery.of(context).size.width / 1.5,
-                                    0,
-                                  )),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            // ************
-
-                            PaginatedDataTable(
-                              rowsPerPage: _rowsPerPage,
-                              onRowsPerPageChanged: (int? value) {
-                                if (value == null) return;
-                                setState(() {
-                                  _rowsPerPage = value;
-                                });
-                              },
-                              availableRowsPerPage: [3, 5, 10, 20],
-                              sortColumnIndex: _sortColumnIndex,
-                              sortAscending: _sortAscending,
-                              columns: [
-                                DataColumn(
-                                  label: Text('Asiento'),
-                                  onSort: (columnIndex, ascending) {
-                                    setState(() {
-                                      _sortColumnIndex = columnIndex;
-                                      _sortAscending = ascending;
-                                      if (ascending) {
-                                        _dataRows.sort((a, b) => a
-                                            .cells[0].child
-                                            .toString()
-                                            .compareTo(
-                                                b.cells[0].child.toString()));
-                                      } else {
-                                        _dataRows.sort((a, b) => b
-                                            .cells[0].child
-                                            .toString()
-                                            .compareTo(
-                                                a.cells[0].child.toString()));
-                                      }
-                                    });
-                                  },
-                                ),
-                                DataColumn(
-                                  label: Text('Destino'),
+              child: FutureBuilder(
+                  future: _initialization,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Column(
+                              children: [
+                                Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    color: Colors.white,
+                                    margin: const EdgeInsets.only(bottom: 10),
+                                    child: Column(children: <Widget>[
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      TextButton.icon(
+                                        icon: const Icon(
+                                            Icons.remove_red_eye_outlined),
+                                        label: const Text('Detalles'),
+                                        onPressed: () {
+                                          _showModalDetailsTrip(
+                                              context, tripDto);
+                                        },
+                                        style: TextButton.styleFrom(
+                                            foregroundColor:
+                                                ColorsApp.whiteColor,
+                                            backgroundColor:
+                                                ColorsApp.primayColor,
+                                            minimumSize: Size(
+                                              MediaQuery.of(context)
+                                                      .size
+                                                      .width /
+                                                  1.5,
+                                              0,
+                                            )),
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      // *Aqui esta mi paginated, despliega la lista
+                                      PaginatedDataTable(
+                                        columns: const [
+                                          DataColumn(
+                                            label: Text('Pasajero'),
+                                          ),
+                                          DataColumn(label: Text('Asiento')),
+                                          DataColumn(label: Text('Acción')),
+                                        ],
+                                        source: BookTripsDataSource(
+                                            bookTrip, _rows),
+                                        rowsPerPage: rowsPerPagePersonalized,
+                                      ),
+                                    ])),
+                                Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: thereAreUnassignedSeats
+                                      ? Row(
+                                          children: [
+                                            Card(
+                                              elevation: 4,
+                                              margin:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 20),
+                                              child: SizedBox(
+                                                  width: 285,
+                                                  height: 430,
+                                                  child: ListView(
+                                                      children: List.generate(
+                                                          seatStateCleanList
+                                                              .length,
+                                                          (index) => Column(
+                                                                children: [
+                                                                  Row(
+                                                                    children: [
+                                                                      // Padding(
+                                                                      //   padding: const EdgeInsets
+                                                                      //       .symmetric(
+                                                                      //       vertical:
+                                                                      //           8.0,
+                                                                      //       horizontal:
+                                                                      //           10),
+                                                                      //   child:
+                                                                      //       SizedBox(
+                                                                      //     width:
+                                                                      //         50, // Ancho máximo basado en el diseño original
+                                                                      //     child:
+                                                                      //         Text(
+                                                                      //       seatsNumberDistribution[index],
+                                                                      //       style:
+                                                                      //           const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                                                                      //     ),
+                                                                      //   ),
+                                                                      // ),
+                                                                      seatLayoutWidgets[
+                                                                          index],
+                                                                      // SeatLayoutWidget(
+                                                                      //   onSeatStateChanged: (rowI,
+                                                                      //       colI,
+                                                                      //       seatState) {
+                                                                      //     ScaffoldMessenger.of(context)
+                                                                      //         .hideCurrentSnackBar();
+                                                                      //     ScaffoldMessenger.of(context)
+                                                                      //         .showSnackBar(
+                                                                      //       SnackBar(
+                                                                      //         content: seatState == SeatState.selected ? Text("Selected Seat[$index][$colI]") : Text("De-selected Seat[$index][$colI]"),
+                                                                      //       ),
+                                                                      //     );
+                                                                      //     assignSeatNumber(
+                                                                      //         index,
+                                                                      //         colI);
+                                                                      //     areThereUnassignedSeats();
+                                                                      //   },
+                                                                      //   stateModel:
+                                                                      //       SeatLayoutStateModel(
+                                                                      //     pathDisabledSeat:
+                                                                      //         StuffApp.blackSeat,
+                                                                      //     pathSelectedSeat:
+                                                                      //         StuffApp.redSeat,
+                                                                      //     pathSoldSeat:
+                                                                      //         StuffApp.blueSeat,
+                                                                      //     pathUnSelectedSeat:
+                                                                      //         StuffApp.whiteSeat,
+                                                                      //     rows:
+                                                                      //         1,
+                                                                      //     cols:
+                                                                      //         4,
+                                                                      //     seatSvgSize:
+                                                                      //         60,
+                                                                      //     currentSeatsState: [
+                                                                      //       seatStateCleanList[index],
+                                                                      //     ],
+                                                                      //   ),
+                                                                      // ),
+                                                                    ],
+                                                                  ),
+                                                                  const Divider(
+                                                                    height: 2,
+                                                                  )
+                                                                ],
+                                                              )))),
+                                            ),
+                                            Column(
+                                              children: [
+                                                Column(children: [
+                                                  SvgPicture.asset(
+                                                    StuffApp.whiteSeat,
+                                                    width: 50,
+                                                  ),
+                                                  const Text(
+                                                    "Disponible",
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  )
+                                                ]),
+                                                Column(children: [
+                                                  SvgPicture.asset(
+                                                    StuffApp.redSeat,
+                                                    width: 50,
+                                                  ),
+                                                  const Text(
+                                                    "Seleccionado",
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  )
+                                                ]),
+                                                Column(children: [
+                                                  SvgPicture.asset(
+                                                    StuffApp.blueSeat,
+                                                    width: 50,
+                                                  ),
+                                                  const Text(
+                                                    "Vendido",
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  )
+                                                ]),
+                                                Column(children: [
+                                                  SvgPicture.asset(
+                                                    StuffApp.blackSeat,
+                                                    width: 50,
+                                                  ),
+                                                  const Text(
+                                                    "Conductor",
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  )
+                                                ]),
+                                              ],
+                                            ),
+                                          ],
+                                        )
+                                      : TextButton.icon(
+                                          icon: const Icon(
+                                              CupertinoIcons.right_chevron),
+                                          label: const Text('Continuar'),
+                                          onPressed: () {
+                                            Navigator.pushNamed(
+                                                context, "/pay");
+                                          },
+                                          style: TextButton.styleFrom(
+                                              foregroundColor:
+                                                  ColorsApp.whiteColor,
+                                              backgroundColor:
+                                                  ColorsApp.primayColor,
+                                              minimumSize: Size(
+                                                MediaQuery.of(context)
+                                                        .size
+                                                        .width /
+                                                    1.5,
+                                                0,
+                                              )),
+                                        ),
                                 ),
                               ],
-                              source: MyData(_dataRows),
-                            ),
-                          ])),
-                      // *************
-
-                      SizedBox(
-                        height: 10,
-                      ),
-                      // *************
-                      Row(
-                        children: [
-                          Card(
-                            elevation: 4,
-                            margin: EdgeInsets.symmetric(horizontal: 30),
-                            child: IntrinsicWidth(
-                              child: SeatLayoutWidget(
-                                onSeatStateChanged: (rowI, colI, seatState) {
-                                  ScaffoldMessenger.of(context)
-                                      .hideCurrentSnackBar();
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: seatState == SeatState.selected
-                                          ? Text("Selected Seat[$rowI][$colI]")
-                                          : Text(
-                                              "De-selected Seat[$rowI][$colI]"),
-                                    ),
-                                  );
-                                  if (seatState == SeatState.selected) {
-                                    selectedSeats.add(
-                                        SeatNumber(rowI: rowI, colI: colI));
-                                  } else {
-                                    selectedSeats.remove(
-                                        SeatNumber(rowI: rowI, colI: colI));
-                                  }
-                                },
-                                stateModel: const SeatLayoutStateModel(
-                                  pathDisabledSeat: StuffApp.blackSeat,
-                                  pathSelectedSeat: StuffApp.redSeat,
-                                  pathSoldSeat: StuffApp.blueSeat,
-                                  pathUnSelectedSeat: StuffApp.whiteSeat,
-                                  rows: 7,
-                                  cols: 4,
-                                  seatSvgSize: 60,
-                                  currentSeatsState: [
-                                    [
-                                      SeatState.unselected,
-                                      SeatState.unselected,
-                                      SeatState.unselected,
-                                      SeatState.selected,
-                                    ],
-                                    [
-                                      SeatState.unselected,
-                                      SeatState.empty,
-                                      SeatState.unselected,
-                                      SeatState.unselected,
-                                    ],
-                                    [
-                                      SeatState.unselected,
-                                      SeatState.empty,
-                                      SeatState.unselected,
-                                      SeatState.unselected,
-                                    ],
-                                    [
-                                      SeatState.unselected,
-                                      SeatState.empty,
-                                      SeatState.sold,
-                                      SeatState.sold,
-                                    ],
-                                    [
-                                      SeatState.unselected,
-                                      SeatState.empty,
-                                      SeatState.sold,
-                                      SeatState.sold,
-                                    ],
-                                    [
-                                      SeatState.empty,
-                                      SeatState.unselected,
-                                      SeatState.unselected,
-                                      SeatState.unselected,
-                                    ],
-                                    [
-                                      SeatState.empty,
-                                      SeatState.unselected,
-                                      SeatState.disabled,
-                                      SeatState.empty,
-                                    ]
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          Column(
-                            children: [
-                              Column(children: [
-                                SvgPicture.asset(
-                                  StuffApp.whiteSeat,
-                                  width: 60,
-                                ),
-                                const Text(
-                                  "Disponible",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                )
-                              ]),
-                              Column(children: [
-                                SvgPicture.asset(
-                                  StuffApp.redSeat,
-                                  width: 60,
-                                ),
-                                const Text(
-                                  "Seleccionado",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                )
-                              ]),
-                              Column(children: [
-                                SvgPicture.asset(
-                                  StuffApp.blueSeat,
-                                  width: 60,
-                                ),
-                                const Text(
-                                  "Reservado",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                )
-                              ]),
-                              Column(children: [
-                                SvgPicture.asset(
-                                  StuffApp.blackSeat,
-                                  width: 60,
-                                ),
-                                const Text(
-                                  "Conductor",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                )
-                              ]),
-                            ],
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      TextButton.icon(
-                        icon: const Icon(CupertinoIcons.right_chevron),
-                        label: const Text('Continuar'),
-                        onPressed: () {
-                          Navigator.pushNamed(context, "/pay");
-                        },
-                        style: TextButton.styleFrom(
-                            foregroundColor: ColorsApp.whiteColor,
-                            backgroundColor: ColorsApp.primayColor,
-                            minimumSize: Size(
-                              MediaQuery.of(context).size.width / 1.5,
-                              0,
-                            )),
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      // *************
-                    ],
-                  ),
-                )
-              ]))
+                            )
+                          ]);
+                    } else {
+                      return CustomCircularProgressIndicator();
+                    }
+                  }))
         ])));
   }
-}
 
-class MyData extends DataTableSource {
-  final List<DataRow> _dataRows;
+  Future<void> loadVisualConfig() async {
+    Completer<void> completer = Completer<void>();
 
-  MyData(this._dataRows);
+    try {
+      SharedPreferences prefs = await _prefs;
+      if (prefs.containsKey("visualConfig")) {
+        Map<String, dynamic> jsonMap =
+            jsonDecode(prefs.getString("visualConfig")!);
+        visualConfigDto = VisualConfigDto.fromJson(jsonMap);
+      } else {
+        visualConfigDto = VisualConfigDto.empty();
+        prefs.setString("visualConfig", jsonEncode(visualConfigDto));
+      }
+      completer.complete();
+    } catch (e) {
+      print('Error loadVisualConfig: $e');
+      completer.completeError(e);
+    }
 
-  @override
-  DataRow getRow(int index) {
-    if (index >= _dataRows.length) return _dataRows[_dataRows.length - 1];
-    return _dataRows[index];
+    return completer.future;
   }
 
-  @override
-  bool get isRowCountApproximate => false;
-
-  @override
-  int get rowCount => _dataRows.length;
-
-  @override
-  int get selectedRowCount => 0;
-}
-
-class SeatNumber {
-  final int rowI;
-  final int colI;
-
-  const SeatNumber({required this.rowI, required this.colI});
-
-  @override
-  bool operator ==(Object other) {
-    return rowI == (other as SeatNumber).rowI &&
-        colI == (other as SeatNumber).colI;
+  Future<void> loadBookTrip() async {
+    Completer<void> completer = Completer<void>();
+    try {
+      SharedPreferences prefs = await _prefs;
+      if (prefs.containsKey("bookTrip")) {
+        Map<String, dynamic> jsonMap = jsonDecode(prefs.getString("bookTrip")!);
+        bookTrip = BookTrip.fromJson(jsonMap);
+      } else {
+        bookTrip = BookTrip();
+        prefs.setString("bookTrip", jsonEncode(bookTrip.toJson()));
+      }
+      completer.complete();
+    } catch (e) {
+      print('Error loadBookTrip: $e');
+      completer.completeError(e);
+    }
+    return completer.future;
   }
 
-  @override
-  int get hashCode => rowI.hashCode;
+  Future<void> loadTripSelected() async {
+    Completer<void> completer = Completer<void>();
+    try {
+      SharedPreferences prefs = await _prefs;
+      if (prefs.containsKey("tripSelected")) {
+        Map<String, dynamic> jsonMap =
+            jsonDecode(prefs.getString("tripSelected")!);
+        tripDto = TripDto.fromJson(jsonMap);
+      }
+      completer.complete();
+    } catch (e) {
+      print('Error loadTripSelected: $e');
+      completer.completeError(e);
+    }
 
-  @override
-  String toString() {
-    return '[$rowI][$colI]';
+    return completer.future;
+  }
+
+  void _showModalDetailsTrip(BuildContext context, TripDto tripDto) {
+    ShowModalDetailsTrip(context, tripDto);
+  }
+
+  int calculateRowsPerPage(int totalSeats) {
+    if (totalSeats >= 4) {
+      // Si hay al menos 4 resultados, permitir 4 filas por página
+      return 4;
+    } else if (totalSeats >= 2) {
+      // Si hay al menos 2 resultados, permitir 2 filas por página
+      return 2;
+    } else {
+      // Si hay menos de 2 resultados, permitir solo 1 fila por página
+      return 1;
+    }
+  }
+
+  double calculateRoutePrice(
+      TripDto trip, VisualConfigDto visualConfigDto, BookTrip bookTrip) {
+    if (trip.filterType?.value == "Parada" && trip.route?.stopOvers != null) {
+      double routeMeters = trip.route!.meters ?? 0.0;
+      for (StopOverDto stopOver in trip.route!.stopOvers!) {
+        if (stopOver.meters != null &&
+            stopOver.addressDto!.id == bookTrip.originId) {
+          routeMeters -= stopOver.meters!;
+        }
+      }
+      double routePrice =
+          (routeMeters * 0.001) * visualConfigDto.kilometerPrice!;
+      return double.parse(routePrice.toStringAsFixed(2));
+    } else {
+      double routeMeters = trip.route?.meters ?? 0.0;
+      double routePrice =
+          (routeMeters * 0.001) * visualConfigDto.kilometerPrice!;
+      return double.parse(routePrice.toStringAsFixed(2));
+    }
   }
 }

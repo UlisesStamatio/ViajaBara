@@ -59,6 +59,11 @@ public class Trip {
     public Trip() {
     }
 
+    public Trip(Long id, List<Way> ways) {
+        this.id = id;
+        this.ways = ways;
+    }
+
     public Trip(User driver, Bus bus, Route route, boolean status) {
         this.driver = driver;
         this.bus = bus;
@@ -156,5 +161,11 @@ public class Trip {
         this.time = time;
     }
 
+    public List<Way> getWays() {
+        return ways;
+    }
 
+    public void setWays(List<Way> ways) {
+        this.ways = ways;
+    }
 }

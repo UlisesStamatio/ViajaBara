@@ -47,18 +47,23 @@ class Utils {
 
   Widget profilePicture(String profile) {
     try {
-      if (profile.contains('<svg')) {
+      Uint8List bytes = base64.decode(profile);
+      String imgb64 = utf8.decode(bytes);
+      print(imgb64.contains('<svg'));
+      if (imgb64.contains('<svg')) {
         // Si es un SVG
         return SvgPicture.string(
-          profile,
+          imgb64,
           fit: BoxFit.cover,
         );
       } else {
         // Si es PNG/JPG
-        Uint8List bytes = base64.decode(profile);
-        return Image.memory(
-          bytes,
-          fit: BoxFit.cover,
+        return CircleAvatar(
+          radius: 30,
+          backgroundImage: MemoryImage(
+            bytes,
+            scale: 0.1,
+          ),
         );
       }
     } catch (e) {

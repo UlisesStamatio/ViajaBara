@@ -8,17 +8,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.edu.utez.viajabara.access.user.model.User;
 import mx.edu.utez.viajabara.access.user.model.UserRepository;
 import mx.edu.utez.viajabara.basecatalog.address.model.Address;
+import mx.edu.utez.viajabara.basecatalog.address.model.AddressDto;
 import mx.edu.utez.viajabara.basecatalog.bus.model.Bus;
 import mx.edu.utez.viajabara.basecatalog.bus.model.BusDto;
 import mx.edu.utez.viajabara.basecatalog.bus.model.BusRepository;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTrips;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTripsDto;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTripsRepository;
+import mx.edu.utez.viajabara.basecatalog.person.model.Person;
 import mx.edu.utez.viajabara.basecatalog.route.control.RouteService;
 import mx.edu.utez.viajabara.basecatalog.route.model.Route;
 import mx.edu.utez.viajabara.basecatalog.route.model.RouteDto;
 import mx.edu.utez.viajabara.basecatalog.route.model.RouteRepository;
 import mx.edu.utez.viajabara.basecatalog.state.model.State;
+import mx.edu.utez.viajabara.basecatalog.state.model.StateBookTripDto;
+import mx.edu.utez.viajabara.basecatalog.state.model.StateDto;
 import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOver;
 import mx.edu.utez.viajabara.basecatalog.trip.model.*;
 import mx.edu.utez.viajabara.basecatalog.way.control.WayService;
@@ -36,8 +40,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -96,77 +105,155 @@ public class TripService {
         }
         return new ResponseEntity<>(new Message(response, "Listado de viajes", TypesResponse.SUCCESS), HttpStatus.OK);
     }
-  /*  @Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public ResponseEntity<Object> getStatesForFiltersByDate(String date, boolean onlyStatesAndAddresses) throws ParseException {
-        List<Trip> trips = repository.findAllByStatusIsTrue();
         System.out.println("dto " + date);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date providedDate = dateFormat.parse(date);
         TimeZone timeZone = TimeZone.getTimeZone("UTC-6");
         Calendar calendar = Calendar.getInstance(timeZone);
         calendar.setTime(providedDate);
-        Integer dayOfWeekInteger = calendar.get(Calendar.DAY_OF_WEEK);
-        Integer dayOfYearInteger = calendar.get(Calendar.DAY_OF_YEAR);
+        int dayOfWeekInteger = calendar.get(Calendar.DAY_OF_WEEK);
+        List<Trip> trips = repository.findTripsAvailableInDay(Integer.toString(dayOfWeekInteger));
+        System.out.println(trips);
 
-        List<Trip> filteredTrips = getFilteredTrips(trips, dayOfWeekInteger,dayOfYearInteger);
+        int dayOfYearInteger = calendar.get(Calendar.DAY_OF_YEAR);
+        List<Trip> filteredTrips = getFilteredTrips(trips,dayOfYearInteger);
         System.out.println("filteredTrips " + filteredTrips);
 
         if (onlyStatesAndAddresses ) {
-        // Obtener una lista de estados sin duplicados que tienen StopOvers
-        List<State> uniqueStates = getStatesWithStopOvers(filteredTrips);
-
-        // Obtener estados de rutas que no tienen StopOvers
-        List<State> statesWithoutStopOvers = getStatesWithoutStopOvers(filteredTrips);
-
-        // Combinar ambas listas sin duplicados
-        List<State> allUniqueStates = combineUniqueLists(uniqueStates, statesWithoutStopOvers);
-
-        System.out.println(allUniqueStates);
-        return new ResponseEntity<>(new Message(allUniqueStates, "Listado de viajes activos", TypesResponse.SUCCESS), HttpStatus.OK);
-
+            List<StateBookTripDto> statesProcessed = processTrips(filteredTrips);
+            System.out.println("statesProcessed");
+            return new ResponseEntity<>(new Message(statesProcessed, "Listado de viajes activos", TypesResponse.SUCCESS), HttpStatus.OK);
         }
         return new ResponseEntity<>(new Message(filteredTrips, "Listado de viajes activos", TypesResponse.SUCCESS), HttpStatus.OK);
-    }*/
+    }
+    private List<StateBookTripDto> processTrips(List<Trip> trips) {
+        Map<Long, StateBookTripDto> stateMap = new HashMap<>();
+        Set<Long> uniqueAddresses = new HashSet<>();
 
-  /*  @Transactional(readOnly = true)
+        for (Trip trip : trips) {
+            for (Way way : trip.getWays()) {
+                for (StopOver stopOver : way.getRoute().getStopOvers()) {
+                    Address address = stopOver.getAddress();
+                    State state = address.getState();
+
+                    // Verifica si ya existe el StateBookTripDto para el estado
+                    StateBookTripDto stateBookTripDto = stateMap.computeIfAbsent(
+                            state.getId(),
+                            id -> {
+                                StateBookTripDto newDto = new StateBookTripDto();
+                                newDto.setId(state.getId());
+                                newDto.setName(state.getName());
+                                newDto.setAddressDtos(new ArrayList<>());
+                                return newDto;
+                            }
+                    );
+
+                    // Verifica si la dirección ya fue procesada
+                    if (uniqueAddresses.add(address.getId())) {
+                        // Crea el AddressDto para la dirección
+                        AddressDto addressDto = new AddressDto();
+                        addressDto.setId(address.getId());
+                        addressDto.setLatitude(address.getLatitude());
+                        addressDto.setLongitude(address.getLongitude());
+                        addressDto.setDescription(address.getDescription());
+
+                        // Agrega el AddressDto a la lista de direcciones del StateBookTripDto
+                        stateBookTripDto.getAddressDtos().add(addressDto);
+                    }
+                }
+            }
+        }
+
+        // Devuelve la lista de StateBookTripDto
+        return new ArrayList<>(stateMap.values());
+    }
+
+    @Transactional(readOnly = true)
     public ResponseEntity<Object> findByFiltersClient(BookTripDto bookTripDto) throws ParseException {
-        Message msg =  (Message) getStatesForFiltersByDate(bookTripDto.getDate(), false).getBody() ;
+        Message msg = (Message) getStatesForFiltersByDate(bookTripDto.getDate(), false).getBody() ;
         List<Trip> trips = (List<Trip>) msg.getResult();
         System.out.println("trips "+trips.size());
         List<TripDto> tripsProcessed = TripDto.fromList(trips);
         List<TripDto> filteredTrips = tripsProcessed.stream()
                 .filter(trip -> {
-                    System.out.println("trip "+trip.getId());
-                    OpenTripsDto openTripsDto = openTripsRepository.findByTripIdAndDate(trip.getId(), bookTripDto.getDate());
-                    System.out.println("openTripsDto "+openTripsDto);
-                    trip.setEnabledSeats(openTripsDto != null ? openTripsDto.getEnableSeats() : 20);
-                    trip.getDriver().setRoles("[]");
-                    trip.setBus(new Bus());
-                    boolean isStartAddressMatch = trip.getRoute().getStartAddress().getId() == bookTripDto.getOriginId()
-                            && trip.getRoute().getEndAddress().getId() == bookTripDto.getDestinyId();
+                    try {
+                        System.out.println("trip "+trip.getId());
+                        System.out.println("getStopovers "+trip.getStopovers());
+                        List<StopOver> stopOvers = new StopOver().parseStopOversFromJson(trip.getStopovers());
+                        stopOvers = filterStopOvers(stopOvers,(long) bookTripDto.getOriginId(),(long) bookTripDto.getDestinyId());
+                        if (stopOvers.isEmpty())
+                            return false;
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        String jsonArray = objectMapper.writeValueAsString(stopOvers);
+                        System.out.println("stopOvers "+stopOvers);
+                        OpenTripsDto openTripsDto = openTripsRepository.findByTripIdAndDate(trip.getId(), bookTripDto.getDate());
+                        System.out.println("openTripsDto "+openTripsDto);
+                        trip.setEnabledSeats(openTripsDto != null ? openTripsDto.getEnableSeats() : 20);
+                        trip.getDriver().setRoles("[]");
+                        trip.getDriver().setPerson(null);
+                        trip.setBus(new Bus());
+                        trip.setStopovers(jsonArray);
 
-                    if (isStartAddressMatch) {
                         trip.setFilterType(FilterType.START_ADDRESS);
                         return true;
+                    } catch (JsonProcessingException e) {
+                        System.out.println("trono findByFiltersClient "+e);
+                        return false;
                     }
-
-                    boolean isStopOverMatch = trip.getRoute().getStopOvers() != null
-                            && trip.getRoute().getStopOvers().stream()
-                            .anyMatch(stopOver -> stopOver.getAddressDto().getId() == bookTripDto.getOriginId()
-                                    && trip.getRoute().getEndAddress().getId() == bookTripDto.getDestinyId());
-
-                    if (isStopOverMatch) {
-                        trip.setFilterType(FilterType.STOP_OVER);
-                        return true;
-                    }
-
-
-                    return false;
                 })
                 .collect(Collectors.toList());
         System.out.println(filteredTrips);
         return new ResponseEntity<>(new Message(filteredTrips, "Rutas encontradas", TypesResponse.SUCCESS), HttpStatus.OK);
-    }*/
+    }
+
+    private List<StopOver> filterStopOvers(List<StopOver> stopOvers, Long originId, Long endId) {
+        List<StopOver> filteredStopOvers = new ArrayList<>();
+        // Obtén los stopovers que cumplen con las condiciones de los IDs
+        List<StopOver> validStopOvers = stopOvers.stream()
+                .filter(stopOver -> {
+                    Address address = stopOver.getAddress();
+                    Long addressId = address.getId();
+
+                    // Verifica si la dirección tiene el mismo id que originId o endId
+                    if (addressId.equals(originId) || addressId.equals(endId)) {
+                        // Si la dirección tiene el mismo id que originId, guarda su sequence en originSequence
+                        int originSequence = (addressId.equals(originId)) ? stopOver.getSequence() : 0;
+
+                        // Si la dirección tiene el mismo id que endId, guarda su sequence en endSequence
+                        int endSequence = (addressId.equals(endId)) ? stopOver.getSequence() : 0;
+
+                        // Retorna verdadero si la secuencia de originId es menor que la de endId
+                        System.out.println(stopOver.getId());
+                        System.out.println("originSequence < endSequence");
+                        System.out.println(originSequence);
+                        System.out.println(endSequence);
+                        System.out.println(originSequence < endSequence);
+                        return originSequence != 0 || endSequence != 0;
+                    }
+                    return false;
+                })
+                .collect(Collectors.toList());
+
+        // Itera sobre los stopovers válidos y agrega aquellos que estén dentro del rango
+        for (int i = 0; i < validStopOvers.size() - 1; i++) {
+            StopOver currentStopOver = validStopOvers.get(i);
+            StopOver nextStopOver = validStopOvers.get(i + 1);
+
+            // Agrega los stopovers que estén dentro del rango
+            if (currentStopOver.getAddress().getId().equals(originId)
+                    && nextStopOver.getAddress().getId().equals(endId)
+                    && currentStopOver.getSequence() < nextStopOver.getSequence()) {
+                filteredStopOvers.add(currentStopOver);
+                filteredStopOvers.add(nextStopOver);
+            }
+        }
+
+        return filteredStopOvers;
+    }
+
+
     private Date parseDate(String timeString) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
@@ -177,24 +264,12 @@ public class TripService {
             return null;
         }
     }
-    private List<Trip> getFilteredTrips(List<Trip> trips, Integer dayOfWeek, Integer dayOfYear) {
+    private List<Trip> getFilteredTrips(List<Trip> trips, Integer dayOfYear) {
         return trips.stream()
-                .filter(trip -> isDayInWorkDays(dayOfWeek, trip.getWorkDays()))
                 .filter(trip ->isTripAvailable(trip, dayOfYear))
                 .collect(Collectors.toList());
     }
-    // Método para verificar si el día de la semana está en los días laborables del viaje
-    private boolean isDayInWorkDays(Integer dayOfWeek, String workDaysJson) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.setTimeZone(TimeZone.getTimeZone("America/Mexico_City"));
-        try {
-            List<Integer> workDaysList = objectMapper.readValue(workDaysJson,new TypeReference<ArrayList<Integer>>() {});
-            return workDaysList.contains(dayOfWeek);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+
     private boolean isTripAvailable(Trip trip, Integer dayOfYearSelected) {
         Date now = new Date();
 
@@ -215,27 +290,6 @@ public class TripService {
         }
     }
 
-
-   /* private List<State> getStatesWithStopOvers(List<Trip> trips) {
-        return trips.stream()
-                .flatMap(trip -> trip.getRoute().getStopOvers().stream().map(StopOver::getAddress).map(Address::getState))
-                .distinct()
-                .collect(Collectors.toList());
-    }*/
-
-   /* private List<State> getStatesWithoutStopOvers(List<Trip> trips) {
-        return trips.stream()
-                .filter(trip -> trip.getRoute().getStopOvers().isEmpty())
-                .map(trip -> trip.getRoute().getStartAddress().getState())
-                .distinct()
-                .collect(Collectors.toList());
-    }*/
-    private List<State> combineUniqueLists(List<State> list1, List<State> list2) {
-        return Stream.concat(list1.stream(), list2.stream())
-                .distinct()
-                .collect(Collectors.toList());
-    }
-
     private Date getCurrentFormattedTime() {
         Date now = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
@@ -248,8 +302,6 @@ public class TripService {
         sdf.setTimeZone(TimeZone.getTimeZone("America/Mexico_City"));
         return parseDate(sdf.format(trip.getStartTime()));
     }
-
-
 
     @Transactional(readOnly = true)
     public ResponseEntity<Object> findAllEnabled() {

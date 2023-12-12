@@ -66,7 +66,7 @@ public class InitialDatabase implements CommandLineRunner {
         /*CONTROL DE ACCESO*/
         Privilege privilege;
         String privilegesCA = "[";
-
+        String privilegesClient = "[";
         Optional<Privilege> optionalPrivilege = privilegeService.findByName(PrivilegeName.USUARIOS);
         if (!optionalPrivilege.isPresent()) {
             privilege = new Privilege(PrivilegeName.USUARIOS,
@@ -77,7 +77,7 @@ public class InitialDatabase implements CommandLineRunner {
             privilege = optionalPrivilege.get();
         }
         privilegesCA += privilege.toString() + ",";
-
+        privilegesClient += privilege.toString() + ",";
 
         optionalPrivilege = privilegeService.findByName(PrivilegeName.SERVICIOS);
         if (!optionalPrivilege.isPresent()) {
@@ -89,7 +89,7 @@ public class InitialDatabase implements CommandLineRunner {
             privilege = optionalPrivilege.get();
         }
         privilegesCA += privilege.toString() + ",";
-
+        privilegesClient += privilege.toString() + ",";
 
         optionalPrivilege = privilegeService.findByName(PrivilegeName.METODOS_DE_PAGO);
         if (!optionalPrivilege.isPresent()) {
@@ -101,6 +101,7 @@ public class InitialDatabase implements CommandLineRunner {
             privilege = optionalPrivilege.get();
         }
         privilegesCA += privilege.toString() + ",";
+        privilegesClient += privilege.toString() + ",";
 
         optionalPrivilege = privilegeService.findByName(PrivilegeName.AUTOBUSES);
         if (!optionalPrivilege.isPresent()) {
@@ -123,6 +124,7 @@ public class InitialDatabase implements CommandLineRunner {
             privilege = optionalPrivilege.get();
         }
         privilegesCA += privilege.toString() + ",";
+        privilegesClient += privilege.toString() + ",";
 
         optionalPrivilege = privilegeService.findByName(PrivilegeName.RUTAS);
         if (!optionalPrivilege.isPresent()) {
@@ -134,6 +136,7 @@ public class InitialDatabase implements CommandLineRunner {
             privilege = optionalPrivilege.get();
         }
         privilegesCA += privilege.toString() + ",";
+        privilegesClient += privilege.toString() + ",";
 
         optionalPrivilege = privilegeService.findByName(PrivilegeName.VIAJES);
         if (!optionalPrivilege.isPresent()) {
@@ -145,6 +148,7 @@ public class InitialDatabase implements CommandLineRunner {
             privilege = optionalPrivilege.get();
         }
         privilegesCA += privilege.toString() + ",";
+        privilegesClient += privilege.toString() + ",";
 
         optionalPrivilege = privilegeService.findByName(PrivilegeName.VIAJES_ABIERTOS);
         if (!optionalPrivilege.isPresent()) {
@@ -156,6 +160,7 @@ public class InitialDatabase implements CommandLineRunner {
             privilege = optionalPrivilege.get();
         }
         privilegesCA += privilege.toString() + ",";
+        privilegesClient += privilege.toString() + ",";
 
         optionalPrivilege = privilegeService.findByName(PrivilegeName.CALIFICACIONES);
         if (!optionalPrivilege.isPresent()) {
@@ -167,7 +172,7 @@ public class InitialDatabase implements CommandLineRunner {
             privilege = optionalPrivilege.get();
         }
         privilegesCA += privilege.toString() + ",";
-
+        privilegesClient += privilege.toString() + ",";
 
         optionalPrivilege = privilegeService.findByName(PrivilegeName.VENTA_ASIENTOS);
         if (!optionalPrivilege.isPresent()) {
@@ -179,7 +184,7 @@ public class InitialDatabase implements CommandLineRunner {
             privilege = optionalPrivilege.get();
         }
         privilegesCA += privilege.toString() + ",";
-
+        privilegesClient += privilege.toString() + ",";
 
         optionalPrivilege = privilegeService.findByName(PrivilegeName.ROLES);
         if (!optionalPrivilege.isPresent()) {
@@ -202,6 +207,7 @@ public class InitialDatabase implements CommandLineRunner {
             privilege = optionalPrivilege.get();
         }
         privilegesCA += privilege.toString() + ",";
+        privilegesClient += privilege.toString() + ",";
 
         optionalPrivilege = privilegeService.findByName(PrivilegeName.PRIVILEGIOS);
         if (!optionalPrivilege.isPresent()) {
@@ -223,6 +229,7 @@ public class InitialDatabase implements CommandLineRunner {
             privilege = optionalPrivilege.get();
         }
         privilegesCA += privilege.toString() + "]";
+        privilegesClient += privilege.toString() + ",";
 
         String privilegesCK = "[";
         optionalPrivilege = privilegeService.findByName(PrivilegeName.CONDUCTOR);
@@ -236,7 +243,7 @@ public class InitialDatabase implements CommandLineRunner {
         privilegesCK += privilege.toString() + "]";
 
 
-        String privilegesClient = "[";
+
         optionalPrivilege = privilegeService.findByName(PrivilegeName.CLIENTE);
         if (!optionalPrivilege.isPresent()) {
             privilege = new Privilege(PrivilegeName.CLIENTE,

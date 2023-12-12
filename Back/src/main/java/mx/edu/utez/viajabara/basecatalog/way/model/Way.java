@@ -6,6 +6,8 @@ import mx.edu.utez.viajabara.basecatalog.trip.model.Trip;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "ways")
@@ -98,5 +100,19 @@ public class Way {
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public static List<Way> fromListToBookSelect(List<Way> ways) {
+        return ways.stream()
+                .map(Way::fromToBookSelect)
+                .collect(Collectors.toList());
+    }
+
+    public static Way fromToBookSelect(Way way) {
+        Way wayBook = new Way();
+        wayBook.setId(way.getId());
+        wayBook.setRoute(way.route);
+        wayBook.setSequence(way.getSequence());
+        return wayBook;
     }
 }

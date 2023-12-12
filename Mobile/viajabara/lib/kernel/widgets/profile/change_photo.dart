@@ -73,7 +73,7 @@ class _ChangePhotoModal extends State<ChangePhotoModal> {
             title: const Text('Seleccionar foto desde la galería',
                 style: TextStyle(color: ColorsApp.text),
                 textAlign: TextAlign.center),
-            onTap: () {            },
+            onTap: () {},
           ),
           const Divider(color: ColorsApp.text),
           ListTile(
@@ -95,7 +95,4 @@ class _ChangePhotoModal extends State<ChangePhotoModal> {
       ),
     );
   }
-
 }
-
-

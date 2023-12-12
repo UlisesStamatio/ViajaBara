@@ -32,7 +32,7 @@ class AuthProvider {
   }
 
   Future<ResMsg> register(UserData userData) async {
-    String svgValue  = Jdenticon.toSvg(userData.profile!);
+    String svgValue = Jdenticon.toSvg(userData.profile!);
     String valueBase64 = base64.encode(utf8.encode(svgValue));
 
     var dataJson = jsonEncode({
@@ -81,12 +81,12 @@ class AuthProvider {
       List<dynamic> statesJson = data['result'];
 
       List<StateList> states = statesJson.map((state) {
-        List<dynamic> addressesJson = state['addresses'];
+        List<dynamic> addressesJson = state['addressDtos'];
         List<Address> addresses = addressesJson
             .map((address) => Address(
                   description: address['description'],
                   id: address['id'],
-                ) as Address) // Conversión explícita
+                ))
             .toList();
 
         return StateList(
@@ -95,7 +95,6 @@ class AuthProvider {
           addresses: addresses,
         );
       }).toList();
-
       return states;
     } else {
       throw Exception('Fallo al obtener los estados de origen');
@@ -144,7 +143,7 @@ class AuthProvider {
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseBody =
             response.data as Map<String, dynamic>;
-        print("response");
+        print("response getVisualConfigurations");
         print(responseBody);
 
         if (responseBody.containsKey('result')) {

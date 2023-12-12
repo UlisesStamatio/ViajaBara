@@ -19,8 +19,8 @@ class _LoginState extends State<Login> {
   bool _passwordVisible = false;
   bool _islogged = false;
   final TextEditingController _email =
-      TextEditingController(text: '20203tn159@utez.edu.mx');
-  final TextEditingController _pass = TextEditingController(text: 'Admin123');
+      TextEditingController(text: '20203tn063@utez.edu.mx');
+  final TextEditingController _pass = TextEditingController(text: 'Admin12');
 
   @override
   Widget build(BuildContext context) {
