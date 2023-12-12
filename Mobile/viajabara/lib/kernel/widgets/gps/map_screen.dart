@@ -20,6 +20,7 @@ class _MapScreenState extends State<MapScreen> {
   late LocationBloc locationBloc;
   Set<Polyline> _polylines = {};
   GoogleMapController? mapController;
+  Set<Marker> _markers = {};
 
   @override
   void initState() {
@@ -27,36 +28,41 @@ class _MapScreenState extends State<MapScreen> {
     locationBloc = BlocProvider.of<LocationBloc>(context);
     locationBloc.startFollowingUser();
     LatLng startPoint = LatLng(
-      double.parse(
-          widget.trip.trip!.route!.stopOvers![0].address?.latitude ?? '0'),
-      double.parse(
-          widget.trip.trip!.route!.stopOvers![0].address?.longitude ?? '0'),
+      double.parse(widget.trip.trip!.stopOvers![0].address?.latitude ?? '0'),
+      double.parse(widget.trip.trip!.stopOvers![0].address?.longitude ?? '0'),
     );
-    print('startPoint $startPoint');
+    
     LatLng endPoint = LatLng(
-      double.parse(
-          widget.trip.trip!.route!.stopOvers!.last.address?.latitude ?? '0'),
-      double.parse(
-          widget.trip.trip!.route!.stopOvers!.last.address?.longitude ?? '0'),
+      double.parse(widget.trip.trip!.stopOvers!.last.address?.latitude ?? '0'),
+      double.parse(widget.trip.trip!.stopOvers!.last.address?.longitude ?? '0'),
     );
-    print('endPoint $endPoint');
 
-    getRouteCoordinates(startPoint, endPoint).then((route) {
+    getRouteCoordinates(widget.trip.trip!.stopOvers!).then((route) {
       Polyline polyline = Polyline(
         polylineId: PolylineId('route'),
         color: Colors.blueAccent,
         points: route,
         width: 5,
       );
+
+      for (var stopOver in widget.trip.trip!.stopOvers!) {
+        LatLng stopOverPoint = LatLng(
+          double.parse(stopOver.address?.latitude ?? '0'),
+          double.parse(stopOver.address?.longitude ?? '0'),
+        );
+        _addMarker(stopOverPoint, 'stopOver_${stopOver.id}','Parada: ${stopOver.sequence} + ${stopOver.address?.description!}');
+      }
       setState(() {
         _polylines.add(polyline);
-        centerCameraOnPolyline(); // Asegúrate de que esta función ajuste la cámara para mostrar toda la ruta
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          centerCameraOnPolyline();
+        });
       });
     });
   }
 
   LatLngBounds boundsFromLatLngList(List<LatLng> list,
-      {double padding = 0.20}) {
+      {double padding = 0.001}) {
     assert(list.isNotEmpty);
     double x0, x1, y0, y1;
     x0 = list.first.longitude - padding;
@@ -76,7 +82,7 @@ class _MapScreenState extends State<MapScreen> {
   // Método para centrar la cámara en la polilínea
   void centerCameraOnPolyline() {
     if (_polylines.isNotEmpty && mapController != null) {
-      var points = _polylines.first.points; 
+      var points = _polylines.first.points;
       var bounds = boundsFromLatLngList(points);
       mapController!.animateCamera(CameraUpdate.newLatLngBounds(bounds, 50));
     }
@@ -84,7 +90,6 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     locationBloc.stopFollowingUser();
     super.dispose();
   }
@@ -136,7 +141,7 @@ class _MapScreenState extends State<MapScreen> {
                               fontSize: 15.0, color: ColorsApp.text),
                         ),
                         Text(
-                          'Llegada: ${Utils().sumarTiempo(widget.trip.trip!.startTime!, widget.trip.trip!.route!.time!)}',
+                          'Llegada: ${Utils().sumarTiempo(widget.trip.trip!.startTime!, widget.trip.trip!.time!)}',
                           style: const TextStyle(
                               fontSize: 15.0, color: ColorsApp.text),
                         )
@@ -146,7 +151,8 @@ class _MapScreenState extends State<MapScreen> {
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                              builder: (context) => Passengers(trip: widget.trip)),
+                              builder: (context) =>
+                                  Passengers(trip: widget.trip)),
                         );
                       },
                       style: ButtonStyle(
@@ -183,6 +189,7 @@ class _MapScreenState extends State<MapScreen> {
                   },
                   initialCameraPosition: initialCameraPosition,
                   polylines: _polylines,
+                  markers: _markers,
                   compassEnabled: false,
                   myLocationEnabled: true,
                   zoomControlsEnabled: true,
@@ -196,11 +203,34 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
-  Future<List<LatLng>> getRouteCoordinates(LatLng l1, LatLng l2) async {
+  Future<List<LatLng>> getRouteCoordinates(List<StopOver> stopOvers) async {
     Dio dio = Dio();
-    String url =
-        "https://maps.googleapis.com/maps/api/directions/json?origin=${l1.latitude},${l1.longitude}&destination=${l2.latitude},${l2.longitude}&key=AIzaSyB0kxKgHrX2s6oZWkAQ1Im28tkNHbeLXxQ";
 
+    if (stopOvers.length < 2) {
+      return []; // Necesitas al menos un inicio y un final
+    }
+    LatLng start = LatLng(
+      double.parse(stopOvers.first.address?.latitude ?? '0'),
+      double.parse(stopOvers.first.address?.longitude ?? '0'),
+    );
+    LatLng end = LatLng(
+      double.parse(stopOvers.last.address?.latitude ?? '0'),
+      double.parse(stopOvers.last.address?.longitude ?? '0'),
+    );
+
+    String waypoints = "";
+    for (int i = 1; i < stopOvers.length - 1; i++) {
+      LatLng point = LatLng(
+        double.parse(stopOvers[i].address?.latitude ?? '0'),
+        double.parse(stopOvers[i].address?.longitude ?? '0'),
+      );
+      if (i != 1) waypoints += "|";
+      waypoints += "${point.latitude},${point.longitude}";
+    }
+
+    String url =
+        "https://maps.googleapis.com/maps/api/directions/json?origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}&waypoints=$waypoints&key=AIzaSyB0kxKgHrX2s6oZWkAQ1Im28tkNHbeLXxQ";
+    print("URL de la API: $url");
     try {
       Response response = await dio.get(url);
       List<LatLng> route = [];
@@ -245,5 +275,17 @@ class _MapScreenState extends State<MapScreen> {
       points.add(p);
     }
     return points;
+  }
+
+  void _addMarker(LatLng position, String id, String title) {
+    setState(() {
+      _markers.add(
+        Marker(
+          markerId: MarkerId(id),
+          position: position,
+          infoWindow: InfoWindow(title: title),
+        ),
+      );
+    });
   }
 }

@@ -69,10 +69,10 @@ class _TravelingState extends State<Traveling> {
       topLeft: Radius.circular(24.0),
       topRight: Radius.circular(24.0),
     );
-    int lastPos = widget.trip.trip!.route!.stopOvers!.length - 1;
+    int lastPos = widget.trip.trip!.stopOvers!.length - 1;
     String? destino =
-        widget.trip.trip?.route!.stopOvers![lastPos].address!.state!;
-    int numParadas = widget.trip.trip!.route!.stopOvers!.length - 2;
+        widget.trip.trip?.stopOvers![lastPos].address!.state!;
+    int numParadas = widget.trip.trip!.stopOvers!.length - 2;
     String textoParadas;
     if (numParadas <= 0) {
       textoParadas = 'Directo - Local';
@@ -91,7 +91,7 @@ class _TravelingState extends State<Traveling> {
                 const Icon(Icons.location_on, color: Colors.black, size: 40),
                 const SizedBox(width: 8),
                 Text(
-                    'Origen: ${widget.trip.trip?.route?.stopOvers?[0].address!.state!}',
+                    'Origen: ${widget.trip.trip?.stopOvers?[0].address!.state!}',
                     style: const TextStyle(fontSize: 20)),
               ],
             ),

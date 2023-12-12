@@ -91,9 +91,9 @@ class _TripsState extends State<Trips> {
   }
 
   Widget _buildTripCard(DriverTrip trip) {
-    int lastPos = trip.trip!.route!.stopOvers!.length - 1;
-    String destino = trip.trip!.route!.stopOvers![lastPos].address!.state!;
-    int numParadas = trip.trip!.route!.stopOvers!.length - 2;
+    int lastPos = trip.trip!.stopOvers!.length - 1;
+    String destino = trip.trip!.stopOvers![lastPos].address!.state!;
+    int numParadas = trip.trip!.stopOvers!.length - 2;
     String textoParadas;
     if (numParadas <= 0) {
       textoParadas = 'Directo - Local';
@@ -129,7 +129,7 @@ class _TripsState extends State<Trips> {
                 Container(
                   padding: const EdgeInsets.only(top: 10),
                   child: Text(
-                    'Tiempo estimado: ${Utils().formatTime(trip.trip!.route!.time!)}',
+                    'Tiempo estimado: ${Utils().formatTime(trip.trip!.time!)}',
                     style: const TextStyle(
                         fontSize: 15.0,
                         color: ColorsApp.primayColor,
@@ -159,7 +159,7 @@ class _TripsState extends State<Trips> {
                         ),
                       ),
                       Text(
-                        'Llegada: ${Utils().sumarTiempo(trip.trip!.startTime!, trip.trip!.route!.time!)}',
+                        'Llegada: ${Utils().sumarTiempo(trip.trip!.startTime!, trip.trip!.time!)}',
                         style: const TextStyle(
                           fontSize: 15.0,
                           color: ColorsApp.text,

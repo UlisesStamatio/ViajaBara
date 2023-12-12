@@ -35,9 +35,9 @@ class _HistoryStarsState extends State<HistoryStars> {
 
   @override
   Widget build(BuildContext context) {
-    String? salida = "${widget.trip.trip!.route!.stopOvers![0].address?.state}-${widget.trip.startDate}-${widget.trip.trip?.startTime}";
-    String? horaLlegada = Utils().sumarTiempo(widget.trip.trip!.startTime!, widget.trip.trip!.route!.time!);
-    String? llegada = "${widget.trip.trip?.route!.stopOvers!.last.address?.state}-${widget.trip.startDate}-$horaLlegada";
+    String? salida = "${widget.trip.trip!.stopOvers![0].address?.state}-${widget.trip.startDate}-${widget.trip.trip?.startTime}";
+    String? horaLlegada = Utils().sumarTiempo(widget.trip.trip!.startTime!, widget.trip.trip!.time!);
+    String? llegada = "${widget.trip.trip?.stopOvers!.last.address?.state}-${widget.trip.startDate}-$horaLlegada";
     return Scaffold(
       appBar: AppBar(
         title: Container(
