@@ -356,7 +356,7 @@ export default {
             if (result.isConfirmed) {
                 user.id =  this.idUser
                 user.profile = document.getElementById('image_profile').src.split('base64,')[1]
-                user.birthday = moment(new Date(user.birthday)).format('YYYY-MM-DD');
+                user.birthday =  user.birthday ? moment(user.birthday).format('YYYY-MM-DD') : null
                 this.isLoading = true;
                 const response = await updateUser(user)
                 const {message, error, data}  = response

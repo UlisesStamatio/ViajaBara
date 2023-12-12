@@ -382,7 +382,7 @@ export default {
           buttonsStyling: false,
         }).then(async(result) => {
           if (result.isConfirmed) {
-              user.birthday = moment(new Date(user.birthday)).format('YYYY-MM-DD')
+              user.birthday =  user.birthday ? moment(user.birthday).format('YYYY-MM-DD') : null
               user.profile = document.getElementById('image_profile').src.split('base64,')[1]
               this.isLoading = true;
               const {message, error, data} = await newUser(user)
