@@ -54,9 +54,9 @@ public class QualificationsService {
         Qualifications qualifications = new Qualifications(optionalSeatingSales.get(),dto.getComments(),dto.getScore());
         qualifications = repository.saveAndFlush(qualifications);
         if(qualifications == null){
-            return new ResponseEntity<>(new Message("No se registró la venta del lugar", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new Message("No se registró la calificación", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(new Message(qualifications, "Se registró la venta del lugar", TypesResponse.SUCCESS), HttpStatus.OK);
+        return new ResponseEntity<>(new Message(qualifications, "Se registró la calificación", TypesResponse.SUCCESS), HttpStatus.OK);
     }
 
     @Transactional(rollbackFor = {SQLException.class})
