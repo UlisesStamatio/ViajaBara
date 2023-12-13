@@ -508,7 +508,7 @@ export default {
 
         const today = new Date();
         const hour = startTime.split(':');
-        today.setHours(parseInt(hour[0])-6, parseInt(hour[1]), 0, 0);
+        today.setHours(parseInt(hour[0]), parseInt(hour[1]), 0, 0);
         const tripPayload = {
           id: this.searchedTrip.id,
           driver: {id: driver.id},

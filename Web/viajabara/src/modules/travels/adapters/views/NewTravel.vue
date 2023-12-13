@@ -475,7 +475,7 @@ export default {
 
         const today = new Date();
         const hour = date.split(':');
-        today.setHours(parseInt(hour[0])-6, parseInt(hour[1]), 0, 0);
+        today.setHours(parseInt(hour[0]), parseInt(hour[1]), 0, 0);
         const tripPayload = {
           driver: {id: driver.id},
           bus: {id: bus.id},
