@@ -229,7 +229,7 @@ class _PaymentState extends State<Payment> {
                                   height: 10,
                                 ),
                                 Center(
-                                    child: paymentMethodSelected == "Stripe"
+                                    child: paymentMethodSelected == "Credito"
                                         ? GestureDetector(
                                             onTap: () {
                                               _initialization =

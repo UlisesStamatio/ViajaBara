@@ -1000,7 +1000,11 @@ class _TripState extends State<Trip> {
                                                                             crossAxisAlignment:
                                                                                 CrossAxisAlignment.center,
                                                                             children: [
-                                                                              Utils().profilePicture(trips[index].driver!.profile!),
+                                                                              SizedBox(
+                                                                                width: 50,
+                                                                                height: 50,
+                                                                                child: Utils().profilePicture(trips[index].driver!.profile!),
+                                                                              ),
                                                                               Column(
                                                                                 children: [
                                                                                   Text(

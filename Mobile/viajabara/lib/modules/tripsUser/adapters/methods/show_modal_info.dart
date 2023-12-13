@@ -201,14 +201,14 @@ void showModalInfo(BuildContext context, TripDto tripDto) {
                             const Icon(
                               CupertinoIcons.money_dollar_circle,
                               color: ColorsApp.text,
-                              size: 35,
+                              size: 30,
                             ),
                             const SizedBox(width: 10),
                             Text(
                               'Precio individual: ${Utils().formatRoutePrice(tripDto.customPrice!)}',
                               style: const TextStyle(
                                 color: ColorsApp.text,
-                                fontSize: 16.0,
+                                fontSize: 15.0,
                               ),
                             ),
                           ],

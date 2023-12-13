@@ -244,7 +244,7 @@ class _BookingState extends State<Booking> {
                     child: Text(
                       seatsNumberDistribution[index],
                       style: const TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.bold),
+                          fontSize: 10, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
@@ -286,7 +286,7 @@ class _BookingState extends State<Booking> {
                     pathUnSelectedSeat: StuffApp.whiteSeat,
                     rows: 1,
                     cols: 4,
-                    seatSvgSize: 60,
+                    seatSvgSize: 40,
                     currentSeatsState: [seatStateCleanList[index]],
                   ),
                 ),
@@ -331,12 +331,15 @@ class _BookingState extends State<Booking> {
 
   void editSeat(int selectedRow) {
     setState(() {
-      cleanIndexSeatStateList(int.parse(seatsBooking[selectedRow].seatNumber));
-      seatsBooking[selectedRow].seatNumber = "S/N";
-      seatIdxToAssignNumber = selectedRow;
-      _regenerateRows();
-      areThereUnassignedSeats();
-      rebuildListView();
+      if (seatsBooking[selectedRow].seatNumber != "S/N") {
+        cleanIndexSeatStateList(
+            int.parse(seatsBooking[selectedRow].seatNumber));
+        seatsBooking[selectedRow].seatNumber = "S/N";
+        seatIdxToAssignNumber = selectedRow;
+        _regenerateRows();
+        areThereUnassignedSeats();
+        rebuildListView();
+      }
     });
   }
 
@@ -357,12 +360,12 @@ class _BookingState extends State<Booking> {
                 editSeat(index);
               },
             ),
-            IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: () {
-                print('Acción para el segundo elemento en la fila $index');
-              },
-            ),
+            // IconButton(
+            //   icon: const Icon(Icons.delete),
+            //   onPressed: () {
+            //     print('Acción para el segundo elemento en la fila $index');
+            //   },
+            // ),
           ],
         )),
       ], selected: seatIdxToAssignNumber == index));
@@ -500,7 +503,7 @@ class _BookingState extends State<Booking> {
                                       ),
                                     ])),
                                 Padding(
-                                  padding: const EdgeInsets.all(10.0),
+                                  padding: const EdgeInsets.all(1.0),
                                   child: thereAreUnassignedSeats
                                       ? Row(
                                           children: [
@@ -508,10 +511,10 @@ class _BookingState extends State<Booking> {
                                               elevation: 4,
                                               margin:
                                                   const EdgeInsets.symmetric(
-                                                      horizontal: 20),
+                                                      horizontal: 5),
                                               child: SizedBox(
-                                                  width: 285,
-                                                  height: 430,
+                                                  width: 255,
+                                                  height: 350,
                                                   child: ListView(
                                                       children: List.generate(
                                                           seatStateCleanList

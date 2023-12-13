@@ -67,13 +67,11 @@ class Utils {
           fit: BoxFit.cover,
         );
       } else {
-        Uint8List bytes = base64.decode(profile);
-        return CircleAvatar(
-          radius: 30,
-          backgroundImage: MemoryImage(
-            bytes,
-            scale: 0.1,
-          ),
+        String decodedSvg = utf8.decode(base64.decode(profile));
+
+        return SvgPicture.string(
+          decodedSvg,
+          fit: BoxFit.cover,
         );
       }
     } catch (e) {
