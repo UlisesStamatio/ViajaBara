@@ -1,7 +1,7 @@
 
 const REGEX_INJECTION_HTML = new RegExp('<[^>]*>')
 
-const MAX_NAME = 15;
+const MAX_NAME = 45;
 
 const routeValidator = {
    isSameStopOver(stopovers, lat, lng){

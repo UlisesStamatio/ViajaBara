@@ -178,6 +178,7 @@ import imagesEmpty from '../../../../assets/img/errorImagen.png'
 import router from '../../../../router/index'
 import Loader from '../../../../components/Loader.vue'
 import listTypeBusEnabled from '../../use-cases/list.type.bus.enabled'
+import Types from '../../../../kernel/translate/imageType'
 
 export default {
   name: "UpdateBus",
@@ -254,7 +255,7 @@ export default {
         if(!error){
           const {result} = data
           if(result.image){
-              document.getElementById("image-bus").src = `data:image/png;base64,${result.image}`;
+              document.getElementById("image-bus").src = `data:image/${Types.getTypeFromImage(result.image)};base64,${result.image}`;
           }else{
               document.getElementById("image-bus").src = imagesEmpty;
           }

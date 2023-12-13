@@ -234,7 +234,6 @@
 </template>
 
 <script>
-import Identicon from 'identicon';
 import blobToBase64 from '../../../../kernel/translate/blobToBase64'
 import userValidator from '../../../../kernel/validators/user.validator'
 import newUser from '../../use-cases/new.user'
@@ -242,6 +241,8 @@ import router from '../../../../router/index'
 import listStates from '../../../state/use-cases/list.state'
 import Loader from '../../../../components/Loader.vue'
 import moment from 'moment'
+import { toSvg } from "jdenticon";
+import Types from '../../../../kernel/translate/imageType'
 
 export default {
   name: "NewUser",
@@ -321,10 +322,8 @@ export default {
     },
     async generateImg(){
       const randomString = Math.random().toString(36).substring(7); 
-      Identicon.generate({ id: randomString, size: 150 }, function(err, buffer) {
-      if (err) throw err;
-      document.getElementById("image_profile").src = buffer
-    })
+      const base64String = btoa(toSvg(randomString, 100));
+      document.getElementById("image_profile").src = `data:image/${Types.getTypeFromImage(base64String)};base64,${base64String}`
     },
     openExplorer(){
       const input = document.getElementById("img-input")

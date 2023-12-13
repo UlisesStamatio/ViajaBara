@@ -168,6 +168,7 @@ import router from '../../../../router/index'
 import listStates from '../../../state/use-cases/list.state'
 import getUser from '../../use-cases/get.user'
 import Loader from '../../../../components/Loader.vue'
+import Types from '../../../../kernel/translate/imageType'
 
 export default {
   name: "DetailUser",
@@ -240,7 +241,7 @@ export default {
         if(!error){
           const {result:{profile}} = data
           const {result} = data
-          document.getElementById("image_profile").src = `data:image/png;base64,${profile}`;
+          document.getElementById("image_profile").src = `data:image/${Types.getTypeFromImage(profile)};base64,${profile}`;
           this.user = result;
           this.userOriginal = {...result}
       }else{

@@ -5,13 +5,8 @@
     :dark-mode="true"
   />
   <div
-    class="m-3 page-header bg-gradient-danger position-relative border-radius-xl"
+    class="mx-3 page-header bg-gradient-danger position-relative border-radius-xl"
   >
-    <!-- <img
-      src="../../assets/img/shapes/waves-white.svg"
-      alt="pattern-lines"
-      class="top-0 position-absolute opacity-6 start-0 w-100"
-    /> -->
     <section
       class="container-fluid pb-5 pt-7 postion-relative z-index-2"
       id="inicio"
@@ -20,23 +15,17 @@
         <div class="mx-auto text-center col-md-6">
           <div class="row">
             <div
-              class="col-12 text-white"
-              style="font-size: 5rem; font-family: 'Parisienne', cursive;"
+              class="col-12 text-white title"
             >
               ViajaBara
             </div>
             <div
-              class="col-12 text-white"
-              style="
-                font-size: 5rem;
-                font-family: 'Parisienne', cursive;
-                font-style: italic;
-              "
+              class="col-12 text-white title"
             >
               y de volada
             </div>
             <div class="col-12 text-white mt-4">
-                <button class="btn btn-info justify-content-center"><i class="fab fa-whatsapp text-white me-2" style="font-size: 1.5em;"></i> RESERVACIONES</button>
+                <button class="btn btn-success justify-content-center"><i class="fab fa-whatsapp text-white me-2" style="font-size: 1.5em;"></i> RESERVACIONES</button>
             </div>
           </div>
         </div>
@@ -48,7 +37,7 @@
           />
         </div>
         <div class="col-8 offset-2 mt-4">
-          <p class="text-white text-center">Para ViajaBara tu salud es lo más importante, por ello tomamos las
+          <p class="text-white text-center font-italic">Para ViajaBara tu salud es lo más importante, por ello tomamos las
               medidas sanitarias necesarias para brindarte la mayor seguridad en
               tus viajes. Utiliza tu cubrebocas durante el viaje. ¡cuidémonos¡</p>
         </div>
@@ -365,4 +354,45 @@ export default {
   opacity: 0;
   transition: opacity 0.5s ease-in-out;
 }
+
+.title{
+  font-size: 3rem;
+  font-family: 'Parisienne', cursive;
+  font-style: italic;
+}
+
+/*Small devices (landscape phones, 576px and up)*/
+@media (min-width: 576px) { 
+  .title{
+    font-size: 2rem;
+  }
+}
+
+/* Medium devices (tablets, 768px and up)*/
+@media (min-width: 768px) { 
+   .title{
+    font-size: 2.5rem;
+  }
+ }
+
+/* Large devices (desktops, 992px and up)*/
+@media (min-width: 992px) { 
+   .title{
+    font-size: 3rem;
+  }
+ }
+
+/* X-Large devices (large desktops, 1200px and up)*/
+@media (min-width: 1200px) { 
+   .title{
+    font-size: 5rem;
+  }
+ }
+
+/* XX-Large devices (larger desktops, 1400px and up)*/
+@media (min-width: 1400px) {
+   .title{
+    font-size: 5rem;
+  }
+ }
 </style>

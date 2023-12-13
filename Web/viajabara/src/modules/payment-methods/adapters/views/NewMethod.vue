@@ -23,7 +23,7 @@
               </div>
             </div>
             <div class="col-12 mb-4">
-              <label>API KEY(<span class="text-danger">*</span>)</label>
+              <label>API KEY</label>
               <input 
                 type="text"
                 placeholder="eg. zaxhsgatwafshsfghafghagsagsfaf"
@@ -135,6 +135,7 @@ export default {
         }).then(async(result) => {
           if (result.isConfirmed) {
               this.isLoading = true;
+              method.apikey = method.apikey ? method.apikey :null;
               const {message, error, data} = await newMethod(method)
               this.isLoading = false;
               if(!error){

@@ -44,3 +44,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+  .sidenav{
+    z-index: 1024 !important;
+  }
+</style>

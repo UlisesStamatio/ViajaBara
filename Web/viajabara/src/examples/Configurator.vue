@@ -197,7 +197,7 @@ export default {
     ...mapMutations(["navbarMinimize", "sidebarType", "navbarFixed"]),
     ...mapActions(["toggleSidebarColor", "setCardBackground"]),
 
-    sidebarColor(color = "success") {
+    sidebarColor(color = "danger") {
       document.querySelector("#sidenav-main").setAttribute("data-color", color);
       let mcolor = `card-background-mask-${color}`;
       this.setCardBackground(mcolor);
