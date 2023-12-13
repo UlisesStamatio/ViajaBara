@@ -6,6 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:viajabara/domain/entities/user/user_history_trips.dart';
 import 'package:viajabara/kernel/blocs/blocs.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
+import 'package:viajabara/kernel/widgets/details/details_map.dart';
 
 class MapScreenUser extends StatefulWidget {
   final HistoryClientTrip trip;
@@ -36,20 +37,25 @@ class _MapScreenState extends State<MapScreenUser> {
       double.parse(widget.trip.endAddress?.longitude ?? '0'),
     );
 
-    _addMarker(startPoint, 'startPoint', 'Parada inicial: ${widget.trip.startAddress?.description}');
-    _addMarker(endPoint, 'endPoint', 'Parada final: ${widget.trip.endAddress?.description}');
+    _addMarker(startPoint, 'startPoint',
+        'Parada inicial: ${widget.trip.startAddress?.description}');
+    _addMarker(endPoint, 'endPoint',
+        'Parada final: ${widget.trip.endAddress?.description}');
 
     getRouteCoordinates(startPoint, endPoint).then((route) {
+      if (!mounted) return;
       Polyline polyline = Polyline(
         polylineId: PolylineId('route'),
         color: Colors.blueAccent,
         points: route,
         width: 5,
       );
-      setState(() {
-        _polylines.add(polyline);
-        centerCameraOnPolyline();
-      });
+      if (mounted) {
+        setState(() {
+          _polylines.add(polyline);
+          centerCameraOnPolyline();
+        });
+      }
     });
   }
 
@@ -164,7 +170,9 @@ class _MapScreenState extends State<MapScreenUser> {
                         //   ),
                         // ),
                         ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            _showModalInfo(context, widget.trip);
+                          },
                           style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(
                                   ColorsApp.primayColor)),
@@ -264,5 +272,20 @@ class _MapScreenState extends State<MapScreenUser> {
       points.add(p);
     }
     return points;
+  }
+
+    void _showModalInfo(BuildContext context, HistoryClientTrip trip) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(25.0),
+        ),
+      ),
+      builder: (BuildContext context) {
+        return DetailsMap(trip: trip);
+      },
+    );
   }
 }

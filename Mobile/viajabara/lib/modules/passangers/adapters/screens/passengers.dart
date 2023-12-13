@@ -72,7 +72,7 @@ class _PassengersState extends State<Passengers> {
                   return Text('Error: ${snapshot.error}');
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return const Center(
-                      child: Text('No hay comentarios disponible aún'));
+                      child: Text('No hay pasajeros disponibles aún'));
                 }
 
                 return SingleChildScrollView(
@@ -119,14 +119,6 @@ class _PassengersState extends State<Passengers> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Align(
-                  alignment: Alignment.center,
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundColor: Colors.transparent,
-                    child: Utils().profilePicture(rider.client!.profile!),
-                  ),
-                ),
                 const SizedBox(width: 20.0),
                 Container(
                     alignment: Alignment.centerLeft,
@@ -158,10 +150,16 @@ class _PassengersState extends State<Passengers> {
                         const SizedBox(
                           width: 10,
                         ),
-                        Text(
-                          rider.startAddress!.description!,
-                          style: const TextStyle(
-                              color: ColorsApp.blackColor, fontSize: 20),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          child: SizedBox(
+                            width: 250,
+                            child: Text(
+                              rider.startAddress!.description!.substring(0, 28),
+                              style: const TextStyle(
+                                  color: ColorsApp.blackColor, fontSize: 20),
+                            ),
+                          ),
                         ),
                       ],
                     )),
@@ -196,10 +194,15 @@ class _PassengersState extends State<Passengers> {
                         const SizedBox(
                           width: 10,
                         ),
-                        Text(
-                          rider.endAddress!.description!,
-                          style: const TextStyle(
-                              color: ColorsApp.blackColor, fontSize: 20),
+                        SingleChildScrollView(
+                          child: SizedBox(
+                            width: 250,
+                            child: Text(
+                              rider.endAddress!.description!.substring(0, 28),
+                              style: const TextStyle(
+                                  color: ColorsApp.blackColor, fontSize: 20),
+                            ),
+                          ),
                         ),
                       ],
                     )),
