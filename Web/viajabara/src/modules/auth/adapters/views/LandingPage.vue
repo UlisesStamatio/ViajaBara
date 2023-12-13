@@ -25,7 +25,7 @@
               y de volada
             </div>
             <div class="col-12 text-white mt-4">
-                <button class="btn btn-success justify-content-center"><i class="fab fa-whatsapp text-white me-2" style="font-size: 1.5em;"></i> RESERVACIONES</button>
+                <a target="_blank" role="button" href="https://api.whatsapp.com/send?phone=+52 17773892248&amp;text=Escribe aquí tu duda o comentario, todo lo que necesites será atendido" class="btn btn-success justify-content-center"><i class="fab fa-whatsapp text-white me-2" style="font-size: 1.5em;"></i> RESERVACIONES</a>
             </div>
           </div>
         </div>
@@ -162,9 +162,9 @@
       <div class="row">
         <div class="col-12 text-center"><h2>Servicios adicionales</h2></div>
         <div class="col-12 mt-5 col-md-3">
-          <div class="card">
+          <div class="card h-100">
             <div
-              class="py-3 text-center card-header d-flex justify-content-center"
+              class="py-3 text-center card-header d-flex justify-content-center align-items-between"
             >
               <div
                 class="icon icon-shape icon-lg shadow text-center border-radius-lg bg-gradient-danger"
@@ -182,7 +182,7 @@
           </div>
         </div>
         <div class="col-12 mt-5 col-md-3">
-          <div class="card">
+          <div class="card h-100">
             <div
               class="py-3 text-center card-header d-flex justify-content-center"
             >
@@ -202,7 +202,7 @@
           </div>
         </div>
         <div class="col-12 mt-5 col-md-3">
-          <div class="card">
+          <div class="card h-100">
             <div
               class="py-3 text-center card-header d-flex justify-content-center"
             >
@@ -224,7 +224,7 @@
           </div>
         </div>
         <div class="col-12 col-md-3 mt-5">
-          <div class="card">
+          <div class="card h-100">
             <div
               class="py-3 text-center card-header d-flex justify-content-center"
             >
