@@ -19,8 +19,9 @@ class _LoginState extends State<Login> {
   bool _passwordVisible = false;
   bool _islogged = false;
   final TextEditingController _email =
-      TextEditingController(text: '20203tn063@utez.edu.mx');
-  final TextEditingController _pass = TextEditingController(text: 'Admin12');
+      TextEditingController(text: 'jorgepaz@gmail.com');
+  final TextEditingController _pass =
+      TextEditingController(text: 'jorgepaz@gmail.co');
 
   @override
   Widget build(BuildContext context) {
@@ -305,8 +306,13 @@ class _LoginState extends State<Login> {
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(
                                           const SnackBar(
-                                              content: Text(
-                                                  'Usuario o contraseña incorrectos')),
+                                            backgroundColor: Colors.red,
+                                            content: Text(
+                                              'Usuario o contraseña incorrectos',
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                          ),
                                         );
                                       }
 
@@ -315,6 +321,17 @@ class _LoginState extends State<Login> {
                                             arguments: {
                                               'rol': isLogged.roles?.keyRole,
                                             });
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            backgroundColor: Colors.green,
+                                            content: Text(
+                                              '¡Bienvenido!',
+                                              style: TextStyle(
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                        );
                                       }
                                     } catch (e) {
                                       ScaffoldMessenger.of(context)

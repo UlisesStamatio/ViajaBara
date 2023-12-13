@@ -473,8 +473,13 @@ class _RegisterState extends State<Register> {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(
                                             const SnackBar(
-                                                content: Text(
-                                                    'Se registro correctamente el usuario')),
+                                              backgroundColor: Colors.green,
+                                              content: Text(
+                                                'Se registro correctamente al usuario!',
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ),
                                           );
                                           Navigator.pushReplacementNamed(
                                               context, '/login');

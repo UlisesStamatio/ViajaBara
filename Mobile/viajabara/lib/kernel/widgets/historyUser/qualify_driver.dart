@@ -107,15 +107,23 @@ class _QualifyDriver extends State<QualifyDriver> {
                           if (result) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                  content: Text(
-                                      'Se agrego correctamente la calificación')),
+                                backgroundColor: Colors.green,
+                                content: Text(
+                                  'Se agregó correctamente la calificación',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
                             );
                             Navigator.of(context).pop();
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                  content: Text(
-                                      'No se pudo agregar la calificación')),
+                                backgroundColor: Colors.red,
+                                content: Text(
+                                  'Ocurrió un error al agregar la calificación',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
                             );
                             Navigator.of(context).pop();
                           }
