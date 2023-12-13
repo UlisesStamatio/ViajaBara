@@ -23,7 +23,7 @@
               </div>
             </div>
             <div class="col-12 mb-4">
-              <label>API KEY(<span class="text-danger">*</span>)</label>
+              <label>API KEY</label>
 
                <div class="input-group flex-nowrap">
                   <input
@@ -31,6 +31,7 @@
                   class="form-control" 
                   id="apikey-input"  
                   v-model="method.apikey"
+                  placeholder="eg. zaxhsgatwafshsfghafghagsagsfaf"
                   maxlength="256"
                   :class="{ 'is-invalid': errors.apikey, 'is-valid': errors.apikey === null }"
                   />
@@ -175,6 +176,7 @@ export default {
         }).then(async(result) => {
           if (result.isConfirmed) {
               method.id = this.idMethod 
+              method.apikey = method.apikey ? method.apikey :null;
               this.isLoading = true;
               const {message, error, data} = await updateMethod(method)
               this.isLoading = false;

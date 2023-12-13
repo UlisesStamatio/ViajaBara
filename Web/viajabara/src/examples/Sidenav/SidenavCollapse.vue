@@ -48,3 +48,8 @@ export default {
   },
 };
 </script>
+<style scoped>
+.navbar-vertical .navbar-nav > .nav-item .nav-link.active .icon {
+    background-image: linear-gradient(310deg, #ea0606 0%, #ea0606 100%) !important;
+}
+</style>

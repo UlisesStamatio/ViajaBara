@@ -14,7 +14,7 @@ const methodValidator = {
         return null;
     },
     validateApiKey(apikey){
-        if(!apikey) return "El campo es obligatorio.";
+        if(!apikey) return null;
         if(apikey.length > MAX_APIKEY) return `La ApiKey debe ser menor a ${MAX_APIKEY} caracteres.`;
         else if(REGEX_INJECTION_HTML.test(apikey)) return "El nombre es inválido."
         return null;

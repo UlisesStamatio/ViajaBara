@@ -9,7 +9,7 @@ public class PaymentMethodDto {
 
     @NotBlank(groups = {Register.class, Modify.class})
     private String name;
-    @NotBlank(groups = {Register.class, Modify.class})
+
     private String apikey;
 
     public PaymentMethodDto() {

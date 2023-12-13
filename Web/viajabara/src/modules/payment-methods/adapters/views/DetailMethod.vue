@@ -22,6 +22,7 @@
               <label>API KEY:</label>
               <div class="input-group flex-nowrap">
                   <input
+                  placeholder="Sin api key"
                   :type="showPassword ? 'text' : 'password'" 
                   class="form-control" 
                   id="apikey-input"  
