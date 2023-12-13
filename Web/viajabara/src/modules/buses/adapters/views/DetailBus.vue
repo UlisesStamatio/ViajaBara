@@ -174,7 +174,7 @@ export default {
       }else{
           this.$swal({
             icon: "error", 
-            title: 'Ocurrio un error durante la consultar. Inténtalo de nuevo.',
+            title: 'Ocurrió un error durante la consultar. Inténtalo de nuevo.',
             type: "basic",
           });
       }
@@ -194,7 +194,7 @@ export default {
       }else{
            this.$swal({
             icon: "error", 
-            title: 'Ocurrio un error durante la consultar. Inténtalo de nuevo.',
+            title: 'Ocurrió un error durante la consultar. Inténtalo de nuevo.',
             type: "basic",
           });
       }

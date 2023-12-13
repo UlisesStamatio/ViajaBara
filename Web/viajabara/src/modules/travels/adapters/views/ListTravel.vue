@@ -163,7 +163,7 @@ export default {
     },
     async changeStatusTrip(payload){
       this.$swal({
-            title: "¿Estás segura(a) de cambiar el estatus del viaje?",
+            title: "¿Estás seguro(a) de cambiar el estatus del viaje?",
             icon: "warning",
             showCancelButton: true,
             cancelButtonText: "Cancelar",

@@ -355,9 +355,9 @@ public class InitialDatabase implements CommandLineRunner {
             stateService.saveInitialState(state);
         }
 
-        optionalState = stateService.findByName("COAHUILA".toLowerCase());
+        optionalState = stateService.findByName("COAHUILA DE ZARAGOZA".toLowerCase());
         if (!optionalState.isPresent()) {
-            state = new State("COAHUILA".toLowerCase(), true);
+            state = new State("COAHUILA DE ZARAGOZA".toLowerCase(), true);
             stateService.saveInitialState(state);
         }
 

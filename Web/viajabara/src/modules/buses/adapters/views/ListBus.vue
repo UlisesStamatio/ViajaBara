@@ -129,7 +129,7 @@ export default {
       }else{
           this.$swal({
             icon: "error", 
-            title: 'Ocurrio un error durante la consultar. Inténtalo de nuevo.',
+            title: 'Ocurrió un error durante la consultar. Inténtalo de nuevo.',
             type: "basic",
           });
       }
@@ -170,7 +170,7 @@ export default {
     },
     async changeStatusUnit(id, plaque){
        this.$swal({
-            title: `¿Estás segura(a) de cambiar el estatus <strong>${plaque}</strong>?`,
+            title: `¿Estás seguro(a) de cambiar el estatus <strong>${plaque}</strong>?`,
             icon: "warning",
             type: "custom-html",
             showCancelButton: true,
@@ -199,7 +199,7 @@ export default {
                 }else{
                     this.$swal({
                       icon: "error", 
-                      title: 'Ocurrio un error durante la actualización. Inténtalo de nuevo.',
+                      title: 'Ocurrió un error durante la actualización. Inténtalo de nuevo.',
                       type: "basic",
                   });
                 }

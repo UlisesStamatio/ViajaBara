@@ -345,7 +345,6 @@ export default {
         this.activeStep -= 1;
       }
     },
-
     async onMapClickStopover(event) {
       const latLng = event.latLng; 
       mapFunctions.getGeocode(latLng).then((response) =>{
@@ -389,11 +388,10 @@ export default {
       this.startPositionStopoverUpdate= { position: { lat: latLng.lat(), lng: latLng.lng()} };
     },
 
-    openModalStopover(){
+   async openModalStopover(){
       this.isLoading = true;
 
-      mapFunctions.getCurrentPosition().then( async (response) =>{
-      this.centerStopover = {lat: response.coords.latitude, lng: response.coords.longitude}
+      this.centerStopover = {lat: 18.921798170524106, lng: -99.23514871088797}
 
       let position = await  mapFunctions.convertLatLng(this.centerStopover.lat, this.centerStopover.lng)
       this.stopover = {...this.centerStopover};
@@ -411,11 +409,6 @@ export default {
           this.isLoading = false;
           this.$swal({icon: "info", title: 'El lugar se encuentra fuera de México', type: "basic" });
       } 
-
-    }).catch((err)=>{
-      this.isLoading = false;
-      this.$swal({ icon: "error", title: err,type: "basic"});
-    })
 
     },
     updateStopover(stopover){
@@ -595,7 +588,7 @@ export default {
 
 
             this.$swal({
-              title: "¿Estás segura(a) de guardar los cambios?",
+              title: "¿Estás seguro(a) de guardar los cambios?",
               text: "¡No podrás revertir esto.!",
               icon: "warning",
               showCancelButton: true,
