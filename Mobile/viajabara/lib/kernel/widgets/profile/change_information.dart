@@ -475,8 +475,12 @@ class _ChangeInformation extends State<ChangeInformation> {
                               if (result) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                      content: Text(
-                                          'Se actualizaron correctamente los dato(s)')),
+                                    backgroundColor: Colors.green,
+                                    content: Text(
+                                      'Se actualizo correctamente la información!',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
                                 );
                                 if (widget.onUpdate != null) {
                                   widget.onUpdate!(); // Llama al callback aquí
@@ -485,8 +489,12 @@ class _ChangeInformation extends State<ChangeInformation> {
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                      content: Text(
-                                          'Hubo un error al actualizar la información')),
+                                    backgroundColor: Colors.red,
+                                    content: Text(
+                                      'Ocurrió un error al actualizar la información',
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
                                 );
                                 Navigator.pop(context);
                               }

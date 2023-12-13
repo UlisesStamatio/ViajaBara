@@ -119,7 +119,6 @@ public class OpenTripsController {
                     "}"
     )
     public ResponseEntity<Object> saveBook( @RequestBody BookTripDto dto) throws SQLException {
-        System.out.println(dto);
         return service.saveBook(dto);
     }
 

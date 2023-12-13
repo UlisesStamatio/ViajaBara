@@ -300,16 +300,33 @@ class _ChangePassword extends State<ChangePassword> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 20),
                 child: ElevatedButton(
-                    onPressed: _isButtonDisabled ? null : () async  {
-                      bool resp =  await GeneralProvider().changePassword(_lastPass.text, _pass.text);
-                      if(resp)
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Contraseña actualizada correctamente'),
-                            backgroundColor: ColorsApp.successColor,
-                          ),
-                        );
-                    },
+                    onPressed: _isButtonDisabled
+                        ? null
+                        : () async {
+                            bool resp = await GeneralProvider()
+                                .changePassword(_lastPass.text, _pass.text);
+                            if (resp) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  backgroundColor: Colors.green,
+                                  content: Text(
+                                    'Se actualizo la contraseña correctamente!',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  backgroundColor: Colors.red,
+                                  content: Text(
+                                    'Hubo un error al actualizar la contraseña!',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              );
+                            }
+                          },
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all(
                         _isButtonDisabled
