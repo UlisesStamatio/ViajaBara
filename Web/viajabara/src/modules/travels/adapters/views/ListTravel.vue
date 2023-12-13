@@ -14,7 +14,7 @@
                 <div class="my-auto ms-auto">
                   <router-link
                     :to="{ name: 'Registrar Viaje' }"
-                    class="mb-0 btn bg-gradient-danger btn-sm"
+                    class="mb-0 btn bg-gradient-success btn-sm"
                     >+&nbsp; Nuevo Viaje</router-link
                   >
                 </div>
