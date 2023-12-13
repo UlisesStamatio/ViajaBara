@@ -72,17 +72,34 @@ class _HistoryUserState extends State<HistoryUser> {
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(
-                      child: Text('No hay historial disponible'));
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      loadData();
+                    },
+                    child: ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: const <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(top: 50),
+                          child: Center(
+                              child: Text('No hay historial disponible',
+                                  style: TextStyle(fontSize: 20))),
+                        ),
+                      ],
+                    ),
+                  );
                 }
 
-                return SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: snapshot.data!
-                        .map((trip) => _buildHistoryCard(trip))
-                        .toList(),
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    loadData();
+                  },
+                  child: ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      return _buildHistoryCard(snapshot.data![index]);
+                    },
                   ),
                 );
               },
@@ -144,7 +161,7 @@ class _HistoryUserState extends State<HistoryUser> {
             Padding(
               padding: const EdgeInsets.only(top: 15.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
                   TextButton.icon(
                     icon: const Icon(Icons.remove_red_eye_outlined),
@@ -155,7 +172,7 @@ class _HistoryUserState extends State<HistoryUser> {
                     style: TextButton.styleFrom(
                         foregroundColor: Colors.white,
                         backgroundColor: ColorsApp.primayColor,
-                        minimumSize: const Size(150, 40)),
+                        minimumSize: const Size(120, 40)),
                   ),
                   history.stateTrip == 3
                       ? TextButton.icon(
@@ -167,7 +184,7 @@ class _HistoryUserState extends State<HistoryUser> {
                           style: TextButton.styleFrom(
                               foregroundColor: Colors.white,
                               backgroundColor: ColorsApp.primayColor,
-                              minimumSize: const Size(150, 40)),
+                              minimumSize: const Size(120, 40)),
                         )
                       : TextButton.icon(
                           icon: const Icon(CupertinoIcons.map_fill),

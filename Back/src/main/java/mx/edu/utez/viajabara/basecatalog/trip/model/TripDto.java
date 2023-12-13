@@ -165,6 +165,8 @@ public class TripDto {
         tripDto.setDriver(trip.getDriver());
         tripDto.setBus(trip.getBus());
         tripDto.setStartTime(trip.getStartTime());
+        tripDto.setTime(trip.getTime());
+        tripDto.setMeters(trip.getMeters());
         tripDto.setWays(trip.getWays());
         tripDto.setWorkDays(trip.getWorkDays());
         tripDto.setStopovers(trip.getStopovers());

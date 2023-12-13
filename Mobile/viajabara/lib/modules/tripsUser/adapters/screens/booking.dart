@@ -18,6 +18,7 @@ import 'package:viajabara/kernel/widgets/custom_progress_indicator.dart';
 import 'package:viajabara/modules/tripsUser/adapters/methods/show_modal_details_trip.dart';
 import 'package:viajabara/modules/tripsUser/adapters/methods/show_modal_info.dart';
 import 'package:viajabara/modules/tripsUser/adapters/widgets/BookTripsDataSource.dart';
+import 'package:viajabara/providers/auth_provider.dart';
 
 class Booking extends StatefulWidget {
   const Booking({super.key});
@@ -118,7 +119,7 @@ class _BookingState extends State<Booking> {
     "19-17",
     "20"
   ];
-  List<int> seatsSold = [1, 3, 10, 11, 12, 19];
+  List<int> seatsSold = [];
   late bool thereAreUnassignedSeats;
   VisualConfigDto visualConfigDto = VisualConfigDto.empty();
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
@@ -154,10 +155,27 @@ class _BookingState extends State<Booking> {
     _initialization = _initializeData();
   }
 
+  Future<void> loadSeatsSelected() async {
+    if (mounted) {
+      Completer<void> completer = Completer<void>();
+      try {
+        seatsSold =
+            await AuthProvider().getSeatsDistributionOfSpecificTravel(bookTrip);
+
+        completer.complete();
+      } catch (e) {
+        print('Error loadSeatsSelected: $e');
+        completer.completeError(e);
+      }
+      return completer.future;
+    }
+  }
+
   Future<void> _initializeData() async {
     await loadVisualConfig();
     await loadBookTrip();
     await loadTripSelected();
+    await loadSeatsSelected();
     if (bookTrip.seats != null && tripDto.id != null) {
       seatsBooking = await generateSeatBookings(bookTrip.seats!);
       seatsAvailableToSelect = seatsBooking.length;
@@ -401,8 +419,7 @@ class _BookingState extends State<Booking> {
                                             Icons.remove_red_eye_outlined),
                                         label: const Text('Detalles'),
                                         onPressed: () {
-                                          _showModalDetailsTrip(
-                                              context, tripDto);
+                                          _showModalInfo(context, tripDto);
                                         },
                                         style: TextButton.styleFrom(
                                             foregroundColor:
@@ -657,6 +674,8 @@ class _BookingState extends State<Booking> {
         Map<String, dynamic> jsonMap =
             jsonDecode(prefs.getString("tripSelected")!);
         tripDto = TripDto.fromJson(jsonMap);
+        print("************************");
+        print(tripDto.listStopovers);
       }
       completer.complete();
     } catch (e) {
@@ -667,8 +686,8 @@ class _BookingState extends State<Booking> {
     return completer.future;
   }
 
-  void _showModalDetailsTrip(BuildContext context, TripDto tripDto) {
-    ShowModalDetailsTrip(context, tripDto);
+  void _showModalInfo(BuildContext context, TripDto tripDto) {
+    showModalInfo(context, tripDto);
   }
 
   int calculateRowsPerPage(int totalSeats) {
@@ -686,11 +705,11 @@ class _BookingState extends State<Booking> {
 
   double calculateRoutePrice(
       TripDto trip, VisualConfigDto visualConfigDto, BookTrip bookTrip) {
-    if (trip.filterType?.value == "Parada" && trip.route?.stopOvers != null) {
-      double routeMeters = trip.route!.meters ?? 0.0;
-      for (StopOverDto stopOver in trip.route!.stopOvers!) {
+    if (trip.filterType?.value == "Parada" && trip.listStopovers != null) {
+      double routeMeters = trip.meters ?? 0.0;
+      for (StopOverDto stopOver in trip.listStopovers!) {
         if (stopOver.meters != null &&
-            stopOver.addressDto!.id == bookTrip.originId) {
+            stopOver.address!.id == bookTrip.originId) {
           routeMeters -= stopOver.meters!;
         }
       }
@@ -698,7 +717,7 @@ class _BookingState extends State<Booking> {
           (routeMeters * 0.001) * visualConfigDto.kilometerPrice!;
       return double.parse(routePrice.toStringAsFixed(2));
     } else {
-      double routeMeters = trip.route?.meters ?? 0.0;
+      double routeMeters = trip.meters ?? 0.0;
       double routePrice =
           (routeMeters * 0.001) * visualConfigDto.kilometerPrice!;
       return double.parse(routePrice.toStringAsFixed(2));

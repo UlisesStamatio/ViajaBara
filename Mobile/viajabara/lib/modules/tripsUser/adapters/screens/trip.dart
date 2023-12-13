@@ -60,6 +60,7 @@ class _TripState extends State<Trip> {
       Completer<void> completer = Completer<void>();
       try {
         trips = await AuthProvider().getTripsByFiltersClient(bookTrip);
+
         completer.complete();
       } catch (e) {
         print('Error loadTripsByFiltersClient: $e');
@@ -1013,7 +1014,7 @@ class _TripState extends State<Trip> {
                                                                               Column(
                                                                                 children: [
                                                                                   Text(
-                                                                                    '${formatTime(trips[index].endTime!)} hrs',
+                                                                                    '${formatTime(Utils().calculateEndTimeDate(trips[index].startTime!, trips[index].listStopovers!))} hrs',
                                                                                     style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
                                                                                   ),
                                                                                   const Text(
@@ -1067,7 +1068,7 @@ class _TripState extends State<Trip> {
                                                                                     Padding(
                                                                                       padding: const EdgeInsets.only(left: 4.0),
                                                                                       child: Text(
-                                                                                        '${trips[index].route!.stopOvers!.length} parada(s)',
+                                                                                        '${trips[index].listStopovers!.length} parada(s)',
                                                                                         style: const TextStyle(
                                                                                           fontSize: 14.0,
                                                                                           fontWeight: FontWeight.bold,
@@ -1473,29 +1474,33 @@ String calculateTime(DateTime startTime, DateTime endTime) {
   }
 }
 
+double sumMetersUntilId(List<StopOverDto> stopovers, int idToSearch) {
+  double sumMeters = 0;
+
+  for (StopOverDto stopover in stopovers) {
+    sumMeters += stopover.meters;
+    if (stopover.id == idToSearch) {
+      break;
+    }
+  }
+
+  return sumMeters;
+}
+
 String calculateRoutePrice(
     TripDto trip, VisualConfigDto visualConfigDto, BookTrip bookTrip) {
-  if (trip.filterType!.value.contains("Parada") &&
-      trip.route?.stopOvers != null) {
+  if (trip.filterType!.value.contains("Parada") && trip.listStopovers != null) {
     // Si es una parada y tiene stopovers, calcula el precio considerando los stopovers
-    double routeMeters = trip.route!.meters ?? 0.0;
-
-    // Resta la distancia del stopover que coincide con bookTripId
-    for (StopOverDto stopOver in trip.route!.stopOvers!) {
-      if (stopOver.meters != null &&
-          stopOver.addressDto!.id == bookTrip.originId) {
-        routeMeters -= stopOver.meters!;
-      }
-    }
+    double routeMeters =
+        sumMetersUntilId(trip.listStopovers!, bookTrip.destinyId!);
 
     // Calcula el precio basado en la distancia ajustada
     double routePrice = (routeMeters * 0.001) * visualConfigDto.kilometerPrice!;
-
     // Devuelve el resultado formateado
     return '\$ ${routePrice.toStringAsFixed(2)} MXN';
   } else {
     // Si no es una parada o no tiene stopovers, calcula el precio estándar
-    double routeMeters = trip.route?.meters ?? 0.0;
+    double routeMeters = trip.meters ?? 0.0;
     double routePrice = (routeMeters * 0.001) * visualConfigDto.kilometerPrice!;
 
     // Devuelve el resultado formateado

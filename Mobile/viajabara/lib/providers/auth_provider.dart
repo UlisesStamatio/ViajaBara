@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:viajabara/config/dio/module_network.dart';
@@ -8,6 +9,7 @@ import 'package:viajabara/domain/entities/list_states.dart';
 import 'package:viajabara/domain/entities/resMsg.dart';
 import 'package:viajabara/domain/entities/roles/roles.dart';
 import 'package:viajabara/domain/entities/state/state_list.dart';
+import 'package:viajabara/domain/entities/stop_over/stop_over.dart';
 import 'package:viajabara/domain/entities/trip/trip.dart';
 import 'package:viajabara/domain/entities/user_data.dart';
 import 'package:viajabara/domain/entities/visual_config/visual_config.dart';
@@ -33,11 +35,11 @@ class AuthProvider {
 
   Future<ResMsg> register(UserData userData) async {
     String svgValue = Jdenticon.toSvg(userData.profile!);
-    String valueBase64 = base64.encode(utf8.encode(svgValue));
+    String value = svgValue.replaceAll('"', "'");
 
     var dataJson = jsonEncode({
       'username': userData.username,
-      'profile': valueBase64,
+      'profile': value,
       'email': userData.email,
       'password': userData.password,
       'person': {
@@ -119,9 +121,46 @@ class AuthProvider {
           List<TripDto> trips = tripsJson.map((tripJson) {
             return TripDto.fromJson(tripJson);
           }).toList();
-
+          if (trips.isNotEmpty) {
+            trips.forEach((trip) {
+              trip.listStopovers = StopOverDto.fromJsonList(trip.stopovers!);
+              print("**************trip.listStopovers");
+              trip.listStopovers!.forEach((element) {
+                print(element);
+              });
+            });
+          }
           print(trips);
           return trips;
+        } else {
+          throw Exception('La respuesta no contiene la clave "result".');
+        }
+      } else {
+        throw Exception('Fallo al obtener los estados de origen');
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+    return List.empty();
+  }
+
+  Future<List<int>> getSeatsDistributionOfSpecificTravel(
+      BookTrip bookTrip) async {
+    try {
+      final response = await dio.post(
+        'open-trips/find-seats-distribution',
+        data: jsonEncode(bookTrip),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseBody =
+            response.data as Map<String, dynamic>;
+
+        if (responseBody.containsKey('result')) {
+          final List<int> data = List<int>.from(responseBody['result']);
+          print("getSeatsDistributionOfSpecificTravel");
+          print(data);
+          return data;
         } else {
           throw Exception('La respuesta no contiene la clave "result".');
         }

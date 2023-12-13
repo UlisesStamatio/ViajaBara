@@ -67,17 +67,34 @@ class _HistoryState extends State<History> {
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(
-                      child: Text('No hay historial disponible'));
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      loadData();
+                    },
+                    child: ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: const <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(top: 50),
+                          child: Center(
+                              child: Text('No hay historial disponible',
+                                  style: TextStyle(fontSize: 20))),
+                        ),
+                      ],
+                    ),
+                  );
                 }
 
-                return SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: snapshot.data!
-                        .map((trip) => _buildHistoryCard(trip))
-                        .toList(),
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    loadData();
+                  },
+                  child: ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      return _buildHistoryCard(snapshot.data![index]);
+                    },
                   ),
                 );
               },
@@ -193,7 +210,7 @@ class _HistoryState extends State<History> {
                     children: <Widget>[
                       Text(
                         'Salida: ${trip.trip?.startTime}',
-                        style: const  TextStyle(
+                        style: const TextStyle(
                           fontSize: 15.0,
                           color: ColorsApp.text,
                         ),
@@ -230,7 +247,9 @@ class _HistoryState extends State<History> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => HistoryStars(trip: trip,)));
+                            builder: (context) => HistoryStars(
+                                  trip: trip,
+                                )));
                   },
                   style: ButtonStyle(
                     backgroundColor:

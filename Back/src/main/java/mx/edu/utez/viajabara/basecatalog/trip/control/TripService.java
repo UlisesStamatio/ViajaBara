@@ -115,7 +115,10 @@ public class TripService {
         calendar.setTime(providedDate);
         int dayOfWeekInteger = calendar.get(Calendar.DAY_OF_WEEK);
         List<Trip> trips = repository.findTripsAvailableInDay(Integer.toString(dayOfWeekInteger));
-        System.out.println(trips);
+        for (Trip trip: trips
+             ) {
+            System.out.println(trip);
+        }
 
         int dayOfYearInteger = calendar.get(Calendar.DAY_OF_YEAR);
         List<Trip> filteredTrips = getFilteredTrips(trips,dayOfYearInteger);
@@ -174,37 +177,49 @@ public class TripService {
     public ResponseEntity<Object> findByFiltersClient(BookTripDto bookTripDto) throws ParseException {
         Message msg = (Message) getStatesForFiltersByDate(bookTripDto.getDate(), false).getBody() ;
         List<Trip> trips = (List<Trip>) msg.getResult();
-        System.out.println("trips "+trips.size());
-        List<TripDto> tripsProcessed = TripDto.fromList(trips);
+        Set<Trip> uniqueTrips = new HashSet<>(trips);
+        List<Trip> uniqueTripsList = new ArrayList<>(uniqueTrips);
+        System.out.println("trips "+uniqueTripsList.size());
+        List<TripDto> tripsProcessed = TripDto.fromList(uniqueTripsList);
         List<TripDto> filteredTrips = tripsProcessed.stream()
                 .filter(trip -> {
                     try {
-                        System.out.println("trip "+trip.getId());
-                        System.out.println("getStopovers "+trip.getStopovers());
                         List<StopOver> stopOvers = new StopOver().parseStopOversFromJson(trip.getStopovers());
-                        stopOvers = filterStopOvers(stopOvers,(long) bookTripDto.getOriginId(),(long) bookTripDto.getDestinyId());
-                        if (stopOvers.isEmpty())
+                        List<StopOver> stopOversProcessed = filterStopOvers(stopOvers,(long) bookTripDto.getOriginId(),(long) bookTripDto.getDestinyId());
+                        if (stopOversProcessed.isEmpty()){
                             return false;
+                        }
+                        System.out.println("stopOvers.get(0).getId() ");
+                        System.out.println(stopOvers.get(0).getId());
+                        System.out.println("stopOversProcessed.get(0).getId() ");
+                        System.out.println(stopOversProcessed.get(0).getId());
+
+                        System.out.println("stopOvers.get(stopOvers.size() - 1).getId() ");
+                        System.out.println(stopOvers.get(stopOvers.size() - 1).getId());
+                        System.out.println("stopOversProcessed.get(stopOversProcessed.size() - 1).getId())  ");
+                        System.out.println(stopOversProcessed.get(stopOversProcessed.size() - 1).getId());
+                        if (Objects.equals(stopOvers.get(0).getId(), stopOversProcessed.get(0).getId()) &&
+                                Objects.equals(stopOvers.get(stopOvers.size() - 1).getId(), stopOversProcessed.get(stopOversProcessed.size() - 1).getId()) ){
+                            trip.setFilterType(FilterType.FULL_TRAVEL);
+                        }else{
+                            trip.setFilterType(FilterType.STOPPER);
+                        }
                         ObjectMapper objectMapper = new ObjectMapper();
-                        String jsonArray = objectMapper.writeValueAsString(stopOvers);
-                        System.out.println("stopOvers "+stopOvers);
+                        String jsonArray = objectMapper.writeValueAsString(stopOversProcessed);
                         OpenTripsDto openTripsDto = openTripsRepository.findByTripIdAndDate(trip.getId(), bookTripDto.getDate());
-                        System.out.println("openTripsDto "+openTripsDto);
                         trip.setEnabledSeats(openTripsDto != null ? openTripsDto.getEnableSeats() : 20);
                         trip.getDriver().setRoles("[]");
                         trip.getDriver().setPerson(null);
                         trip.setBus(new Bus());
                         trip.setStopovers(jsonArray);
 
-                        trip.setFilterType(FilterType.START_ADDRESS);
                         return true;
                     } catch (JsonProcessingException e) {
-                        System.out.println("trono findByFiltersClient "+e);
+                        System.out.println("findByFiltersClient "+e);
                         return false;
                     }
                 })
                 .collect(Collectors.toList());
-        System.out.println(filteredTrips);
         return new ResponseEntity<>(new Message(filteredTrips, "Rutas encontradas", TypesResponse.SUCCESS), HttpStatus.OK);
     }
 
@@ -235,18 +250,26 @@ public class TripService {
                     return false;
                 })
                 .collect(Collectors.toList());
+        if (validStopOvers.size() <= 1 || validStopOvers.get(0).getId().equals(endId)){
+            return new ArrayList<>();
+        }
+        boolean canAdd = false;
+        for (StopOver stopOver : stopOvers) {
+            Address address = stopOver.getAddress();
+            Long addressId = address.getId();
+            if (canAdd && addressId.equals(endId)) {
+                // Detener la búsqueda cuando se encuentra el endId
+                filteredStopOvers.add(stopOver);
+                break;
+            }
+            if (addressId.equals(originId)) {
+                // Habilitar la adición de StopOver cuando se encuentra el originId
+                canAdd = true;
+            }
 
-        // Itera sobre los stopovers válidos y agrega aquellos que estén dentro del rango
-        for (int i = 0; i < validStopOvers.size() - 1; i++) {
-            StopOver currentStopOver = validStopOvers.get(i);
-            StopOver nextStopOver = validStopOvers.get(i + 1);
-
-            // Agrega los stopovers que estén dentro del rango
-            if (currentStopOver.getAddress().getId().equals(originId)
-                    && nextStopOver.getAddress().getId().equals(endId)
-                    && currentStopOver.getSequence() < nextStopOver.getSequence()) {
-                filteredStopOvers.add(currentStopOver);
-                filteredStopOvers.add(nextStopOver);
+            if (canAdd) {
+                // Agregar StopOver si ya se encontró el originId
+                filteredStopOvers.add(stopOver);
             }
         }
 
