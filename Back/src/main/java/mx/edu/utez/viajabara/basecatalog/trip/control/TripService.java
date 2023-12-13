@@ -172,7 +172,6 @@ public class TripService {
         List<Trip> trips = (List<Trip>) msg.getResult();
         Set<Trip> uniqueTrips = new HashSet<>(trips);
         List<Trip> uniqueTripsList = new ArrayList<>(uniqueTrips);
-        System.out.println("trips "+uniqueTripsList.size());
         List<TripDto> tripsProcessed = TripDto.fromList(uniqueTripsList);
         List<TripDto> filteredTrips = tripsProcessed.stream()
                 .filter(trip -> {
@@ -182,15 +181,6 @@ public class TripService {
                         if (stopOversProcessed.isEmpty()){
                             return false;
                         }
-                        System.out.println("stopOvers.get(0).getId() ");
-                        System.out.println(stopOvers.get(0).getId());
-                        System.out.println("stopOversProcessed.get(0).getId() ");
-                        System.out.println(stopOversProcessed.get(0).getId());
-
-                        System.out.println("stopOvers.get(stopOvers.size() - 1).getId() ");
-                        System.out.println(stopOvers.get(stopOvers.size() - 1).getId());
-                        System.out.println("stopOversProcessed.get(stopOversProcessed.size() - 1).getId())  ");
-                        System.out.println(stopOversProcessed.get(stopOversProcessed.size() - 1).getId());
                         if (Objects.equals(stopOvers.get(0).getId(), stopOversProcessed.get(0).getId()) &&
                                 Objects.equals(stopOvers.get(stopOvers.size() - 1).getId(), stopOversProcessed.get(stopOversProcessed.size() - 1).getId()) ){
                             trip.setFilterType(FilterType.FULL_TRAVEL);
@@ -208,7 +198,6 @@ public class TripService {
 
                         return true;
                     } catch (JsonProcessingException e) {
-                        System.out.println("findByFiltersClient "+e);
                         return false;
                     }
                 })
@@ -233,11 +222,6 @@ public class TripService {
                         int endSequence = (addressId.equals(endId)) ? stopOver.getSequence() : 0;
 
                         // Retorna verdadero si la secuencia de originId es menor que la de endId
-                        System.out.println(stopOver.getId());
-                        System.out.println("originSequence < endSequence");
-                        System.out.println(originSequence);
-                        System.out.println(endSequence);
-                        System.out.println(originSequence < endSequence);
                         return originSequence != 0 || endSequence != 0;
                     }
                     return false;

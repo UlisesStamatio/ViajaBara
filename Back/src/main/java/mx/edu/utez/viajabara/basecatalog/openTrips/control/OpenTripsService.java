@@ -116,11 +116,6 @@ public class OpenTripsService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate localDate = LocalDate.parse(bookTripDto.getDate(), formatter);
         Date date = java.sql.Date.valueOf(localDate);
-        System.out.println("date");
-        System.out.println("Trip ID: " + bookTripDto.getTripId());
-        System.out.println("Date: " + date);
-        System.out.println("Origin ID: " + bookTripDto.getOriginId());
-        System.out.println("Destiny ID: " + bookTripDto.getDestinyId());
 
         OpenTripsDto openTripsDto = repository.findByTripIdAndDate((long) bookTripDto.getTripId(),date.toString());
         if (openTripsDto == null){
@@ -128,8 +123,6 @@ public class OpenTripsService {
         }
 
         List<String> seatsSelectedList = seatingSalesRepository.findSeatsSelectedByCriteria((long) bookTripDto.getTripId(), date.toString(), (long)bookTripDto.getOriginId(),(long)bookTripDto.getDestinyId());
-        System.out.println("seatsSelectedList.size()");
-        System.out.println(seatsSelectedList.size());
         // Realiza la unión de las listas de seatsSelected
         List<Integer> combinedSeatsSelected = seatsSelectedList.stream()
                 .flatMap(seatsSelected -> {
@@ -185,7 +178,6 @@ public class OpenTripsService {
         OpenTripsDto openTripsDto = repository.findByTripIdAndDate((long) dto.getTripId(), dto.getDate());
         OpenTrips openTrips = new OpenTrips();
         if(openTripsDto != null){
-            System.out.println(openTripsDto);
             SeatingSales seatingSales = new SeatingSales();
             seatingSales.setChecked(0);
             seatingSales.setCost(new BigDecimal(dto.getPrice()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
@@ -199,7 +191,6 @@ public class OpenTripsService {
             Address endAddress = new Address((long)dto.getDestinyId());
             seatingSales.setEndAddress(endAddress);
             seatingSales.setStartAddress(startAddress);
-            System.out.println(openTripsDto.getId());
             openTrips.setId(openTripsDto.getId());
             openTrips.setEnableSeats(openTripsDto.getEnableSeats() - dto.getSeats());
             openTrips.setCreatedAt(openTripsDto.getCreatedAt());
