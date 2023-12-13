@@ -13,7 +13,7 @@ const mapFunctions = {
                     reject("No se encontraron resultados de geocodificación.")
                   }
                 } else {
-                   reject("Ocurrio un error")
+                   reject("Ocurrió un error")
                 }
               });
         })
@@ -59,7 +59,7 @@ const mapFunctions = {
                   reject("No se encontraron resultados de geocodificación.")
                 }
               } else {
-                 reject("Ocurrio un error")
+                 reject("Ocurrió un error")
               }
             });
       })

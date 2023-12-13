@@ -247,7 +247,7 @@ export default {
       }else{
           this.$swal({
             icon: "error", 
-            title: 'Ocurrio un error durante la consultar. Inténtalo de nuevo.',
+            title: 'Ocurrió un error durante la consultar. Inténtalo de nuevo.',
             type: "basic",
           });
       }
@@ -263,7 +263,7 @@ export default {
       }else{
           this.$swal({
             icon: "error", 
-            title: 'Ocurrio un error durante la consultar. Inténtalo de nuevo.',
+            title: 'Ocurrió un error durante la consultar. Inténtalo de nuevo.',
             type: "basic",
         });
       }
@@ -276,7 +276,7 @@ export default {
     },
     async changeStatus(id, type, name){
        this.$swal({
-            title: `¿Estás segura(a) de cambiar el estatus de <strong>${name}</strong>?`,
+            title: `¿Estás seguro(a) de cambiar el estatus de <strong>${name}</strong>?`,
             icon: "warning",
             type: "custom-html",
             showCancelButton: true,
@@ -308,7 +308,7 @@ export default {
                   this.isLoading = false;
                     this.$swal({
                       icon: "error", 
-                      title: 'Ocurrio un error durante la actualización. Inténtalo de nuevo.',
+                      title: 'Ocurrió un error durante la actualización. Inténtalo de nuevo.',
                       type: "basic",
                   });
                 }

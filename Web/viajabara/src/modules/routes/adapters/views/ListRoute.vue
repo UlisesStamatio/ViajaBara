@@ -165,7 +165,7 @@ export default {
     },
     async changeStatusRoute(payload, name){
       this.$swal({
-            title: `¿Estás segura(a) de cambiar el estatus de <strong>${name}</strong>?`,
+            title: `¿Estás seguro(a) de cambiar el estatus de <strong>${name}</strong>?`,
             icon: "warning",
             type: "custom-html",
             showCancelButton: true,

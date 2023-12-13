@@ -399,7 +399,7 @@ export default {
       }else{
           this.$swal({
             icon: "error", 
-            title: 'Ocurrio un error durante la consultar. Inténtalo de nuevo.',
+            title: 'Ocurrió un error durante la consultar. Inténtalo de nuevo.',
             type: "basic",
           });
       }
@@ -415,7 +415,7 @@ export default {
       }else{
           this.$swal({
             icon: "error", 
-            title: 'Ocurrio un error durante la consultar. Inténtalo de nuevo.',
+            title: 'Ocurrió un error durante la consultar. Inténtalo de nuevo.',
             type: "basic",
           });
       }
@@ -429,7 +429,7 @@ export default {
       }else{
           this.$swal({
             icon: "error", 
-            title: 'Ocurrio un error durante la consultar. Inténtalo de nuevo.',
+            title: 'Ocurrió un error durante la consultar. Inténtalo de nuevo.',
             type: "basic",
           });
       }
@@ -487,7 +487,7 @@ export default {
           time
         }
         this.$swal({
-          title: "¿Estás segura(a) de guardar los cambios?",
+          title: "¿Estás seguro(a) de guardar los cambios?",
           text: "¡No podrás revertir esto.!",
           icon: "warning",
           showCancelButton: true,

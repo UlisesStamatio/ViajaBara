@@ -265,7 +265,7 @@ export default {
         }
 
         this.$swal({
-          title: "¿Estás segura(a) de guardar los cambios?",
+          title: "¿Estás seguro(a) de guardar los cambios?",
           text: "¡No podrás revertir esto.!",
           icon: "warning",
           showCancelButton: true,
