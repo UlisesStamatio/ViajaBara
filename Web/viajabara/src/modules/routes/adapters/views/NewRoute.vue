@@ -469,7 +469,8 @@ export default {
               this.searchQueryStopover = description;
               let address =  results[0].geometry.location;
               this.centerStopover = { lat: address.lat() , lng: address.lng()}
-              this.stopover = {...this.centerEnd};
+              this.stopover = {...this.centerStopover};
+              this.stopover.state = mapFunctions.getStateFromResult(results[0]);
               this.startPositionStopover = { position: { lat: address.lat(), lng: address.lng()} };
             }else{
                 this.searchQueryStopover= this.defaultAddressStopover;
@@ -498,6 +499,7 @@ export default {
               this.centerStopoverUpdate = { lat: address.lat() , lng: address.lng()}
               this.stopoverUpdate = {...this.centerStopoverUpdate};
               this.startPositionStopoverUpdate = { position: { lat: address.lat(), lng: address.lng()} };
+              this.stopoverUpdate.state = mapFunctions.getStateFromResult(results[0]);
             }else{
                 this.searchQueryStopoverUpdate= this.defaultAddressStopoverUpdate;
                 this.$swal({icon: "info", title: 'El lugar se encuentra fuera de México', type: "basic" });

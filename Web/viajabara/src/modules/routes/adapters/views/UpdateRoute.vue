@@ -387,10 +387,9 @@ export default {
         if(isMexico){
           const {formatted_address} = response
           this.searchQueryStopoverUpdate = formatted_address
-          this.stopoverUpdate.state = mapFunctions.getStateFromResult(response);
-          this.stopoverUpdate.lat = latLng.lat();
-          this.stopoverUpdate.lng = latLng.lng();
-          this.stopoverUpdate.latLng = latLng;
+          this.stopoverUpdate = {...this.stopoverUpdate, address: { state:  mapFunctions.getStateFromResult(response),
+          lat: latLng.lat(),lng: latLng.lng(), latLng: latLng
+          }}
         }else{
           this.$swal({icon: "info", title: 'El lugar se encuentra fuera de México', type: "basic" });
         }
@@ -480,8 +479,9 @@ export default {
               this.searchQueryStopover = description;
               let address =  results[0].geometry.location;
               this.centerStopover = { lat: address.lat() , lng: address.lng()}
-              this.stopover = {...this.centerEnd};
+              this.stopover = {...this.centerStopover};
               this.startPositionStopover = { position: { lat: address.lat(), lng: address.lng()} };
+              this.stopover.state = mapFunctions.getStateFromResult(results[0]);
             }else{
                 this.searchQueryStopover= this.defaultAddressStopover;
                 this.$swal({icon: "info", title: 'El lugar se encuentra fuera de México', type: "basic" });
@@ -507,7 +507,7 @@ export default {
               this.searchQueryStopoverUpdate = description;
               let address =  results[0].geometry.location;
               this.centerStopoverUpdate = { lat: address.lat() , lng: address.lng()}
-              this.stopoverUpdate = {...this.stopoverUpdate, address: {...this.stopoverUpdate.address,...this.centerStopoverUpdate}};
+              this.stopoverUpdate = {...this.stopoverUpdate, address: {...this.stopoverUpdate.address, lat: address.lat() , lng: address.lng(), state:  mapFunctions.getStateFromResult(results[0])}};
               this.startPositionStopoverUpdate = { position: { lat: address.lat(), lng: address.lng()} };
             }else{
                 this.searchQueryStopoverUpdate= this.defaultAddressStopoverUpdate;
@@ -560,14 +560,14 @@ export default {
                 if(stopover.id === this.stopoverUpdate.id){
                   stopover = {id: this.stopoverUpdate.id,
                               sequence: this.stopoverUpdate.sequence,
-                              address:{ longitude: this.stopoverUpdate.lng, latitude: this.stopoverUpdate.lat, description: this.searchQueryStopoverUpdate, state: this.stopoverUpdate.state }
+                              address:{ longitude: parseFloat(this.stopoverUpdate.address.lng), latitude: parseFloat(this.stopoverUpdate.address.lat), description: this.searchQueryStopoverUpdate, state: this.stopoverUpdate.address?.state ? this.stopoverUpdate.address.state : this.stopoverUpdate.state  }
                               }
                 }
               }else{
                 if(stopover.sequence === this.stopoverUpdate.sequence){
                   stopover = {id: this.stopoverUpdate.id,
                               sequence: this.stopoverUpdate.sequence,
-                              address:{ longitude: this.stopoverUpdate.lng, latitude: this.stopoverUpdate.lat, description: this.searchQueryStopoverUpdate, state: this.stopoverUpdate.state }
+                              address:{ longitude: parseFloat(this.stopoverUpdate.address.lng), latitude: parseFloat(this.stopoverUpdate.address.lat), description: this.searchQueryStopoverUpdate, state: this.stopoverUpdate.address?.state ? this.stopoverUpdate.address.state : this.stopoverUpdate.state }
                               }
                 }
               }
@@ -608,7 +608,8 @@ export default {
             }
 
             payload.stopOvers = await Promise.all([...this.route.stopOvers.map(async (stopover) =>{
-              stopover = {description: stopover.address.description, latitude: stopover.address.latitude, longitude: stopover.address.longitude, sequence: stopover.sequence, state: (stopover.address.state.name !== null && stopover.address.state.name !== undefined) ? stopover.address.state.name : stopover.address.state }
+              stopover.address.state
+              stopover = {description: stopover.address.description, latitude: parseFloat(stopover.address.latitude), longitude: parseFloat(stopover.address.longitude), sequence: stopover.sequence, state: (stopover.address.state.name !== null && stopover.address.state.name !== undefined) ? stopover.address.state.name : stopover.address.state }
 
               mapFunctions.getMetersBetweenTwoDirections(this.route.stopOvers[0].address.description,stopover.description).then((response) =>{
                   stopover.meters = parseFloat(response)

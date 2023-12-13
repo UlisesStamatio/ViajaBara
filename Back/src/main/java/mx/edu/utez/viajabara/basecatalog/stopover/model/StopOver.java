@@ -5,13 +5,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jdk.internal.org.objectweb.asm.TypeReference;
-import mx.edu.utez.viajabara.access.role.model.Role;
 import mx.edu.utez.viajabara.basecatalog.address.model.Address;
 import mx.edu.utez.viajabara.basecatalog.route.model.Route;
 
 import javax.persistence.*;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -44,6 +41,7 @@ public class StopOver {
     private boolean status;
 
     @ManyToOne
+    @JoinColumn(name = "route_id")
     @JsonIgnore
     private Route route;
 
@@ -128,5 +126,19 @@ public class StopOver {
         List<StopOver> stopOvers = mapper.readValue(stopoversJson, new com.fasterxml.jackson.core.type.TypeReference<List<StopOver>>() {
         });
         return stopOvers;
+    }
+
+    @Override
+    public String toString() {
+        return "StopOver{" +
+                "id=" + id +
+                ", address=" + address +
+                ", sequence=" + sequence +
+                ", meters=" + meters +
+                ", time=" + time +
+                ", createdAt=" + createdAt +
+                ", status=" + status +
+                ", route=" + route +
+                '}';
     }
 }

@@ -1,6 +1,6 @@
 <template>
 <Loader :isLoading="isLoading"/>
-  <div class="py-4 container-fluid" v-show="!isLoading">
+  <div class="py-4 container-fluid">
     <div class="row">
       <div class="col-lg-4 mb-2">
           <div class="nav-wrapper position-relative end-0">
@@ -32,7 +32,7 @@
             </ul>
         </div>
       </div>
-      <div class="col-12">
+      <div class="col-12" v-show="!isLoading">
 
         <div class="card" v-show="active">
 
@@ -414,9 +414,5 @@ sty
   .clickeable{
     cursor: pointer;
   }
-.active{
-    animation: 0.2s ease !important;
-    background-color: #fff !important;
-    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19) !important;
-}
+
 </style>

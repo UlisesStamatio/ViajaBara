@@ -95,6 +95,8 @@ import { mapMutations, mapActions, mapState } from "vuex";
 import router from '../../router/index';
 import storeSession from '../../kernel/store/store.session';
 import getProfile from '../../modules/users/use-cases/get.profile'
+import Types from '../../kernel/translate/imageType'
+
 export default {
   name: "Navbar",
   components: {
@@ -156,7 +158,7 @@ export default {
         if(!error){
            const {result:{profile, name, surname, lastname}} = data
            const {result} = data
-           document.getElementById("image-profile").src = `data:image/png;base64,${profile}`;
+           document.getElementById("image-profile").src = `data:image/${Types.getTypeFromImage(profile)};base64,${profile}`;
            this.user = result;
            this.name = `${name} ${lastname} ${surname}`
       }else{
