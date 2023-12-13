@@ -1,9 +1,7 @@
 package mx.edu.utez.viajabara.basecatalog.address.model;
 
-import mx.edu.utez.viajabara.basecatalog.state.model.State;
 import mx.edu.utez.viajabara.basecatalog.state.model.StateDto;
 
-import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,11 +1,8 @@
 package mx.edu.utez.viajabara.basecatalog.address.control;
 
 import mx.edu.utez.viajabara.basecatalog.address.model.Address;
-import mx.edu.utez.viajabara.basecatalog.address.model.AddressDto;
 import mx.edu.utez.viajabara.basecatalog.address.model.AddressRepository;
 import mx.edu.utez.viajabara.basecatalog.address.model.AddressSaveDto;
-import mx.edu.utez.viajabara.basecatalog.paymentMethod.model.PaymentMethod;
-import mx.edu.utez.viajabara.basecatalog.paymentMethod.model.PaymentMethodDto;
 import mx.edu.utez.viajabara.basecatalog.state.control.StateService;
 import mx.edu.utez.viajabara.basecatalog.state.model.State;
 import mx.edu.utez.viajabara.utils.entity.Message;

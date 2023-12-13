@@ -2,17 +2,11 @@ package mx.edu.utez.viajabara.basecatalog.trip.model;
 
 import mx.edu.utez.viajabara.access.user.model.User;
 import mx.edu.utez.viajabara.basecatalog.bus.model.Bus;
-import mx.edu.utez.viajabara.basecatalog.route.model.Route;
-import mx.edu.utez.viajabara.basecatalog.route.model.RouteDto;
-import mx.edu.utez.viajabara.basecatalog.route.model.RouteSaveDto;
 import mx.edu.utez.viajabara.basecatalog.way.model.Way;
-
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;

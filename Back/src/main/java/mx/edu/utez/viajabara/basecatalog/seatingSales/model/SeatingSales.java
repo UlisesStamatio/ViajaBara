@@ -6,7 +6,6 @@ import mx.edu.utez.viajabara.access.user.model.User;
 import mx.edu.utez.viajabara.basecatalog.address.model.Address;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTrips;
 import mx.edu.utez.viajabara.basecatalog.qualifications.model.Qualifications;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.util.List;

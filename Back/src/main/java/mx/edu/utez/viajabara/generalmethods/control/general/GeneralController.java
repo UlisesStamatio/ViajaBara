@@ -4,8 +4,6 @@ package mx.edu.utez.viajabara.generalmethods.control.general;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import mx.edu.utez.viajabara.access.user.model.UserDto;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;

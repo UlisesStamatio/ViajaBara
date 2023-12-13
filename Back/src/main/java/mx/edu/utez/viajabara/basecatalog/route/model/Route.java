@@ -2,10 +2,7 @@ package mx.edu.utez.viajabara.basecatalog.route.model;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import mx.edu.utez.viajabara.basecatalog.address.model.Address;
-import mx.edu.utez.viajabara.basecatalog.duty.model.Duty;
 import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOver;
-import mx.edu.utez.viajabara.basecatalog.trip.model.Trip;
 import mx.edu.utez.viajabara.basecatalog.way.model.Way;
 
 import javax.persistence.*;

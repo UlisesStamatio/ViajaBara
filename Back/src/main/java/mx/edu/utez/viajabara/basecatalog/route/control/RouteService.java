@@ -2,7 +2,6 @@ package mx.edu.utez.viajabara.basecatalog.route.control;
 
 import mx.edu.utez.viajabara.basecatalog.address.control.AddressService;
 import mx.edu.utez.viajabara.basecatalog.address.model.Address;
-import mx.edu.utez.viajabara.basecatalog.address.model.AddressDto;
 import mx.edu.utez.viajabara.basecatalog.address.model.AddressSaveDto;
 import mx.edu.utez.viajabara.basecatalog.duty.model.DutyRepository;
 import mx.edu.utez.viajabara.basecatalog.route.model.Route;
@@ -11,10 +10,8 @@ import mx.edu.utez.viajabara.basecatalog.route.model.RouteRepository;
 import mx.edu.utez.viajabara.basecatalog.route.model.RouteSaveDto;
 import mx.edu.utez.viajabara.basecatalog.stopover.control.StopOverService;
 import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOver;
-import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOverDto;
 import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOverRepository;
 import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOverSaveDto;
-import mx.edu.utez.viajabara.basecatalog.trip.model.Trip;
 import mx.edu.utez.viajabara.basecatalog.trip.model.TripRepository;
 import mx.edu.utez.viajabara.basecatalog.way.model.Way;
 import mx.edu.utez.viajabara.basecatalog.way.model.WayRepository;

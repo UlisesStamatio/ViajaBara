@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface OpenTripsRepository extends JpaRepository<OpenTrips,Long> {
     @Query(value = "SELECT * from open_trips where status=?1",nativeQuery = true)

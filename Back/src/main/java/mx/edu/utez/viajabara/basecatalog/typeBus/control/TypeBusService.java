@@ -1,8 +1,5 @@
 package mx.edu.utez.viajabara.basecatalog.typeBus.control;
 
-import mx.edu.utez.viajabara.basecatalog.duty.model.Duty;
-import mx.edu.utez.viajabara.basecatalog.duty.model.DutyDto;
-import mx.edu.utez.viajabara.basecatalog.duty.model.DutyRepository;
 import mx.edu.utez.viajabara.basecatalog.typeBus.model.TypeBus;
 import mx.edu.utez.viajabara.basecatalog.typeBus.model.TypeBusRepository;
 import mx.edu.utez.viajabara.utils.entity.Message;

@@ -1,13 +1,8 @@
 package mx.edu.utez.viajabara.basecatalog.trip.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import mx.edu.utez.viajabara.access.user.model.User;
 import mx.edu.utez.viajabara.basecatalog.bus.model.Bus;
-import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTrips;
 import mx.edu.utez.viajabara.basecatalog.way.model.Way;
-import org.hibernate.annotations.Type;
-
-import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 

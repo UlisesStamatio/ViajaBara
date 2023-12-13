@@ -1,7 +1,6 @@
 package mx.edu.utez.viajabara.basecatalog.state.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import mx.edu.utez.viajabara.basecatalog.address.model.Address;
 import mx.edu.utez.viajabara.basecatalog.person.model.Person;
 
