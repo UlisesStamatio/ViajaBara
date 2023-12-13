@@ -1,8 +1,6 @@
 package mx.edu.utez.viajabara.basecatalog.way.control;
 
-import mx.edu.utez.viajabara.basecatalog.stopover.control.StopOverService;
-import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOver;
-import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOverRepository;
+
 import mx.edu.utez.viajabara.basecatalog.way.model.Way;
 import mx.edu.utez.viajabara.basecatalog.way.model.WayRepository;
 import mx.edu.utez.viajabara.utils.entity.Message;

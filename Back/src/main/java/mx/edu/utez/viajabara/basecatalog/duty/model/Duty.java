@@ -1,11 +1,8 @@
 package mx.edu.utez.viajabara.basecatalog.duty.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import mx.edu.utez.viajabara.basecatalog.route.model.Route;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "duties")

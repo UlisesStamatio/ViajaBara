@@ -1,6 +1,5 @@
 package mx.edu.utez.viajabara.basecatalog.way.model;
 
-import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTrips;
 import mx.edu.utez.viajabara.basecatalog.route.model.Route;
 import mx.edu.utez.viajabara.basecatalog.trip.model.Trip;
 import org.springframework.data.jpa.repository.JpaRepository;

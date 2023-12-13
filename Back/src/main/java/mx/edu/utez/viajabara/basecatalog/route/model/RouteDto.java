@@ -1,9 +1,5 @@
 package mx.edu.utez.viajabara.basecatalog.route.model;
 
-import mx.edu.utez.viajabara.basecatalog.address.model.Address;
-import mx.edu.utez.viajabara.basecatalog.address.model.AddressDto;
-import mx.edu.utez.viajabara.basecatalog.duty.model.Duty;
-import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOver;
 import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOverDto;
 
 import javax.validation.constraints.Min;

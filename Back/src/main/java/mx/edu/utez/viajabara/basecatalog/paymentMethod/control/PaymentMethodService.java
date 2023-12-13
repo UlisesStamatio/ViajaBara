@@ -1,7 +1,6 @@
 package mx.edu.utez.viajabara.basecatalog.paymentMethod.control;
 
-import mx.edu.utez.viajabara.access.user.model.User;
-import mx.edu.utez.viajabara.access.user.model.UserDto;
+
 import mx.edu.utez.viajabara.basecatalog.paymentMethod.model.PaymentMethod;
 import mx.edu.utez.viajabara.basecatalog.paymentMethod.model.PaymentMethodDto;
 import mx.edu.utez.viajabara.basecatalog.paymentMethod.model.PaymentMethodRepository;

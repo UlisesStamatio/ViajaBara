@@ -2,27 +2,21 @@ package mx.edu.utez.viajabara.basecatalog.trip.control;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.edu.utez.viajabara.access.user.model.User;
 import mx.edu.utez.viajabara.access.user.model.UserRepository;
 import mx.edu.utez.viajabara.basecatalog.address.model.Address;
 import mx.edu.utez.viajabara.basecatalog.address.model.AddressDto;
 import mx.edu.utez.viajabara.basecatalog.bus.model.Bus;
-import mx.edu.utez.viajabara.basecatalog.bus.model.BusDto;
 import mx.edu.utez.viajabara.basecatalog.bus.model.BusRepository;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTrips;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTripsDto;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTripsRepository;
-import mx.edu.utez.viajabara.basecatalog.person.model.Person;
 import mx.edu.utez.viajabara.basecatalog.route.control.RouteService;
 import mx.edu.utez.viajabara.basecatalog.route.model.Route;
-import mx.edu.utez.viajabara.basecatalog.route.model.RouteDto;
 import mx.edu.utez.viajabara.basecatalog.route.model.RouteRepository;
 import mx.edu.utez.viajabara.basecatalog.state.model.State;
 import mx.edu.utez.viajabara.basecatalog.state.model.StateBookTripDto;
-import mx.edu.utez.viajabara.basecatalog.state.model.StateDto;
 import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOver;
 import mx.edu.utez.viajabara.basecatalog.trip.model.*;
 import mx.edu.utez.viajabara.basecatalog.way.control.WayService;
@@ -38,18 +32,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.sql.SQLException;
-import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Transactional
 @Service

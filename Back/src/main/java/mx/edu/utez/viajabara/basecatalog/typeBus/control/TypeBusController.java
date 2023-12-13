@@ -1,13 +1,9 @@
 package mx.edu.utez.viajabara.basecatalog.typeBus.control;
 
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import mx.edu.utez.viajabara.basecatalog.duty.control.DutyService;
-import mx.edu.utez.viajabara.basecatalog.duty.model.DutyDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;

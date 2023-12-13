@@ -1,11 +1,7 @@
 package mx.edu.utez.viajabara.basecatalog.stopover.model;
 
-import mx.edu.utez.viajabara.basecatalog.address.model.Address;
 import mx.edu.utez.viajabara.basecatalog.address.model.AddressDto;
 import mx.edu.utez.viajabara.basecatalog.state.model.StateDto;
-
-import javax.persistence.*;
-import java.sql.Time;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
