@@ -71,7 +71,11 @@ const mapFunctions = {
       const {types, long_name} = component
       types.forEach(type =>{
         if(type.includes('administrative_area_level_1')){
-          state = long_name;
+          if(long_name === 'State of Mexico'){
+            state = 'Estado de México'
+          }else{
+            state = long_name;
+          }
         }
       })
     });
