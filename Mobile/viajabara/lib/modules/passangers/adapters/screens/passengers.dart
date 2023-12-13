@@ -7,7 +7,6 @@ import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
 import 'package:viajabara/kernel/widgets/custom_progress_indicator.dart';
 import 'package:viajabara/providers/driver_provider.dart';
-import 'package:viajabara/providers/utils/utils.dart';
 
 class Passengers extends StatefulWidget {
   final DriverTrip trip;
@@ -28,7 +27,6 @@ class _PassengersState extends State<Passengers> {
 
   void loadData() async {
     var tripsData = await DriverProvider().getRidersForTrip(widget.trip.id!);
-    print('tripsData $tripsData');
     setState(() {
       data = Future.value(tripsData);
     });
@@ -67,28 +65,41 @@ class _PassengersState extends State<Passengers> {
               future: data,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CustomCircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(
-                      child: Text('No hay comentarios disponible aún'));
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      loadData();
+                    },
+                    child: ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: const <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(top: 50),
+                          child: Center(
+                              child: Text('No hay pasajeros disponibles aún',
+                                  style: TextStyle(fontSize: 20))),
+                        ),
+                      ],
+                    ),
+                  );
                 }
 
-                return SingleChildScrollView(
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: snapshot.data!.length,
-                        itemBuilder: (context, index) {
-                          return showCardUser(snapshot.data![index]);
-                        },
-                      ),
-                    ]));
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    loadData();
+                  },
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      return showCardUser(snapshot.data![index]);
+                    },
+                  ),
+                );
               },
             ),
           ],
@@ -119,14 +130,6 @@ class _PassengersState extends State<Passengers> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Align(
-                  alignment: Alignment.center,
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundColor: Colors.transparent,
-                    child: Utils().profilePicture(rider.client!.profile!),
-                  ),
-                ),
                 const SizedBox(width: 20.0),
                 Container(
                     alignment: Alignment.centerLeft,
@@ -158,10 +161,16 @@ class _PassengersState extends State<Passengers> {
                         const SizedBox(
                           width: 10,
                         ),
-                        Text(
-                          rider.startAddress!.description!,
-                          style: const TextStyle(
-                              color: ColorsApp.blackColor, fontSize: 20),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
+                          child: SizedBox(
+                            width: 250,
+                            child: Text(
+                              rider.startAddress!.description!.substring(0, 28),
+                              style: const TextStyle(
+                                  color: ColorsApp.blackColor, fontSize: 20),
+                            ),
+                          ),
                         ),
                       ],
                     )),
@@ -196,10 +205,15 @@ class _PassengersState extends State<Passengers> {
                         const SizedBox(
                           width: 10,
                         ),
-                        Text(
-                          rider.endAddress!.description!,
-                          style: const TextStyle(
-                              color: ColorsApp.blackColor, fontSize: 20),
+                        SingleChildScrollView(
+                          child: SizedBox(
+                            width: 250,
+                            child: Text(
+                              rider.endAddress!.description!.substring(0, 28),
+                              style: const TextStyle(
+                                  color: ColorsApp.blackColor, fontSize: 20),
+                            ),
+                          ),
                         ),
                       ],
                     )),
@@ -212,59 +226,99 @@ class _PassengersState extends State<Passengers> {
             Padding(
               padding: const EdgeInsets.only(top: 5.0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  const Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        "¿Asistio?",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      )),
-                  Column(
-                    children: [
-                      Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    if (rider.checked == 0) ...[
+                      const Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            "¿Asistio?",
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          )),
+                      Column(
                         children: [
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              shape: const CircleBorder(), // Forma circular
-                              padding: const EdgeInsets.all(20),
-                              backgroundColor: Colors.green,
-                              foregroundColor: Colors.white,
-                            ),
-                            onPressed: () {
-                              DriverProvider().checkAsistenceUser(rider.id!, 1);
-                            },
-                            child: const Icon(Icons.check),
-                          ),
-                          const SizedBox(width: 5.0),
+                          Row(
+                            children: [
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  shape: const CircleBorder(), // Forma circular
+                                  padding: const EdgeInsets.all(20),
+                                  backgroundColor: Colors.green,
+                                  foregroundColor: Colors.white,
+                                ),
+                                onPressed: () {
+                                  DriverProvider()
+                                      .checkAsistenceUser(rider.id!, 1);
+                                  setState(() {
+                                    loadData();
+                                  });
+                                },
+                                child: const Icon(Icons.check),
+                              ),
+                              const SizedBox(width: 5.0),
+                            ],
+                          )
                         ],
-                      )
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      Row(
+                      ),
+                      Column(
                         children: [
-                          const SizedBox(width: 15.0),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              shape: const CircleBorder(),
-                              padding: const EdgeInsets.all(20),
-                              backgroundColor: Colors.red,
-                              foregroundColor: Colors.white,
-                            ),
-                            onPressed: () {
-                              DriverProvider().checkAsistenceUser(rider.id!, 2);
-                            },
-                            child: const Icon(Icons.cancel),
-                          ),
+                          Row(
+                            children: [
+                              const SizedBox(width: 15.0),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  shape: const CircleBorder(),
+                                  padding: const EdgeInsets.all(20),
+                                  backgroundColor: Colors.red,
+                                  foregroundColor: Colors.white,
+                                ),
+                                onPressed: () {
+                                  DriverProvider()
+                                      .checkAsistenceUser(rider.id!, 2);
+                                  setState(() {
+                                    loadData();
+                                  });
+                                },
+                                child: const Icon(Icons.cancel),
+                              ),
+                            ],
+                          )
                         ],
-                      )
+                      ),
+                    ] else ...[
+                      Expanded(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                rider.checked == 1 ? Colors.green : Colors.red,
+                            foregroundColor: Colors.white,
+                          ),
+                          onPressed: null,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Icon(
+                                rider.checked == 1 ? Icons.check : Icons.cancel,
+                                color: rider.checked == 1
+                                    ? Colors.green
+                                    : Colors.red, // Cambia el color del ícono
+                              ),
+                              Text(
+                                rider.checked == 1 ? " Asistió" : " No Asistió",
+                                style: TextStyle(
+                                  color: rider.checked == 1
+                                      ? Colors.green
+                                      : Colors.red, // Cambia el color del texto
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
-                  ),
-                ],
-              ),
+                  ]),
             ),
           ],
         ),

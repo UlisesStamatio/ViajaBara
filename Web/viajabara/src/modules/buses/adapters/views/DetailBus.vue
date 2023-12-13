@@ -131,6 +131,8 @@ import getBus from '../../use-cases/get.bus'
 import router from '../../../../router/index'
 import Loader from '../../../../components/Loader.vue'
 import listTypeBusEnabled from '../../use-cases/list.type.bus.enabled'
+import Types from '../../../../kernel/translate/imageType'
+import imagesEmpty from '../../../../assets/img/errorImagen.png'
 
 export default {
   name: "DetailBus",
@@ -182,7 +184,11 @@ export default {
       const {error, data} = response;
         if(!error){
           const {result} = data
-          document.getElementById("image-bus").src = `data:image/png;base64,${result.image}`;
+           if(result.image){
+              document.getElementById("image-bus").src = `data:image/${Types.getTypeFromImage(result.image)};base64,${result.image}`;
+          }else{
+              document.getElementById("image-bus").src = imagesEmpty;
+          }
           this.bus = result;
           this.busOriginal = {...result}
       }else{

@@ -27,7 +27,8 @@ class _HistoryStarsState extends State<HistoryStars> {
   }
 
   void loadData() async {
-    var tripsData = await DriverProvider().getQualificationsAboutTravel(widget.trip.id!);
+    var tripsData =
+        await DriverProvider().getQualificationsAboutTravel(widget.trip.id!);
     setState(() {
       data = Future.value(tripsData);
     });
@@ -35,9 +36,12 @@ class _HistoryStarsState extends State<HistoryStars> {
 
   @override
   Widget build(BuildContext context) {
-    String? salida = "${widget.trip.trip!.stopOvers![0].address?.state}-${widget.trip.startDate}-${widget.trip.trip?.startTime}";
-    String? horaLlegada = Utils().sumarTiempo(widget.trip.trip!.startTime!, widget.trip.trip!.time!);
-    String? llegada = "${widget.trip.trip?.stopOvers!.last.address?.state}-${widget.trip.startDate}-$horaLlegada";
+    String? salida =
+        "${widget.trip.trip!.stopOvers![0].address?.state}-${widget.trip.startDate}-${widget.trip.trip?.startTime}";
+    String? horaLlegada = Utils()
+        .sumarTiempo(widget.trip.trip!.startTime!, widget.trip.trip!.time!);
+    String? llegada =
+        "${widget.trip.trip?.stopOvers!.last.address?.state}-${widget.trip.startDate}-$horaLlegada";
     return Scaffold(
       appBar: AppBar(
         title: Container(
@@ -101,21 +105,25 @@ class _HistoryStarsState extends State<HistoryStars> {
                     future: data,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CustomCircularProgressIndicator();
+                        return const Center(child: CircularProgressIndicator());
                       } else if (snapshot.hasError) {
                         return Text('Error: ${snapshot.error}');
                       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                         return Text('No hay comentarios disponibles aún');
-                      } else {
-                        return ListView.builder(
+                      }
+                      return RefreshIndicator(
+                        onRefresh: () async {
+                          loadData();
+                        },
+                        child: ListView.builder(
                           shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
+                          physics: const AlwaysScrollableScrollPhysics(),
                           itemCount: snapshot.data!.length,
                           itemBuilder: (context, index) {
                             return comentarioWidget(snapshot.data![index]);
                           },
-                        );
-                      }
+                        ),
+                      );
                     },
                   ),
                 ],
@@ -139,8 +147,7 @@ class _HistoryStarsState extends State<HistoryStars> {
             CircleAvatar(
               radius: 30,
               backgroundColor: Colors.transparent,
-              child: SvgPicture.string(
-                  utf8.decode(base64.decode(qualification.clientPhoto!))),
+              child: Utils().profilePicture(qualification.clientPhoto!),
             ),
             const SizedBox(width: 16.0),
             Expanded(

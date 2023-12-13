@@ -51,7 +51,7 @@ void showModalInfo(BuildContext context, TripDto tripDto) {
                             ),
                             const SizedBox(width: 10),
                             SizedBox(
-                              width: 300,
+                              width: 200,
                               child: Text(
                                 'Origen: ${tripDto.listStopovers!.first.address!.description}',
                                 style: const TextStyle(
@@ -72,7 +72,7 @@ void showModalInfo(BuildContext context, TripDto tripDto) {
                             ),
                             const SizedBox(width: 10),
                             SizedBox(
-                              width: 300,
+                              width: 200,
                               child: Text(
                                 'Destino: ${tripDto.listStopovers!.last.address!.description}',
                                 style: const TextStyle(
@@ -128,7 +128,7 @@ void showModalInfo(BuildContext context, TripDto tripDto) {
                                               )),
                                         ]),
                                         SizedBox(
-                                          width: 300,
+                                          width: 200,
                                           child: Text(
                                             ' ${tripDto.listStopovers![index].address!.description}',
                                             style: const TextStyle(

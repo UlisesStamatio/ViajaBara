@@ -123,7 +123,9 @@ public class RouteService {
         Route route = optional.get();
         List<StopOver> firstStopOverList = route.getStopOvers();
         for (StopOver stop : firstStopOverList) {
+            System.out.println(stop.toString());
             stop.setRoute(null);
+            stop.setAddress(null);
             stopOverRepository.saveAndFlush(stop);
             stopOverRepository.delete(stop);
         }

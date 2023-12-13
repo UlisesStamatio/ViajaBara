@@ -27,6 +27,8 @@ class _TripsState extends State<Trips> {
   }
 
   void loadData() async {
+    await Future.delayed(Duration(seconds: 1));
+
     var tripsData = await DriverProvider().getTripsForDriver();
     setState(() {
       data = Future.value(tripsData);
@@ -66,20 +68,39 @@ class _TripsState extends State<Trips> {
               future: data,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CustomCircularProgressIndicator();
+                  return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('No hay viajes disponibles'));
+                  
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      loadData();
+                    },
+                    child: ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: const <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(top: 50),
+                          child: Center(
+                              child: Text('No hay viajes disponibles',
+                                  style: TextStyle(fontSize: 20))),
+                        ),
+                      ],
+                    ),
+                  );
                 }
 
-                return SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: snapshot.data!
-                        .map((trip) => _buildTripCard(trip))
-                        .toList(),
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    loadData();
+                  },
+                  child: ListView.builder(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    itemCount: snapshot.data!.length,
+                    itemBuilder: (context, index) {
+                      return _buildTripCard(snapshot.data![index]);
+                    },
                   ),
                 );
               },
@@ -235,17 +256,19 @@ class _TripsState extends State<Trips> {
                     backgroundColor:
                         MaterialStateProperty.all(ColorsApp.primayColor),
                   ),
-                  child: Row(children: [
-                    Icon(
-                      _getButtonIcon(trip.status!),
-                      size: 18,
-                    ),
-                    const SizedBox(width: 10),
-                    Text(
-                      _getButtonText(trip.status!),
-                      style: const TextStyle(fontSize: 15),
-                    ),
-                  ]),
+                  child: Row(
+                    children: [
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 1000),
+                        child: _getButtonIcon(trip.status!),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        _getButtonText(trip.status!),
+                        style: const TextStyle(fontSize: 15),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -255,15 +278,23 @@ class _TripsState extends State<Trips> {
     );
   }
 
-  IconData _getButtonIcon(int status) {
+  Widget _getButtonIcon(int status) {
+    IconData iconData;
     switch (status) {
       case 1:
-        return Icons.hourglass_empty;
+        iconData = Icons.hourglass_empty;
+        break;
       case 2:
-        return Icons.play_arrow;
+        iconData = Icons.play_arrow;
+        break;
       default:
-        return Icons.done;
+        iconData = Icons.done;
     }
+    return Icon(
+      iconData,
+      key: ValueKey<int>(status),
+      size: 18,
+    );
   }
 
   String _getButtonText(int status) {

@@ -190,6 +190,7 @@ import getUser from '../../use-cases/get.user'
 import updateUser from '../../use-cases/update.user'
 import Loader from '../../../../components/Loader.vue'
 import moment from 'moment'
+import Types from '../../../../kernel/translate/imageType'
 
 export default {
   name: "UpdateUser",
@@ -286,7 +287,7 @@ export default {
       if(!error){
           const {result:{profile}} = data
           const {result} = data
-          document.getElementById("image_profile").src = `data:image/png;base64,${profile}`;
+          document.getElementById("image_profile").src = `data:image/${Types.getTypeFromImage(profile)};base64,${profile}`;
           this.user = result;
           this.userOriginal = {...result}
       }else{

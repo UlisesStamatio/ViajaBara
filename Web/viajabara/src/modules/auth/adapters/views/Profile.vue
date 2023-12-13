@@ -357,6 +357,7 @@ import storeSession from '../../../../kernel/store/store.session';
 import updateProfile from '../../use-cases/update.profile'
 import changeProfile from '../../use-cases/change.profile'
 import moment from 'moment'
+import Types from '../../../../kernel/translate/imageType'
 
 export default {
   name: "Profile",
@@ -455,8 +456,8 @@ export default {
         if(!error){
           const {result:{profile}} = data
           const {result} = data
-          document.getElementById("image-profile-edit").src = `data:image/png;base64,${profile}`;
-          document.getElementById("image-profile-view").src = `data:image/png;base64,${profile}`;
+          document.getElementById("image-profile-edit").src = `data:image/${Types.getTypeFromImage(profile)};base64,${profile}`;
+          document.getElementById("image-profile-view").src = `data:image/${Types.getTypeFromImage(profile)};base64,${profile}`;
 
         this.user = {...result, cellphone: result.cellphone === 0 ? '' : result.cellphone};
           this.userOriginal = {...result}
@@ -491,7 +492,7 @@ export default {
     },
     goBackPage(){
       this.editProfile()
-      document.getElementById("image-profile-edit").src = `data:image/png;base64,${this.userOriginal.profile}`;
+      document.getElementById("image-profile-edit").src = `data:image/${Types.getTypeFromImage(this.userOriginal.profile)};base64,${this.userOriginal.profile}`;
       this.user = {...this.userOriginal}
     },
     async preUpdateUser(){
@@ -565,6 +566,7 @@ export default {
       }
     },
     saveImage(){
+      console.log(document.getElementById('image-profile-edit').src.split('base64,')[1]);
       let user = {
         profile: document.getElementById('image-profile-edit').src.split('base64,')[1],
         id: this.idUser
@@ -611,7 +613,7 @@ export default {
             this.$swal.dismiss;
           }
         });
-    }
+    },
 
 
       

@@ -64,14 +64,14 @@ class _TravelingState extends State<Traveling> {
 
   Widget _buildSlidingUpPanelWithMap() {
     double screenHeight = MediaQuery.of(context).size.height;
-    double panelMaxHeight = screenHeight * 0.4;
+    double panelMaxHeight = screenHeight * 0.5;
     BorderRadiusGeometry radius = const BorderRadius.only(
       topLeft: Radius.circular(24.0),
       topRight: Radius.circular(24.0),
     );
     int lastPos = widget.trip.trip!.stopOvers!.length - 1;
     String? destino =
-        widget.trip.trip?.stopOvers![lastPos].address!.state!;
+        widget.trip.trip?.stopOvers![lastPos].address!.description!;
     int numParadas = widget.trip.trip!.stopOvers!.length - 2;
     String textoParadas;
     if (numParadas <= 0) {
@@ -90,9 +90,15 @@ class _TravelingState extends State<Traveling> {
               children: [
                 const Icon(Icons.location_on, color: Colors.black, size: 40),
                 const SizedBox(width: 8),
-                Text(
-                    'Origen: ${widget.trip.trip?.stopOvers?[0].address!.state!}',
-                    style: const TextStyle(fontSize: 20)),
+                SizedBox(
+                  width: 250,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.vertical,
+                    child: Text(
+                        'Origen: ${widget.trip.trip?.stopOvers?[0].address!.description!}',
+                        style: const TextStyle(fontSize: 20)),
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 15),
@@ -100,7 +106,13 @@ class _TravelingState extends State<Traveling> {
               children: [
                 const Icon(Icons.flight_land, color: Colors.black, size: 40),
                 const SizedBox(width: 8),
-                Text('Destino: $destino', style: const TextStyle(fontSize: 20)),
+                SizedBox(
+                    width: 250,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Text('Destino: $destino',
+                          style: const TextStyle(fontSize: 20)),
+                    )),
               ],
             ),
             const SizedBox(height: 15),
@@ -117,9 +129,9 @@ class _TravelingState extends State<Traveling> {
                 bool success =
                     await DriverProvider().updateTripStatus(widget.trip.id!, 3);
                 if (success) {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => const Trips()),
-                  );
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => const Trips()),
+                      (Route<dynamic> route) => false);
                 }
               },
               icon: const Icon(CupertinoIcons.bus, color: Colors.white),
@@ -147,7 +159,7 @@ class _TravelingState extends State<Traveling> {
       ),
       body: MapScreen(trip: widget.trip), // Aquí se coloca MapScreen
       borderRadius: radius,
-      minHeight: 40,
+      minHeight: 60,
       maxHeight: panelMaxHeight,
     );
   }
