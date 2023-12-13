@@ -25,7 +25,7 @@
               y de volada
             </div>
             <div class="col-12 text-white mt-4">
-                <a target="_blank" role="button" href="https://api.whatsapp.com/send?phone=+52 17773892248&amp;text=Escribe aquí tu duda o comentario, todo lo que necesites será atendido" class="btn btn-success justify-content-center"><i class="fab fa-whatsapp text-white me-2" style="font-size: 1.5em;"></i> RESERVACIONES</a>
+                <a target="_blank" rel="noopener" role="button" href="https://api.whatsapp.com/send?phone=+52 17773892248&amp;text=Escribe aquí tu duda o comentario, todo lo que necesites será atendido" class="btn btn-success justify-content-center"><i class="fab fa-whatsapp text-white me-2" style="font-size: 1.5em;"></i> RESERVACIONES</a>
             </div>
           </div>
         </div>
