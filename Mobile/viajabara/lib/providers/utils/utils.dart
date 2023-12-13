@@ -3,7 +3,11 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
+import 'package:viajabara/domain/entities/book_trip.dart';
 import 'package:viajabara/domain/entities/stop_over/stop_over.dart';
+import 'package:viajabara/domain/entities/trip/filterType.dart';
+import 'package:viajabara/domain/entities/trip/trip.dart';
+import 'package:viajabara/domain/entities/visual_config/visual_config.dart';
 
 class Utils {
   String sumarTiempo(String startTime, double time) {
@@ -88,5 +92,35 @@ class Utils {
     Duration totalDuration = Duration(minutes: totalMinutes.toInt());
     DateTime endTime = startTime.add(totalDuration);
     return endTime;
+  }
+
+  double calculateRoutePriceValue(
+      TripDto trip, VisualConfigDto visualConfigDto, BookTrip bookTrip) {
+    if (trip.filterType!.value.contains("Parada") &&
+        trip.listStopovers != null) {
+      double routeMeters =
+          sumMetersUntilId(trip.listStopovers!, bookTrip.destinyId!);
+      return (routeMeters * 0.001) * visualConfigDto.kilometerPrice!;
+    } else {
+      double routeMeters = trip.meters ?? 0.0;
+      return (routeMeters * 0.001) * visualConfigDto.kilometerPrice!;
+    }
+  }
+
+  String formatRoutePrice(double routePrice) {
+    return '\$ ${routePrice.toStringAsFixed(2)} MXN';
+  }
+
+  double sumMetersUntilId(List<StopOverDto> stopovers, int idToSearch) {
+    double sumMeters = 0;
+
+    for (StopOverDto stopover in stopovers) {
+      sumMeters += stopover.meters;
+      if (stopover.id == idToSearch) {
+        break;
+      }
+    }
+
+    return sumMeters;
   }
 }

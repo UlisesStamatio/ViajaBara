@@ -10,7 +10,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:viajabara/domain/entities/address.dart';
 import 'package:viajabara/domain/entities/book_trip.dart';
 import 'package:viajabara/domain/entities/state/state_list.dart';
-import 'package:viajabara/domain/entities/stop_over/stop_over.dart';
 import 'package:viajabara/domain/entities/trip/filterType.dart';
 import 'package:viajabara/domain/entities/trip/trip.dart';
 import 'package:viajabara/domain/entities/visual_config/visual_config.dart';
@@ -109,6 +108,8 @@ class _TripState extends State<Trip> {
         visualConfigDto = VisualConfigDto.empty();
         prefs.setString("visualConfig", jsonEncode(visualConfigDto));
       }
+      print("visualConfigDto");
+      print(visualConfigDto);
       completer.complete();
     } catch (e) {
       print('Error loadVisualConfig: $e');
@@ -342,6 +343,10 @@ class _TripState extends State<Trip> {
     try {
       SharedPreferences prefs = await _prefs;
       bookTrip.tripId = tripDto.id;
+      double price =
+          Utils().calculateRoutePriceValue(tripDto, visualConfigDto, bookTrip);
+      bookTrip.price = price;
+      tripDto.customPrice = price;
       prefs.setString("bookTrip", jsonEncode(bookTrip.toJson()));
       prefs.setString("tripSelected", jsonEncode(tripDto.toJson()));
     } catch (e) {
@@ -1081,7 +1086,7 @@ class _TripState extends State<Trip> {
                                                                               ],
                                                                             ),
                                                                             Text(
-                                                                              calculateRoutePrice(trips[index], visualConfigDto, bookTrip),
+                                                                              Utils().formatRoutePrice(Utils().calculateRoutePriceValue(trips[index], visualConfigDto, bookTrip)),
                                                                               style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: ColorsApp.successColor),
                                                                             ),
                                                                           ],
@@ -1452,6 +1457,8 @@ class _TripState extends State<Trip> {
   }
 
   void _showModalInfo(BuildContext context, TripDto tripDto) {
+    tripDto.customPrice =
+        Utils().calculateRoutePriceValue(tripDto, visualConfigDto, bookTrip);
     showModalInfo(context, tripDto);
   }
 }
@@ -1471,40 +1478,6 @@ String calculateTime(DateTime startTime, DateTime endTime) {
     return '$hours hrs';
   } else {
     return '$minutes mins';
-  }
-}
-
-double sumMetersUntilId(List<StopOverDto> stopovers, int idToSearch) {
-  double sumMeters = 0;
-
-  for (StopOverDto stopover in stopovers) {
-    sumMeters += stopover.meters;
-    if (stopover.id == idToSearch) {
-      break;
-    }
-  }
-
-  return sumMeters;
-}
-
-String calculateRoutePrice(
-    TripDto trip, VisualConfigDto visualConfigDto, BookTrip bookTrip) {
-  if (trip.filterType!.value.contains("Parada") && trip.listStopovers != null) {
-    // Si es una parada y tiene stopovers, calcula el precio considerando los stopovers
-    double routeMeters =
-        sumMetersUntilId(trip.listStopovers!, bookTrip.destinyId!);
-
-    // Calcula el precio basado en la distancia ajustada
-    double routePrice = (routeMeters * 0.001) * visualConfigDto.kilometerPrice!;
-    // Devuelve el resultado formateado
-    return '\$ ${routePrice.toStringAsFixed(2)} MXN';
-  } else {
-    // Si no es una parada o no tiene stopovers, calcula el precio estándar
-    double routeMeters = trip.meters ?? 0.0;
-    double routePrice = (routeMeters * 0.001) * visualConfigDto.kilometerPrice!;
-
-    // Devuelve el resultado formateado
-    return '\$ ${routePrice.toStringAsFixed(2)} MXN';
   }
 }
 

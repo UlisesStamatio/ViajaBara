@@ -32,6 +32,12 @@ public class PaymentMethodController {
         return service.findAll();
     }
 
+    @GetMapping("/all-enabled")
+    @Secured({METODOS_DE_PAGO})
+    public ResponseEntity<Object> findAllEnabled() throws SQLException {
+        return service.findAllEnabled();
+    }
+
     @PostMapping("")
     @Secured({METODOS_DE_PAGO})
     @ApiOperation(

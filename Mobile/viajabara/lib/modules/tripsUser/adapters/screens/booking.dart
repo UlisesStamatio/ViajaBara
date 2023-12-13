@@ -15,7 +15,6 @@ import 'package:viajabara/domain/entities/visual_config/visual_config.dart';
 import 'package:viajabara/kernel/themes/colors/colors_app.dart';
 import 'package:viajabara/kernel/themes/stuff.dart';
 import 'package:viajabara/kernel/widgets/custom_progress_indicator.dart';
-import 'package:viajabara/modules/tripsUser/adapters/methods/show_modal_details_trip.dart';
 import 'package:viajabara/modules/tripsUser/adapters/methods/show_modal_info.dart';
 import 'package:viajabara/modules/tripsUser/adapters/widgets/BookTripsDataSource.dart';
 import 'package:viajabara/providers/auth_provider.dart';
@@ -132,13 +131,17 @@ class _BookingState extends State<Booking> {
   late int seatsAvailableToSelect;
   int seatIdxToAssignNumber = 0;
 
-  void assignSeatNumber(int selectedRow, int selectedColumn) {
-    int seatNumber = patternList
+  int getSeatNumber(int selectedRow, int selectedColumn) {
+    return patternList
         .firstWhere(
           (entry) => entry.key == '[$selectedRow][$selectedColumn]',
           orElse: () => const MapEntry('', -1),
         )
         .value;
+  }
+
+  void assignSeatNumber(int selectedRow, int selectedColumn) {
+    int seatNumber = getSeatNumber(selectedRow, selectedColumn);
     if (seatNumber != -1) {
       setState(() {
         seatsBooking[seatIdxToAssignNumber].seatNumber = seatNumber.toString();
@@ -248,18 +251,33 @@ class _BookingState extends State<Booking> {
                 SeatLayoutWidget(
                   key: newKey,
                   onSeatStateChanged: (rowI, colI, seatState) {
+                    int seatToMention = 0;
+                    setState(() {
+                      if (seatState == SeatState.selected) {
+                        seatToMention = seatIdxToAssignNumber + 1;
+                        assignSeatNumber(index, colI);
+                        areThereUnassignedSeats();
+                        _regenerateRows();
+                      } else {
+                        int seatNumber = getSeatNumber(index, colI);
+                        int idxToReturn = seatsBooking.indexWhere(
+                            (e) => e.seatNumber == seatNumber.toString());
+                        seatIdxToAssignNumber = idxToReturn;
+                        seatToMention = idxToReturn == 0 ? 1 : idxToReturn + 1;
+                        seatsBooking[idxToReturn].seatNumber = "S/N";
+                        _regenerateRows();
+                      }
+                    });
                     ScaffoldMessenger.of(context).hideCurrentSnackBar();
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: seatState == SeatState.selected
-                            ? Text("Selected Seat[$index][$colI]")
-                            : Text("De-selected Seat[$index][$colI]"),
+                            ? Text(
+                                "Asiento de Pasajero ${seatToMention} asignado")
+                            : Text(
+                                "Asiento de Pasajero ${seatToMention} removido"),
                       ),
                     );
-                    setState(() {
-                      assignSeatNumber(index, colI);
-                      areThereUnassignedSeats();
-                    });
                   },
                   stateModel: SeatLayoutStateModel(
                     pathDisabledSeat: StuffApp.blackSeat,
@@ -283,11 +301,41 @@ class _BookingState extends State<Booking> {
     });
   }
 
+  List<String> getSeatNumbersList() {
+    List<String> seatNumbersList = [];
+    for (SeatBooking seatBooking in seatsBooking) {
+      seatNumbersList.add(seatBooking.seatNumber);
+    }
+    return seatNumbersList;
+  }
+
+  void saveBookTripOnSharedPreferences() async {
+    try {
+      SharedPreferences prefs = await _prefs;
+      List<String> seatNumbersList = getSeatNumbersList();
+      print("saveBookTripOnSharedPreferences");
+      print(bookTrip.price);
+      List<String> listaDeCadenas =
+          seatNumbersList.map((e) => e.toString()).toList();
+      String listaDeCadenasString = json.encode(listaDeCadenas);
+      bookTrip.seatsSelected = listaDeCadenasString;
+      bookTrip.price = tripDto.customPrice! * seatNumbersList.length;
+      print(bookTrip.price);
+      bookTrip.seats = seatNumbersList.length;
+      prefs.setString("bookTrip", jsonEncode(bookTrip.toJson()));
+      prefs.setString("tripSelected", jsonEncode(tripDto.toJson()));
+    } catch (e) {
+      print('Error saveBookTripOnSharedPreferences: $e');
+    }
+  }
+
   void editSeat(int selectedRow) {
     setState(() {
       cleanIndexSeatStateList(int.parse(seatsBooking[selectedRow].seatNumber));
       seatsBooking[selectedRow].seatNumber = "S/N";
+      seatIdxToAssignNumber = selectedRow;
       _regenerateRows();
+      areThereUnassignedSeats();
       rebuildListView();
     });
   }
@@ -317,7 +365,7 @@ class _BookingState extends State<Booking> {
             ),
           ],
         )),
-      ]));
+      ], selected: seatIdxToAssignNumber == index));
     }
 
     return rows;
@@ -472,65 +520,8 @@ class _BookingState extends State<Booking> {
                                                                 children: [
                                                                   Row(
                                                                     children: [
-                                                                      // Padding(
-                                                                      //   padding: const EdgeInsets
-                                                                      //       .symmetric(
-                                                                      //       vertical:
-                                                                      //           8.0,
-                                                                      //       horizontal:
-                                                                      //           10),
-                                                                      //   child:
-                                                                      //       SizedBox(
-                                                                      //     width:
-                                                                      //         50, // Ancho máximo basado en el diseño original
-                                                                      //     child:
-                                                                      //         Text(
-                                                                      //       seatsNumberDistribution[index],
-                                                                      //       style:
-                                                                      //           const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                                                                      //     ),
-                                                                      //   ),
-                                                                      // ),
                                                                       seatLayoutWidgets[
                                                                           index],
-                                                                      // SeatLayoutWidget(
-                                                                      //   onSeatStateChanged: (rowI,
-                                                                      //       colI,
-                                                                      //       seatState) {
-                                                                      //     ScaffoldMessenger.of(context)
-                                                                      //         .hideCurrentSnackBar();
-                                                                      //     ScaffoldMessenger.of(context)
-                                                                      //         .showSnackBar(
-                                                                      //       SnackBar(
-                                                                      //         content: seatState == SeatState.selected ? Text("Selected Seat[$index][$colI]") : Text("De-selected Seat[$index][$colI]"),
-                                                                      //       ),
-                                                                      //     );
-                                                                      //     assignSeatNumber(
-                                                                      //         index,
-                                                                      //         colI);
-                                                                      //     areThereUnassignedSeats();
-                                                                      //   },
-                                                                      //   stateModel:
-                                                                      //       SeatLayoutStateModel(
-                                                                      //     pathDisabledSeat:
-                                                                      //         StuffApp.blackSeat,
-                                                                      //     pathSelectedSeat:
-                                                                      //         StuffApp.redSeat,
-                                                                      //     pathSoldSeat:
-                                                                      //         StuffApp.blueSeat,
-                                                                      //     pathUnSelectedSeat:
-                                                                      //         StuffApp.whiteSeat,
-                                                                      //     rows:
-                                                                      //         1,
-                                                                      //     cols:
-                                                                      //         4,
-                                                                      //     seatSvgSize:
-                                                                      //         60,
-                                                                      //     currentSeatsState: [
-                                                                      //       seatStateCleanList[index],
-                                                                      //     ],
-                                                                      //   ),
-                                                                      // ),
                                                                     ],
                                                                   ),
                                                                   const Divider(
@@ -598,6 +589,7 @@ class _BookingState extends State<Booking> {
                                               CupertinoIcons.right_chevron),
                                           label: const Text('Continuar'),
                                           onPressed: () {
+                                            saveBookTripOnSharedPreferences();
                                             Navigator.pushNamed(
                                                 context, "/pay");
                                           },
@@ -674,8 +666,8 @@ class _BookingState extends State<Booking> {
         Map<String, dynamic> jsonMap =
             jsonDecode(prefs.getString("tripSelected")!);
         tripDto = TripDto.fromJson(jsonMap);
-        print("************************");
-        print(tripDto.listStopovers);
+        print("**********tripDto.customPrice**************");
+        print(tripDto.customPrice);
       }
       completer.complete();
     } catch (e) {

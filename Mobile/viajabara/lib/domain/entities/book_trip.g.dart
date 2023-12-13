@@ -19,6 +19,7 @@ BookTrip _$BookTripFromJson(Map<String, dynamic> json) => BookTrip(
       price: (json['price'] as num?)?.toDouble(),
       cardNumber: json['cardNumber'] as String?,
       cvc: json['cvc'] as String?,
+      clientId: json['clientId'] as int?,
     );
 
 Map<String, dynamic> _$BookTripToJson(BookTrip instance) => <String, dynamic>{
@@ -34,4 +35,5 @@ Map<String, dynamic> _$BookTripToJson(BookTrip instance) => <String, dynamic>{
       'price': instance.price,
       'cardNumber': instance.cardNumber,
       'cvc': instance.cvc,
+      'clientId': instance.clientId,
     };

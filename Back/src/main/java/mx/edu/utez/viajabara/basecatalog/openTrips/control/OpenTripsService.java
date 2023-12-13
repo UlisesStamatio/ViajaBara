@@ -1,11 +1,14 @@
 package mx.edu.utez.viajabara.basecatalog.openTrips.control;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import mx.edu.utez.viajabara.access.user.model.User;
 import mx.edu.utez.viajabara.access.user.model.UserRepository;
+import mx.edu.utez.viajabara.basecatalog.address.model.Address;
 import mx.edu.utez.viajabara.basecatalog.bus.model.BusRepository;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTrips;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTripsDto;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTripsRepository;
+import mx.edu.utez.viajabara.basecatalog.seatingSales.model.SeatingSales;
 import mx.edu.utez.viajabara.basecatalog.seatingSales.model.SeatingSalesRepository;
 import mx.edu.utez.viajabara.basecatalog.trip.model.BookTripDto;
 import mx.edu.utez.viajabara.basecatalog.trip.model.Trip;
@@ -18,7 +21,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -173,6 +180,74 @@ public class OpenTripsService {
         return new ResponseEntity<>(new Message(openTrips, "Viaje abierto registrado", TypesResponse.SUCCESS), HttpStatus.OK);
     }
 
+    @Transactional(rollbackFor = {SQLException.class})
+    public ResponseEntity<Object> saveBook(BookTripDto dto) throws SQLException{
+        OpenTripsDto openTripsDto = repository.findByTripIdAndDate((long) dto.getTripId(), dto.getDate());
+        OpenTrips openTrips = new OpenTrips();
+        if(openTripsDto != null){
+            System.out.println(openTripsDto);
+            SeatingSales seatingSales = new SeatingSales();
+            seatingSales.setChecked(0);
+            seatingSales.setCost(new BigDecimal(dto.getPrice()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+            seatingSales.setSeating(dto.getSeats());
+            seatingSales.setSeatsSelected(dto.getSeatsSelected());
+            seatingSales.setWholeTrip(1);
+            User user = new User();
+            user.setId((long)dto.getClientId());
+            seatingSales.setClient(user);
+            Address startAddress = new Address((long)dto.getOriginId());
+            Address endAddress = new Address((long)dto.getDestinyId());
+            seatingSales.setEndAddress(endAddress);
+            seatingSales.setStartAddress(startAddress);
+            System.out.println(openTripsDto.getId());
+            openTrips.setId(openTripsDto.getId());
+            openTrips.setEnableSeats(openTripsDto.getEnableSeats() - dto.getSeats());
+            openTrips.setCreatedAt(openTripsDto.getCreatedAt());
+            openTrips.setTrip(openTripsDto.getTrip());
+            openTrips.setStartDate(openTripsDto.getStartDate());
+            openTrips.setStatus(openTripsDto.getStatus());
+            seatingSales.setOpenTrips(openTrips);
+            seatingSalesRepository.save(seatingSales);
+            repository.save(openTrips);
+            return new ResponseEntity<>(new Message(null,"Asientos registrados", TypesResponse.SUCCESS), HttpStatus.OK);
+        }
+        openTrips.setEnableSeats(20 - dto.getSeats());
+        openTrips.setStartDate(parseDate(dto.getDate()));
+        openTrips.setStatus(1);
+        Trip trip = new Trip();
+        trip.setId((long)dto.getTripId());
+        openTrips.setTrip(trip);
+        openTrips = repository.save(openTrips);
+
+        SeatingSales seatingSales = new SeatingSales();
+        seatingSales.setChecked(0);
+        seatingSales.setCost(new BigDecimal(dto.getPrice()).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue());
+        seatingSales.setSeating(dto.getSeats());
+        seatingSales.setSeatsSelected(dto.getSeatsSelected());
+        seatingSales.setWholeTrip(1);
+        User user = new User();
+        user.setId((long)dto.getClientId());
+        seatingSales.setClient(user);
+        Address startAddress = new Address((long)dto.getOriginId());
+        Address endAddress = new Address((long)dto.getDestinyId());
+        seatingSales.setEndAddress(endAddress);
+        seatingSales.setStartAddress(startAddress);
+        seatingSales.setOpenTrips(openTrips);
+        seatingSales = seatingSalesRepository.save(seatingSales);
+
+        return new ResponseEntity<>(new Message(null,"Asientos registrados", TypesResponse.SUCCESS), HttpStatus.OK);
+    }
+
+    private Date parseDate(String timeString) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            sdf.setTimeZone(TimeZone.getTimeZone("America/Mexico_City"));
+            return sdf.parse(timeString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
     @Transactional(rollbackFor = {SQLException.class})
     public ResponseEntity<Object> update(OpenTripsDto dto) throws SQLException{
 

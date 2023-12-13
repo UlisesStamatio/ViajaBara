@@ -299,6 +299,8 @@ class _LoginState extends State<Login> {
                                         setState(() {
                                           _islogged = true;
                                         });
+                                        await AuthProvider()
+                                            .getVisualConfigurations();
                                       } else {
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(

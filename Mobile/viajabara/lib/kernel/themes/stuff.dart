@@ -7,6 +7,8 @@ class StuffApp {
   static const String bgSplash = '${routeImages}bg_splash.svg';
   static const String bgRegister = '${routeImages}bg_register.svg';
   static const String bgRecover = '${routeImages}bg_recover.svg';
+  static const String bgError = '${routeImages}bg_error.svg';
+  static const String bgSucceess = '${routeImages}bg_success.svg';
 
   static const String redSeat = '${routeImages}red_seat.svg';
   static const String blueSeat = '${routeImages}blue_seat.svg';

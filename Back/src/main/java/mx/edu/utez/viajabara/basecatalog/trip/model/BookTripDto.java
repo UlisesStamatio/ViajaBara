@@ -27,7 +27,8 @@ public class BookTripDto {
     private String cardNumber;
     @NotNull(groups = {Get.class})
     private double price;
-
+    @NotNull(groups = {Get.class})
+    private int clientId;
     public BookTripDto() {
     }
 
@@ -44,6 +45,22 @@ public class BookTripDto {
         this.cvc = cvc;
         this.cardNumber = cardNumber;
         this.price = price;
+    }
+
+    public BookTripDto(String date, int dutyId, int stateOriginId, int stateDestinyId, int originId, int destinyId, int seats, int tripId, String seatsSelected, String cvc, String cardNumber, double price, int clientId) {
+        this.date = date;
+        this.dutyId = dutyId;
+        this.stateOriginId = stateOriginId;
+        this.stateDestinyId = stateDestinyId;
+        this.originId = originId;
+        this.destinyId = destinyId;
+        this.seats = seats;
+        this.tripId = tripId;
+        this.seatsSelected = seatsSelected;
+        this.cvc = cvc;
+        this.cardNumber = cardNumber;
+        this.price = price;
+        this.clientId = clientId;
     }
 
     public String getDate() {
@@ -142,6 +159,14 @@ public class BookTripDto {
         this.price = price;
     }
 
+    public int getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(int clientId) {
+        this.clientId = clientId;
+    }
+
     @Override
     public String toString() {
         return "BookTripDto{" +
@@ -157,6 +182,7 @@ public class BookTripDto {
                 ", cvc='" + cvc + '\'' +
                 ", cardNumber='" + cardNumber + '\'' +
                 ", price=" + price +
+                ", clientId=" + clientId +
                 '}';
     }
 

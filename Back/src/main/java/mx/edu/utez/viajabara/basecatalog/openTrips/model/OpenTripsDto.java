@@ -6,6 +6,9 @@ import mx.edu.utez.viajabara.utils.validator.CheckDateFormat;
 import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.Column;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.text.SimpleDateFormat;
@@ -29,6 +32,9 @@ public class OpenTripsDto {
     @NotNull(groups = {Register.class,Modify.class})
     private String seatsDistribution;
 
+    private Date createdAt;
+
+
     public OpenTripsDto() {
     }
 
@@ -38,6 +44,15 @@ public class OpenTripsDto {
         this.startDate = startDate;
         this.status = status;
         this.enableSeats = enableSeats;
+    }
+
+    public OpenTripsDto(Long id, Trip trip, String startDate, int status, int enableSeats, Date createdAt) {
+        this.id = id;
+        this.trip = trip;
+        this.startDate = startDate;
+        this.status = status;
+        this.enableSeats = enableSeats;
+        this.createdAt = createdAt;
     }
 
     public Long getId() {
@@ -58,7 +73,7 @@ public class OpenTripsDto {
 
     public Date getStartDate() {
         try {
-            return new SimpleDateFormat("yyyy/MM/dd").parse(String.valueOf(startDate));
+            return new SimpleDateFormat("yyyy-MM-dd").parse(String.valueOf(startDate));
         } catch (Exception e) {
             return null;
         }
@@ -100,6 +115,14 @@ public class OpenTripsDto {
         this.seatsDistribution = seatsDistribution;
     }
 
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public interface Register{}
     public interface Modify{}
     public interface ChangeStatus{}
@@ -112,8 +135,7 @@ public class OpenTripsDto {
                 ", startDate='" + startDate + '\'' +
                 ", status=" + status +
                 ", enableSeats=" + enableSeats +
-                ", seatingSales=" + seatingSales +
-                ", seatsDistribution='" + seatsDistribution + '\'' +
+                ", createdAt=" + createdAt +
                 '}';
     }
 }

@@ -195,6 +195,24 @@ void showModalInfo(BuildContext context, TripDto tripDto) {
                             ),
                           ],
                         ),
+                        const SizedBox(height: 15),
+                        Row(
+                          children: [
+                            const Icon(
+                              CupertinoIcons.money_dollar_circle,
+                              color: ColorsApp.text,
+                              size: 35,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              'Precio individual: ${Utils().formatRoutePrice(tripDto.customPrice!)}',
+                              style: const TextStyle(
+                                color: ColorsApp.text,
+                                fontSize: 16.0,
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ),

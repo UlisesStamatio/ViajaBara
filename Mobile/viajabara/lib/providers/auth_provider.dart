@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:viajabara/config/dio/module_network.dart';
@@ -26,7 +25,6 @@ class AuthProvider {
     var dataJson = jsonEncode({'email': email, 'password': password});
     try {
       final response = await dio.post('auth/login', data: dataJson);
-      await getVisualConfigurations();
       return _parseLoginResponse(response);
     } on DioException catch (e) {
       return _handleLoginError(e);
@@ -177,7 +175,7 @@ class AuthProvider {
     try {
       SharedPreferences prefs = await _prefs;
 
-      final response = await dio.get('visual-config');
+      final response = await dio.get('visual-config/');
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseBody =

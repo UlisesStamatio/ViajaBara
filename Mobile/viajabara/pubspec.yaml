@@ -15,23 +15,26 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.3
+  flutter_dotenv: ^5.1.0
   flutter_launcher_icons: ^0.13.1
   flutter_localizations:
     sdk: flutter
   flutter_rating_bar: ^4.0.1
+  flutter_stripe: 9.5.0+1
   flutter_svg: ^1.0.2
   font_awesome_flutter: ^10.6.0
   geolocator: ^10.1.0
   google_maps_flutter: ^2.5.0
   intl: ^0.18.1
+  jdenticon_dart: ^2.0.0
   json_annotation: ^4.8.1
   json_serializable: ^6.7.1
   lottie: ^2.7.0
   permission_handler: ^11.0.1
+  quickalert: ^1.0.2
+  razorpay_flutter: ^1.3.5
   shared_preferences: ^2.2.2
   sliding_up_panel: ^2.0.0+1
-  jdenticon_dart: ^2.0.0 
-  quickalert: ^1.0.2
 
 dev_dependencies:
   build_runner: ^2.1.5

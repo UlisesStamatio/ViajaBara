@@ -96,6 +96,33 @@ public class OpenTripsController {
         return service.save(dto);
     }
 
+    @PostMapping("/save-seating-sales")
+    @Secured({VIAJES_ABIERTOS})
+    @ApiOperation(
+            value = "Registra una reserva v2",
+            notes = "{\n" +
+                    "  \"duty\": {\n" +
+                    "    \"id\": 1\n" +
+                    "  },\n" +
+                    "  \"end_latitude\": \"aaaaa\",\n" +
+                    "  \"end_longitude\": \"bbbbb\",\n" +
+                    "  \"start_latitude\": \"ccccc\",\n" +
+                    "  \"start_longitude\": \"dddddd\",\n" +
+                    "  \"stopOvers\": [\n" +
+                    "    {\n" +
+                    "      \"latitude\": \"eeeee\",\n" +
+                    "      \"longitude\": \"fffff\",\n" +
+                    "      \"sequence\": 1,\n" +
+                    "      \"status\": true\n" +
+                    "    }\n" +
+                    "  ]\n" +
+                    "}"
+    )
+    public ResponseEntity<Object> saveBook( @RequestBody BookTripDto dto) throws SQLException {
+        System.out.println(dto);
+        return service.saveBook(dto);
+    }
+
     @PutMapping("")
     @Secured({VIAJES_ABIERTOS})
     @ApiOperation(

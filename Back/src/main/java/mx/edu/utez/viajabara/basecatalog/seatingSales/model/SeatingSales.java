@@ -25,7 +25,7 @@ public class SeatingSales {
     @JoinColumn(name = "id_end_address")
     private Address endAddress;
 
-    @Column(name = "cost", columnDefinition = "FLOAT(5,2)")
+    @Column(name = "cost", columnDefinition = "FLOAT(10,2)")
     private double cost;
 
     @ManyToOne
@@ -38,8 +38,7 @@ public class SeatingSales {
     @Column(name = "checked", columnDefinition = "INT(1)")
     private int checked;
 
-    @Column(name = "seats_selected", columnDefinition = "json")
-    @Type(type = "json")
+    @Column(name = "seats_selected", columnDefinition = "VARCHAR(255)")
     private String seatsSelected;
 
     @ManyToOne
@@ -140,5 +139,13 @@ public class SeatingSales {
 
     public void setChecked(int checked) {
         this.checked = checked;
+    }
+
+    public int getSeating() {
+        return seating;
+    }
+
+    public void setSeating(int seating) {
+        this.seating = seating;
     }
 }

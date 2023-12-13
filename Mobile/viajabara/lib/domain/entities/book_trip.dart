@@ -16,6 +16,7 @@ class BookTrip {
   double? price;
   String? cardNumber;
   String? cvc;
+  int? clientId;
 
   BookTrip({
     this.date,
@@ -30,6 +31,7 @@ class BookTrip {
     this.price,
     this.cardNumber,
     this.cvc,
+    this.clientId,
   });
 
   @override
@@ -46,7 +48,8 @@ class BookTrip {
         'seatsSelected: $seatsSelected, '
         'price: $price, '
         'cardNumber: $cardNumber, '
-        'cvc: $cvc}';
+        'cvc: $cvc, '
+        'clientId: $clientId}';
   }
 
   factory BookTrip.fromJson(Map<String, dynamic> json) =>

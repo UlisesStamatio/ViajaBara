@@ -107,7 +107,6 @@ public class TripService {
     }
     @Transactional(readOnly = true)
     public ResponseEntity<Object> getStatesForFiltersByDate(String date, boolean onlyStatesAndAddresses) throws ParseException {
-        System.out.println("dto " + date);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date providedDate = dateFormat.parse(date);
         TimeZone timeZone = TimeZone.getTimeZone("UTC-6");
@@ -115,18 +114,12 @@ public class TripService {
         calendar.setTime(providedDate);
         int dayOfWeekInteger = calendar.get(Calendar.DAY_OF_WEEK);
         List<Trip> trips = repository.findTripsAvailableInDay(Integer.toString(dayOfWeekInteger));
-        for (Trip trip: trips
-             ) {
-            System.out.println(trip);
-        }
 
         int dayOfYearInteger = calendar.get(Calendar.DAY_OF_YEAR);
         List<Trip> filteredTrips = getFilteredTrips(trips,dayOfYearInteger);
-        System.out.println("filteredTrips " + filteredTrips);
 
         if (onlyStatesAndAddresses ) {
             List<StateBookTripDto> statesProcessed = processTrips(filteredTrips);
-            System.out.println("statesProcessed");
             return new ResponseEntity<>(new Message(statesProcessed, "Listado de viajes activos", TypesResponse.SUCCESS), HttpStatus.OK);
         }
         return new ResponseEntity<>(new Message(filteredTrips, "Listado de viajes activos", TypesResponse.SUCCESS), HttpStatus.OK);
