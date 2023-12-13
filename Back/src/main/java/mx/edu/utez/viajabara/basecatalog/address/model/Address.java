@@ -1,8 +1,6 @@
 package mx.edu.utez.viajabara.basecatalog.address.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import mx.edu.utez.viajabara.basecatalog.route.model.Route;
 import mx.edu.utez.viajabara.basecatalog.seatingSales.model.SeatingSales;
 import mx.edu.utez.viajabara.basecatalog.state.model.State;
 import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOver;

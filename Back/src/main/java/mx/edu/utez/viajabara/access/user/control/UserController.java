@@ -6,7 +6,6 @@ import mx.edu.utez.viajabara.access.privilege.control.PrivilegeService;
 import mx.edu.utez.viajabara.access.role.control.RoleService;
 import mx.edu.utez.viajabara.access.user.model.UserDto;
 import mx.edu.utez.viajabara.utils.entity.Message;
-import mx.edu.utez.viajabara.utils.entity.PaginationDto;
 import mx.edu.utez.viajabara.utils.entity.TypesResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

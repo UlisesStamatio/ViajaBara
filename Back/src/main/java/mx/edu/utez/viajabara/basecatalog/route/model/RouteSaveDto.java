@@ -1,14 +1,9 @@
 package mx.edu.utez.viajabara.basecatalog.route.model;
 
-import mx.edu.utez.viajabara.basecatalog.address.model.AddressDto;
-import mx.edu.utez.viajabara.basecatalog.address.model.AddressSaveDto;
-import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOverDto;
 import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOverSaveDto;
-
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 import java.util.List;
 
 public class RouteSaveDto {

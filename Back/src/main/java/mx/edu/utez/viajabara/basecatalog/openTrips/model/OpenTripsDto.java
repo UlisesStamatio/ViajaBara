@@ -3,12 +3,7 @@ package mx.edu.utez.viajabara.basecatalog.openTrips.model;
 import mx.edu.utez.viajabara.basecatalog.seatingSales.model.SeatingSales;
 import mx.edu.utez.viajabara.basecatalog.trip.model.Trip;
 import mx.edu.utez.viajabara.utils.validator.CheckDateFormat;
-import org.hibernate.annotations.Type;
 import org.springframework.format.annotation.DateTimeFormat;
-
-import javax.persistence.Column;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import java.text.SimpleDateFormat;
