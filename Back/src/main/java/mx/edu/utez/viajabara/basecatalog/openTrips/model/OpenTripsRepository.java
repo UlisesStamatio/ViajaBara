@@ -24,6 +24,6 @@ public interface OpenTripsRepository extends JpaRepository<OpenTrips,Long> {
     List<OpenTrips> findOpenTripsByTripIdNotInProgress(@Param("tripId") Long tripId);
 
 
-    @Query(value = "SELECT COUNT(o.id) from open_trips o inner join trips join trips t on o.trip_id = t.id WHERE t.driver_id = ?1",nativeQuery = true)
+    @Query(value = "SELECT COUNT(o.id) FROM open_trips o INNER JOIN trips t ON o.trip_id = t.id WHERE t.driver_id = ?1 AND o.status = 3",nativeQuery = true)
     long countTripsByDriver(long driverId);
 }
