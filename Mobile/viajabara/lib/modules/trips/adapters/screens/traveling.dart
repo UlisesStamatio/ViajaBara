@@ -64,7 +64,7 @@ class _TravelingState extends State<Traveling> {
 
   Widget _buildSlidingUpPanelWithMap() {
     double screenHeight = MediaQuery.of(context).size.height;
-    double panelMaxHeight = screenHeight * 0.5;
+    double panelMaxHeight = screenHeight * 0.43;
     BorderRadiusGeometry radius = const BorderRadius.only(
       topLeft: Radius.circular(24.0),
       topRight: Radius.circular(24.0),

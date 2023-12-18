@@ -45,25 +45,14 @@ class _TravelingState extends State<TravelingUser> {
         ),
       ),
       body: SafeArea(
-        child: Stack(
-          fit: StackFit.expand,
-          children: <Widget>[
-            SvgPicture.asset(
-              StuffApp.bgGeneral,
-              fit: BoxFit.cover,
-            ),
-            SingleChildScrollView(child: BlocBuilder<GpsBloc, GpsState>(
-              builder: (context, state) {
-                print('state $state');
-
-                return state.isAllGranted
-                    ? MapScreenUser( trip: widget.trip,)
-                    : const GpsAccessScreen();
-              },
-            )
-                // child: CheckPermissionLocalization(),
-                ),
-          ],
+        child: BlocBuilder<GpsBloc, GpsState>(
+          builder: (context, state) {
+            return state.isAllGranted
+                ? MapScreenUser(
+                    trip: widget.trip,
+                  )
+                : const GpsAccessScreen();
+          },
         ),
       ),
     );

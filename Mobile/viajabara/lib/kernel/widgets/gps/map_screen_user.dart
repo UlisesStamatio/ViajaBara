@@ -126,99 +126,59 @@ class _MapScreenState extends State<MapScreenUser> {
       final CameraPosition initialCameraPosition =
           CameraPosition(target: state.lastKnownLocation!);
 
-      return SizedBox(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              backgroundColor: ColorsApp.whiteColor,
-              expandedHeight: 90, // Ajusta la altura deseada aquí
-              pinned: true, // Mantener el SliverAppBar en la parte superior
-              collapsedHeight: 90,
-              flexibleSpace: Container(
-                padding: const EdgeInsets.all(10),
-                child: Column(
+      return Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "Conductor: ${widget.trip.nameDriver}",
+              style: const TextStyle(fontSize: 18.0, color: ColorsApp.text),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  _showModalInfo(context, widget.trip);
+                },
+                style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all(ColorsApp.primayColor)),
+                child: const Row(
                   children: [
-                    Text(
-                      "Conductor: ${widget.trip.nameDriver}",
-                      style: const TextStyle(
-                          fontSize: 15.0, color: ColorsApp.text),
+                    Icon(
+                      Icons.remove_red_eye_outlined,
+                      size: 18,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        // ElevatedButton(
-                        //   onPressed: () {},
-                        //   style: ButtonStyle(
-                        //       backgroundColor: MaterialStateProperty.all(
-                        //           ColorsApp.primayColor)),
-                        //   child: const Row(
-                        //     children: [
-                        //       Icon(
-                        //         CupertinoIcons.arrowshape_turn_up_right_fill,
-                        //         size: 18,
-                        //       ),
-                        //       SizedBox(
-                        //         width: 10,
-                        //       ),
-                        //       Text(
-                        //         'Ubicacion',
-                        //         style: TextStyle(fontSize: 15),
-                        //       )
-                        //     ],
-                        //   ),
-                        // ),
-                        ElevatedButton(
-                          onPressed: () {
-                            _showModalInfo(context, widget.trip);
-                          },
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(
-                                  ColorsApp.primayColor)),
-                          child: const Row(
-                            children: [
-                              Icon(
-                                Icons.remove_red_eye_outlined,
-                                size: 18,
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                'Detalles',
-                                style: TextStyle(fontSize: 15),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      'Detalles',
+                      style: TextStyle(fontSize: 15),
                     )
                   ],
                 ),
               ),
+            ],
+          ),
+          Expanded(
+            child: GoogleMap(
+              onMapCreated: (GoogleMapController controller) {
+                mapController = controller;
+                centerCameraOnPolyline();
+              },
+              initialCameraPosition: initialCameraPosition,
+              polylines: _polylines,
+              markers: _markers,
+              compassEnabled: false,
+              myLocationEnabled: true,
+              zoomControlsEnabled: false,
+              myLocationButtonEnabled: false,
             ),
-            SliverToBoxAdapter(
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                child: GoogleMap(
-                  onMapCreated: (GoogleMapController controller) {
-                    mapController = controller;
-                    centerCameraOnPolyline();
-                  },
-                  initialCameraPosition: initialCameraPosition,
-                  polylines: _polylines,
-                  markers: _markers,
-                  compassEnabled: false,
-                  myLocationEnabled: true,
-                  zoomControlsEnabled: false,
-                  myLocationButtonEnabled: false,
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       );
     });
   }
@@ -274,7 +234,7 @@ class _MapScreenState extends State<MapScreenUser> {
     return points;
   }
 
-    void _showModalInfo(BuildContext context, HistoryClientTrip trip) {
+  void _showModalInfo(BuildContext context, HistoryClientTrip trip) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,

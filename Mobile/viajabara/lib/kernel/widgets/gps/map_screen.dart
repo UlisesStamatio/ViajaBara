@@ -50,7 +50,8 @@ class _MapScreenState extends State<MapScreen> {
           double.parse(stopOver.address?.latitude ?? '0'),
           double.parse(stopOver.address?.longitude ?? '0'),
         );
-        _addMarker(stopOverPoint, 'stopOver_${stopOver.id}','Parada: ${stopOver.sequence} + ${stopOver.address?.description!}');
+        _addMarker(stopOverPoint, 'stopOver_${stopOver.id}',
+            'Parada: ${stopOver.sequence} + ${stopOver.address?.description!}');
       }
       setState(() {
         _polylines.add(polyline);
@@ -79,7 +80,6 @@ class _MapScreenState extends State<MapScreen> {
     return LatLngBounds(southwest: LatLng(y0, x0), northeast: LatLng(y1, x1));
   }
 
-  // Método para centrar la cámara en la polilínea
   void centerCameraOnPolyline() {
     if (_polylines.isNotEmpty && mapController != null) {
       var points = _polylines.first.points;
@@ -118,87 +118,65 @@ class _MapScreenState extends State<MapScreen> {
       final CameraPosition initialCameraPosition =
           CameraPosition(target: state.lastKnownLocation!);
 
-      return SizedBox(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              backgroundColor: ColorsApp.whiteColor,
-              pinned: true,
-              floating: false,
-              flexibleSpace: Container(
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+      return Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Salida: ${widget.trip.trip?.startTime}',
-                          style: const TextStyle(
-                              fontSize: 15.0, color: ColorsApp.text),
-                        ),
-                        Text(
-                          'Llegada: ${Utils().sumarTiempo(widget.trip.trip!.startTime!, widget.trip.trip!.time!)}',
-                          style: const TextStyle(
-                              fontSize: 15.0, color: ColorsApp.text),
-                        )
-                      ],
+                    Text(
+                      'Salida: ${widget.trip.trip?.startTime}',
+                      style: const TextStyle(
+                          fontSize: 15.0, color: ColorsApp.text),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  Passengers(trip: widget.trip)),
-                        );
-                      },
-                      style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(ColorsApp.primayColor)),
-                      child: const Row(
-                        children: [
-                          Icon(
-                            Icons.people,
-                            size: 18,
-                          ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                            'Pasajeros',
-                            style: TextStyle(fontSize: 15),
-                          )
-                        ],
-                      ),
+                    Text(
+                      'Llegada: ${Utils().sumarTiempo(widget.trip.trip!.startTime!, widget.trip.trip!.time!)}',
+                      style: const TextStyle(
+                          fontSize: 15.0, color: ColorsApp.text),
                     )
                   ],
                 ),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                child: GoogleMap(
-                  onMapCreated: (GoogleMapController controller) {
-                    mapController = controller;
-                    centerCameraOnPolyline();
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          builder: (context) => Passengers(trip: widget.trip)),
+                    );
                   },
-                  initialCameraPosition: initialCameraPosition,
-                  polylines: _polylines,
-                  markers: _markers,
-                  compassEnabled: false,
-                  myLocationEnabled: true,
-                  zoomControlsEnabled: true,
-                  myLocationButtonEnabled: false,
-                ),
-              ),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all(ColorsApp.primayColor),
+                  ),
+                  child: const Row(
+                    children: [
+                      Icon(Icons.people, size: 18),
+                      SizedBox(width: 10),
+                      Text('Pasajeros', style: TextStyle(fontSize: 15)),
+                    ],
+                  ),
+                )
+              ],
             ),
-          ],
-        ),
+          ),
+          Expanded(
+            child: GoogleMap(
+              mapType: MapType.normal,
+              initialCameraPosition: initialCameraPosition,
+              myLocationEnabled: true,
+              myLocationButtonEnabled: false,
+              zoomControlsEnabled: false,
+              polylines: _polylines,
+              markers: _markers,
+              onMapCreated: (GoogleMapController controller) {
+                mapController = controller;
+              },
+            ),
+          ),
+        ],
       );
     });
   }
@@ -207,7 +185,7 @@ class _MapScreenState extends State<MapScreen> {
     Dio dio = Dio();
 
     if (stopOvers.length < 2) {
-      return []; // Necesitas al menos un inicio y un final
+      return [];
     }
     LatLng start = LatLng(
       double.parse(stopOvers.first.address?.latitude ?? '0'),
@@ -230,7 +208,6 @@ class _MapScreenState extends State<MapScreen> {
 
     String url =
         "https://maps.googleapis.com/maps/api/directions/json?origin=${start.latitude},${start.longitude}&destination=${end.latitude},${end.longitude}&waypoints=$waypoints&key=AIzaSyB0kxKgHrX2s6oZWkAQ1Im28tkNHbeLXxQ";
-    print("URL de la API: $url");
     try {
       Response response = await dio.get(url);
       List<LatLng> route = [];
@@ -242,7 +219,7 @@ class _MapScreenState extends State<MapScreen> {
       return route;
     } catch (e) {
       print(e);
-      return []; // Retorna una lista vacía en caso de error
+      return [];
     }
   }
 
