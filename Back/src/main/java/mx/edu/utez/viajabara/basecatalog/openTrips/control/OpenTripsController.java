@@ -38,7 +38,7 @@ public class OpenTripsController {
         return service.getOne(dto.getId());
     }
 
-    @PostMapping("/find-open-trip-by-trip")
+    /*@PostMapping("/find-open-trip-by-trip")
     @Secured({VIAJES_ABIERTOS})
     @ApiOperation(
             value = "Obtiene un registro por trip_id y fecha",
@@ -56,7 +56,7 @@ public class OpenTripsController {
     )
     public ResponseEntity<Object> getSeatsDistributionOfSpecificTravel( @RequestBody BookTripDto bookTripDto) {
         return service.getSeatsDistributionOfSpecificTravel(bookTripDto);
-    }
+    }*/
 
     @GetMapping("/all")
     @Secured({VIAJES_ABIERTOS})
@@ -96,7 +96,7 @@ public class OpenTripsController {
         return service.save(dto);
     }
 
-    @PostMapping("/save-seating-sales")
+    /*@PostMapping("/save-seating-sales")
     @Secured({VIAJES_ABIERTOS})
     @ApiOperation(
             value = "Registra una reserva v2",
@@ -120,9 +120,9 @@ public class OpenTripsController {
     )
     public ResponseEntity<Object> saveBook( @RequestBody BookTripDto dto) throws SQLException {
         return service.saveBook(dto);
-    }
+    }*/
 
-    @PutMapping("")
+   /* @PutMapping("")
     @Secured({VIAJES_ABIERTOS})
     @ApiOperation(
             value = "Actualiza una ruta",
@@ -146,7 +146,7 @@ public class OpenTripsController {
     )
     public ResponseEntity<Object> update(@Validated(OpenTripsDto.Modify.class) @RequestBody OpenTripsDto dto) throws SQLException {
         return service.update(dto);
-    }
+    }*/
 
     @PutMapping("/change-status")
     @Secured({VIAJES_ABIERTOS})

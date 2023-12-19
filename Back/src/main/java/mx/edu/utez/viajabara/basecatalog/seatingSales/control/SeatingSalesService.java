@@ -45,8 +45,8 @@ public class SeatingSalesService {
         List<SeatingSales> seatingSalesList = repository.findAll();
         List<SeatingSales> response = new ArrayList<>();
         for (SeatingSales seatingSales:seatingSalesList) {
-            seatingSales.getOpenTrips().getTrip().getDriver().setProfile(null);
-            seatingSales.getOpenTrips().getTrip().getBus().setImage(null);
+            seatingSales.getOpenTrips().getSchedule().getTrip().getDriver().setProfile(null);
+            seatingSales.getOpenTrips().getSchedule().getTrip().getBus().setImage(null);
             seatingSales.getClient().setProfile(null);
             response.add(seatingSales);
         }
@@ -63,7 +63,7 @@ public class SeatingSalesService {
         List<SeatingSales> response = new ArrayList<>();
         for (SeatingSales seatingSales:seatingSalesList) {
             //seatingSales.getOpenTrips().getTrip().getDriver().setProfile(null);
-            seatingSales.getOpenTrips().getTrip().getBus().setImage(null);
+            seatingSales.getOpenTrips().getSchedule().getTrip().getBus().setImage(null);
             seatingSales.getClient().setProfile(null);
             response.add(seatingSales);
         }
@@ -79,8 +79,8 @@ public class SeatingSalesService {
         List<SeatingSales> seatingSalesList = repository.findAllByOpenTrips(optional.get());
         List<SeatingSales> response = new ArrayList<>();
         for (SeatingSales seatingSales:seatingSalesList) {
-            seatingSales.getOpenTrips().getTrip().setDriver(null);
-            seatingSales.getOpenTrips().getTrip().setBus(null);
+            seatingSales.getOpenTrips().getSchedule().getTrip().setDriver(null);
+            seatingSales.getOpenTrips().getSchedule().getTrip().setBus(null);
             //seatingSales.getClient().setProfile(null);
             response.add(seatingSales);
         }

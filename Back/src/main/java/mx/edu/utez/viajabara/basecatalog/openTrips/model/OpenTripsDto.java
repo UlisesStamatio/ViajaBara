@@ -2,6 +2,7 @@ package mx.edu.utez.viajabara.basecatalog.openTrips.model;
 
 import mx.edu.utez.viajabara.basecatalog.seatingSales.model.SeatingSales;
 import mx.edu.utez.viajabara.basecatalog.trip.model.Trip;
+import mx.edu.utez.viajabara.basecatalog.tripSchedule.model.TripSchedule;
 import mx.edu.utez.viajabara.utils.validator.CheckDateFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 import javax.validation.constraints.NotNull;
@@ -14,11 +15,9 @@ public class OpenTripsDto {
     @NotNull(groups = {Modify.class,ChangeStatus.class})
     private Long id;
     @NotNull(groups = {Register.class,Modify.class})
-    private Trip trip;
-    @CheckDateFormat(pattern = "yyyy/MM/dd",groups = {Register.class,Modify.class})
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    private String startDate;
-
+    private Long idTrip;
+    @NotNull(groups = {Register.class,Modify.class})
+    private List<TripSchedule> schedules;
     @PositiveOrZero(groups = {ChangeStatus.class})
     private int status;
     private int enableSeats;
@@ -33,18 +32,16 @@ public class OpenTripsDto {
     public OpenTripsDto() {
     }
 
-    public OpenTripsDto(Long id, Trip trip, String startDate, int status, int enableSeats) {
+    public OpenTripsDto(Long id, List<TripSchedule> schedules, int status, int enableSeats) {
         this.id = id;
-        this.trip = trip;
-        this.startDate = startDate;
+        this.schedules = schedules;
         this.status = status;
         this.enableSeats = enableSeats;
     }
 
-    public OpenTripsDto(Long id, Trip trip, String startDate, int status, int enableSeats, Date createdAt) {
+    public OpenTripsDto(Long id, List<TripSchedule> schedules, int status, int enableSeats, Date createdAt) {
         this.id = id;
-        this.trip = trip;
-        this.startDate = startDate;
+        this.schedules = schedules;
         this.status = status;
         this.enableSeats = enableSeats;
         this.createdAt = createdAt;
@@ -58,25 +55,15 @@ public class OpenTripsDto {
         this.id = id;
     }
 
-    public Trip getTrip() {
-        return trip;
-    }
 
-    public void setTrip(Trip trip) {
-        this.trip = trip;
-    }
-
-    public Date getStartDate() {
+/*    public Date getStartDate() {
         try {
             return new SimpleDateFormat("yyyy-MM-dd").parse(String.valueOf(startDate));
         } catch (Exception e) {
             return null;
         }
-    }
+    }*/
 
-    public void setStartDate(String startDate) {
-        this.startDate = startDate;
-    }
 
     public int getStatus() {
         return status;
@@ -118,6 +105,23 @@ public class OpenTripsDto {
         this.createdAt = createdAt;
     }
 
+
+    public List<TripSchedule> getSchedule() {
+        return schedules;
+    }
+
+    public void setSchedule(List<TripSchedule> schedules) {
+        this.schedules = schedules;
+    }
+
+    public Long getIdTrip() {
+        return idTrip;
+    }
+
+    public void setIdTrip(Long idTrip) {
+        this.idTrip = idTrip;
+    }
+
     public interface Register{}
     public interface Modify{}
     public interface ChangeStatus{}
@@ -126,8 +130,7 @@ public class OpenTripsDto {
     public String toString() {
         return "OpenTripsDto{" +
                 "id=" + id +
-                ", trip=" + trip +
-                ", startDate='" + startDate + '\'' +
+                ", tripSchedules=" + schedules +
                 ", status=" + status +
                 ", enableSeats=" + enableSeats +
                 ", createdAt=" + createdAt +

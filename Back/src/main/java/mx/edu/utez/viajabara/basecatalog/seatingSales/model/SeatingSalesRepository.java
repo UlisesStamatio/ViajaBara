@@ -12,7 +12,7 @@ public interface SeatingSalesRepository extends JpaRepository<SeatingSales,Long>
     List<SeatingSales> findAllByClient(User user);
     List<SeatingSales> findAllByOpenTrips(OpenTrips openTrips);
 
-    @Query("SELECT ss.seatsSelected " +
+    /*@Query("SELECT ss.seatsSelected " +
             "FROM SeatingSales ss " +
             "JOIN ss.openTrips ot " +
             "WHERE ot.trip.id = :tripId " +
@@ -24,5 +24,5 @@ public interface SeatingSalesRepository extends JpaRepository<SeatingSales,Long>
             @Param("startDate") String startDate,
             @Param("startAddressId") Long startAddressId,
             @Param("endAddressId") Long endAddressId
-    );
+    );*/
 }

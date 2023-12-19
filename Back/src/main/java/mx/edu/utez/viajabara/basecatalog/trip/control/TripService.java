@@ -19,6 +19,9 @@ import mx.edu.utez.viajabara.basecatalog.state.model.State;
 import mx.edu.utez.viajabara.basecatalog.state.model.StateBookTripDto;
 import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOver;
 import mx.edu.utez.viajabara.basecatalog.trip.model.*;
+import mx.edu.utez.viajabara.basecatalog.tripSchedule.control.TripScheduleService;
+import mx.edu.utez.viajabara.basecatalog.tripSchedule.model.TripSchedule;
+import mx.edu.utez.viajabara.basecatalog.tripSchedule.model.TripScheduleRepository;
 import mx.edu.utez.viajabara.basecatalog.way.control.WayService;
 import mx.edu.utez.viajabara.basecatalog.way.model.Way;
 import mx.edu.utez.viajabara.basecatalog.way.model.WayRepository;
@@ -54,8 +57,14 @@ public class TripService {
 
     private final WayRepository wayRepository;
 
+    private final TripScheduleRepository tripScheduleRepository;
+
+    private final TripScheduleService scheduleService;
+
     @Autowired
-    public TripService(TripRepository repository, UserRepository userRepository, BusRepository busRepository, RouteRepository routeRepository, OpenTripsRepository openTripsRepository, WayService wayService, WayRepository wayRepository) {
+    public TripService(TripRepository repository, UserRepository userRepository, BusRepository busRepository, RouteRepository routeRepository,
+                       OpenTripsRepository openTripsRepository, WayService wayService, WayRepository wayRepository, TripScheduleRepository tripScheduleRepository,
+                       TripScheduleService scheduleService ) {
         this.repository = repository;
         this.userRepository = userRepository;
         this.busRepository = busRepository;
@@ -63,6 +72,8 @@ public class TripService {
         this.openTripsRepository = openTripsRepository;
         this.wayService = wayService;
         this.wayRepository = wayRepository;
+        this.tripScheduleRepository = tripScheduleRepository;
+        this.scheduleService = scheduleService;
     }
 
 
@@ -82,7 +93,6 @@ public class TripService {
             tripsDto.setStatus(trip.isStatus());
             tripsDto.setStopovers(trip.getStopovers());
             tripsDto.setTime(trip.getTime());
-            tripsDto.setStartTime(trip.getStartTime());
             tripsDto.setWorkDays(trip.getWorkDays());
             tripsDto.setCreatedAt(trip.getCreatedAt());
 
@@ -92,7 +102,7 @@ public class TripService {
         }
         return new ResponseEntity<>(new Message(response, "Listado de viajes", TypesResponse.SUCCESS), HttpStatus.OK);
     }
-    @Transactional(readOnly = true)
+    /*@Transactional(readOnly = true)
     public ResponseEntity<Object> getStatesForFiltersByDate(String date, boolean onlyStatesAndAddresses) throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date providedDate = dateFormat.parse(date);
@@ -110,7 +120,7 @@ public class TripService {
             return new ResponseEntity<>(new Message(statesProcessed, "Listado de viajes activos", TypesResponse.SUCCESS), HttpStatus.OK);
         }
         return new ResponseEntity<>(new Message(filteredTrips, "Listado de viajes activos", TypesResponse.SUCCESS), HttpStatus.OK);
-    }
+    }*/
     private List<StateBookTripDto> processTrips(List<Trip> trips) {
         Map<Long, StateBookTripDto> stateMap = new HashMap<>();
         Set<Long> uniqueAddresses = new HashSet<>();
@@ -153,7 +163,7 @@ public class TripService {
         return new ArrayList<>(stateMap.values());
     }
 
-    @Transactional(readOnly = true)
+   /* @Transactional(readOnly = true)
     public ResponseEntity<Object> findByFiltersClient(BookTripDto bookTripDto) throws ParseException {
         Message msg = (Message) getStatesForFiltersByDate(bookTripDto.getDate(), false).getBody() ;
         List<Trip> trips = (List<Trip>) msg.getResult();
@@ -190,7 +200,7 @@ public class TripService {
                 })
                 .collect(Collectors.toList());
         return new ResponseEntity<>(new Message(filteredTrips, "Rutas encontradas", TypesResponse.SUCCESS), HttpStatus.OK);
-    }
+    }*/
 
     private List<StopOver> filterStopOvers(List<StopOver> stopOvers, Long originId, Long endId) {
         List<StopOver> filteredStopOvers = new ArrayList<>();
@@ -251,13 +261,13 @@ public class TripService {
             return null;
         }
     }
-    private List<Trip> getFilteredTrips(List<Trip> trips, Integer dayOfYear) {
+   /* private List<Trip> getFilteredTrips(List<Trip> trips, Integer dayOfYear) {
         return trips.stream()
                 .filter(trip ->isTripAvailable(trip, dayOfYear))
                 .collect(Collectors.toList());
-    }
+    }*/
 
-    private boolean isTripAvailable(Trip trip, Integer dayOfYearSelected) {
+    /*private boolean isTripAvailable(Trip trip, Integer dayOfYearSelected) {
         Date now = new Date();
 
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
@@ -275,7 +285,7 @@ public class TripService {
         } else {
            return dayOfYearSelected > dayOfYearToday;
         }
-    }
+    }*/
 
     private Date getCurrentFormattedTime() {
         Date now = new Date();
@@ -284,11 +294,11 @@ public class TripService {
         return parseDate(sdf.format(now));
     }
 
-    private Date getFormattedTripStartTime(Trip trip) {
+   /* private Date getFormattedTripStartTime(Trip trip) {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         sdf.setTimeZone(TimeZone.getTimeZone("America/Mexico_City"));
         return parseDate(sdf.format(trip.getStartTime()));
-    }
+    }*/
 
     @Transactional(readOnly = true)
     public ResponseEntity<Object> findAllEnabled() {
@@ -305,7 +315,6 @@ public class TripService {
             tripsDto.setStatus(trip.isStatus());
             tripsDto.setStopovers(trip.getStopovers());
             tripsDto.setTime(trip.getTime());
-            tripsDto.setStartTime(trip.getStartTime());
             tripsDto.setWorkDays(trip.getWorkDays());
             tripsDto.setCreatedAt(trip.getCreatedAt());
 
@@ -335,7 +344,6 @@ public class TripService {
         tripsDto.setStatus(trip.isStatus());
         tripsDto.setStopovers(trip.getStopovers());
         tripsDto.setTime(trip.getTime());
-        tripsDto.setStartTime(trip.getStartTime());
         tripsDto.setWorkDays(trip.getWorkDays());
         tripsDto.setCreatedAt(trip.getCreatedAt());
         List<Way> ways = wayRepository.findByTripId(trip.getId());
@@ -355,7 +363,7 @@ public class TripService {
             return new ResponseEntity<>(new Message("No se encontró el conductor", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
 
-        Trip trip = new Trip(driver.get(), bus.get(),true, dto.getMeters(), dto.getTime(), dto.getStartTime(), dto.getWorkDays(), dto.getStopovers());
+        Trip trip = new Trip(driver.get(), bus.get(),true, dto.getMeters(), dto.getTime(), dto.getWorkDays(), dto.getStopovers());
         trip = repository.saveAndFlush(trip);
         if (trip == null) {
             return new ResponseEntity<>(new Message("No se registró el viaje", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
@@ -376,6 +384,27 @@ public class TripService {
             }
             wayService.save(wayList);
         }
+
+        if(dto.getTripSchedules().size() > 0 ){
+            List<TripSchedule> tripSchedules = new ArrayList<>();
+            for (TripSchedule tripSchedule : dto.getTripSchedules()) {
+                Optional<Trip> tripOptional = repository.findById(trip.getId());
+                if(!tripOptional.isPresent()){
+                    return new ResponseEntity<>(new Message("No se encontró el viaje", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
+                }
+                TripSchedule tripScheduleToSave = new TripSchedule();
+                tripScheduleToSave.setStartDate(tripSchedule.getStartDate());
+                tripScheduleToSave.setEndDate(tripSchedule.getEndDate());
+                tripScheduleToSave.setTrip(tripOptional.get());
+                tripScheduleToSave.setStatus(true);
+
+                tripSchedules.add(tripScheduleToSave);
+            }
+            scheduleService.saveAll(tripSchedules);
+        }else{
+            return new ResponseEntity<>(new Message("No se han agregado horarios", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
+        }
+
         return new ResponseEntity<>(new Message(trip, "Se registró el viaje", TypesResponse.SUCCESS), HttpStatus.OK);
     }
 
@@ -411,6 +440,15 @@ public class TripService {
             }
         }
 
+        List<TripSchedule> schedules = optionalTrip.get().getTripSchedules();
+        if(schedules.size() > 0){
+            for (TripSchedule tripSchedule : schedules){
+                tripSchedule.setTrip(null);
+                tripScheduleRepository.saveAndFlush(tripSchedule);
+                tripScheduleRepository.delete(tripSchedule);
+            }
+        }
+
         if(dto.getWays().size() > 0 ){
             List<Way> wayList = new ArrayList<>();
             for (Way way : dto.getWays()) {
@@ -427,10 +465,29 @@ public class TripService {
             wayService.save(wayList);
         }
 
+        if(dto.getTripSchedules().size() > 0 ){
+            List<TripSchedule> tripSchedules = new ArrayList<>();
+            for (TripSchedule tripSchedule : dto.getTripSchedules()) {
+                Optional<Trip> tripOptional = repository.findById(optionalTrip.get().getId());
+                if(!tripOptional.isPresent()){
+                    return new ResponseEntity<>(new Message("No se encontró el viaje", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
+                }
+                TripSchedule tripScheduleToSave = new TripSchedule();
+                tripScheduleToSave.setStartDate(tripSchedule.getStartDate());
+                tripScheduleToSave.setEndDate(tripSchedule.getEndDate());
+                tripScheduleToSave.setTrip(tripOptional.get());
+                tripScheduleToSave.setStatus(true);
+
+                tripSchedules.add(tripScheduleToSave);
+            }
+            scheduleService.saveAll(tripSchedules);
+        }else{
+            return new ResponseEntity<>(new Message("No se han agregado horarios", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
+        }
+
         Trip trip = optionalTrip.get();
         trip.setBus(bus.get());
         trip.setDriver(driver.get());
-        trip.setStartTime(dto.getStartTime());
         trip.setWorkDays(dto.getWorkDays());
         trip.setTime(dto.getTime());
         trip.setMeters(dto.getMeters());

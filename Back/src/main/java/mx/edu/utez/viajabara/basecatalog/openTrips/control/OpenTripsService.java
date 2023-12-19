@@ -13,6 +13,8 @@ import mx.edu.utez.viajabara.basecatalog.seatingSales.model.SeatingSalesReposito
 import mx.edu.utez.viajabara.basecatalog.trip.model.BookTripDto;
 import mx.edu.utez.viajabara.basecatalog.trip.model.Trip;
 import mx.edu.utez.viajabara.basecatalog.trip.model.TripRepository;
+import mx.edu.utez.viajabara.basecatalog.tripSchedule.model.TripSchedule;
+import mx.edu.utez.viajabara.basecatalog.tripSchedule.model.TripScheduleRepository;
 import mx.edu.utez.viajabara.utils.entity.Message;
 import mx.edu.utez.viajabara.utils.entity.TypesResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,15 +41,19 @@ public class OpenTripsService {
     private final TripRepository tripRepository;
     private final BusRepository busRepository;
     private final UserRepository userRepository;
-
     private final SeatingSalesRepository seatingSalesRepository;
+
+    private final TripScheduleRepository tripScheduleRepository;
+
     @Autowired
-    public OpenTripsService(OpenTripsRepository repository, TripRepository tripRepository, BusRepository busRepository, UserRepository userRepository, SeatingSalesRepository seatingSalesRepository) {
+    public OpenTripsService(OpenTripsRepository repository, TripRepository tripRepository, BusRepository busRepository,
+                            UserRepository userRepository, SeatingSalesRepository seatingSalesRepository,TripScheduleRepository tripScheduleRepository ) {
         this.repository = repository;
         this.tripRepository = tripRepository;
         this.busRepository = busRepository;
         this.userRepository = userRepository;
         this.seatingSalesRepository = seatingSalesRepository;
+        this.tripScheduleRepository = tripScheduleRepository;
     }
 
     @Transactional(readOnly = true)
@@ -55,8 +61,8 @@ public class OpenTripsService {
         List<OpenTrips> openTripsList = repository.findAll();
         List<OpenTrips> response = new ArrayList<>();
         for (OpenTrips openTrips:openTripsList) {
-            openTrips.getTrip().getDriver().setProfile(null);
-            openTrips.getTrip().getBus().setImage(null);
+            openTrips.getSchedule().getTrip().getDriver().setProfile(null);
+            openTrips.getSchedule().getTrip().getBus().setImage(null);
             response.add(openTrips);
         }
         return new ResponseEntity<>(new Message(response, "Listado de viajes abiertos", TypesResponse.SUCCESS), HttpStatus.OK);
@@ -67,8 +73,8 @@ public class OpenTripsService {
         List<OpenTrips> openTripsList = repository.searchAllTripsToday(driver_id);
         List<OpenTrips> response = new ArrayList<>();
         for (OpenTrips openTrips:openTripsList) {
-            openTrips.getTrip().getDriver().setProfile(null);
-            openTrips.getTrip().getBus().setImage(null);
+            openTrips.getSchedule().getTrip().getDriver().setProfile(null);
+            openTrips.getSchedule().getTrip().getBus().setImage(null);
             response.add(openTrips);
         }
         return new ResponseEntity<>(new Message(response, "Listado de viajes abiertos para hoy por conductor", TypesResponse.SUCCESS), HttpStatus.OK);
@@ -79,8 +85,8 @@ public class OpenTripsService {
         List<OpenTrips> openTripsList = repository.searchAllTripsHistory(driver_id);
         List<OpenTrips> response = new ArrayList<>();
         for (OpenTrips openTrips:openTripsList) {
-            openTrips.getTrip().getDriver().setProfile(null);
-            openTrips.getTrip().getBus().setImage(null);
+            openTrips.getSchedule().getTrip().getDriver().setProfile(null);
+            openTrips.getSchedule().getTrip().getBus().setImage(null);
             response.add(openTrips);
         }
         return new ResponseEntity<>(new Message(response, "Listado de historial de viajes", TypesResponse.SUCCESS), HttpStatus.OK);
@@ -91,8 +97,8 @@ public class OpenTripsService {
         List<OpenTrips> openTripsList = repository.searchAllByStatusActive(1);
         List<OpenTrips> response = new ArrayList<>();
         for (OpenTrips openTrips:openTripsList) {
-            openTrips.getTrip().getDriver().setProfile(null);
-            openTrips.getTrip().getBus().setImage(null);
+            openTrips.getSchedule().getTrip().getDriver().setProfile(null);
+            openTrips.getSchedule().getTrip().getBus().setImage(null);
             response.add(openTrips);
         }
         return new ResponseEntity<>(new Message(response, "Listado de viajes abiertos en espera", TypesResponse.SUCCESS), HttpStatus.OK);
@@ -101,11 +107,11 @@ public class OpenTripsService {
     @Transactional(readOnly = true)
     public ResponseEntity<Object> getOne(Long id) {
         Optional<OpenTrips> optional = repository.findById(id);
-        optional.get().getTrip().getDriver().setProfile(null);
+        optional.get().getSchedule().getTrip().getDriver().setProfile(null);
         return optional.<ResponseEntity<Object>>map(route -> new ResponseEntity<>(new Message(route, "Viaje abierto encontrado", TypesResponse.SUCCESS), HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(new Message("Viaje abierto no encontrado", TypesResponse.WARNING), HttpStatus.NOT_FOUND));
     }
 
-    @Transactional(readOnly = true)
+  /*  @Transactional(readOnly = true)
     public ResponseEntity<Object> getOpenTripByTripIdAndStartDate(int tripId, String date) {
         OpenTripsDto openTripsDto = repository.findByTripIdAndDate((long) tripId, date);
         return new ResponseEntity<>(new Message(openTripsDto, "Viaje abierto encontrado", TypesResponse.SUCCESS), HttpStatus.OK);
@@ -140,7 +146,7 @@ public class OpenTripsService {
         return new ResponseEntity<>(new Message(combinedSeatsSelected, "Distrbucion de asientos encontrado", TypesResponse.SUCCESS), HttpStatus.OK);
 
     }
-
+*/
     private static List<Integer> convertStringListToIntList(List<String> stringList) {
         List<Integer> intList = new ArrayList<>();
 
@@ -158,22 +164,41 @@ public class OpenTripsService {
     }
     @Transactional(rollbackFor = {SQLException.class})
     public ResponseEntity<Object> save(OpenTripsDto dto) throws SQLException{
+        Optional<Trip> tripOptional = tripRepository.findById(dto.getIdTrip());
 
-        Optional<Trip> optionalTrip = tripRepository.findById(dto.getTrip().getId());
-        if(!optionalTrip.isPresent()){
-            return new ResponseEntity<>(new Message("No se encontró el viaje", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
-        }
-        OpenTrips openTrips = new OpenTrips(optionalTrip.get(),dto.getStartDate(),1);
-        openTrips = repository.saveAndFlush(openTrips);
-
-        if (openTrips == null){
-            return new ResponseEntity<>(new Message("Viaje abierto no registrado", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
+        if(!tripOptional.isPresent()){
+            return new ResponseEntity<>(new Message("No se encontró el viaje", TypesResponse.ERROR), HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity<>(new Message(openTrips, "Viaje abierto registrado", TypesResponse.SUCCESS), HttpStatus.OK);
+        Trip tripSearched = tripOptional.get();
+        if(tripSearched.isOpened()){
+            return new ResponseEntity<>(new Message("El viaje ya se encuentra abierto", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
+        }
+
+
+        if(dto.getSchedule().size() > 0){
+            List<OpenTrips> openTripsCreated = new ArrayList<>();
+            List<TripSchedule> schedules = dto.getSchedule();
+            for ( TripSchedule schedule : schedules) {
+                Optional<TripSchedule> tripScheduleOptional = tripScheduleRepository.findById(schedule.getId());
+                if(!tripScheduleOptional.isPresent()){
+                    return new ResponseEntity<>(new Message("No se encontró el horario", TypesResponse.ERROR), HttpStatus.NOT_FOUND);
+                }
+                OpenTrips openTrips = new OpenTrips(schedule, 1);
+                openTrips = repository.saveAndFlush(openTrips);
+                if (openTrips == null){
+                    return new ResponseEntity<>(new Message("Los viajes abiertos no se han registrado", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
+                }
+                openTripsCreated.add(openTrips);
+            }
+            return new ResponseEntity<>(new Message(openTripsCreated, "Viajes abierto registrados", TypesResponse.SUCCESS), HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(new Message("Viaje abierto no registrado. Agregar horarios.", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
+        }
+
     }
 
-    @Transactional(rollbackFor = {SQLException.class})
+  /*  @Transactional(rollbackFor = {SQLException.class})
     public ResponseEntity<Object> saveBook(BookTripDto dto) throws SQLException{
         OpenTripsDto openTripsDto = repository.findByTripIdAndDate((long) dto.getTripId(), dto.getDate());
         OpenTrips openTrips = new OpenTrips();
@@ -227,7 +252,7 @@ public class OpenTripsService {
         seatingSales = seatingSalesRepository.save(seatingSales);
 
         return new ResponseEntity<>(new Message(null,"Asientos registrados", TypesResponse.SUCCESS), HttpStatus.OK);
-    }
+    }*/
 
     private Date parseDate(String timeString) {
         try {
@@ -239,7 +264,7 @@ public class OpenTripsService {
             return null;
         }
     }
-    @Transactional(rollbackFor = {SQLException.class})
+   /* @Transactional(rollbackFor = {SQLException.class})
     public ResponseEntity<Object> update(OpenTripsDto dto) throws SQLException{
 
         Optional<OpenTrips> optionalOpenTrips = repository.findById(dto.getId());
@@ -263,7 +288,7 @@ public class OpenTripsService {
         }
 
         return new ResponseEntity<>(new Message(openTrips, "Viaje abierto modificado", TypesResponse.SUCCESS), HttpStatus.OK);
-    }
+    }*/
 
     @Transactional(rollbackFor = {SQLException.class})
     public ResponseEntity<Object> changeStatus(OpenTripsDto dto) throws SQLException{

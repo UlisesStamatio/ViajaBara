@@ -2,6 +2,7 @@ package mx.edu.utez.viajabara.basecatalog.trip.model;
 
 import mx.edu.utez.viajabara.access.user.model.User;
 import mx.edu.utez.viajabara.basecatalog.bus.model.Bus;
+import mx.edu.utez.viajabara.basecatalog.tripSchedule.model.TripSchedule;
 import mx.edu.utez.viajabara.basecatalog.way.model.Way;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -32,6 +33,9 @@ public class TripDto {
     private String workDays;
     @NotNull(groups = {Register.class,Modify.class})
     private List<Way> ways;
+
+    @NotNull(groups = {Register.class,Modify.class})
+    private List<TripSchedule> tripSchedules;
 
     private FilterType filterType;
     private Date endTime;
@@ -143,6 +147,13 @@ public class TripDto {
         this.stopovers = stopovers;
     }
 
+    public List<TripSchedule> getTripSchedules() {
+        return tripSchedules;
+    }
+
+    public void setTripSchedules(List<TripSchedule> tripSchedules) {
+        this.tripSchedules = tripSchedules;
+    }
 
     public void setFilterType(FilterType filterType) {
         this.filterType = filterType;
@@ -158,7 +169,6 @@ public class TripDto {
         tripDto.setId(trip.getId());
         tripDto.setDriver(trip.getDriver());
         tripDto.setBus(trip.getBus());
-        tripDto.setStartTime(trip.getStartTime());
         tripDto.setTime(trip.getTime());
         tripDto.setMeters(trip.getMeters());
         tripDto.setWays(trip.getWays());

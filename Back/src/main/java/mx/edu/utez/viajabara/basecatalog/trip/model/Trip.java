@@ -5,6 +5,7 @@ import mx.edu.utez.viajabara.access.user.model.User;
 import mx.edu.utez.viajabara.basecatalog.bus.model.Bus;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTrips;
 import mx.edu.utez.viajabara.basecatalog.route.model.Route;
+import mx.edu.utez.viajabara.basecatalog.tripSchedule.model.TripSchedule;
 import mx.edu.utez.viajabara.basecatalog.way.model.Way;
 import org.hibernate.annotations.Type;
 
@@ -24,9 +25,6 @@ public class Trip {
     @ManyToOne
     private Bus bus;
 
-    @OneToMany(mappedBy = "trip")
-    @JsonIgnore
-    private List<OpenTrips> trips;
 
     @Column(name = "create_at", insertable = false, columnDefinition = "TIMESTAMP DEFAULT NOW()")
     @Temporal(TemporalType.TIMESTAMP)
@@ -41,8 +39,6 @@ public class Trip {
     @Column(name = "distance_time", columnDefinition = "DOUBLE")
     private double time;
 
-    @Column(columnDefinition = "time", name = "start_time")
-    private Date startTime;
     @Column(name = "work_days", columnDefinition = "json")
     @Type(type = "json")
     private String workDays;
@@ -54,6 +50,12 @@ public class Trip {
     @OneToMany(mappedBy = "trip")
     @JsonIgnore
     private List<Way> ways;
+    @OneToMany(mappedBy = "trip")
+    private List<TripSchedule> tripSchedules;
+
+    @Column(name = "opened", columnDefinition = "BOOL DEFAULT FALSE")
+    private boolean opened;
+
 
 
     public Trip() {
@@ -70,13 +72,12 @@ public class Trip {
         this.status = status;
     }
 
-    public Trip(User driver, Bus bus, boolean status, double meters, double time, Date startTime, String workDays, String stopovers) {
+    public Trip(User driver, Bus bus, boolean status, double meters, double time, String workDays, String stopovers) {
         this.driver = driver;
         this.bus = bus;
         this.status = status;
         this.meters = meters;
         this.time = time;
-        this.startTime = startTime;
         this.workDays = workDays;
         this.stopovers = stopovers;
     }
@@ -113,13 +114,6 @@ public class Trip {
         this.createdAt = createdAt;
     }
 
-    public Date getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
-    }
 
     public String getWorkDays() {
         return workDays;
@@ -169,21 +163,33 @@ public class Trip {
         this.ways = ways;
     }
 
+    public List<TripSchedule> getTripSchedules() {
+        return tripSchedules;
+    }
+
+    public void setTripSchedules(List<TripSchedule> tripSchedules) {
+        this.tripSchedules = tripSchedules;
+    }
+
+    public boolean isOpened() {
+        return opened;
+    }
+
+    public void setOpened(boolean opened) {
+        this.opened = opened;
+    }
+
     @Override
     public String toString() {
         return "Trip{" +
-                "id=" + id +
-                ", driver=" + driver +
+                "driver=" + driver +
                 ", bus=" + bus +
-                ", trips=" + trips +
                 ", createdAt=" + createdAt +
                 ", status=" + status +
                 ", meters=" + meters +
                 ", time=" + time +
-                ", startTime=" + startTime +
                 ", workDays='" + workDays + '\'' +
-                ", stopovers='" + stopovers + '\'' +
-                ", ways=" + ways +
+                ", opened=" + opened +
                 '}';
     }
 }

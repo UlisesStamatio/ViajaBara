@@ -3,6 +3,7 @@ package mx.edu.utez.viajabara.basecatalog.openTrips.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import mx.edu.utez.viajabara.basecatalog.seatingSales.model.SeatingSales;
 import mx.edu.utez.viajabara.basecatalog.trip.model.Trip;
+import mx.edu.utez.viajabara.basecatalog.tripSchedule.model.TripSchedule;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -16,10 +17,8 @@ public class OpenTrips {
     private Long id;
 
     @ManyToOne
-    private Trip trip;
+    private TripSchedule schedule;
 
-    @Column(columnDefinition = "date", name = "start_date")
-    private Date startDate;
 
     @Column(name = "create_at", insertable = false, columnDefinition = "TIMESTAMP DEFAULT NOW()")
     @Temporal(TemporalType.TIMESTAMP)
@@ -40,9 +39,8 @@ public class OpenTrips {
     public OpenTrips() {
     }
 
-    public OpenTrips(Trip trip, Date startDate, int status) {
-        this.trip = trip;
-        this.startDate = startDate;
+    public OpenTrips(TripSchedule schedule, int status) {
+        this.schedule = schedule;
         this.status = status;
     }
 
@@ -54,21 +52,7 @@ public class OpenTrips {
         this.id = id;
     }
 
-    public Trip getTrip() {
-        return trip;
-    }
 
-    public void setTrip(Trip trip) {
-        this.trip = trip;
-    }
-
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
 
     public Date getCreatedAt() {
         return createdAt;
@@ -102,4 +86,11 @@ public class OpenTrips {
         this.seatingSales = seatingSales;
     }
 
+    public TripSchedule getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(TripSchedule schedule) {
+        this.schedule = schedule;
+    }
 }
