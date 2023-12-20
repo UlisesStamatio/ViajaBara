@@ -13,10 +13,10 @@ public interface OpenTripsRepository extends JpaRepository<OpenTrips,Long> {
     /*@Query("SELECT new mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTripsDto(ot.id, ot.trip, DATE_FORMAT(ot.startDate, '%Y-%m-%d'), ot.status, ot.enableSeats, ot.createdAt) FROM OpenTrips ot WHERE ot.trip.id = :tripId AND ot.startDate = STR_TO_DATE(:startDate, '%Y-%m-%d') AND ot.enableSeats > 0")
     OpenTripsDto findByTripIdAndDate(@Param("tripId") Long tripId, @Param("startDate") String startDate);*/
 
-    @Query(value = "SELECT op.* FROM open_trips op inner join trips t on op.trip_id = t.id where (op.status = 1 OR op.status = 2) AND DATE(op.start_date) = CURDATE() AND t.driver_id = ?1",nativeQuery = true)
+    @Query(value = "SELECT op.* from open_trips op inner join trip_schedule ts on op.schedule_id = ts.id INNER JOIN trips t on ts.trip_id = t.id where (op.status = 1 OR op.status = 2) AND DATE(ts.start_date) = CURDATE() AND t.driver_id = ?1",nativeQuery = true)
     List<OpenTrips> searchAllTripsToday(long driver_id);
 
-    @Query(value = "SELECT op.* FROM open_trips op inner join trips t on op.trip_id = t.id where op.status = 3 AND t.driver_id = ?1",nativeQuery = true)
+    @Query(value = "SELECT o.* FROM open_trips o INNER JOIN trip_schedule ts on o.schedule_id = ts.id INNER JOIN trips t on ts.trip_id = t.id WHERE t.driver_id = ?1 AND o.status = 3",nativeQuery = true)
     List<OpenTrips> searchAllTripsHistory(long driver_id);
 
 
@@ -24,6 +24,6 @@ public interface OpenTripsRepository extends JpaRepository<OpenTrips,Long> {
     List<OpenTrips> findOpenTripsByTripIdNotInProgress(@Param("tripId") Long tripId);
 
 
-    @Query(value = "SELECT COUNT(o.id) FROM open_trips o INNER JOIN trips t ON o.trip_id = t.id WHERE t.driver_id = ?1 AND o.status = 3",nativeQuery = true)
+    @Query(value = "SELECT COUNT(o.id) FROM open_trips o INNER JOIN trip_schedule ts on o.schedule_id = ts.id INNER JOIN trips t on ts.trip_id = t.id WHERE t.driver_id = ?1 AND o.status = 3",nativeQuery = true)
     long countTripsByDriver(long driverId);
 }

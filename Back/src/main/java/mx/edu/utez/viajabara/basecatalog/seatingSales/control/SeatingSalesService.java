@@ -165,4 +165,10 @@ public class SeatingSalesService {
     }
 
 
+    @Transactional(readOnly = true)
+    public ResponseEntity<Object> countTripsByClient(Long client_id){
+        long trips = repository.countTripsByClient(client_id);
+        return new ResponseEntity<>(new Message(trips, "Cantidad de viajes realizados por el cliente", TypesResponse.SUCCESS), HttpStatus.OK);
+    }
+
 }

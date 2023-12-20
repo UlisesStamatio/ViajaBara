@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiOperation;
 import mx.edu.utez.viajabara.access.user.model.UserDto;
 import mx.edu.utez.viajabara.basecatalog.openTrips.control.OpenTripsService;
 import mx.edu.utez.viajabara.basecatalog.qualifications.control.QualificationsService;
+import mx.edu.utez.viajabara.basecatalog.seatingSales.control.SeatingSalesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -21,12 +22,14 @@ public class LoggedController {
 
     private final LoggedService service;
     private final OpenTripsService openTripsService;
+    private final SeatingSalesService seatingSalesService;
     private final QualificationsService qualificationsService;
 
     @Autowired
-    public LoggedController(LoggedService service, OpenTripsService openTripsService, QualificationsService qualificationsService) {
+    public LoggedController(LoggedService service, OpenTripsService openTripsService, SeatingSalesService seatingSalesService, QualificationsService qualificationsService) {
         this.service = service;
         this.openTripsService = openTripsService;
+        this.seatingSalesService = seatingSalesService;
         this.qualificationsService = qualificationsService;
     }
 
@@ -89,6 +92,16 @@ public class LoggedController {
         return openTripsService.countTripsByDriver(dto.getId());
     }
 
+    @ApiOperation(
+            value = "Obtener la cantidad de viajes realizados por un cliente en particular",
+            notes = "{\n" +
+                    "    \"id\": \1,\"\n" +
+                    "}"
+    )
+    @PutMapping("/client-trips-count")
+    public ResponseEntity<Object> countTripsByClient(@Validated(UserDto.ChangeStatus.class) @RequestBody UserDto dto) throws SQLException {
+        return seatingSalesService.countTripsByClient(dto.getId());
+    }
 
     @ApiOperation(
             value = "Obtener la calificación promedio de un conductor en particular",

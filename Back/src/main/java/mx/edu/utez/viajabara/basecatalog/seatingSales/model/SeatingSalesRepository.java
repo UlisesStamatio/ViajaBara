@@ -12,6 +12,9 @@ public interface SeatingSalesRepository extends JpaRepository<SeatingSales,Long>
     List<SeatingSales> findAllByClient(User user);
     List<SeatingSales> findAllByOpenTrips(OpenTrips openTrips);
 
+    @Query(value = "SELECT COUNT(DISTINCT(s.open_trips_id)) FROM seatings_sales s where s.client_id = ?1 and s.checked is true",nativeQuery = true)
+    long countTripsByClient(long idClient);
+
     /*@Query("SELECT ss.seatsSelected " +
             "FROM SeatingSales ss " +
             "JOIN ss.openTrips ot " +
