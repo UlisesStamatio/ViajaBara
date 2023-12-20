@@ -175,22 +175,23 @@ public class OpenTripsService {
             return new ResponseEntity<>(new Message("El viaje ya se encuentra abierto", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
         }
 
-
-        if(dto.getSchedule().size() > 0){
+        List<TripSchedule> schedulesSearched = tripScheduleRepository.findAllByTripId(tripSearched.getId());
+        if(schedulesSearched.size() > 0){
             List<OpenTrips> openTripsCreated = new ArrayList<>();
-            List<TripSchedule> schedules = dto.getSchedule();
-            for ( TripSchedule schedule : schedules) {
+            for ( TripSchedule schedule : schedulesSearched) {
                 Optional<TripSchedule> tripScheduleOptional = tripScheduleRepository.findById(schedule.getId());
                 if(!tripScheduleOptional.isPresent()){
                     return new ResponseEntity<>(new Message("No se encontró el horario", TypesResponse.ERROR), HttpStatus.NOT_FOUND);
                 }
-                OpenTrips openTrips = new OpenTrips(schedule, 1);
+                OpenTrips openTrips = new OpenTrips(schedule, 1, 20);
                 openTrips = repository.saveAndFlush(openTrips);
                 if (openTrips == null){
                     return new ResponseEntity<>(new Message("Los viajes abiertos no se han registrado", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
                 }
                 openTripsCreated.add(openTrips);
             }
+            tripSearched.setOpened(true);
+            tripRepository.saveAndFlush(tripSearched);
             return new ResponseEntity<>(new Message(openTripsCreated, "Viajes abierto registrados", TypesResponse.SUCCESS), HttpStatus.OK);
         }else{
             return new ResponseEntity<>(new Message("Viaje abierto no registrado. Agregar horarios.", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);

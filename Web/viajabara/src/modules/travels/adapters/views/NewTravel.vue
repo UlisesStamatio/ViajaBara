@@ -253,6 +253,7 @@
 <script>
 import VueMultiselect from 'vue-multiselect'
 import mapFunctions from '../../../../kernel/map-functions/maps'
+import dateFunctions from '../../../../kernel/date-functions/date.functions'
 import listDriversEnabled from '../../../../modules/users/use-cases/list.drivers.enabled'
 import listBusesEnabled from '../../../../modules/buses/use-cases/list.bus.enabled'
 import listRoutesEnabled from '../../../../modules/routes/use-cases/list.route.enabled'
@@ -443,7 +444,7 @@ export default {
       this.errors.ways = tripValidator.validateWays(this.trip.ways);
 
       if(!this.errors.bus && !this.errors.driver && !this.errors.day && !this.errors.date && !this.errors.ways){
-        const {driver, bus, date, days, ways} = this.trip;
+        const {driver, date:hour, bus, days, ways} = this.trip;
         let idRoutes = ways.map((way) => (way.route.id));
         let fullStopovers = [];
         idRoutes.map((id) =>{
@@ -471,18 +472,32 @@ export default {
           time += stopover.time;
         });
         let jsonStopover = JSON.stringify(finalStopovers);
+        console.log("time ", time);
+        let tripSchedules = days.map((day) =>{
+          let lastDay = day.value;
+          let date; 
+          if(lastDay === 1){
+             lastDay = 7
+            date = dateFunctions.getDateCurrentWeekByDay(lastDay)
+          }else{
+            date = dateFunctions.getDateCurrentWeekByDay(lastDay - 1)
+          }
+          let startDate =  dateFunctions.generateFullDate(date, hour)
+          let endDate = dateFunctions.getEndDate(startDate, time);
+          day = {endDate,startDate}
+          console.log(day);
+          return day;
+        })
+        console.log(idRoutes);
 
 
-        const today = new Date();
-        const hour = date.split(':');
-        today.setHours(parseInt(hour[0]), parseInt(hour[1]), 0, 0);
         const tripPayload = {
           driver: {id: driver.id},
           bus: {id: bus.id},
-          startTime: today.toISOString(),
           workDays: JSON.stringify(days.map((day) => (day.value.toString()))),
           ways: ways,
           stopovers: jsonStopover,
+          tripSchedules,
           meters,
           time
         }

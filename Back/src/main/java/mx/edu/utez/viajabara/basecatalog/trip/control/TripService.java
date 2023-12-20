@@ -95,6 +95,7 @@ public class TripService {
             tripsDto.setTime(trip.getTime());
             tripsDto.setWorkDays(trip.getWorkDays());
             tripsDto.setCreatedAt(trip.getCreatedAt());
+            tripsDto.setOpened(trip.isOpened());
 
             List<Way> ways = wayRepository.findByTripId(trip.getId());
             tripsDto.setWays(ways);

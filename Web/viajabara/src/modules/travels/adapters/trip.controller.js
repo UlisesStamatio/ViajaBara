@@ -32,6 +32,10 @@ const OperationsController = {
     async changeStatusTrip(payload){
         const response = await Operations.changeStatusTrip('/change-status', payload)
         return response;
+    },
+    async openTrip(payload){
+        const response = await Operations.openTrip('/', payload)
+        return response;
     }
 }
 

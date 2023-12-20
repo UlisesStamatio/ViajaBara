@@ -39,9 +39,10 @@ public class OpenTrips {
     public OpenTrips() {
     }
 
-    public OpenTrips(TripSchedule schedule, int status) {
+    public OpenTrips(TripSchedule schedule, int status, int enableSeats) {
         this.schedule = schedule;
         this.status = status;
+        this.enableSeats = enableSeats;
     }
 
     public Long getId() {

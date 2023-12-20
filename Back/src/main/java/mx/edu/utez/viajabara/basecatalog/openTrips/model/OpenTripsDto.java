@@ -16,14 +16,11 @@ public class OpenTripsDto {
     private Long id;
     @NotNull(groups = {Register.class,Modify.class})
     private Long idTrip;
-    @NotNull(groups = {Register.class,Modify.class})
-    private List<TripSchedule> schedules;
     @PositiveOrZero(groups = {ChangeStatus.class})
     private int status;
     private int enableSeats;
-
     private List<SeatingSales> seatingSales;
-    @NotNull(groups = {Register.class,Modify.class})
+
     private String seatsDistribution;
 
     private Date createdAt;
@@ -32,16 +29,14 @@ public class OpenTripsDto {
     public OpenTripsDto() {
     }
 
-    public OpenTripsDto(Long id, List<TripSchedule> schedules, int status, int enableSeats) {
+    public OpenTripsDto(Long id, int status, int enableSeats) {
         this.id = id;
-        this.schedules = schedules;
         this.status = status;
         this.enableSeats = enableSeats;
     }
 
-    public OpenTripsDto(Long id, List<TripSchedule> schedules, int status, int enableSeats, Date createdAt) {
+    public OpenTripsDto(Long id, int status, int enableSeats, Date createdAt) {
         this.id = id;
-        this.schedules = schedules;
         this.status = status;
         this.enableSeats = enableSeats;
         this.createdAt = createdAt;
@@ -106,13 +101,6 @@ public class OpenTripsDto {
     }
 
 
-    public List<TripSchedule> getSchedule() {
-        return schedules;
-    }
-
-    public void setSchedule(List<TripSchedule> schedules) {
-        this.schedules = schedules;
-    }
 
     public Long getIdTrip() {
         return idTrip;
@@ -130,7 +118,6 @@ public class OpenTripsDto {
     public String toString() {
         return "OpenTripsDto{" +
                 "id=" + id +
-                ", tripSchedules=" + schedules +
                 ", status=" + status +
                 ", enableSeats=" + enableSeats +
                 ", createdAt=" + createdAt +

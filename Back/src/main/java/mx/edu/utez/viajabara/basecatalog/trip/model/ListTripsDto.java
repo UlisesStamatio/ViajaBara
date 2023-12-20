@@ -29,6 +29,8 @@ public class ListTripsDto {
 
     private List<Way> ways;
 
+    private boolean opened;
+
     public ListTripsDto() {
     }
 
@@ -118,5 +120,13 @@ public class ListTripsDto {
 
     public void setWays(List<Way> ways) {
         this.ways = ways;
+    }
+
+    public boolean isOpened() {
+        return opened;
+    }
+
+    public void setOpened(boolean opened) {
+        this.opened = opened;
     }
 }

@@ -21,8 +21,6 @@ public class TripDto {
     private User driver;
     @NotNull(groups = {Register.class,Modify.class})
     private Bus bus;
-    @NotNull(groups = {Register.class,Modify.class,GetByDate.class})
-    private Date startTime;
     @Min(value = 0, groups = {Register.class, Modify.class})
     private double time;
     @Min(value = 0, groups = {Register.class, Modify.class})
@@ -33,7 +31,6 @@ public class TripDto {
     private String workDays;
     @NotNull(groups = {Register.class,Modify.class})
     private List<Way> ways;
-
     @NotNull(groups = {Register.class,Modify.class})
     private List<TripSchedule> tripSchedules;
 
@@ -87,13 +84,6 @@ public class TripDto {
         this.ways = ways;
     }
 
-    public Date getStartTime() {
-        return parseDate(startTime);
-    }
-
-    public void setStartTime(Date startTime) {
-        this.startTime = parseDate(startTime);
-    }
 
     public Date getEndTime() {
         return endTime;
