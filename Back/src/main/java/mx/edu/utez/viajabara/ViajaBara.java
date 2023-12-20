@@ -8,6 +8,9 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import javax.annotation.PostConstruct;
+import java.util.TimeZone;
+
 @EnableWebMvc
 @EnableSwagger2
 @SpringBootApplication
@@ -16,6 +19,11 @@ public class ViajaBara {
         SpringApplication.run(ViajaBara.class, args);
     }
 
+    @PostConstruct
+    void started() {
+        // Configura la zona horaria al iniciar la aplicación
+        TimeZone.setDefault(TimeZone.getTimeZone("America/Mexico_City"));
+    }
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {

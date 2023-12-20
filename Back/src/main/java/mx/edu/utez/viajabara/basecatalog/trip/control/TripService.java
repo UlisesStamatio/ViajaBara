@@ -103,31 +103,34 @@ public class TripService {
         }
         return new ResponseEntity<>(new Message(response, "Listado de viajes", TypesResponse.SUCCESS), HttpStatus.OK);
     }
-    /*@Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public ResponseEntity<Object> getStatesForFiltersByDate(String date, boolean onlyStatesAndAddresses) throws ParseException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date providedDate = dateFormat.parse(date);
-        TimeZone timeZone = TimeZone.getTimeZone("UTC-6");
-        Calendar calendar = Calendar.getInstance(timeZone);
-        calendar.setTime(providedDate);
-        int dayOfWeekInteger = calendar.get(Calendar.DAY_OF_WEEK);
-        List<Trip> trips = repository.findTripsAvailableInDay(Integer.toString(dayOfWeekInteger));
+        Date providedDate = parseDate(date);
+        System.out.println("providedDate "+providedDate);
+//        Calendar calendar = Calendar.getInstance(timeZone);
+//        calendar.setTime(providedDate);
+//        int dayOfWeekInteger = calendar.get(Calendar.DAY_OF_WEEK);
+        List<TripSchedule> trips = repository.findTripsAvailableInDay(providedDate);
+        System.out.println("-------------------------------------");
+        for (TripSchedule tripS:
+             trips) {
+            System.out.println(tripS.getStartDate());
+        }
+        System.out.println("-------------------------------------");
+        List<TripSchedule> filteredTrips = getFilteredTrips(trips);
 
-        int dayOfYearInteger = calendar.get(Calendar.DAY_OF_YEAR);
-        List<Trip> filteredTrips = getFilteredTrips(trips,dayOfYearInteger);
-
-        if (onlyStatesAndAddresses ) {
+        if ( onlyStatesAndAddresses ) {
             List<StateBookTripDto> statesProcessed = processTrips(filteredTrips);
             return new ResponseEntity<>(new Message(statesProcessed, "Listado de viajes activos", TypesResponse.SUCCESS), HttpStatus.OK);
         }
         return new ResponseEntity<>(new Message(filteredTrips, "Listado de viajes activos", TypesResponse.SUCCESS), HttpStatus.OK);
-    }*/
-    private List<StateBookTripDto> processTrips(List<Trip> trips) {
+    }
+    private List<StateBookTripDto> processTrips(List<TripSchedule> trips) {
         Map<Long, StateBookTripDto> stateMap = new HashMap<>();
         Set<Long> uniqueAddresses = new HashSet<>();
 
-        for (Trip trip : trips) {
-            for (Way way : trip.getWays()) {
+        for (TripSchedule tripS : trips) {
+            for (Way way : tripS.getTrip().getWays()) {
                 for (StopOver stopOver : way.getRoute().getStopOvers()) {
                     Address address = stopOver.getAddress();
                     State state = address.getState();
@@ -252,7 +255,7 @@ public class TripService {
     }
 
 
-    private Date parseDate(String timeString) {
+    private Date parseHours(String timeString) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
             sdf.setTimeZone(TimeZone.getTimeZone("America/Mexico_City"));
@@ -262,37 +265,40 @@ public class TripService {
             return null;
         }
     }
-   /* private List<Trip> getFilteredTrips(List<Trip> trips, Integer dayOfYear) {
-        return trips.stream()
-                .filter(trip ->isTripAvailable(trip, dayOfYear))
-                .collect(Collectors.toList());
-    }*/
 
-    /*private boolean isTripAvailable(Trip trip, Integer dayOfYearSelected) {
-        Date now = new Date();
-
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        sdf.setTimeZone(TimeZone.getTimeZone("America/Mexico_City"));
-        Date tripStartTime = parseDate(sdf.format(now));
-
-        TimeZone timeZone = TimeZone.getTimeZone("America/Mexico_City");
-        Calendar calendar = Calendar.getInstance(timeZone);
-        Integer dayOfYearToday = calendar.get(Calendar.DAY_OF_YEAR);
-
-        long timeDifferenceMillis = trip.getStartTime().getTime() - tripStartTime.getTime();
-
-        if (dayOfYearSelected.equals(dayOfYearToday)) {
-            return timeDifferenceMillis >= 360000;
-        } else {
-           return dayOfYearSelected > dayOfYearToday;
+    private Date parseDate(String timeString) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            sdf.setTimeZone(TimeZone.getTimeZone("America/Mexico_City"));
+            return sdf.parse(timeString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
         }
-    }*/
+    }
+    private List<TripSchedule> getFilteredTrips(List<TripSchedule> trips) {
+        return trips.stream()
+                .filter(trip ->isTripAvailable(trip))
+                .collect(Collectors.toList());
+    }
+
+    private boolean isTripAvailable(TripSchedule trip) {
+        Date nowTime = getCurrentFormattedTime();
+        System.out.println("trip.getStartDate().toString() "+trip.getStartDate().toString());
+        Date tripStartTime = parseHours(trip.getStartDate().toString().split(" ")[1]);
+        System.out.println("nowTime "+nowTime);
+        System.out.println("tripStartTime "+tripStartTime);
+
+        long timeDifferenceMillis = tripStartTime.getTime() - nowTime.getTime();
+
+        return timeDifferenceMillis >= 360000;
+    }
 
     private Date getCurrentFormattedTime() {
         Date now = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
         sdf.setTimeZone(TimeZone.getTimeZone("America/Mexico_City"));
-        return parseDate(sdf.format(now));
+        return parseHours(sdf.format(now));
     }
 
    /* private Date getFormattedTripStartTime(Trip trip) {

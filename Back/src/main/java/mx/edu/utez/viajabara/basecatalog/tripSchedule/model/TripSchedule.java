@@ -1,5 +1,6 @@
 package mx.edu.utez.viajabara.basecatalog.tripSchedule.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTrips;
 import mx.edu.utez.viajabara.basecatalog.trip.model.Trip;
@@ -18,9 +19,13 @@ public class TripSchedule {
 
 
     @Column(columnDefinition = "TIMESTAMP", name = "start_date")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "America/Mexico_City")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date startDate;
 
     @Column(columnDefinition = "TIMESTAMP", name = "end_date")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "America/Mexico_City")
+    @Temporal(TemporalType.TIMESTAMP)
     private Date endDate;
 
     @ManyToOne
