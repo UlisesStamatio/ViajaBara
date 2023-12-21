@@ -2,6 +2,7 @@ package mx.edu.utez.viajabara.basecatalog.trip.model;
 
 import mx.edu.utez.viajabara.access.user.model.User;
 import mx.edu.utez.viajabara.basecatalog.bus.model.Bus;
+import mx.edu.utez.viajabara.basecatalog.tripSchedule.model.TripSchedule;
 import mx.edu.utez.viajabara.basecatalog.way.model.Way;
 import java.util.Date;
 import java.util.List;
@@ -30,6 +31,8 @@ public class ListTripsDto {
     private List<Way> ways;
 
     private boolean opened;
+
+    private List<TripSchedule> tripSchedules;
 
     public ListTripsDto() {
     }
@@ -128,5 +131,13 @@ public class ListTripsDto {
 
     public void setOpened(boolean opened) {
         this.opened = opened;
+    }
+
+    public List<TripSchedule> getTripSchedules() {
+        return tripSchedules;
+    }
+
+    public void setTripSchedules(List<TripSchedule> tripSchedules) {
+        this.tripSchedules = tripSchedules;
     }
 }

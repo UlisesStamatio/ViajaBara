@@ -27,6 +27,7 @@ import mx.edu.utez.viajabara.basecatalog.way.model.Way;
 import mx.edu.utez.viajabara.basecatalog.way.model.WayRepository;
 import mx.edu.utez.viajabara.utils.entity.Message;
 import mx.edu.utez.viajabara.utils.entity.TypesResponse;
+import mx.edu.utez.viajabara.utils.validator.TripValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,6 +97,8 @@ public class TripService {
             tripsDto.setWorkDays(trip.getWorkDays());
             tripsDto.setCreatedAt(trip.getCreatedAt());
             tripsDto.setOpened(trip.isOpened());
+            tripsDto.setTripSchedules(trip.getTripSchedules());
+            System.out.println(trip.getTripSchedules().get(0).getStartDate());
 
             List<Way> ways = wayRepository.findByTripId(trip.getId());
             tripsDto.setWays(ways);
@@ -363,6 +366,14 @@ public class TripService {
         if(!driver.isPresent()) {
             return new ResponseEntity<>(new Message("No se encontró el conductor", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
+
+
+        List<TripSchedule> schedulesByDriver = tripScheduleRepository.findAllByDriverIdAndStatusIsTrue(driver.get().getId());
+        boolean isValidSchedules = new TripValidator().validateTripSchedules(schedulesByDriver, dto.getTripSchedules());
+        if(!isValidSchedules){
+            return new ResponseEntity<>(new Message("El conductor ya tiene viajes para las fechas establecidas.", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
+        }
+
 
         Trip trip = new Trip(driver.get(), bus.get(),true, dto.getMeters(), dto.getTime(), dto.getWorkDays(), dto.getStopovers());
         trip = repository.saveAndFlush(trip);

@@ -1,4 +1,4 @@
-import moment from 'moment'
+import moment from 'moment-timezone'
 
 const dateFunctions = {
     getDateCurrentWeekByDay(day){
@@ -10,14 +10,14 @@ const dateFunctions = {
     },
     generateFullDate(date, hour){
         const dateHourString = `${date} ${hour}`;
-        const fullDate = moment(dateHourString, 'YYYY-MM-DD HH:mm');
-        const formatedDate = fullDate.format('YYYY-MM-DDTHH:mm:ss');
+        const fullDate = moment.tz(dateHourString, 'America/Mexico_City');
+        const formatedDate = fullDate.format('YYYY-MM-DDTHH:mm:ss.sssZ');
         return formatedDate;
     },
     getEndDate(starDate, minutes){
-        const dateMoment = moment(starDate);
+        const dateMoment = moment.tz(starDate, 'America/Mexico_City');
         const lastDate = dateMoment.add(minutes, 'minutes');
-        return lastDate.format('YYYY-MM-DDTHH:mm:ss');
+        return lastDate.format('YYYY-MM-DDTHH:mm:ss.sssZ');
     }
 
 }

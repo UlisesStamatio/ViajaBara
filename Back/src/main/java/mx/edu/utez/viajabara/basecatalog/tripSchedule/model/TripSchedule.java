@@ -1,11 +1,13 @@
 package mx.edu.utez.viajabara.basecatalog.tripSchedule.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTrips;
 import mx.edu.utez.viajabara.basecatalog.trip.model.Trip;
 import mx.edu.utez.viajabara.basecatalog.way.model.Way;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +23,7 @@ public class TripSchedule {
     private Date startDate;
 
     @Column(columnDefinition = "TIMESTAMP", name = "end_date")
-    private Date endDate;
+    private Date  endDate;
 
     @ManyToOne
     @JoinColumn(name = "trip_id")
@@ -43,14 +45,14 @@ public class TripSchedule {
     public TripSchedule() {
     }
 
-    public TripSchedule(Date startDate, Date endDate,Trip trip, boolean status) {
+    public TripSchedule(Date  startDate, Date  endDate,Trip trip, boolean status) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.status = status;
         this.trip = trip;
     }
 
-    public TripSchedule(Long id, Date startDate, Date endDate, boolean status) {
+    public TripSchedule(Long id, Date  startDate, Date  endDate, boolean status) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -65,19 +67,19 @@ public class TripSchedule {
         this.id = id;
     }
 
-    public Date getStartDate() {
+    public Date  getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(Date  startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public Date  getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(Date  endDate) {
         this.endDate = endDate;
     }
 
@@ -103,5 +105,9 @@ public class TripSchedule {
 
     public void setTrip(Trip trip) {
         this.trip = trip;
+    }
+
+    public boolean intersects(TripSchedule tripSchedule) {
+        return !(this.endDate.compareTo(tripSchedule.getStartDate()) <= 0 || this.startDate.compareTo(tripSchedule.getEndDate()) >= 0);
     }
 }
