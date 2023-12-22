@@ -8,6 +8,8 @@ import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTripsRepository;
 import mx.edu.utez.viajabara.basecatalog.seatingSales.model.SeatingSales;
 import mx.edu.utez.viajabara.basecatalog.seatingSales.model.SeatingSalesDto;
 import mx.edu.utez.viajabara.basecatalog.seatingSales.model.SeatingSalesRepository;
+import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOver;
+import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOverRepository;
 import mx.edu.utez.viajabara.utils.entity.Message;
 import mx.edu.utez.viajabara.utils.entity.TypesResponse;
 import org.slf4j.Logger;
@@ -32,19 +34,21 @@ public class SeatingSalesService {
     private final SeatingSalesRepository repository;
     private final UserRepository userRepository;
     private final OpenTripsRepository openTripsRepository;
+    private final StopOverRepository stopOverRepository;
 
     @Autowired
-    public SeatingSalesService(SeatingSalesRepository repository, UserRepository userRepository, OpenTripsRepository openTripsRepository) {
+    public SeatingSalesService(SeatingSalesRepository repository, UserRepository userRepository, OpenTripsRepository openTripsRepository, StopOverRepository stopOverRepository) {
         this.repository = repository;
         this.userRepository = userRepository;
         this.openTripsRepository = openTripsRepository;
+        this.stopOverRepository = stopOverRepository;
     }
 
     @Transactional(readOnly = true)
     public ResponseEntity<Object> findAll() {
         List<SeatingSales> seatingSalesList = repository.findAll();
         List<SeatingSales> response = new ArrayList<>();
-        for (SeatingSales seatingSales:seatingSalesList) {
+        for (SeatingSales seatingSales : seatingSalesList) {
             seatingSales.getOpenTrips().getSchedule().getTrip().getDriver().setProfile(null);
             seatingSales.getOpenTrips().getSchedule().getTrip().getBus().setImage(null);
             seatingSales.getClient().setProfile(null);
@@ -56,12 +60,12 @@ public class SeatingSalesService {
     @Transactional(readOnly = true)
     public ResponseEntity<Object> findAllByClient(SeatingSalesDto dto) {
         Optional<User> optional = userRepository.findById(dto.getClient().getId());
-        if(!optional.isPresent()){
+        if (!optional.isPresent()) {
             return new ResponseEntity<>(new Message("No se encontró al cliente", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
         List<SeatingSales> seatingSalesList = repository.findAllByClient(optional.get());
         List<SeatingSales> response = new ArrayList<>();
-        for (SeatingSales seatingSales:seatingSalesList) {
+        for (SeatingSales seatingSales : seatingSalesList) {
             //seatingSales.getOpenTrips().getTrip().getDriver().setProfile(null);
             seatingSales.getOpenTrips().getSchedule().getTrip().getBus().setImage(null);
             seatingSales.getClient().setProfile(null);
@@ -72,32 +76,49 @@ public class SeatingSalesService {
 
     @Transactional(readOnly = true)
     public ResponseEntity<Object> findAllByOpenTrip(SeatingSalesDto dto) {
+        List<List<SeatingSales>> seatingSalesLists = new ArrayList<>();
+
         Optional<OpenTrips> optional = openTripsRepository.findById(dto.getOpenTrips().getId());
-        if(!optional.isPresent()){
+        if (!optional.isPresent()) {
             return new ResponseEntity<>(new Message("No se encontró el viaje abierto", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
-        List<SeatingSales> seatingSalesList = repository.findAllByOpenTrips(optional.get());
-        List<SeatingSales> response = new ArrayList<>();
-        for (SeatingSales seatingSales:seatingSalesList) {
+        Optional<StopOver> optionalStopOver = stopOverRepository.findById(dto.getIdStopOver());
+        if (!optionalStopOver.isPresent()) {
+            return new ResponseEntity<>(new Message("No se encontró la parada", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
+        }
+
+        List<SeatingSales> seatingSalesList = repository.searchAllOutByStopOverAnAndOpenTrips(optionalStopOver.get().getId(),optional.get().getId());
+        List<SeatingSales> seatingSalesOut = new ArrayList<>();
+        for (SeatingSales seatingSales : seatingSalesList) {
             seatingSales.getOpenTrips().getSchedule().getTrip().setDriver(null);
             seatingSales.getOpenTrips().getSchedule().getTrip().setBus(null);
-            //seatingSales.getClient().setProfile(null);
-            response.add(seatingSales);
+            seatingSalesOut.add(seatingSales);
         }
-        return new ResponseEntity<>(new Message(response, "Listado de compra de asientos por viaje", TypesResponse.SUCCESS), HttpStatus.OK);
+        seatingSalesLists.add(seatingSalesOut);
+
+        List<SeatingSales> seatingSalesList1 = repository.searchAllOnByStopOverAnAndOpenTrips(optionalStopOver.get().getId(),optional.get().getId());
+        List<SeatingSales> seatingSalesOn = new ArrayList<>();
+        for (SeatingSales seatingSales : seatingSalesList1) {
+            seatingSales.getOpenTrips().getSchedule().getTrip().setDriver(null);
+            seatingSales.getOpenTrips().getSchedule().getTrip().setBus(null);
+            seatingSalesOn.add(seatingSales);
+        }
+        seatingSalesLists.add(seatingSalesOn);
+
+        return new ResponseEntity<>(new Message(seatingSalesLists, "Listado de compra de asientos por viaje", TypesResponse.SUCCESS), HttpStatus.OK);
     }
 
     @Transactional(rollbackFor = {SQLException.class})
     public ResponseEntity<Object> save(SeatingSalesDto dto) throws SQLException {
         Optional<User> userOptional = userRepository.findById(dto.getClient().getId());
-        if(!userOptional.isPresent()){
+        if (!userOptional.isPresent()) {
             return new ResponseEntity<>(new Message("No se encontró al cliente", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
         Optional<OpenTrips> openTripsOptional = openTripsRepository.findById(dto.getOpenTrips().getId());
-        if(!openTripsOptional.isPresent()){
+        if (!openTripsOptional.isPresent()) {
             return new ResponseEntity<>(new Message("No se encontró el viaje abierto", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
-        SeatingSales seatingSales = new SeatingSales(new Address(dto.getStartAddress().getId()),new Address(dto.getEndAddress().getId()), dto.getCost(),userOptional.get(), dto.getSeatsSelected(), dto.getWholeTrip(),openTripsOptional.get());
+        SeatingSales seatingSales = new SeatingSales(new Address(dto.getStartAddress().getId()), new Address(dto.getEndAddress().getId()), dto.getCost(), userOptional.get(), dto.getSeatsSelected(), dto.getWholeTrip(), openTripsOptional.get());
         seatingSales.setChecked(0);
         seatingSales = repository.saveAndFlush(seatingSales);
 
@@ -112,15 +133,15 @@ public class SeatingSalesService {
     @Transactional(rollbackFor = {SQLException.class})
     public ResponseEntity<Object> update(SeatingSalesDto dto) throws SQLException {
         Optional<SeatingSales> optionalSeatingSales = repository.findById(dto.getId());
-        if(!optionalSeatingSales.isPresent()){
+        if (!optionalSeatingSales.isPresent()) {
             return new ResponseEntity<>(new Message("No se encontró el asiento vendido", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
         Optional<User> userOptional = userRepository.findById(dto.getClient().getId());
-        if(!userOptional.isPresent()){
+        if (!userOptional.isPresent()) {
             return new ResponseEntity<>(new Message("No se encontró al cliente", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
         Optional<OpenTrips> openTripsOptional = openTripsRepository.findById(dto.getOpenTrips().getId());
-        if(!openTripsOptional.isPresent()){
+        if (!openTripsOptional.isPresent()) {
             return new ResponseEntity<>(new Message("No se encontró el viaje abierto", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
         SeatingSales seatingSales = optionalSeatingSales.get();
@@ -144,12 +165,12 @@ public class SeatingSalesService {
     @Transactional(rollbackFor = {SQLException.class})
     public ResponseEntity<Object> checkAssist(SeatingSalesDto dto) throws SQLException {
 
-        if(dto.getChecked()<0 && dto.getChecked()>2){
+        if (dto.getChecked() < 0 && dto.getChecked() > 2) {
             return new ResponseEntity<>(new Message("El estado de la asistencia no existe", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
         }
 
         Optional<SeatingSales> optionalSeatingSales = repository.findById(dto.getId());
-        if(!optionalSeatingSales.isPresent()){
+        if (!optionalSeatingSales.isPresent()) {
             return new ResponseEntity<>(new Message("No se encontró el asiento vendido", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
         SeatingSales seatingSales = optionalSeatingSales.get();
@@ -161,12 +182,12 @@ public class SeatingSalesService {
             return new ResponseEntity<>(new Message("No se registró el estado de la asistencia", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(new Message( "Se registró el estado de la asistencia", TypesResponse.SUCCESS), HttpStatus.OK);
+        return new ResponseEntity<>(new Message("Se registró el estado de la asistencia", TypesResponse.SUCCESS), HttpStatus.OK);
     }
 
 
     @Transactional(readOnly = true)
-    public ResponseEntity<Object> countTripsByClient(Long client_id){
+    public ResponseEntity<Object> countTripsByClient(Long client_id) {
         long trips = repository.countTripsByClient(client_id);
         return new ResponseEntity<>(new Message(trips, "Cantidad de viajes realizados por el cliente", TypesResponse.SUCCESS), HttpStatus.OK);
     }

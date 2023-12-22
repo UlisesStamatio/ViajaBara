@@ -56,7 +56,12 @@ public class DriverController {
     @PutMapping("/allRiders")
     @ApiOperation(
             value = "Obtiene todos los pasajeros de un viaje abierto",
-            notes = "{ \"id\": 2 }"
+            notes = "{\n" +
+                    "    \"openTrips\":{\n" +
+                    "        \"id\":1\n" +
+                    "    },\n" +
+                    "    \"idStopOver\":1\n" +
+                    "}"
     )
     public ResponseEntity<Object> findAllByOpenTrip(@Validated(SeatingSalesDto.FindByOpenTrip.class) @RequestBody SeatingSalesDto dto) {
         return seatingSalesService.findAllByOpenTrip(dto);

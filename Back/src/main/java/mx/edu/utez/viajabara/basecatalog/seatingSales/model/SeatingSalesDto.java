@@ -31,6 +31,9 @@ public class SeatingSalesDto {
     @PositiveOrZero(groups = {Check.class})
     private int checked;
 
+    @NotNull(groups = {FindByOpenTrip.class})
+    private long idStopOver;
+
     public SeatingSalesDto() {
     }
 
@@ -104,6 +107,15 @@ public class SeatingSalesDto {
 
     public void setWholeTrip(int wholeTrip) {
         this.wholeTrip = wholeTrip;
+    }
+
+
+    public long getIdStopOver() {
+        return idStopOver;
+    }
+
+    public void setIdStopOver(long idStopOver) {
+        this.idStopOver = idStopOver;
     }
 
     public interface Register{}
