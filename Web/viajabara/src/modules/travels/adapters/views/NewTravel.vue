@@ -269,7 +269,7 @@ import router from '../../../../router/index'
 import DataTable from 'datatables.net-dt';
 import $ from 'jquery';
 import Loader from '../../../../components/Loader.vue'
-
+import moment from 'moment'
 
 export default {
   name: "NewUser",
@@ -472,20 +472,20 @@ export default {
         });
         let jsonStopover = JSON.stringify(finalStopovers);
 
-
-        const today = new Date();
-        const hour = date.split(':');
-        today.setHours(parseInt(hour[0]), parseInt(hour[1]), 0, 0);
+        let now = new Date().toISOString().split('T')[0];
+        let finalDate = `${now} ${date}`
         const tripPayload = {
           driver: {id: driver.id},
           bus: {id: bus.id},
-          startTime: today.toISOString(),
+          startTime: moment(finalDate).format('YYYY-MM-DDTHH:mm:ss'),
           workDays: JSON.stringify(days.map((day) => (day.value.toString()))),
           ways: ways,
           stopovers: jsonStopover,
           meters,
           time
         }
+        console.log(tripPayload);
+
         this.$swal({
           title: "¿Estás seguro(a) de guardar los cambios?",
           text: "¡No podrás revertir esto.!",
