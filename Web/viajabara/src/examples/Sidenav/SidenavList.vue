@@ -151,6 +151,33 @@
         </sidenav-collapse>
       </li>
 
+       <li class="nav-item">
+        <sidenav-collapse
+          collapse-ref="openTrip"
+          nav-text="Aperturas"
+          :class="getRoute() === 'apertura' ? 'active' : ''"
+        >
+          <template #icon>
+            <Lock />
+          </template>
+          <template #list>
+            <ul class="nav ms-4 ps-3">
+              <!-- nav links -->
+              <sidenav-item
+               :to="{ name: 'Consultar Aperturas' }"
+                mini-icon="P"
+                text="Consultar"
+              />
+              <sidenav-item
+                :to="{ name: 'Registrar Apertura' }"
+                mini-icon="W"
+                text="Registrar"
+              />
+            </ul>
+          </template>
+        </sidenav-collapse>
+      </li>
+
     </ul>
   </div>
 </template>
@@ -170,6 +197,7 @@ import User from "../../components/Icon/User.vue";
 import CreditCard from "../../components/Icon/CreditCard.vue";
 import Route from "../../components/Icon/Route.vue";
 import Travel from "../../components/Icon/Travel.vue";
+import Lock from "../../components/Icon/Lock.vue";
 
 import { mapState } from "vuex";
 export default {
@@ -183,6 +211,7 @@ export default {
     Bus,
     Route,
     Travel,
+    Lock,
     //Box3d,
    // Shop,
     //Office,

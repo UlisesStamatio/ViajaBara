@@ -31,6 +31,9 @@ import LandingPage from "../modules/auth/adapters/views/LandingPage.vue";
 import Login from "../modules/auth/adapters/views/Login.vue"
 import ResetPassword from "../modules/auth/adapters/views/ResetPassword.vue"
 
+import ListOpenTrip from "../modules/openTrip/adapters/views/ListOpenTrip.vue"
+import OpenTrip from "../modules/openTrip/adapters/views/OpenTrip.vue"
+
 const routes = [
   {
     path: "/",
@@ -197,6 +200,18 @@ const routes = [
     path: "/viaje/consultar/visualizar/:id",
     name: "Visualizar Viaje",
     component: DetailTravel,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: "/apertura/consultar",
+    name: "Consultar Aperturas",
+    component: ListOpenTrip,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: "/apertura/registrar",
+    name: "Registrar Apertura",
+    component: OpenTrip,
     meta: { requiresAuth: true }
   },
   {
