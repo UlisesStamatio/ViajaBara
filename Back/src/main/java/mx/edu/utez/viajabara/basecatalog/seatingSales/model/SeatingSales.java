@@ -37,6 +37,10 @@ public class SeatingSales {
     @Column(name = "checked", columnDefinition = "INT(1)")
     private int checked;
 
+    //0.- No Calificado 1.-Calificado
+    @Column(name = "reviewed", columnDefinition = "INT(1)")
+    private int reviewed;
+
     @Column(name = "seats_selected", columnDefinition = "VARCHAR(255)")
     private String seatsSelected;
 
@@ -146,5 +150,13 @@ public class SeatingSales {
 
     public void setSeating(int seating) {
         this.seating = seating;
+    }
+
+    public int getReviewed() {
+        return reviewed;
+    }
+
+    public void setReviewed(int reviewed) {
+        this.reviewed = reviewed;
     }
 }

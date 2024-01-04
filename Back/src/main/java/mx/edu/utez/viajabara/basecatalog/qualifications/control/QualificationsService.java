@@ -48,6 +48,9 @@ public class QualificationsService {
         if(!optionalSeatingSales.isPresent()){
             return new ResponseEntity<>(new Message("No se encontró el viaje comprado", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
+        if(optionalSeatingSales.get().getReviewed()==1){
+            return new ResponseEntity<>(new Message("El viaje ya fue calificado anteriormente", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
+        }
         if(dto.getScore()<0 || dto.getScore() > 5){
             return new ResponseEntity<>(new Message("Calificación inválida", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
         }
@@ -56,6 +59,9 @@ public class QualificationsService {
         if(qualifications == null){
             return new ResponseEntity<>(new Message("No se registró la calificación", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
         }
+        SeatingSales seatingSales = optionalSeatingSales.get();
+        seatingSales.setReviewed(1);
+        seatingSalesRepository.saveAndFlush(seatingSales);
         return new ResponseEntity<>(new Message(qualifications, "Se registró la calificación", TypesResponse.SUCCESS), HttpStatus.OK);
     }
 

@@ -120,6 +120,7 @@ public class SeatingSalesService {
         }
         SeatingSales seatingSales = new SeatingSales(new Address(dto.getStartAddress().getId()), new Address(dto.getEndAddress().getId()), dto.getCost(), userOptional.get(), dto.getSeatsSelected(), dto.getWholeTrip(), openTripsOptional.get());
         seatingSales.setChecked(0);
+        seatingSales.setReviewed(0);
         seatingSales = repository.saveAndFlush(seatingSales);
 
         if (seatingSales == null) {
