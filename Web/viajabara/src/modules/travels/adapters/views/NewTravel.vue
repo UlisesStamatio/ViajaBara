@@ -253,7 +253,6 @@
 <script>
 import VueMultiselect from 'vue-multiselect'
 import mapFunctions from '../../../../kernel/map-functions/maps'
-import dateFunctions from '../../../../kernel/date-functions/date.functions'
 import listDriversEnabled from '../../../../modules/users/use-cases/list.drivers.enabled'
 import listBusesEnabled from '../../../../modules/buses/use-cases/list.bus.enabled'
 import listRoutesEnabled from '../../../../modules/routes/use-cases/list.route.enabled'
@@ -270,6 +269,7 @@ import router from '../../../../router/index'
 import DataTable from 'datatables.net-dt';
 import $ from 'jquery';
 import Loader from '../../../../components/Loader.vue'
+import moment from 'moment'
 
 
 export default {
@@ -437,6 +437,7 @@ export default {
     },
     async preNewTrip(){
       this.initializaDatatable()
+      let fullStopovers = [];
       this.errors.bus = tripValidator.validateSelect(this.trip.bus);
       this.errors.driver = tripValidator.validateSelect(this.trip.driver);
       this.errors.day = tripValidator.validateMultiSelect(this.trip.days);
@@ -444,9 +445,8 @@ export default {
       this.errors.ways = tripValidator.validateWays(this.trip.ways);
 
       if(!this.errors.bus && !this.errors.driver && !this.errors.day && !this.errors.date && !this.errors.ways){
-        const {driver, date:hour, bus, days, ways} = this.trip;
+        const {driver, bus,date, days, ways} = this.trip;
         let idRoutes = ways.map((way) => (way.route.id));
-        let fullStopovers = [];
         idRoutes.map((id) =>{
             let {stopOvers} = this.routes.find((route) => route.id === id);
             fullStopovers = [...fullStopovers, ...stopOvers]
@@ -472,24 +472,11 @@ export default {
           time += stopover.time;
         });
         let jsonStopover = JSON.stringify(finalStopovers);
-        console.log("time ", time);
-        let tripSchedules = days.map((day) =>{
-          let lastDay = day.value;
-          let date; 
-          if(lastDay === 1){
-             lastDay = 7
-            date = dateFunctions.getDateCurrentWeekByDay(lastDay)
-          }else{
-            date = dateFunctions.getDateCurrentWeekByDay(lastDay - 1)
-          }
-          let startDate =  dateFunctions.generateFullDate(date, hour)
-          let endDate = dateFunctions.getEndDate(startDate, time);
-          day = {endDate,startDate}
-          console.log(day);
-          return day;
-        })
-        console.log(idRoutes);
 
+
+        let now = new Date().toISOString().split('T')[0];
+
+        let startTime = moment(`${now} ${date}`).format('YYYY-MM-DDTHH:mm:ss')
 
         const tripPayload = {
           driver: {id: driver.id},
@@ -497,10 +484,11 @@ export default {
           workDays: JSON.stringify(days.map((day) => (day.value.toString()))),
           ways: ways,
           stopovers: jsonStopover,
-          tripSchedules,
+          startTime,
           meters,
           time
         }
+
         this.$swal({
           title: "¿Estás seguro(a) de guardar los cambios?",
           text: "¡No podrás revertir esto.!",

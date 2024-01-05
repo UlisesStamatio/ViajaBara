@@ -53,6 +53,9 @@ public class Trip {
     @OneToMany(mappedBy = "trip")
     private List<TripSchedule> tripSchedules;
 
+    @Column(columnDefinition = "time", name = "start_time")
+    private Date startTime;
+
     @Column(name = "opened", columnDefinition = "BOOL DEFAULT FALSE")
     private boolean opened;
 
@@ -72,7 +75,7 @@ public class Trip {
         this.status = status;
     }
 
-    public Trip(User driver, Bus bus, boolean status, double meters, double time, String workDays, String stopovers) {
+    public Trip(User driver, Bus bus, boolean status, double meters, double time, String workDays, String stopovers, Date startTime) {
         this.driver = driver;
         this.bus = bus;
         this.status = status;
@@ -80,6 +83,7 @@ public class Trip {
         this.time = time;
         this.workDays = workDays;
         this.stopovers = stopovers;
+        this.startTime = startTime;
     }
 
     public Long getId() {
@@ -177,6 +181,14 @@ public class Trip {
 
     public void setOpened(boolean opened) {
         this.opened = opened;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
     }
 
     @Override

@@ -31,8 +31,9 @@ public class TripDto {
     private String workDays;
     @NotNull(groups = {Register.class,Modify.class})
     private List<Way> ways;
+
     @NotNull(groups = {Register.class,Modify.class})
-    private List<TripSchedule> tripSchedules;
+    private Date startTime;
 
     private FilterType filterType;
     private Date endTime;
@@ -137,12 +138,12 @@ public class TripDto {
         this.stopovers = stopovers;
     }
 
-    public List<TripSchedule> getTripSchedules() {
-        return tripSchedules;
+    public Date getStartTime() {
+        return parseDate(startTime);
     }
 
-    public void setTripSchedules(List<TripSchedule> tripSchedules) {
-        this.tripSchedules = tripSchedules;
+    public void setStartTime(Date startTime) {
+        this.startTime = parseDate(startTime);
     }
 
     public void setFilterType(FilterType filterType) {

@@ -16,7 +16,7 @@ const tripValidator = {
         return null
     },
     validateWays(ways){
-        if(ways.length < 1) return "Ingresa al menos una ruta para el viaje."
+        if(ways.length < 2) return "Ingresa al menos dos rutas para el viaje."
         return null;
     }
 }

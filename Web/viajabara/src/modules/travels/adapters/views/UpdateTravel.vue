@@ -268,6 +268,7 @@ import DataTable from 'datatables.net-dt';
 import $ from 'jquery';
 import Loader from '../../../../components/Loader.vue'
 import mapFunctions from '../../../../kernel/map-functions/maps'
+import moment from 'moment'
 
 export default {
   name: "UpdateTravel",
@@ -506,14 +507,15 @@ export default {
         let jsonStopover = JSON.stringify(finalStopovers);
 
 
-        const today = new Date();
-        const hour = startTime.split(':');
-        today.setHours(parseInt(hour[0]), parseInt(hour[1]), 0, 0);
+        let now = new Date().toISOString().split('T')[0];
+        let finalStartTime =moment(`${now} ${startTime}`).format('YYYY-MM-DDTHH:mm:ss')
+
+
         const tripPayload = {
           id: this.searchedTrip.id,
           driver: {id: driver.id},
           bus: {id: bus.id},
-          startTime: today.toISOString(),
+          startTime: finalStartTime,
           workDays: JSON.stringify(workDays.map((day) => (day.value.toString()))),
           ways: ways,
           stopovers: jsonStopover,

@@ -1,8 +1,6 @@
 package mx.edu.utez.viajabara.basecatalog.trip.control;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import mx.edu.utez.viajabara.access.user.model.User;
 import mx.edu.utez.viajabara.access.user.model.UserRepository;
 import mx.edu.utez.viajabara.basecatalog.address.model.Address;
@@ -10,7 +8,6 @@ import mx.edu.utez.viajabara.basecatalog.address.model.AddressDto;
 import mx.edu.utez.viajabara.basecatalog.bus.model.Bus;
 import mx.edu.utez.viajabara.basecatalog.bus.model.BusRepository;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTrips;
-import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTripsDto;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTripsRepository;
 import mx.edu.utez.viajabara.basecatalog.route.control.RouteService;
 import mx.edu.utez.viajabara.basecatalog.route.model.Route;
@@ -20,14 +17,12 @@ import mx.edu.utez.viajabara.basecatalog.state.model.StateBookTripDto;
 import mx.edu.utez.viajabara.basecatalog.stopover.model.StopOver;
 import mx.edu.utez.viajabara.basecatalog.trip.model.*;
 import mx.edu.utez.viajabara.basecatalog.tripSchedule.control.TripScheduleService;
-import mx.edu.utez.viajabara.basecatalog.tripSchedule.model.TripSchedule;
 import mx.edu.utez.viajabara.basecatalog.tripSchedule.model.TripScheduleRepository;
 import mx.edu.utez.viajabara.basecatalog.way.control.WayService;
 import mx.edu.utez.viajabara.basecatalog.way.model.Way;
 import mx.edu.utez.viajabara.basecatalog.way.model.WayRepository;
 import mx.edu.utez.viajabara.utils.entity.Message;
 import mx.edu.utez.viajabara.utils.entity.TypesResponse;
-import mx.edu.utez.viajabara.utils.validator.TripValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,8 +92,7 @@ public class TripService {
             tripsDto.setWorkDays(trip.getWorkDays());
             tripsDto.setCreatedAt(trip.getCreatedAt());
             tripsDto.setOpened(trip.isOpened());
-            tripsDto.setTripSchedules(trip.getTripSchedules());
-            System.out.println(trip.getTripSchedules().get(0).getStartDate());
+            tripsDto.setStartTime(trip.getStartTime());
 
             List<Way> ways = wayRepository.findByTripId(trip.getId());
             tripsDto.setWays(ways);
@@ -321,7 +315,7 @@ public class TripService {
             tripsDto.setTime(trip.getTime());
             tripsDto.setWorkDays(trip.getWorkDays());
             tripsDto.setCreatedAt(trip.getCreatedAt());
-
+            tripsDto.setStartTime(trip.getStartTime());
             List<Way> ways = wayRepository.findByTripId(trip.getId());
             tripsDto.setWays(ways);
             response.add(tripsDto);
@@ -350,6 +344,7 @@ public class TripService {
         tripsDto.setTime(trip.getTime());
         tripsDto.setWorkDays(trip.getWorkDays());
         tripsDto.setCreatedAt(trip.getCreatedAt());
+        tripsDto.setStartTime(trip.getStartTime());
         List<Way> ways = wayRepository.findByTripId(trip.getId());
         tripsDto.setWays(ways);
 
@@ -367,15 +362,9 @@ public class TripService {
             return new ResponseEntity<>(new Message("No se encontró el conductor", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
 
+        //Validación de driver si tienes algun viaje
 
-        List<TripSchedule> schedulesByDriver = tripScheduleRepository.findAllByDriverIdAndStatusIsTrue(driver.get().getId());
-        boolean isValidSchedules = new TripValidator().validateTripSchedules(schedulesByDriver, dto.getTripSchedules());
-        if(!isValidSchedules){
-            return new ResponseEntity<>(new Message("El conductor ya tiene viajes para las fechas establecidas.", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
-        }
-
-
-        Trip trip = new Trip(driver.get(), bus.get(),true, dto.getMeters(), dto.getTime(), dto.getWorkDays(), dto.getStopovers());
+        Trip trip = new Trip(driver.get(), bus.get(),true, dto.getMeters(), dto.getTime(), dto.getWorkDays(), dto.getStopovers(), dto.getStartTime());
         trip = repository.saveAndFlush(trip);
         if (trip == null) {
             return new ResponseEntity<>(new Message("No se registró el viaje", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
@@ -397,25 +386,6 @@ public class TripService {
             wayService.save(wayList);
         }
 
-        if(dto.getTripSchedules().size() > 0 ){
-            List<TripSchedule> tripSchedules = new ArrayList<>();
-            for (TripSchedule tripSchedule : dto.getTripSchedules()) {
-                Optional<Trip> tripOptional = repository.findById(trip.getId());
-                if(!tripOptional.isPresent()){
-                    return new ResponseEntity<>(new Message("No se encontró el viaje", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
-                }
-                TripSchedule tripScheduleToSave = new TripSchedule();
-                tripScheduleToSave.setStartDate(tripSchedule.getStartDate());
-                tripScheduleToSave.setEndDate(tripSchedule.getEndDate());
-                tripScheduleToSave.setTrip(tripOptional.get());
-                tripScheduleToSave.setStatus(true);
-
-                tripSchedules.add(tripScheduleToSave);
-            }
-            scheduleService.saveAll(tripSchedules);
-        }else{
-            return new ResponseEntity<>(new Message("No se han agregado horarios", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
-        }
 
         return new ResponseEntity<>(new Message(trip, "Se registró el viaje", TypesResponse.SUCCESS), HttpStatus.OK);
     }
@@ -427,10 +397,10 @@ public class TripService {
             return new ResponseEntity<>(new Message("No se encontró el viaje", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
         }
 
-        List<OpenTrips> optionalOpenTrips = openTripsRepository.findOpenTripsByTripIdNotInProgress(optionalTrip.get().getId());
+        /*List<OpenTrips> optionalOpenTrips = openTripsRepository.findOpenTripsByTripIdNotInProgress(optionalTrip.get().getId());
         if(optionalOpenTrips.size() > 0){
             return new ResponseEntity<>(new Message("El viaje esta en progreso, no puedes modificarlo", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
-        }
+        }*/
 
         Optional<Bus> bus = busRepository.findById(dto.getBus().getId());
         if(!bus.isPresent()){
@@ -452,15 +422,6 @@ public class TripService {
             }
         }
 
-        List<TripSchedule> schedules = optionalTrip.get().getTripSchedules();
-        if(schedules.size() > 0){
-            for (TripSchedule tripSchedule : schedules){
-                tripSchedule.setTrip(null);
-                tripScheduleRepository.saveAndFlush(tripSchedule);
-                tripScheduleRepository.delete(tripSchedule);
-            }
-        }
-
         if(dto.getWays().size() > 0 ){
             List<Way> wayList = new ArrayList<>();
             for (Way way : dto.getWays()) {
@@ -476,27 +437,6 @@ public class TripService {
             }
             wayService.save(wayList);
         }
-
-        if(dto.getTripSchedules().size() > 0 ){
-            List<TripSchedule> tripSchedules = new ArrayList<>();
-            for (TripSchedule tripSchedule : dto.getTripSchedules()) {
-                Optional<Trip> tripOptional = repository.findById(optionalTrip.get().getId());
-                if(!tripOptional.isPresent()){
-                    return new ResponseEntity<>(new Message("No se encontró el viaje", TypesResponse.WARNING), HttpStatus.NOT_FOUND);
-                }
-                TripSchedule tripScheduleToSave = new TripSchedule();
-                tripScheduleToSave.setStartDate(tripSchedule.getStartDate());
-                tripScheduleToSave.setEndDate(tripSchedule.getEndDate());
-                tripScheduleToSave.setTrip(tripOptional.get());
-                tripScheduleToSave.setStatus(true);
-
-                tripSchedules.add(tripScheduleToSave);
-            }
-            scheduleService.saveAll(tripSchedules);
-        }else{
-            return new ResponseEntity<>(new Message("No se han agregado horarios", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
-        }
-
         Trip trip = optionalTrip.get();
         trip.setBus(bus.get());
         trip.setDriver(driver.get());
@@ -504,6 +444,7 @@ public class TripService {
         trip.setTime(dto.getTime());
         trip.setMeters(dto.getMeters());
         trip.setStopovers(dto.getStopovers());
+        trip.setStartTime(dto.getStartTime());
 
         trip = repository.saveAndFlush(trip);
         if (trip == null) {
