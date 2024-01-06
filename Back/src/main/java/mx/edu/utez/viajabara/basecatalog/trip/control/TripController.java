@@ -49,6 +49,11 @@ public class TripController {
         return service.findAllEnabled();
     }
 
+    @GetMapping("/unopened")
+    @Secured({VIAJES})
+    public ResponseEntity<Object> findAllUnopened() throws SQLException {
+        return service.findAllUnopened();
+    }
     /*@PostMapping("/states-for-filters-by-date")
     @Secured({VIAJES})
     @ApiOperation(

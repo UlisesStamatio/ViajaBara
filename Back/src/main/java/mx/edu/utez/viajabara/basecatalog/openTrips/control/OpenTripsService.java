@@ -1,38 +1,34 @@
 package mx.edu.utez.viajabara.basecatalog.openTrips.control;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import mx.edu.utez.viajabara.access.user.model.User;
 import mx.edu.utez.viajabara.access.user.model.UserRepository;
-import mx.edu.utez.viajabara.basecatalog.address.model.Address;
 import mx.edu.utez.viajabara.basecatalog.bus.model.BusRepository;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTrips;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTripsDto;
 import mx.edu.utez.viajabara.basecatalog.openTrips.model.OpenTripsRepository;
-import mx.edu.utez.viajabara.basecatalog.seatingSales.model.SeatingSales;
 import mx.edu.utez.viajabara.basecatalog.seatingSales.model.SeatingSalesRepository;
-import mx.edu.utez.viajabara.basecatalog.trip.model.BookTripDto;
 import mx.edu.utez.viajabara.basecatalog.trip.model.Trip;
 import mx.edu.utez.viajabara.basecatalog.trip.model.TripRepository;
+import mx.edu.utez.viajabara.basecatalog.tripSchedule.control.TripScheduleService;
 import mx.edu.utez.viajabara.basecatalog.tripSchedule.model.TripSchedule;
 import mx.edu.utez.viajabara.basecatalog.tripSchedule.model.TripScheduleRepository;
 import mx.edu.utez.viajabara.utils.entity.Message;
 import mx.edu.utez.viajabara.utils.entity.TypesResponse;
+import mx.edu.utez.viajabara.utils.validator.JsonParser;
+import mx.edu.utez.viajabara.utils.validator.TripValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Transactional
 @Service
@@ -45,15 +41,19 @@ public class OpenTripsService {
 
     private final TripScheduleRepository tripScheduleRepository;
 
+    private final TripScheduleService tripScheduleService;
+
     @Autowired
     public OpenTripsService(OpenTripsRepository repository, TripRepository tripRepository, BusRepository busRepository,
-                            UserRepository userRepository, SeatingSalesRepository seatingSalesRepository,TripScheduleRepository tripScheduleRepository ) {
+                            UserRepository userRepository, SeatingSalesRepository seatingSalesRepository,TripScheduleRepository tripScheduleRepository,
+                            TripScheduleService tripScheduleService) {
         this.repository = repository;
         this.tripRepository = tripRepository;
         this.busRepository = busRepository;
         this.userRepository = userRepository;
         this.seatingSalesRepository = seatingSalesRepository;
         this.tripScheduleRepository = tripScheduleRepository;
+        this.tripScheduleService = tripScheduleService;
     }
 
     @Transactional(readOnly = true)
@@ -103,6 +103,8 @@ public class OpenTripsService {
         }
         return new ResponseEntity<>(new Message(response, "Listado de viajes abiertos en espera", TypesResponse.SUCCESS), HttpStatus.OK);
     }
+
+
 
     @Transactional(readOnly = true)
     public ResponseEntity<Object> getOne(Long id) {
@@ -164,18 +166,33 @@ public class OpenTripsService {
     }
     @Transactional(rollbackFor = {SQLException.class})
     public ResponseEntity<Object> save(OpenTripsDto dto) throws SQLException{
-        Optional<Trip> tripOptional = tripRepository.findById(dto.getIdTrip());
+        LocalDateTime startDate = LocalDateTime.now();
+        JsonParser parser = new JsonParser();
+        TripValidator validator = new TripValidator();
+        LocalDateTime endDate = startDate.plus(dto.getNumberWeeks().intValue(), ChronoUnit.WEEKS);
 
+
+        Optional<Trip> tripOptional = tripRepository.findById(dto.getIdTrip());
         if(!tripOptional.isPresent()){
             return new ResponseEntity<>(new Message("No se encontró el viaje", TypesResponse.ERROR), HttpStatus.NOT_FOUND);
         }
+        Trip searchedTrip = tripOptional.get();
+        System.out.println(searchedTrip.getStartTime());
+        Date finalStartDate = parseFullDate(parseLocalDateTimeToDate(startDate));
+        Date finalEndDate = parseFullDate(parseLocalDateTimeToDate(endDate));
 
-        Trip tripSearched = tripOptional.get();
-        if(tripSearched.isOpened()){
-            return new ResponseEntity<>(new Message("El viaje ya se encuentra abierto", TypesResponse.WARNING), HttpStatus.BAD_REQUEST);
-        }
+        searchedTrip.setNumberWeeks(dto.getNumberWeeks());
+        searchedTrip.setRepeatEndDate(finalEndDate);
+        searchedTrip.setRepeatStartDate(finalStartDate);
+        Trip updatedTrip =  tripRepository.saveAndFlush(searchedTrip);
 
-        List<TripSchedule> schedulesSearched = tripScheduleRepository.findAllByTripId(tripSearched.getId());
+        int[] days = parser.convertJsonToIntArray(searchedTrip.getWorkDays());
+        List<Date> dates = validator.generateDatesByRange(finalStartDate, updatedTrip.getStartTime(),days);
+        List<TripSchedule> tripSchedules = validator.generateTripSchedules(dates, updatedTrip.getTime(), updatedTrip);
+        tripScheduleService.saveAll(tripSchedules);
+        tripRepository.saveAndFlush(updatedTrip);
+
+        List<TripSchedule> schedulesSearched = tripScheduleRepository.findAllByTripIdAndStatusIsTrue(searchedTrip.getId());
         if(schedulesSearched.size() > 0){
             List<OpenTrips> openTripsCreated = new ArrayList<>();
             for ( TripSchedule schedule : schedulesSearched) {
@@ -190,14 +207,37 @@ public class OpenTripsService {
                 }
                 openTripsCreated.add(openTrips);
             }
-            tripSearched.setOpened(true);
-            tripRepository.saveAndFlush(tripSearched);
-            return new ResponseEntity<>(new Message(openTripsCreated, "Viajes abierto registrados", TypesResponse.SUCCESS), HttpStatus.OK);
+            updatedTrip.setOpened(true);
+            tripRepository.saveAndFlush(updatedTrip);
+            return new ResponseEntity<>(new Message(openTripsCreated, "Se ha realizado la apertura", TypesResponse.SUCCESS), HttpStatus.OK);
         }else{
             return new ResponseEntity<>(new Message("Viaje abierto no registrado. Agregar horarios.", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
         }
-
     }
+
+
+    public static Date parseLocalDateTimeToDate(LocalDateTime dateTime){
+        return Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
+    }
+
+   /* public static void main(String[] args) {
+        TripValidator validator = new TripValidator();
+        LocalDateTime startDate = LocalDateTime.now();
+        LocalDateTime endDate = startDate.plus(7, ChronoUnit.DAYS);
+        Date finalStartDate = parseFullDate(parseLocalDateTimeToDate(startDate));
+        Date finalEndDate = parseFullDate(parseLocalDateTimeToDate(endDate));
+        int[] days = {6,1, 2, 3};
+        LocalTime horaEspecifica = LocalTime.of(12, 0, 0);
+        LocalDateTime fechaHora = LocalDateTime.of(LocalDate.from(startDate), horaEspecifica);
+        Date date = java.sql.Timestamp.valueOf(fechaHora);
+        System.out.println(date);
+        List<Date> dates = validator.generateDatesByRange(finalStartDate, finalEndDate, date,days);
+        List<TripSchedule> tripSchedules = validator.generateTripSchedules(dates, 136D, new Trip());
+        for (TripSchedule item:
+            tripSchedules ) {
+            System.out.println(item.getStartDate() + "\n" + item.getEndDate());
+        }
+     }*/
 
   /*  @Transactional(rollbackFor = {SQLException.class})
     public ResponseEntity<Object> saveBook(BookTripDto dto) throws SQLException{
@@ -260,6 +300,17 @@ public class OpenTripsService {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             sdf.setTimeZone(TimeZone.getTimeZone("America/Mexico_City"));
             return sdf.parse(timeString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private static Date parseFullDate(Date date) {
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            String formattedDate = format.format(date);
+            return format.parse(formattedDate);
         } catch (ParseException e) {
             e.printStackTrace();
             return null;

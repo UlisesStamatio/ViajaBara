@@ -9,6 +9,8 @@ import java.util.List;
 public interface TripRepository extends JpaRepository<Trip,Long> {
     List<Trip> findAllByStatusIsTrue();
 
+    List<Trip> findAllByOpenedIsFalse();
+
     @Query("SELECT t " +
             "FROM Trip t " +
             "INNER JOIN t.ways w " +

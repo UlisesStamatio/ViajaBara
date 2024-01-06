@@ -14,7 +14,7 @@ public interface TripScheduleRepository extends JpaRepository<TripSchedule, Long
     Optional<TripSchedule> findByStartDateAndEndDateAndTripId(Date startDate, Date  endDate, Long id);
 
 
-    List<TripSchedule> findAllByTripId(Long id);
+    List<TripSchedule> findAllByTripIdAndStatusIsTrue(Long id);
 
 
     @Query(value = "SELECT ts.* FROM trip_schedule ts INNER JOIN trips t ON ts.trip_id = t.id WHERE t.driver_id = :id AND ts.status is true", nativeQuery = true)

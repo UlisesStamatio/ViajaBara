@@ -53,11 +53,20 @@ public class Trip {
     @OneToMany(mappedBy = "trip")
     private List<TripSchedule> tripSchedules;
 
-    @Column(columnDefinition = "time", name = "start_time")
+    @Column(columnDefinition = "timestamp", name = "start_time")
     private Date startTime;
 
     @Column(name = "opened", columnDefinition = "BOOL DEFAULT FALSE")
     private boolean opened;
+
+    @Column(columnDefinition = "timestamp", name = "repeat_start_date")
+    private Date repeatStartDate;
+
+    @Column(columnDefinition = "timestamp", name = "repeat_end_date")
+    private Date repeatEndDate;
+
+    @Column(columnDefinition = "INT(11)", name = "number_weeks")
+    private Integer numberWeeks;
 
 
 
@@ -189,6 +198,30 @@ public class Trip {
 
     public void setStartTime(Date startTime) {
         this.startTime = startTime;
+    }
+
+    public Date getRepeatStartDate() {
+        return repeatStartDate;
+    }
+
+    public void setRepeatStartDate(Date repeatStartDate) {
+        this.repeatStartDate = repeatStartDate;
+    }
+
+    public Date getRepeatEndDate() {
+        return repeatEndDate;
+    }
+
+    public void setRepeatEndDate(Date repeatEndDate) {
+        this.repeatEndDate = repeatEndDate;
+    }
+
+    public Integer getNumberWeeks() {
+        return numberWeeks;
+    }
+
+    public void setNumberWeeks(Integer numberWeeks) {
+        this.numberWeeks = numberWeeks;
     }
 
     @Override

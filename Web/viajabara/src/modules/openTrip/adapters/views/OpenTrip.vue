@@ -17,7 +17,8 @@
                             selectedLabel="Seleccionado"
                             deselectLabel="Presiona para remover"
                             placeholder="Buscar.."
-                            label="plaque"
+                            label="id"
+                            track-by="id" 
                             :class="{'isInvalid': errors.trip, 'isValid': errors.trip === null}"
                             >
                             <template #noResult>
@@ -50,6 +51,7 @@
 //import router from '../../../../router/index'
 import Loader from '../../../../components/Loader.vue'
 import VueMultiselect from 'vue-multiselect'
+import listTripsUnopened from '../../../../modules/travels/use-cases/list.trips.unopened'
 //import moment from 'moment'
 
 export default {
@@ -71,6 +73,25 @@ export default {
         },
         viajes: [],
     }
+  },
+  async mounted(){
+    await this.listTripsUnopened()
+  },
+  methods:{
+    async listTripsUnopened(){
+      const response = {...await listTripsUnopened()};
+      const {error, data} = response;
+      if(!error){
+          const {result} = data
+          this.viajes = result;
+      }else{
+          this.$swal({
+            icon: "error", 
+            title: 'Ocurrió un error durante la consultar. Inténtalo de nuevo.',
+            type: "basic",
+          });
+      }
+    },
   }
 }
 </script>

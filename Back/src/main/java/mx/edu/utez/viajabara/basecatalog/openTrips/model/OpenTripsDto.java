@@ -1,13 +1,8 @@
 package mx.edu.utez.viajabara.basecatalog.openTrips.model;
 
 import mx.edu.utez.viajabara.basecatalog.seatingSales.model.SeatingSales;
-import mx.edu.utez.viajabara.basecatalog.trip.model.Trip;
-import mx.edu.utez.viajabara.basecatalog.tripSchedule.model.TripSchedule;
-import mx.edu.utez.viajabara.utils.validator.CheckDateFormat;
-import org.springframework.format.annotation.DateTimeFormat;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -16,6 +11,9 @@ public class OpenTripsDto {
     private Long id;
     @NotNull(groups = {Register.class,Modify.class})
     private Long idTrip;
+
+    @PositiveOrZero(groups = {Register.class,Modify.class})
+    private Integer numberWeeks;
     @PositiveOrZero(groups = {ChangeStatus.class})
     private int status;
     private int enableSeats;
@@ -100,14 +98,20 @@ public class OpenTripsDto {
         this.createdAt = createdAt;
     }
 
-
-
     public Long getIdTrip() {
         return idTrip;
     }
 
     public void setIdTrip(Long idTrip) {
         this.idTrip = idTrip;
+    }
+
+    public Integer getNumberWeeks() {
+        return numberWeeks;
+    }
+
+    public void setNumberWeeks(Integer numberWeeks) {
+        this.numberWeeks = numberWeeks;
     }
 
     public interface Register{}

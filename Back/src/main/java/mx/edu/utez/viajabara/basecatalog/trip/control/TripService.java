@@ -323,6 +323,29 @@ public class TripService {
         return new ResponseEntity<>(new Message(response, "Listado de viajes activos", TypesResponse.SUCCESS), HttpStatus.OK);
     }
 
+    @Transactional(readOnly = true)
+    public ResponseEntity<Object> findAllUnopened() {
+        List<Trip> trips = repository.findAllByOpenedIsFalse();
+        List<ListTripsDto> response = new ArrayList<>();
+        for (Trip trip:trips) {
+            trip.getDriver().setProfile(null);
+            trip.getBus().setImage(null);
+            ListTripsDto tripsDto = new ListTripsDto();
+            tripsDto.setBus(null);
+            tripsDto.setDriver(null);
+            tripsDto.setId(trip.getId());
+            tripsDto.setMeters(trip.getMeters());
+            tripsDto.setStatus(trip.isStatus());
+            tripsDto.setStopovers(null);
+            tripsDto.setTime(trip.getTime());
+            tripsDto.setWorkDays(null);
+            tripsDto.setCreatedAt(trip.getCreatedAt());
+            tripsDto.setStartTime(trip.getStartTime());
+            response.add(tripsDto);
+        }
+        return new ResponseEntity<>(new Message(response, "Listado de viajes sin abrir", TypesResponse.SUCCESS), HttpStatus.OK);
+    }
+
 
     @Transactional(readOnly = true)
     public ResponseEntity<Object> getOne(Long id) {
