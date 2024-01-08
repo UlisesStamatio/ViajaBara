@@ -316,31 +316,29 @@ public class OpenTripsService {
             return null;
         }
     }
-   /* @Transactional(rollbackFor = {SQLException.class})
+
+    @Transactional(rollbackFor = {SQLException.class})
     public ResponseEntity<Object> update(OpenTripsDto dto) throws SQLException{
 
-        Optional<OpenTrips> optionalOpenTrips = repository.findById(dto.getId());
-        if(!optionalOpenTrips.isPresent()){
-            return new ResponseEntity<>(new Message("No se encontró el viaje abierto", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
+        Optional<Trip> tripOptional = tripRepository.findById(dto.getIdTrip());
+        if(!tripOptional.isPresent()){
+            return new ResponseEntity<>(new Message("No se encontró el viaje", TypesResponse.ERROR), HttpStatus.NOT_FOUND);
         }
 
-        Optional<Trip> optionalTrip = tripRepository.findById(dto.getTrip().getId());
-        if(!optionalTrip.isPresent()){
-            return new ResponseEntity<>(new Message("No se encontró el viaje", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
-        }
+        Date startDate = tripOptional.get().getRepeatStartDate();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(startDate);
+        calendar.add(Calendar.WEEK_OF_MONTH, dto.getNumberWeeks().intValue());
+        Date endDate = calendar.getTime();
 
-        OpenTrips openTrips = optionalOpenTrips.get();
-        openTrips.setTrip(optionalTrip.get());
-        openTrips.setStartDate(dto.getStartDate());
+        Trip searchedTrip = tripOptional.get();
 
-        openTrips = repository.saveAndFlush(openTrips);
+        searchedTrip.setNumberWeeks(dto.getNumberWeeks());
+        searchedTrip.setRepeatEndDate(endDate);
+        Trip updatedTrip =  tripRepository.saveAndFlush(searchedTrip);
 
-        if (openTrips == null){
-            return new ResponseEntity<>(new Message("Viaje abierto no modificado", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
-        }
-
-        return new ResponseEntity<>(new Message(openTrips, "Viaje abierto modificado", TypesResponse.SUCCESS), HttpStatus.OK);
-    }*/
+        return new ResponseEntity<>(new Message(updatedTrip, "Apertura modificada", TypesResponse.SUCCESS), HttpStatus.OK);
+    }
 
     @Transactional(rollbackFor = {SQLException.class})
     public ResponseEntity<Object> changeStatus(OpenTripsDto dto) throws SQLException{

@@ -4,6 +4,8 @@ import mx.edu.utez.viajabara.basecatalog.trip.model.Trip;
 import mx.edu.utez.viajabara.basecatalog.tripSchedule.model.TripSchedule;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;

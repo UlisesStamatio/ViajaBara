@@ -1,7 +1,7 @@
 <template>
     <Loader :isLoading="isLoading"/>
       <div class="container-fluid" v-show="!isLoading">
-        <form class="row g-3" @submit.prevent="preOpenTrip">
+        <form class="row g-3" @submit.prevent="preUpdateOpenTrip">
              <div class="mt-4 col-12 card card-body">
                 <div class="row">
                     <div class="col-12">
@@ -95,7 +95,7 @@ export default {
           });
       }
     },
-    async preOpenTrip(){
+    async preUpdateOpenTrip(){
       console.log(this.openTrip.trip);
       this.errors.weekNumber = openTripValidator.validateNumberWeeks(this.openTrip.weekNumber);
       this.errors.trip = openTripValidator.validateSelect(this.openTrip.trip);

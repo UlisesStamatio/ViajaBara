@@ -8,6 +8,13 @@
           <hr class="my-3 horizontal dark" />
           <div class="row">
             <div class="col-12 col-lg-6 mb-3 ">
+              <label>Sobrenombre(<span class="text-danger">*</span>)</label>
+                 <input type="text" id="name" v-model="trip.name" placeholder="eg. Viaje 1" class="form-control" :class="{ 'is-invalid': errors.name, 'is-valid': errors.name === null }">
+                  <div v-if="errors.name" style="color: red">
+                          {{ errors.name }}
+                  </div>
+            </div>
+            <div class="col-12 col-lg-6 mb-3 ">
               <label>Conductor(<span class="text-danger">*</span>)</label>
                   <VueMultiselect
                     
@@ -303,6 +310,7 @@ export default {
         {value:7, label:"Sábado"},
       ],
       trip:{
+        name: "",
         driver:"",
         bus:"",
         ways: [],
@@ -310,6 +318,7 @@ export default {
         days: "",
       },
       errors:{
+        name: "",
         driver:"",
         bus:"",
         ways: "",
@@ -443,9 +452,10 @@ export default {
       this.errors.day = tripValidator.validateMultiSelect(this.trip.days);
       this.errors.date = tripValidator.validateDate(this.trip.date);
       this.errors.ways = tripValidator.validateWays(this.trip.ways);
+      this.errors.name = tripValidator.validateName(this.trip.name);
 
-      if(!this.errors.bus && !this.errors.driver && !this.errors.day && !this.errors.date && !this.errors.ways){
-        const {driver, bus,date, days, ways} = this.trip;
+      if(!this.errors.bus && !this.errors.driver && !this.errors.day && !this.errors.date && !this.errors.ways && !this.errors.name ){
+        const {driver, bus,date, days, ways, name} = this.trip;
         let idRoutes = ways.map((way) => (way.route.id));
         idRoutes.map((id) =>{
             let {stopOvers} = this.routes.find((route) => route.id === id);
@@ -476,9 +486,11 @@ export default {
 
         let now = new Date().toISOString().split('T')[0];
 
-        let startTime = moment(`${now} ${date}`).format('YYYY-MM-DDTHH:mm:ss')
+        let startTime = moment(`${now} ${date}`).format('YYYY-MM-DDTHH:mm:ssZ')
+        
 
         const tripPayload = {
+          name,
           driver: {id: driver.id},
           bus: {id: bus.id},
           workDays: JSON.stringify(days.map((day) => (day.value.toString()))),

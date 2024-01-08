@@ -1,5 +1,6 @@
 package mx.edu.utez.viajabara.basecatalog.trip.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import mx.edu.utez.viajabara.access.user.model.User;
 import mx.edu.utez.viajabara.basecatalog.bus.model.Bus;
@@ -10,6 +11,8 @@ import mx.edu.utez.viajabara.basecatalog.way.model.Way;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -25,6 +28,8 @@ public class Trip {
     @ManyToOne
     private Bus bus;
 
+    @Column(name = "name", columnDefinition = "VARCHAR(50)")
+    private String name;
 
     @Column(name = "create_at", insertable = false, columnDefinition = "TIMESTAMP DEFAULT NOW()")
     @Temporal(TemporalType.TIMESTAMP)
@@ -52,6 +57,8 @@ public class Trip {
     private List<Way> ways;
     @OneToMany(mappedBy = "trip")
     private List<TripSchedule> tripSchedules;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
 
     @Column(columnDefinition = "timestamp", name = "start_time")
     private Date startTime;
@@ -84,7 +91,7 @@ public class Trip {
         this.status = status;
     }
 
-    public Trip(User driver, Bus bus, boolean status, double meters, double time, String workDays, String stopovers, Date startTime) {
+    public Trip(User driver, Bus bus, String name, boolean status, double meters, double time, String workDays, String stopovers, Date startTime) {
         this.driver = driver;
         this.bus = bus;
         this.status = status;
@@ -93,6 +100,7 @@ public class Trip {
         this.workDays = workDays;
         this.stopovers = stopovers;
         this.startTime = startTime;
+        this.name = name;
     }
 
     public Long getId() {
@@ -222,6 +230,15 @@ public class Trip {
 
     public void setNumberWeeks(Integer numberWeeks) {
         this.numberWeeks = numberWeeks;
+    }
+
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

@@ -17,6 +17,10 @@ const OperationsController = {
         const response = await Operations.listTrips('/unopened')
         return response;
     },
+    async listTripsOpened(){
+        const response = await Operations.listTrips('/opened')
+        return response;
+    },
     // async listConsumers(){
     //     const response = await Operations.listConsumers('/all-consumers')
     //     return response;

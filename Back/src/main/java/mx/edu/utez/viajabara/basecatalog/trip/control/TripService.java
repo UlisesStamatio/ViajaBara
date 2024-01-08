@@ -93,6 +93,7 @@ public class TripService {
             tripsDto.setCreatedAt(trip.getCreatedAt());
             tripsDto.setOpened(trip.isOpened());
             tripsDto.setStartTime(trip.getStartTime());
+            tripsDto.setName(trip.getName());
 
             List<Way> ways = wayRepository.findByTripId(trip.getId());
             tripsDto.setWays(ways);
@@ -316,6 +317,7 @@ public class TripService {
             tripsDto.setWorkDays(trip.getWorkDays());
             tripsDto.setCreatedAt(trip.getCreatedAt());
             tripsDto.setStartTime(trip.getStartTime());
+            tripsDto.setName(trip.getName());
             List<Way> ways = wayRepository.findByTripId(trip.getId());
             tripsDto.setWays(ways);
             response.add(tripsDto);
@@ -340,12 +342,44 @@ public class TripService {
             tripsDto.setTime(trip.getTime());
             tripsDto.setWorkDays(null);
             tripsDto.setCreatedAt(trip.getCreatedAt());
+            System.out.println(trip.getStartTime());
             tripsDto.setStartTime(trip.getStartTime());
+            tripsDto.setRepeatEndDate(trip.getRepeatEndDate());
+            tripsDto.setRepeatStartDate(trip.getRepeatStartDate());
+            tripsDto.setName(trip.getName());
             response.add(tripsDto);
         }
         return new ResponseEntity<>(new Message(response, "Listado de viajes sin abrir", TypesResponse.SUCCESS), HttpStatus.OK);
     }
 
+
+    @Transactional(readOnly = true)
+    public ResponseEntity<Object> findAllOpened() {
+        List<Trip> trips = repository.findAllByOpenedIsTrue();
+        List<ListTripsDto> response = new ArrayList<>();
+        for (Trip trip:trips) {
+            trip.getDriver().setProfile(null);
+            trip.getBus().setImage(null);
+            ListTripsDto tripsDto = new ListTripsDto();
+            tripsDto.setBus(null);
+            tripsDto.setDriver(null);
+            tripsDto.setId(trip.getId());
+            tripsDto.setMeters(trip.getMeters());
+            tripsDto.setStatus(trip.isStatus());
+            tripsDto.setStopovers(null);
+            tripsDto.setTime(trip.getTime());
+            tripsDto.setWorkDays(null);
+            tripsDto.setCreatedAt(trip.getCreatedAt());
+            System.out.println(trip.getStartTime());
+            tripsDto.setRepeatEndDate(trip.getRepeatEndDate());
+            tripsDto.setStartTime(trip.getStartTime());
+            tripsDto.setRepeatStartDate(trip.getRepeatStartDate());
+            tripsDto.setName(trip.getName());
+            tripsDto.setNumberWeeks(trip.getNumberWeeks());
+            response.add(tripsDto);
+        }
+        return new ResponseEntity<>(new Message(response, "Listado de viajes abiertos", TypesResponse.SUCCESS), HttpStatus.OK);
+    }
 
     @Transactional(readOnly = true)
     public ResponseEntity<Object> getOne(Long id) {
@@ -368,6 +402,8 @@ public class TripService {
         tripsDto.setWorkDays(trip.getWorkDays());
         tripsDto.setCreatedAt(trip.getCreatedAt());
         tripsDto.setStartTime(trip.getStartTime());
+        System.out.println(trip.getStartTime());
+        tripsDto.setName(trip.getName());
         List<Way> ways = wayRepository.findByTripId(trip.getId());
         tripsDto.setWays(ways);
 
@@ -387,7 +423,7 @@ public class TripService {
 
         //Validación de driver si tienes algun viaje
 
-        Trip trip = new Trip(driver.get(), bus.get(),true, dto.getMeters(), dto.getTime(), dto.getWorkDays(), dto.getStopovers(), dto.getStartTime());
+        Trip trip = new Trip(driver.get(), bus.get(),dto.getName(), true, dto.getMeters(), dto.getTime(), dto.getWorkDays(), dto.getStopovers(), dto.getStartTime());
         trip = repository.saveAndFlush(trip);
         if (trip == null) {
             return new ResponseEntity<>(new Message("No se registró el viaje", TypesResponse.ERROR), HttpStatus.BAD_REQUEST);
@@ -468,6 +504,7 @@ public class TripService {
         trip.setMeters(dto.getMeters());
         trip.setStopovers(dto.getStopovers());
         trip.setStartTime(dto.getStartTime());
+        trip.setName(dto.getName());
 
         trip = repository.saveAndFlush(trip);
         if (trip == null) {

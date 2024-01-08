@@ -10,6 +10,7 @@ public interface TripRepository extends JpaRepository<Trip,Long> {
     List<Trip> findAllByStatusIsTrue();
 
     List<Trip> findAllByOpenedIsFalse();
+    List<Trip> findAllByOpenedIsTrue();
 
     @Query("SELECT t " +
             "FROM Trip t " +

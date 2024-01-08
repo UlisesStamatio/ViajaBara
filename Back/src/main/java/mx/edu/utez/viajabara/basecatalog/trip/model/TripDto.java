@@ -8,6 +8,11 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -29,6 +34,9 @@ public class TripDto {
     private String stopovers;
     @NotNull(groups = {Register.class,Modify.class})
     private String workDays;
+
+    @NotNull(groups = {Register.class,Modify.class})
+    private String name;
     @NotNull(groups = {Register.class,Modify.class})
     private List<Way> ways;
 
@@ -139,11 +147,19 @@ public class TripDto {
     }
 
     public Date getStartTime() {
-        return parseDate(startTime);
+        return startTime;
     }
 
     public void setStartTime(Date startTime) {
-        this.startTime = parseDate(startTime);
+        this.startTime = startTime ;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setFilterType(FilterType filterType) {
@@ -184,5 +200,4 @@ public class TripDto {
             return null;
         }
     }
-
 }

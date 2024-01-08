@@ -7,7 +7,15 @@
           <h6 class="mb-0">Información básica</h6>
           <hr class="my-3 horizontal dark" />
           <div class="row">
+             <div class="col-12 col-lg-6 mb-3 ">
+              <label>Sobrenombre(<span class="text-danger">*</span>)</label>
+                 <input type="text" id="name" v-model="searchedTrip.name" placeholder="eg. Viaje 1" class="form-control" :class="{ 'is-invalid': errors.name, 'is-valid': errors.name === null }">
+                  <div v-if="errors.name" style="color: red">
+                          {{ errors.name }}
+                  </div>
+            </div>
             <div class="col-12 col-lg-6 mb-3 ">
+              
               <label>Conductor(<span class="text-danger">*</span>)</label>
                   <VueMultiselect
                     v-model="searchedTrip.driver"
@@ -299,6 +307,7 @@ export default {
         {value:7, label:"Sábado"},
       ],
       trip:{
+        name:"",
         driver:"",
         bus:"",
         ways: [],
@@ -306,6 +315,7 @@ export default {
         days: "",
       },
       errors:{
+        name:"",
         driver:"",
         bus:"",
         route: "",
@@ -383,10 +393,12 @@ export default {
       this.isLoading = false;
       if(!error){
           const {result} = data
+          let startTime =moment(result.startTime);
+          startTime = startTime.format('HH:mm');
           this.searchedTrip = {...result, 
             driver: {id: result.driver.id, name: `${result.driver.username}`},
             bus: {id: result.bus.id, plaque: result.bus.plaque},
-            startTime: new Date(result.startTime).toTimeString().split(' ')[0],
+            startTime: startTime,
             workDays: JSON.parse(result.workDays).map((day) => ({value: parseInt(day), label: this.getDay(day) }))
           };
           this.searchedTrip.ways.forEach((way) =>{
@@ -474,9 +486,10 @@ export default {
       this.errors.day = tripValidator.validateMultiSelect(this.searchedTrip.workDays);
       this.errors.date = tripValidator.validateDate(this.searchedTrip.startTime);
       this.errors.ways = tripValidator.validateWays(this.searchedTrip.ways);
+      this.errors.name = tripValidator.validateName(this.searchedTrip.name);
 
-      if(!this.errors.bus && !this.errors.driver && !this.errors.day && !this.errors.date && !this.errors.ways){
-        const {driver, bus, startTime, workDays, ways} = this.searchedTrip;
+      if(!this.errors.bus && !this.errors.driver && !this.errors.day && !this.errors.date && !this.errors.ways && !this.errors.name){
+        const {driver, bus, startTime, workDays, ways, name} = this.searchedTrip;
         let idRoutes = ways.map((way) => (way.route.id));
         let fullStopovers = [];
         idRoutes.map((id) =>{
@@ -508,11 +521,12 @@ export default {
 
 
         let now = new Date().toISOString().split('T')[0];
-        let finalStartTime =moment(`${now} ${startTime}`).format('YYYY-MM-DDTHH:mm:ss')
+        let finalStartTime =moment(`${now} ${startTime}`).format('YYYY-MM-DDTHH:mm:ssZ')
 
 
         const tripPayload = {
           id: this.searchedTrip.id,
+          name,
           driver: {id: driver.id},
           bus: {id: bus.id},
           startTime: finalStartTime,

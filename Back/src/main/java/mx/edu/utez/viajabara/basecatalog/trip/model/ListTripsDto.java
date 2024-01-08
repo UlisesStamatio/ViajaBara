@@ -4,6 +4,9 @@ import mx.edu.utez.viajabara.access.user.model.User;
 import mx.edu.utez.viajabara.basecatalog.bus.model.Bus;
 import mx.edu.utez.viajabara.basecatalog.tripSchedule.model.TripSchedule;
 import mx.edu.utez.viajabara.basecatalog.way.model.Way;
+
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -31,6 +34,14 @@ public class ListTripsDto {
     private List<Way> ways;
 
     private boolean opened;
+
+    private String name;
+
+    private Date repeatStartDate;
+
+    private Date repeatEndDate;
+
+    private Integer numberWeeks;
 
     private List<TripSchedule> tripSchedules;
 
@@ -135,6 +146,38 @@ public class ListTripsDto {
 
     public List<TripSchedule> getTripSchedules() {
         return tripSchedules;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Date getRepeatStartDate() {
+        return repeatStartDate;
+    }
+
+    public void setRepeatStartDate(Date repeatStartDate) {
+        this.repeatStartDate = repeatStartDate;
+    }
+
+    public Date getRepeatEndDate() {
+        return repeatEndDate;
+    }
+
+    public void setRepeatEndDate(Date repeatEndDate) {
+        this.repeatEndDate = repeatEndDate;
+    }
+
+    public Integer getNumberWeeks() {
+        return numberWeeks;
+    }
+
+    public void setNumberWeeks(Integer numberWeeks) {
+        this.numberWeeks = numberWeeks;
     }
 
     public void setTripSchedules(List<TripSchedule> tripSchedules) {
